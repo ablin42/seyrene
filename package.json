@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ablin42/seyrene#readme",
   "dependencies": {
+    "ejs": "^2.6.2",
     "express": "^4.17.1"
   }
 }

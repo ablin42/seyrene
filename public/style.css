@@ -1,0 +1,56 @@
+body, html {
+    height: 100%;
+}
+body {
+    background-image: url('http://hdqwalls.com/wallpapers/cloudy-sky-evening-sky-4k-zm.jpg');
+    background-size:100% 100%;
+}
+
+nav {
+   
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 1em;
+    grid-auto-rows: minmax(100px, auto);
+    font-family: 'Montserrat', sans-serif;
+}
+
+nav:hover {
+    background-color: white;
+}
+
+nav:hover .navbar-text {
+    color: black;
+}
+
+nav > div {
+  
+}
+
+nav > div > ul {
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav > div > ul > li  {
+    display: inline-block;
+    width: auto;
+    padding: 0 3em 0 3em;
+}
+
+nav > div > ul > li > a {
+    color: white;
+    font-weight: 600;
+}
+
+nav > div > ul > li > a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.name-header {
+    font-family: 'Pacifico', cursive;
+    font-size: 5em;
+    color: white;
+}
