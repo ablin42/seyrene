@@ -1,9 +1,7 @@
 body, html {
     height: 100%;
-}
-
-body {
-   background-color: #191919!important;
+    min-height: 100vh;
+    background-image: linear-gradient(160deg,#93BEDF,#465775);
 }
 
 nav {
@@ -12,6 +10,10 @@ nav {
     grid-auto-rows: minmax(100px, auto);
     font-family: 'Montserrat', sans-serif;
     transition: 0.4s;
+}
+
+.navbar {
+    margin: 0 0 30px 0;
 }
 
 nav:hover {
@@ -69,3 +71,156 @@ nav > div > ul > li:hover {
     grid-gap: 1em;
     grid-auto-rows: minmax(100px, auto);
 }
+
+.carousel-container {
+    position: absolute;
+    width: 60%;
+    top: 47.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.carousel-item img {
+    height: 500px; /*this needs to be changed to responsive */
+}
+
+/* FOOTER */
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: white;
+    -webkit-box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
+}
+
+.footer-links {
+    text-align: center;
+}
+
+.footer-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer-list li {
+    display: inline-block;
+    margin: 0 5px 0 5px;
+}
+
+.footer-copyright {
+    background-color: #cecece;
+}
+
+
+/* login form */
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-family: montserrat;
+    box-sizing: border-box;
+  }
+  
+  .form-title {
+    color: #465775;
+  }
+
+  .login-form{
+    width: 360px;
+    background: #f1f1f1;
+    height: 500px;
+    padding: 40px 40px;
+    border-radius: 10px;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, 0%);
+  }
+
+  .register-form{
+      height: 640px;
+      padding: 10px 40px;
+  }
+  
+  .login-form h1{
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .register-form h1{
+    margin-bottom: 20px!important;
+  }
+  .txtb{
+    border-bottom: 2px solid #adadad;
+    position: relative;
+    margin: 30px 0;
+  }
+  
+  .txtb input{
+    font-size: 15px;
+    color: #333;
+    border: none;
+    width: 100%;
+    outline: none;
+    background: none;
+    padding: 0 5px;
+    height: 40px;
+  }
+  
+  .txtb span::before{
+    content: attr(data-placeholder);
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    color: #adadad;
+    transform: translateY(-50%);
+    z-index: -1;
+    transition: .5s;
+  }
+  
+  .txtb span::after{
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    left: 0px;
+    bottom: -5%;
+    background: linear-gradient(160deg, #93BEDF,#465775);
+    transition: .5s;
+  }
+  
+  .focus + span::before{
+    top: -5px;
+  }
+  .focus + span::after{
+    width: 100%;
+    left: 0px;
+    bottom: -5%;
+  }
+  
+  .logbtn{
+    display: block;
+    width: 100%;
+    height: 50px;
+    border: none;
+    background: linear-gradient(160deg,#3498db,#93BEDF,#465775);
+    background-size: 200%;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+    transition: .5s;
+  }
+  
+  .logbtn:hover{
+    background-position: right;
+  }
+  
+  .bottom-text{
+    margin-top: 60px;
+    text-align: center;
+    font-size: 13px;
+  }
+  

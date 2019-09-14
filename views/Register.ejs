@@ -1,0 +1,54 @@
+<% include partials/head %>
+
+    
+
+<div class="container-fluid"> 
+    <form action="index.html" class="login-form register-form">
+        <h1 class="form-title">Inscription</h1>
+
+        <div class="txtb">
+          <input type="text">
+          <span data-placeholder="Username"></span>
+        </div>
+
+        <div class="txtb">
+            <input type="text">
+            <span data-placeholder="Nom"></span>
+        </div>
+
+        <div class="txtb">
+            <input type="text">
+            <span data-placeholder="Prénom"></span>
+        </div>
+
+        <div class="txtb">
+          <input type="password">
+          <span data-placeholder="Password"></span>
+        </div>
+
+        <div class="txtb">
+            <input type="password">
+            <span data-placeholder="Password confirmation"></span>
+          </div>
+
+        <input type="submit" class="logbtn" value="S'inscrire">
+
+        <div class="bottom-text">
+            Vous possédez déjà un compte? Connectez-vous ici <a href="#">ici</a>
+        </div>
+
+      </form>
+
+      <script type="text/javascript">
+        $(".txtb input").on("focus",function(){
+          $(this).addClass("focus");
+        });
+
+        $(".txtb input").on("blur",function(){
+          if($(this).val() == "")
+          $(this).removeClass("focus");
+        });
+      </script>
+</div>
+  
+<% include partials/footer %>
