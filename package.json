@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ablin42/seyrene#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^8.1.0",
     "ejs": "^2.6.2",
     "express": "^4.17.1",
