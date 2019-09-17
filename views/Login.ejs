@@ -3,38 +3,52 @@
     
 
 <div class="container-fluid"> 
-    <form action="index.html" class="login-form">
+    <form id="login-form" method="POST" action="/api/user/login" class="login-form">
         <h1 class="form-title">Se connecter</h1>
 
-        <div class="txtb">
-          <input type="text">
+        <!--<div class="txtb">
+          <input type="text" name="name">
           <span data-placeholder="Username"></span>
+        </div>-->
+
+        <div class="txtb">
+          <input type="email" name="email">
+          <span data-placeholder="Email"></span>
         </div>
 
         <div class="txtb">
-          <input type="password">
+          <input type="password" name="password">
           <span data-placeholder="Password"></span>
         </div>
 
-        <input type="submit" class="logbtn" value="Connexion">
+        <input type="submit" class="logbtn" value="Connexion" id="submit-login">
 
         <div class="bottom-text">
           Pas encore de compte? Créez en un <a href="#">ici</a>
         </div>
-
       </form>
 
       <script type="text/javascript">
+        $(document).ready(function(){
+          $("#submit-login").click(function(e){
+            e.preventDefault();
+            $.post("/api/user/login", $("#login-form").serialize(), function(data) {
+              console.log(data);
+              //if login success = log in the user and redirect
+            })
+            .fail(function(response) {console.log('Error: ' + response.responseText)});//else return error under fields 
+          });
+        });
+
         $(".txtb input").on("focus",function(){
-            $(this).addClass("focus");
+          $(this).addClass("focus");
         });
 
         $(".txtb input").on("blur",function(){
-            if($(this).val() == "")
+          if($(this).val() == "")
             $(this).removeClass("focus");
         });
       </script>
-
 </div>
   
 <% include partials/footer %>

@@ -17,13 +17,12 @@ const app = express();
 app.use(express.static(__dirname + '/public'));
 
 // Middleware
-// Body parser
-// Parse app/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
-// Parse app/json
-app.use(bodyParser.json());
-
-// Cross origin middleware
+//-- Body parser --//
+    // Parse app/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({extended: false}));
+    // Parse app/json
+    app.use(bodyParser.json());
+//-- Cross origin --//
 app.use(cors());
 
 // Routes

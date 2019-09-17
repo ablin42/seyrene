@@ -15,6 +15,7 @@ const registerValidation = (data) => {
                 .min(6)
                 .max(1024)
                 .required(),
+        password2: Joi.ref('password')
     });
     return schema.validate(data);
 }

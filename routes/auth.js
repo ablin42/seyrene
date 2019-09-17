@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
     const {error} = loginValidation(req.body);
     if (error)
         return res.status(400).send(error.details[0].message);
-    // Check if email or username exists in DB
+    // Check if email exists in DB
     const user = await User.findOne({email: req.body.email});
     if (!user)
         return res.status(400).send("Invalid credentials");
@@ -55,7 +55,5 @@ router.post('/login', async (req, res) => {
     // Create user session token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);//have aswell user level access
     res.header('auth-token', token).status(200).send(token);
-
-    //res.status(200).send("Logged in!");
 })
 module.exports = router;

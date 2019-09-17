@@ -1,17 +1,20 @@
 <% include partials/head %>
 
-    
-
 <div class="container-fluid"> 
-    <form action="index.html" class="login-form register-form">
+    <form method="POST" action="/api/user/register" class="login-form register-form">
         <h1 class="form-title">Inscription</h1>
 
         <div class="txtb">
-          <input type="text">
+          <input type="text" name="name">
           <span data-placeholder="Username"></span>
         </div>
 
         <div class="txtb">
+          <input type="email" name="email">
+          <span data-placeholder="Email"></span>
+        </div>
+
+        <!--<div class="txtb">
             <input type="text">
             <span data-placeholder="Nom"></span>
         </div>
@@ -19,19 +22,19 @@
         <div class="txtb">
             <input type="text">
             <span data-placeholder="Prénom"></span>
-        </div>
+        </div>-->
 
         <div class="txtb">
-          <input type="password">
+          <input type="password" name="password">
           <span data-placeholder="Password"></span>
         </div>
 
         <div class="txtb">
-            <input type="password">
+            <input type="password" name="password2">
             <span data-placeholder="Password confirmation"></span>
           </div>
 
-        <input type="submit" class="logbtn" value="S'inscrire">
+        <input type="submit" class="logbtn" value="S'inscrire" name="register">
 
         <div class="bottom-text">
             Vous possédez déjà un compte? Connectez-vous ici <a href="#">ici</a>
