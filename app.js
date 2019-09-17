@@ -31,11 +31,16 @@ const pagesRoute = require('./routes/pages');
 const postsRoute = require('./routes/posts');
 const authRoute = require('./routes/auth');
 
+const privateRoute = require('./routes/privateroute')
+
 // Route Middlewares
 app.use('/api/user', authRoute);
 
 app.use('/', pagesRoute);
 app.use('/posts', postsRoute);
+
+app.use('/api/private', privateRoute);
+
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');

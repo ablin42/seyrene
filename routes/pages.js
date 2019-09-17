@@ -3,6 +3,11 @@ const path = require('path');
 
 const router = express.Router();
 
+//needs try catches and status 400
+//
+//
+// important
+
 router.get('/', (req, res) => {
     res.render('home', {
         root: path.join(__dirname, '/pages/')
