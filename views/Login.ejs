@@ -33,10 +33,10 @@
           $("#submit-login").click(function(e){
             e.preventDefault();
             $.post("/api/user/login", $("#login-form").serialize(), function(data) {
-              console.log(data);
+              console.log(`data: ${data}`);
               //if login success = log in the user and redirect
             })
-            .fail(function(response) {console.log('Error: ' + response.responseText)});//else return error under fields 
+            .fail(function(response) {console.log('Error: ' + response.responseText)});//else return problem encountered  
           });
         });
 

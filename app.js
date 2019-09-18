@@ -27,23 +27,15 @@ app.use(cors());
 
 // Routes
 const pagesRoute = require('./routes/pages');
-const postsRoute = require('./routes/posts');
 const authRoute = require('./routes/auth');
-
-const privateRoute = require('./routes/privateroute')
-
-// Route Middlewares
-app.use('/api/user', authRoute);
+const postsRoute = require('./routes/posts');
 
 app.use('/', pagesRoute);
+app.use('/api/user', authRoute);
 app.use('/posts', postsRoute);
-
-app.use('/api/private', privateRoute);
-
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-
 
 const port = process.env.PORT || 8089;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

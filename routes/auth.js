@@ -39,21 +39,37 @@ router.post('/register', async (req, res) => {
 
 // LOGIN
 router.post('/login', async (req, res) => {
+    let data = {
+        message: "Logged in successfully!"
+    }
     // Check fields validity
     const {error} = loginValidation(req.body);
     if (error)
-        return res.status(400).send(error.details[0].message);
+    {
+        data.message = error.details[0].message;
+        data.error = true;
+        return res.status(400).send(data);
+    }
     // Check if email exists in DB
     const user = await User.findOne({email: req.body.email});
     if (!user)
-        return res.status(400).send("Invalid credentials");
+    {
+        data.message = "Invalid credentials";
+        data.error = true;
+        return res.status(400).send(data);
+    }
     // Check if pw matches
     const validPw = await bcrypt.compare(req.body.password, user.password);
     if (!validPw)
-        return res.status(400).send("Invalid credentials");
+    {
+        data.message = "Invalid credentials";
+        data.error = true;
+        return res.status(400).send(data);
+    }
     
     // Create user session token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);//have aswell user level access
-    res.header('auth-token', token).status(200).send(token);
+    data.token = token;
+    res.header('auth-token', token).status(200).send(JSON.stringify(data));
 })
 module.exports = router;
