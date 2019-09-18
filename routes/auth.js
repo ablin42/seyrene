@@ -3,24 +3,45 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {registerValidation, loginValidation} = require('../routes/validation')
+const {registerValidation, loginValidation} = require('../routes/validation');
+require('../utils.js')();
 
 // REGISTER
 router.post('/register', async (req, res) => {
+    let data = {
+        error: false,
+        message: "Account created successfully!"
+    }
     // Check fields validity
     const {error} = registerValidation(req.body);
     if (error)
-        return res.status(400).send(error.details[0].message);
+    {
+        data.message = error.details[0].message;
+        data.error = true;
+        data.alert = formatAlert("warning", data.message, "text-align: center; width: 60%; margin:auto");
+        return res.status(400).send(data);
+    }
     // foreach error.details
     //error.details[0].message
 
     // Check if email or username exists in DB
     const emailExist = await User.findOne({email: req.body.email});
     if (emailExist)
-        return res.status(400).send("Email already taken");
+    {
+        data.message = "An account already exist with this e-mail.";
+        data.error = true;
+        data.alert = formatAlert("warning", data.message, "text-align: center; width: 60%; margin:auto");
+        return res.status(400).send(data);
+    }
     const nameExist = await User.findOne({name: req.body.name});
     if (nameExist)
-        return res.status(400).send("Username already taken");
+    {
+        data.message = "An account already exist with this username.";
+        data.error = true;
+        data.alert = formatAlert("warning", data.message, "text-align: center; width: 60%; margin:auto");
+        return res.status(400).send(data);
+
+    }
 
     // Hash and salt pw
     const salt = await bcrypt.genSalt(10);
@@ -33,13 +54,19 @@ router.post('/register', async (req, res) => {
     });
     try {
         const savedUser = await user.save();
-        res.status(200).send({user: savedUser._id});
+           // Create user session token
+        const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);//have aswell user level access
+        data.alert = formatAlert("success", data.message, "text-align: center; width: 60%; margin:auto");
+        data.token = token;
+        
+        res.status(200).send(data);
     } catch (err) {res.status(400).json({message: err})}
 })
 
 // LOGIN
 router.post('/login', async (req, res) => {
     let data = {
+        error: false,
         message: "Logged in successfully!"
     }
     // Check fields validity
@@ -48,6 +75,7 @@ router.post('/login', async (req, res) => {
     {
         data.message = error.details[0].message;
         data.error = true;
+        data.alert = formatAlert("warning", data.message, "text-align: center; width: 60%; margin:auto");
         return res.status(400).send(data);
     }
     // Check if email exists in DB
@@ -56,6 +84,7 @@ router.post('/login', async (req, res) => {
     {
         data.message = "Invalid credentials";
         data.error = true;
+        data.alert = formatAlert("warning", data.message, "text-align: center; width: 60%; margin:auto");
         return res.status(400).send(data);
     }
     // Check if pw matches
@@ -64,12 +93,14 @@ router.post('/login', async (req, res) => {
     {
         data.message = "Invalid credentials";
         data.error = true;
+        data.alert = formatAlert("warning", data.message, "text-align: center; width: 60%; margin:auto");
         return res.status(400).send(data);
     }
     
     // Create user session token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);//have aswell user level access
+    data.alert = formatAlert("success", data.message, "text-align: center; width: 60%; margin:auto");
     data.token = token;
-    res.header('auth-token', token).status(200).send(JSON.stringify(data));
+    res.header('auth-token', token).status(200).send(data);
 })
 module.exports = router;

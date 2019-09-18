@@ -1,40 +1,35 @@
 <% include partials/head %>
 
+<script src="registerValidation.js"></script>
 <div class="container-fluid"> 
-    <form method="POST" action="/api/user/register" class="login-form register-form">
+    <form id="register-form" method="POST" action="/api/user/register" onkeyup="validate();" class="login-form register-form">
         <h1 class="form-title">Inscription</h1>
 
         <div class="txtb">
-          <input type="text" name="name">
+          <input type="text" name="name" id="name">
           <span data-placeholder="Username"></span>
+          <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
         </div>
 
         <div class="txtb">
-          <input type="email" name="email">
+          <input type="email" name="email" id="email">
           <span data-placeholder="Email"></span>
-        </div>
-
-        <!--<div class="txtb">
-            <input type="text">
-            <span data-placeholder="Nom"></span>
+          <span id="i_email" class="form-info">E-mail has to be valid</span>
         </div>
 
         <div class="txtb">
-            <input type="text">
-            <span data-placeholder="Prénom"></span>
-        </div>-->
-
-        <div class="txtb">
-          <input type="password" name="password">
+          <input type="password" name="password" id="password">
           <span data-placeholder="Password"></span>
+          <span id="i_password" class="form-info">Password must contain between 8 and 30 characters and has to be atleast alphanumeric</span>
         </div>
 
         <div class="txtb">
-            <input type="password" name="password2">
+            <input type="password" name="password2" id="password2">
             <span data-placeholder="Password confirmation"></span>
+            <span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
           </div>
 
-        <input type="submit" class="logbtn" value="S'inscrire" name="register">
+        <input type="submit" class="logbtn" value="S'inscrire" name="register" id="submit-register">
 
         <div class="bottom-text">
             Vous possédez déjà un compte? Connectez-vous ici <a href="#">ici</a>
@@ -43,6 +38,29 @@
       </form>
 
       <script type="text/javascript">
+
+        $(document).ready(function(){
+          $("#submit-register").click(function(e){
+            var header = $('#header');
+            e.preventDefault();
+            $.post("/api/user/register", $("#register-form").serialize(), function(data) {
+              //on success log in the user and redirect to main
+              console.log(data);
+              addAlert(data.alert, header);
+              //setTimeout(function () {window.location.href = "/";}, 1500);
+            })
+            .fail(function(response) {
+              console.log(response.responseJSON);
+              addAlert(response.responseJSON.alert, header);
+            });
+          });
+        });
+
+       /* $(document).ready(function(){
+          if ($(".txtb input").length > 0)
+            $(this).addClass("focus");
+        })*/
+
         $(".txtb input").on("focus",function(){
           $(this).addClass("focus");
         });

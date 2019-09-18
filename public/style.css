@@ -4,6 +4,13 @@ body, html {
     background-image: linear-gradient(160deg,#93BEDF,#465775);
 }
 
+.form-info
+{
+    font-style: italic;
+    color: #a87906;
+    display: none;
+}
+
 nav {
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 1em;
@@ -12,7 +19,7 @@ nav {
     transition: 0.4s;
 }
 
-.navbar {
+#header {
     margin: 0 0 30px 0;
 }
 

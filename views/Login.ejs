@@ -1,7 +1,5 @@
 <% include partials/head %>
 
-    
-
 <div class="container-fluid"> 
     <form id="login-form" method="POST" action="/api/user/login" class="login-form">
         <h1 class="form-title">Se connecter</h1>
@@ -12,12 +10,12 @@
         </div>-->
 
         <div class="txtb">
-          <input type="email" name="email">
+          <input type="email" name="email" required>
           <span data-placeholder="Email"></span>
         </div>
 
         <div class="txtb">
-          <input type="password" name="password">
+          <input type="password" name="password" required>
           <span data-placeholder="Password"></span>
         </div>
 
@@ -31,12 +29,17 @@
       <script type="text/javascript">
         $(document).ready(function(){
           $("#submit-login").click(function(e){
+            var header = $('#header');
             e.preventDefault();
             $.post("/api/user/login", $("#login-form").serialize(), function(data) {
-              console.log(`data: ${data}`);
-              //if login success = log in the user and redirect
+              console.log(data);
+              addAlert(data.alert, header);
+              //setTimeout(function () {window.location.href = "/";}, 1500);
             })
-            .fail(function(response) {console.log('Error: ' + response.responseText)});//else return problem encountered  
+            .fail(function(response) {
+              console.log(response.responseJSON);
+              addAlert(response.responseJSON.alert, header);
+            });
           });
         });
 
