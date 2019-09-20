@@ -27,21 +27,21 @@
       </form>
 
       <script type="text/javascript">
-        $(document).ready(function(){
+      /*  $(document).ready(function(){
           $("#submit-login").click(function(e){
             var header = $('#header');
             e.preventDefault();
             $.post("/api/user/login", $("#login-form").serialize(), function(data) {
               console.log(data);
               addAlert(data.alert, header);
-              //setTimeout(function () {window.location.href = "/";}, 1500);
+              setTimeout(function () {window.location.href = "/";}, 1500);
             })
             .fail(function(response) {
               console.log(response.responseJSON);
               addAlert(response.responseJSON.alert, header);
             });
           });
-        });
+        });*/
 
         $(".txtb input").on("focus",function(){
           $(this).addClass("focus");

@@ -4,6 +4,10 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('express-flash');
+
 require('dotenv/config');
 
 //Connect to DB
@@ -24,6 +28,19 @@ app.use(express.static(__dirname + '/public'));
     app.use(bodyParser.json());
 //-- Cross origin --//
 app.use(cors());
+//-- Cookie parser --//
+app.use(cookieParser());
+//-- Express Session --//
+app.use(session({
+     secret: 'keyboard cat', 
+     cookie: { maxAge: 60000 },
+     resave: true,
+     saveUninitialized: true
+    }));
+// Flash
+app.use(flash());
+
+
 
 // Routes
 const pagesRoute = require('./routes/pages');
