@@ -3,12 +3,7 @@
 <div class="container-fluid"> 
     <form id="login-form" method="POST" action="/api/user/login" class="login-form">
         <h1 class="form-title">Se connecter</h1>
-
-        <!--<div class="txtb">
-          <input type="text" name="name">
-          <span data-placeholder="Username"></span>
-        </div>-->
-
+        
         <div class="txtb">
           <input type="email" name="email" required>
           <span data-placeholder="Email"></span>
@@ -26,32 +21,7 @@
         </div>
       </form>
 
-      <script type="text/javascript">
-      /*  $(document).ready(function(){
-          $("#submit-login").click(function(e){
-            var header = $('#header');
-            e.preventDefault();
-            $.post("/api/user/login", $("#login-form").serialize(), function(data) {
-              console.log(data);
-              addAlert(data.alert, header);
-              setTimeout(function () {window.location.href = "/";}, 1500);
-            })
-            .fail(function(response) {
-              console.log(response.responseJSON);
-              addAlert(response.responseJSON.alert, header);
-            });
-          });
-        });*/
-
-        $(".txtb input").on("focus",function(){
-          $(this).addClass("focus");
-        });
-
-        $(".txtb input").on("blur",function(){
-          if($(this).val() == "")
-            $(this).removeClass("focus");
-        });
-      </script>
+      <script src="scripts/formFocus.js"></script>
 </div>
   
 <% include partials/footer %>
