@@ -73,11 +73,14 @@ router.post('/login', async (req, res) => {
     }
     
     // Create user session token
-    const token = jwt.sign({_id: user._id, name: user.name}, process.env.TOKEN_SECRET);//have aswell user level access + callback and expiration date
+    const token = jwt.sign({_id: user._id, name: user.name, level: user.level}, process.env.TOKEN_SECRET);// callback and expiration date
 
     // Create session variables
     req.session._id = user._id;
     req.session.name = user.name;
+    
+    req.session.token = token;
+    console.log(token)
     
     res.header('authToken', token); // save token to header
     req.flash('success', 'Logged in successfully!');

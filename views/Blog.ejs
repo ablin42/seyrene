@@ -1,40 +1,20 @@
 <% include partials/head %>
 
-    
-
 <div class="container-fluid"> 
-    <form action="index.html" class="login-form">
-        <h1 class="form-title">Se connecter</h1>
-
-        <div class="txtb">
-          <input type="text">
-          <span data-placeholder="Username"></span>
-        </div>
-
-        <div class="txtb">
-          <input type="text">
-          <span data-placeholder="Whatever you want.."></span>
-        </div>
-
-        <input type="submit" class="logbtn" value="Connexion">
-
-      </form>
-
-      <div class="blog-posts">
-          
-      </div>
-
-      <script type="text/javascript">
-        $(".txtb input").on("focus",function(){
-            $(this).addClass("focus");
-        });
-
-        $(".txtb input").on("blur",function(){
-            if($(this).val() == "")
-            $(this).removeClass("focus");
-        });
-      </script>
-
+  <div class="container container-blog">
+    <% if(locals.blogs){ %>
+      <% Object.keys(locals.blogs).forEach(function (index) { %>
+          <div class="row">
+            <div class="col-8 offset-2">
+              <h3 class="blog-title"><%= locals.blogs[index].title %></h3>
+              <p class="blog-info">posté par <b class="blog-author"><%= locals.blogs[index].author %></b>, <i class="blog-date"><%= locals.blogs[index].date %></i></p>
+              <p class="blog-content"><%= locals.blogs[index].content %></p>
+            </div>
+          </div>
+          <hr />
+      <% }) %>
+    <% } %>
+  </div>
 </div>
   
 <% include partials/footer %>

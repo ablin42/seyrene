@@ -40,8 +40,6 @@ app.use(session({
 // Flash
 app.use(flash());
 
-
-
 // Routes
 const pagesRoute = require('./routes/pages');
 const authRoute = require('./routes/auth');
@@ -49,7 +47,7 @@ const postsRoute = require('./routes/posts');
 
 app.use('/', pagesRoute);
 app.use('/api/user', authRoute);
-app.use('/posts', postsRoute);
+app.use('/api/post', postsRoute);
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');

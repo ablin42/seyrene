@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    level: {
+        type: Number,
+        default: 1
+    },
     name: {
         type: String,
         required: true,
@@ -23,6 +27,6 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema);

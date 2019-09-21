@@ -70,13 +70,43 @@ nav > div > ul > li:hover {
 }
 
 .container {
-    background-color: #93BEDF;
+    background-color: #ffffff;
     border-radius: 5px;
     padding: 2em;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 1em;
     grid-auto-rows: minmax(100px, auto);
+}
+
+.container-blog {
+  display: block!important;
+  text-align: center;
+}
+
+.blog-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 2.5em;
+  font-weight: 600;
+  color: #465775;
+  margin: 0;
+}
+
+.blog-info {
+}
+
+.blog-author {
+  color: #93BEDF;
+}
+
+.blog-date {
+
+}
+
+.blog-content {
+}
+
+.blog-title {
 }
 
 .carousel-container {
