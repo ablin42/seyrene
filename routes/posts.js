@@ -1,15 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Post = require('../models/Post');
 const Blog = require('../models/Blog');
 const verifyToken = require('./verifyToken');
-
-router.get('/', async (req, res) => {
-    try {
-        const posts = await Post.find();
-        res.status(200).json(posts);
-    } catch (err) {res.status(400).json({message: err})}
-})
 
 router.get('/blog', async (req, res) => {
     try {
@@ -17,7 +9,6 @@ router.get('/blog', async (req, res) => {
         res.status(200).json(blogs);
     } catch (err) {res.status(400).json({message: err})}
 })
-
 
 router.get('/blog/:blogId', async (req, res) => {
     try {

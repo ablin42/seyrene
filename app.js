@@ -33,8 +33,8 @@ app.use(cookieParser());
 //-- Express Session --//
 app.use(session({
      secret: 'keyboard cat', 
-     cookie: { maxAge: 60000 },
-     resave: true,
+     cookie: { maxAge: 600000 },
+     resave: false,
      saveUninitialized: true
     }));
 // Flash

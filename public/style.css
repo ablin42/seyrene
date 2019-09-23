@@ -185,7 +185,7 @@ footer {
   height: 40px;
 }
 
-/* login form */
+/* LOGIN FORM */
 *{
     margin: 0;
     padding: 0;
@@ -218,6 +218,7 @@ footer {
   .register-form h1{
     margin-bottom: 20px!important;
   }
+  
   .txtb{
     border-bottom: 2px solid #adadad;
     position: relative;
@@ -307,5 +308,10 @@ footer {
   }
   
   .info-update {
-    border: 1px solid red;
+    border: 1px solid #adadad;
+    border-radius: 5px;
+    /*position: relative;
+    left: 50%;
+    top: 40%;*/
+    transform: translate(0%, 0%);
   }
