@@ -1,6 +1,7 @@
 body, html {
-    height: 100%;
     min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
     background-image: linear-gradient(160deg,#93BEDF,#465775);
 }
 
@@ -69,6 +70,12 @@ nav > div > ul > li:hover {
     color: white;
 }
 
+.alert {
+  width: 60%;
+  margin: auto;
+  text-align: center;
+}
+
 .container {
     background-color: #ffffff;
     border-radius: 5px;
@@ -82,6 +89,8 @@ nav > div > ul > li:hover {
 .container-blog {
   display: block!important;
   text-align: center;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .blog-title {
@@ -109,6 +118,26 @@ nav > div > ul > li:hover {
 .blog-title {
 }
 
+.blog-form {
+  left: 25%!important;
+}
+
+#blog-textarea {
+  width: 100%;
+  min-height: 175px;
+  padding: 15px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 3px 0px rgba(13, 143, 255, 0.75)
+}
+
+.carousel {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
 .carousel-container {
     position: absolute;
     width: 60%;
@@ -124,8 +153,8 @@ nav > div > ul > li:hover {
 /* FOOTER */
 
 footer {
-    position: absolute;
-    bottom: 0;
+    /*position: absolute;
+    bottom: 0;*/
     width: 100%;
     background-color: white;
     -webkit-box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
@@ -172,18 +201,13 @@ footer {
   .login-form{
     width: 360px;
     background: #f1f1f1;
-    height: 500px;
+    /*height: 500px;*/
     padding: 40px 40px;
     border-radius: 10px;
     position: relative;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, 0%);
-  }
-
-  .register-form{
-      height: 640px;
-      padding: 10px 40px;
+    top: 40%;
+    transform: translate(-50%, -50%);
   }
   
   .login-form h1{
@@ -254,7 +278,24 @@ footer {
     cursor: pointer;
     transition: .5s;
   }
+
+  .delbtn {
+    display: block;
+    width: 100%;
+    height: 50px;
+    border: none;
+    background: linear-gradient(160deg,#c10539,#de3f71,#a7012f);
+    background-size: 200%;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+    transition: .5s;
+  }
   
+  .delbtn:hover{
+    background-position: right!important;
+  }
+
   .logbtn:hover{
     background-position: right;
   }
@@ -265,3 +306,6 @@ footer {
     font-size: 13px;
   }
   
+  .info-update {
+    border: 1px solid red;
+  }

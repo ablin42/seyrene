@@ -1,0 +1,21 @@
+<% include partials/head %>
+
+<div class="container-fluid"> 
+    <form id="blog-form" method="POST" action="/api/post/blog" class="login-form blog-form col-6 offset-3">
+        <h1 class="form-title">Rédiger un post de blog</h1>
+            
+        <div class="txtb">
+            <input type="text" name="title" required>
+            <span data-placeholder="Titre"></span>
+        </div>
+
+        <textarea id="blog-textarea" name="content" placeholder="Your blog content here" required></textarea>
+    
+        <input type="submit" class="logbtn" value="Sauvegarder" id="submit-blog">
+    
+    </form>
+    
+    <script src="/scripts/formFocus.js"></script>
+</div>
+  
+<% include partials/footer %>

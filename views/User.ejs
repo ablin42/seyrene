@@ -1,0 +1,45 @@
+<% include partials/head %>
+
+<div class="container-fluid"> 
+    <div class="container">
+        <% if (locals._id) { %>
+            <%= locals._id %>
+            <%= locals.name %>
+            <%= locals.email %>
+            <%= locals.date %>
+        <% } %>
+        <div class="info-update"><!--change class form id etc api url-->
+            <form id="name-form" method="POST" action="/api/user/login">
+                <div class="txtb">
+                  <input type="text" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" required>
+                  <span data-placeholder="Username"></span>
+                </div>
+                <input type="submit" class="info-update-btn" value="Modifier">
+              </form>
+
+            <form id="email-form" method="POST" action="/api/user/login">
+              <div class="txtb">
+                <input type="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" required>
+                <span data-placeholder="Email"></span>
+              </div>
+              <input type="submit" class="info-update-btn" value="Modifier">
+            </form>
+        
+            <form id="password-form" method="POST" action="/api/user/login">
+                <div class="txtb">
+                    <input type="password" name="password" required>
+                    <span data-placeholder="Password"></span>
+                </div>
+                <div class="txtb">
+                    <input type="password" name="password2" required>
+                    <span data-placeholder="Confirm password"></span>
+                </div>
+                <input type="submit" class="info-update-btn" value="Modifier">
+              </form>
+          </div>
+    </div>
+</div>
+<script src="/scripts/formFocus.js"></script>
+
+  
+<% include partials/footer %>

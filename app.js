@@ -44,13 +44,20 @@ app.use(flash());
 const pagesRoute = require('./routes/pages');
 const authRoute = require('./routes/auth');
 const postsRoute = require('./routes/posts');
+const userRoute = require('./routes/user');
 
 app.use('/', pagesRoute);
-app.use('/api/user', authRoute);
+app.use('/api/auth', authRoute);
 app.use('/api/post', postsRoute);
+app.use('/api/user', userRoute);
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
+
+app.get('*', function(req, res){
+    console.log('404ing');
+    res.status(404).send('404');
+  });
 
 const port = process.env.PORT || 8089;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

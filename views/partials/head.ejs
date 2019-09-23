@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/ba18cbd714.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="scripts/alert.js"></script>
+    <script src="/scripts/alert.js"></script>
 </head>
 
 <body>
@@ -36,8 +36,8 @@
                     <li><a href="/Login" class="navbar-text">Connexion</a></li>
                    
                 <% } else { %>
-                    <li><a href="#" class="navbar-text"><%= locals.name %></a></li>
-                    <li><a href="api/user/logout" class="navbar-text">Déconnexion</a></li>
+                    <li><a href="/User" class="navbar-text"><%= locals.name %></a></li>
+                    <li><a href="/api/auth/logout" class="navbar-text">Déconnexion</a></li>
                 <% } %>
                     <li><a href="#" class="navbar-text"><i class="fas fa-shopping-cart fa-2x"></i></a></li>
             </ul>
@@ -47,7 +47,7 @@
     <% if(messages){ %>
         <% Object.keys(messages).forEach(function (type) { %>
           <% messages[type].forEach(function (message) { %>
-            <div class="alert alert-<%= type %>" role="alert" style="width: 60%; margin: auto; text-align: center;">
+            <div class="alert alert-<%= type %>" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <%= message %>
             </div>

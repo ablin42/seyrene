@@ -9,10 +9,14 @@ const {registerValidation, loginValidation} = require('../routes/validation');
 router.post('/register', async (req, res) => {
     // Check fields validity
     const {error} = await registerValidation(req.body);
+    console.log(req.body);
+    let formData = {
+        name: req.body.name,
+        email: req.body.email
+    }
     if (error) {
-        console.log(error)
         req.flash('warning', error.details[0].message);
-        return res.status(400).redirect('/Register');
+        return res.status(400).render('register', formData);
     }
     // foreach error.details
     //error.details[0].message
@@ -21,12 +25,12 @@ router.post('/register', async (req, res) => {
     const emailExist = await User.findOne({email: req.body.email});
     if (emailExist) {
         req.flash('warning', "An account already exist with this e-mail.");
-        return res.status(400).redirect('/Register');
+        return res.status(400).render('register', formData);
     }
     const nameExist = await User.findOne({name: req.body.name});
     if (nameExist) {
         req.flash('warning', "An account already exist with this username.");
-        return res.status(400).redirect('/Register');
+        return res.status(400).render('register', formData);
     }
     // Hash and salt pw
     const salt = await bcrypt.genSalt(10);
@@ -53,23 +57,24 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     // Check fields validity
-    const {error} = loginValidation(req.body);
+    const {error} = loginValidation(req.body); //not really necessary in login
+    let formData = {"email": req.body.email};
     if (error){
         req.flash('warning', error.details[0].message);
-        return res.status(400).redirect('/Login'); 
+        return res.status(400).render('login', formData); 
     }
 
     // Check if email exists in DB
     const user = await User.findOne({email: req.body.email});
     if (!user){
         req.flash('warning', 'Invalid credentials');
-        return res.status(400).redirect('/Login'); 
+        return res.status(400).render('login', formData);
     }
     // Check if pw matches
     const validPw = await bcrypt.compare(req.body.password, user.password);
     if (!validPw){
         req.flash('warning', 'Invalid credentials');
-        return res.status(400).redirect('/Login');
+        return res.status(400).render('login', formData);
     }
     
     // Create user session token
@@ -78,6 +83,7 @@ router.post('/login', async (req, res) => {
     // Create session variables
     req.session._id = user._id;
     req.session.name = user.name;
+    req.session.level = user.level;
     
     req.session.token = token;
     console.log(token)

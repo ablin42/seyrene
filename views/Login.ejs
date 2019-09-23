@@ -1,27 +1,28 @@
 <% include partials/head %>
 
 <div class="container-fluid"> 
-    <form id="login-form" method="POST" action="/api/user/login" class="login-form">
-        <h1 class="form-title">Se connecter</h1>
-        
-        <div class="txtb">
-          <input type="email" name="email" required>
-          <span data-placeholder="Email"></span>
-        </div>
+  <div class="login-form">
+    <form id="login-form" method="POST" action="/api/auth/login">
+      <h1 class="form-title">Se connecter</h1>
+      <div class="txtb">
+        <input type="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" required>
+        <span data-placeholder="Email"></span>
+      </div>
 
-        <div class="txtb">
-          <input type="password" name="password" required>
-          <span data-placeholder="Password"></span>
-        </div>
+      <div class="txtb">
+        <input type="password" name="password" required>
+        <span data-placeholder="Password"></span>
+      </div>
 
-        <input type="submit" class="logbtn" value="Connexion" id="submit-login">
+      <input type="submit" class="logbtn" value="Connexion" id="submit-login">
 
-        <div class="bottom-text">
-          Pas encore de compte? Créez en un <a href="#">ici</a>
-        </div>
-      </form>
+      <div class="bottom-text">
+        Pas encore de compte? Créez en un <a href="/Register">ici</a>
+      </div>
+    </form>
+  </div>
 
-      <script src="scripts/formFocus.js"></script>
+      <script src="/scripts/formFocus.js"></script>
 </div>
   
 <% include partials/footer %>

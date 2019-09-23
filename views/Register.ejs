@@ -1,17 +1,18 @@
 <% include partials/head %>
 
 <div class="container-fluid"> 
-    <form id="register-form" method="POST" action="/api/user/register" onkeyup="validate();" class="login-form register-form">
+  <div class="login-form">
+    <form id="register-form" method="POST" action="/api/auth/register" onkeyup="validate();">
         <h1 class="form-title">Inscription</h1>
 
         <div class="txtb">
-          <input type="text" name="name" id="name">
+          <input type="text" name="name" id="name" value="<% if (locals.name) { %><%= locals.name %><% } %>">
           <span data-placeholder="Username"></span>
           <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
         </div>
 
         <div class="txtb">
-          <input type="email" name="email" id="email">
+          <input type="email" name="email" id="email" value="<% if (locals.email) { %><%= locals.email %><% } %>">
           <span data-placeholder="Email"></span>
           <span id="i_email" class="form-info">E-mail has to be valid</span>
         </div>
@@ -31,13 +32,14 @@
         <input type="submit" class="logbtn" value="S'inscrire" id="submit-register">
 
         <div class="bottom-text">
-            Vous possédez déjà un compte? Connectez-vous ici <a href="#">ici</a>
+            Vous possédez déjà un compte? Connectez-vous ici <a href="/Login">ici</a>
         </div>
 
       </form>
+    </div>
 
-      <script src="scripts/formFocus.js"></script>
-      <script src="scripts/registerValidation.js"></script>
+      <script src="/scripts/formFocus.js"></script>
+      <script src="/scripts/registerValidation.js"></script>
 </div>
   
 <% include partials/footer %>

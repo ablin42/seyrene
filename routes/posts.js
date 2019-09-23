@@ -18,6 +18,14 @@ router.get('/blog', async (req, res) => {
     } catch (err) {res.status(400).json({message: err})}
 })
 
+
+router.get('/blog/:blogId', async (req, res) => {
+    try {
+        const blog = await Blog.findById(req.params.blogId);
+        res.status(200).json(blog)
+    } catch (err) {res.status(400).json({message: err})}
+})
+
 router.post('/blog', verifyToken, async (req, res) => {
     if (req.user.level > 1) {
         const blog = new Blog({
@@ -28,57 +36,31 @@ router.post('/blog', verifyToken, async (req, res) => {
     
         try {
             const savedBlog = await blog.save();
-            res.status(200).json(savedBlog);
+            req.flash('success', "Post uploadé avec succès");
+            res.status(200).redirect('/Blog');
         } catch (err) {res.status(400).json({message: err})}
     }
     else {
-        res.status(200).send("Unauthorized.");//redirect
+        res.status(200).send("Unauthorized.");//redirect or 404
     }
 })
 
-router.get('/blog/:blogId', async (req, res) => {
+router.post('/blog/patch/:blogId', async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.blogId);
-        res.status(200).json(blog)
-    } catch (err) {res.status(400).json({message: err})}
-})
-
-router.delete('/blog/:blogId', async (req, res) => {
-    try {
-        const removedPost = await Post.remove({_id: req.params.postId});
-        res.status(200).json(removedPost);
-    } catch (err) {res.status(400).json({message: err})}
-})
-
-router.patch('/blog/:blogId', async (req, res) => {
-    try {
-        const patchedPost = await Post.updateOne({_id: req.params.postId}, {$set: {
-            title: req.body.title
+        const patchedBlog = await Blog.updateOne({_id: req.params.blogId}, {$set: {
+            title: req.body.title,
+            content: req.body.content
         }});
-        res.status(200).json(patchedPost);
+        req.flash('success', "Post corrigé avec succès");
+        res.status(200).redirect('/Blog');
     } catch (err) {res.status(400).json({message: err})}
 })
 
-router.get('/:postId', async (req, res) => {
+router.get('/blog/delete/:blogId', async (req, res) => {
     try {
-        const post = await Post.findById(req.params.postId);
-        res.status(200).json(post)
-    } catch (err) {res.status(400).json({message: err})}
-})
-
-router.delete('/:postId', async (req, res) => {
-    try {
-        const removedPost = await Post.remove({_id: req.params.postId});
-        res.status(200).json(removedPost);
-    } catch (err) {res.status(400).json({message: err})}
-})
-
-router.patch('/:postId', async (req, res) => {
-    try {
-        const patchedPost = await Post.updateOne({_id: req.params.postId}, {$set: {
-            title: req.body.title
-        }});
-        res.status(200).json(patchedPost);
+        const removedBlog = await Blog.deleteOne({_id: req.params.blogId});
+        req.flash('success', "Post supprimé avec succès");
+        res.status(200).redirect('/Blog');
     } catch (err) {res.status(400).json({message: err})}
 })
 
