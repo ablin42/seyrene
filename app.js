@@ -15,7 +15,6 @@ mongoose.connect(
     process.env.DB_CONNECTION, { 
     useNewUrlParser: true,
     useUnifiedTopology: true }, () => console.log("Connected to database"));
-
 // Express
 const app = express();
 app.use(express.static(__dirname + '/public'));
@@ -55,7 +54,6 @@ app.use('/api/user', userRoute);
 app.set('view engine', 'ejs');
 
 app.get('*', function(req, res){
-    console.log('404ing');
     res.status(404).send('404');
   });
 

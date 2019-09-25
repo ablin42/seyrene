@@ -48,8 +48,12 @@ router.get('/Register', verifySession, (req, res) => {
     res.status(200).render('register', obj);
 })
 
-router.get('/User', verifySession, async (req, res) => {
+router.get('/User', async (req, res) => {
     let obj = {};
+    res.status(200).render('user', {
+        "name": "Harb",
+        "email": "Fuckyou@gmail.com"
+    })/*
     if (req.user._id != undefined) {
         obj = await User.findOne({_id: req.user._id});
         obj.password = undefined;
@@ -57,7 +61,7 @@ router.get('/User', verifySession, async (req, res) => {
     } else {
         req.flash('warning', "You need to be logged in")
         res.status(200).redirect('/Login');
-    }
+    }*/
 })
 
 router.get('/Bio', verifySession, (req, res) => {
