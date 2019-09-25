@@ -48,12 +48,8 @@ router.get('/Register', verifySession, (req, res) => {
     res.status(200).render('register', obj);
 })
 
-router.get('/User', async (req, res) => {
+router.get('/User', verifySession, async (req, res) => {
     let obj = {};
-    res.status(200).render('user', {
-        "name": "Harb",
-        "email": "Fuckyou@gmail.com"
-    })/*
     if (req.user._id != undefined) {
         obj = await User.findOne({_id: req.user._id});
         obj.password = undefined;
@@ -61,7 +57,7 @@ router.get('/User', async (req, res) => {
     } else {
         req.flash('warning', "You need to be logged in")
         res.status(200).redirect('/Login');
-    }*/
+    }
 })
 
 router.get('/Bio', verifySession, (req, res) => {
@@ -99,9 +95,6 @@ router.get('/Blog', verifySession, async (req, res) => {
         obj.name = req.user.name;
         obj.level = req.user.level;
     }
-    obj.blogs.forEach((item, index) => {
-        item.date = format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date));
-    });
     res.status(200).render('blog', obj);
 })
 

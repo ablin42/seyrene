@@ -1,5 +1,6 @@
 <% include partials/head %>
 
+<script src="/scripts/infiniteScroll.js"></script>
 <div class="container-fluid"> 
     <% if (locals.level && locals.level > 1) { %>
       <div class="alert alert-info" role="alert">
@@ -9,10 +10,10 @@
         <a href="/Blog/Post">post blog</a>
       </div>
     <% } %>
-  <div class="container container-blog">
+  <div class="container container-blog" id="container-blog">
     <% if(locals.blogs){ %>
       <% Object.keys(locals.blogs).forEach(function (index) { %>
-          <div class="row">
+          <div class="row blog-row" id="<%= index %>">
             <div class="col-8 offset-2">
               <h3 class="blog-title"><%= locals.blogs[index].title %></h3> 
               <p class="blog-info">posté par 

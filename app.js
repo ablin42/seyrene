@@ -14,7 +14,8 @@ require('dotenv/config');
 mongoose.connect(
     process.env.DB_CONNECTION, { 
     useNewUrlParser: true,
-    useUnifiedTopology: true }, () => console.log("Connected to database"));
+    useUnifiedTopology: true }, (err) => {if (err) throw err; console.log("Connected to database")});
+    
 // Express
 const app = express();
 app.use(express.static(__dirname + '/public'));
@@ -53,7 +54,7 @@ app.use('/api/user', userRoute);
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-app.get('*', function(req, res){
+app.get('*', (req, res) => {
     res.status(404).send('404');
   });
 

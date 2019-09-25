@@ -2,11 +2,35 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 const verifyToken = require('./verifyToken');
+const format = require('date-format');
 
 router.get('/blog', async (req, res) => {
     try {
-        const blogs = await Blog.find().sort('-date');
-        res.status(200).json(blogs);
+        const reqPage = req.query.page || 1;
+        const options = {
+            page: parseInt(reqPage, 10) || 1,
+            limit: 5,
+            sort: { date: -1 }
+        }
+        const result = await Blog.paginate({}, options);
+        const blogs = result.docs;
+        let blogsParsed = [];
+        blogs.forEach((item, index) => {
+            //search for user name using its id 
+            let obj = {
+                _id: item._id,
+                author: item.author,
+                title: item.title,
+                content: item.content,
+                date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt,
+                __v: 0
+            }
+            console.log(obj)
+            blogsParsed.push(obj);
+        });
+        res.status(200).json(blogsParsed);
     } catch (err) {res.status(400).json({message: err})}
 })
 
@@ -20,6 +44,7 @@ router.get('/blog/:blogId', async (req, res) => {
 router.post('/blog', verifyToken, async (req, res) => {
     if (req.user.level > 1) {
         const blog = new Blog({
+            authorId: req.user._id,
             author: req.user.name,
             title: req.body.title,
             content: req.body.content
