@@ -1,10 +1,12 @@
 $(window).scroll(async function() {
-    if(Math.round($(window).scrollTop() + $(window).height()) == Math.round($(document).height())) {
+    val1 = Math.ceil($(window).scrollTop() + $(window).height());
+    val2 = $(document).height();
+    if (val1 >= val2) {
         lastId = $(".blog-row:last").attr("id");
         nbItem = $(".blog-row").length;
         page = 1 + Math.floor(nbItem / 5);
             //show/hide loader
-            fetch(`http://127.0.0.1:8089/api/post/blog?page=${page}`)
+            await fetch(`http://127.0.0.1:8089/api/post/blog?page=${page}`)
             .then(function(response) {
                 response.json().then(function(data) {
                 data.forEach(blog => {

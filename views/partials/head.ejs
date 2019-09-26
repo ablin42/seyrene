@@ -15,45 +15,45 @@
 </head>
 
 <body>
-    <div id="header">
-    <nav class="navbar">
-        <div style="position:absolute; left: 0;">
-            <ul>
-                <li><a href="/Bio" class="navbar-text">Biographie</a></li>
-                <li><a href="/Galerie" class="navbar-text">Galerie</a></li>
-                <li><a href="/Shop" class="navbar-text">Boutique</a></li>
-                <li><a href="/Contact" class="navbar-text">Contact</a></li>
-                <li><a href="/Blog" class="navbar-text">Blog</a></li>
-            </ul>
-        </div>
-        <div style="width: 100%; text-align: center;">
-            <a href="/"><h1 class="name-header navbar-text">Maral</h1></a>
-        </div>
-        <div style="position:absolute;right: 0;">
-            <ul>
-                <% if (!locals.name) { %>
-                    <li><a href="/Register" class="navbar-text">S'inscrire</a></li>
-                    <li><a href="/Login" class="navbar-text">Connexion</a></li>
-                   
-                <% } else { %>
-                    <li><a href="/User" class="navbar-text"><%= locals.name %></a></li>
-                    <li><a href="/api/auth/logout" class="navbar-text">Déconnexion</a></li>
-                <% } %>
-                    <li><a href="#" class="navbar-text"><i class="fas fa-shopping-cart fa-2x"></i></a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <% if(messages){ %>
-        <% Object.keys(messages).forEach(function (type) { %>
-          <% messages[type].forEach(function (message) { %>
-            <div class="alert alert-<%= type %>" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <%= message %>
+    <div>
+        <nav>
+            <div class="logo">
+                <a href="/"><h1 class="name-header navbar-text">Maral</h1></a>
             </div>
-          <% }) %>
-        <% }) %>
-      <% } %>
+                <ul class="nav-links">
+                    <li><a href="/Bio" class="navbar-text">Biographie</a></li>
+                    <li><a href="/Galerie" class="navbar-text">Galerie</a></li>
+                    <li><a href="/Shop" class="navbar-text">Boutique</a></li>
+                    <li><a href="/Contact" class="navbar-text">Contact</a></li>
+                    <li><a href="/Blog" class="navbar-text">Blog</a></li>
+                    <% if (!locals.name) { %>
+                        <li><a href="/Register" class="navbar-text">S'inscrire</a></li>
+                        <li><a href="/Login" class="navbar-text">Connexion</a></li>
+                    
+                    <% } else { %>
+                        <li><a href="/User" class="navbar-text"><%= locals.name %></a></li>
+                        <li><a href="/api/auth/logout" class="navbar-text">Déconnexion</a></li>
+                    <% } %>
+                        <li><a href="#" class="navbar-text"><i class="fas fa-shopping-cart fa-2x"></i></a></li>
+                </ul>
+                <div class="burger">
+                    <div class="line1"></div>
+                    <div class="line2"></div>
+                    <div class="line3"></div>
+                </div>
+        </nav>
+        <script src="/scripts/navbar.js"></script>
+        
+            <% if(messages){ %>
+                <% Object.keys(messages).forEach(function (type) { %>
+                <% messages[type].forEach(function (message) { %>
+                    <div class="alert alert-<%= type %>" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <%= message %>
+                    </div>
+                <% }) %>
+                <% }) %>
+            <% } %>
+    </div>
 
-    </div> 
  

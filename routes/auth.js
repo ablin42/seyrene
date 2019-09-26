@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
     }
     if (error) {
         req.flash('warning', error.details[0].message);
-        return res.status(400).render('register', formData);
+        return res.status(400).redirect('/Register');
     }
     // foreach error.details
     //error.details[0].message
@@ -25,12 +25,12 @@ router.post('/register', async (req, res) => {
     const emailExist = await User.findOne({email: req.body.email});
     if (emailExist) {
         req.flash('warning', "An account already exist with this e-mail.");
-        return res.status(400).render('register', formData);
+        return res.status(400).redirect('/Register');
     }
     const nameExist = await User.findOne({name: req.body.name});
     if (nameExist) {
         req.flash('warning', "An account already exist with this username.");
-        return res.status(400).render('register', formData);
+        return res.status(400).redirect('/Register');
     }
     // Hash and salt pw
     const salt = await bcrypt.genSalt(10);

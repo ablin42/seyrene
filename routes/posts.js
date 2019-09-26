@@ -4,6 +4,9 @@ const Blog = require('../models/Blog');
 const User = require('../models/User');
 const verifyToken = require('./verifyToken');
 const format = require('date-format');
+const {blogValidation} = require('../routes/validation');
+const nodemailer = require('nodemailer');
+require('dotenv/config');
 
 /*router.get('/updatemongo', async (req, res) => {
     Blog.updateMany({author:"haaaaarb"}, {$unset: {author: ""}}, 
@@ -14,54 +17,58 @@ const format = require('date-format');
 res.status(200).send("ok")
 })*/
 
+async function getName (authorId) {
+    user = await User.findById(authorId, (err, elem) => {})
+    return user.name;
+}
+
+async function objBlog (item) {
+    let obj = {
+        _id: item._id,
+        author: "",
+        title: item.title,
+        content: item.content,
+        date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        __v: 0
+    };
+    obj.author = await getName(item.authorId);
+    return obj;
+}
+
+async function parseBlogs(blogs) {
+    let blogsParsed = [];
+    for (let item of blogs) {
+        let obj = await objBlog(item);
+        blogsParsed.push(obj);
+    }
+
+    /*blogsParsed.forEach((item, index) => {
+        console.log(index, item.author, item.title)
+    })*/
+    return blogsParsed;
+}
+
+async function getBlogs(options) {
+    query = await Blog.paginate({}, options).then(async (res) => {
+        const blogs = res.docs;
+        blogsParsed = await parseBlogs(blogs);
+        return blogsParsed;
+    })
+    return query;
+}
+
 router.get('/blog', async (req, res) => {
     try {
-        const reqPage = req.query.page || 1;
         const options = {
-            page: parseInt(reqPage, 10) || 1,
+            page: parseInt(req.query.page, 10) || 1,
             limit: 5,
             sort: { date: -1 }
         }
-        const result = await Blog.paginate({}, options);
-        const blogs = result.docs;
-        let blogsParsed = [];
-
-        for await (const item of blogs) {
-            await User.findById(item.authorId, (err, elem) => {
-                if (err) console.log(err);
-                let obj = {
-                    _id: item._id,
-                    author: elem.name,
-                    title: item.title,
-                    content: item.content,
-                    date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
-                    createdAt: item.createdAt,
-                    updatedAt: item.updatedAt,
-                    __v: 0
-                }
-                console.log(obj.title)
-                blogsParsed.push(obj);
-            })
-        }
-        /*blogs.forEach((item, index) => {
-            //search for user name using its id 
-            console.log(item.authorId)
-            user = User.findById(item.authorId, (err, elem) => {
-                let obj = {
-                    _id: item._id,
-                    author: elem.name,
-                    title: item.title,
-                    content: item.content,
-                    date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
-                    createdAt: item.createdAt,
-                    updatedAt: item.updatedAt,
-                    __v: 0
-                }
-                console.log(obj.author)
-                blogsParsed.push(obj);
-            })
-        });*/
-        res.status(200).json(blogsParsed);
+        const result = await getBlogs(options);
+        //console.log("return:", result.length)
+        res.status(200).json(result);
     } catch (err) {res.status(400).json({message: err})}
 })
 
@@ -74,13 +81,17 @@ router.get('/blog/:blogId', async (req, res) => {
 
 router.post('/blog', verifyToken, async (req, res) => {
     if (req.user.level > 1) {
-        const blog = new Blog({
+        const obj = {
             authorId: req.user._id,
-            author: req.user.name,
             title: req.body.title,
             content: req.body.content
-        });
-    
+        };
+        const {error} = await blogValidation(obj);
+        if (error) {
+            req.flash('warning', error.details[0].message);
+            return res.status(400).redirect('blog-post');
+        }
+        const blog = new Blog(obj)
         try {
             const savedBlog = await blog.save();
             req.flash('success', "Post uploadé avec succès");
@@ -92,15 +103,27 @@ router.post('/blog', verifyToken, async (req, res) => {
     }
 })
 
-router.post('/blog/patch/:blogId', async (req, res) => {
-    try {
-        const patchedBlog = await Blog.updateOne({_id: req.params.blogId}, {$set: {
-            title: req.body.title,
-            content: req.body.content
-        }});
-        req.flash('success', "Post corrigé avec succès");
-        res.status(200).redirect('/Blog');
-    } catch (err) {res.status(400).json({message: err})}
+router.post('/blog/patch/:blogId', verifyToken, async (req, res) => {
+    if (req.user.level > 1) {
+        try {
+            const obj = {
+                authorId: req.user._id,
+                title: req.body.title,
+                content: req.body.content
+            };
+            const {error} = await blogValidation(obj);
+            if (error) {
+                req.flash('warning', error.details[0].message);
+                return res.status(400).redirect('blog-post');
+            }
+            const patchedBlog = await Blog.updateOne({_id: req.params.blogId}, {$set: {
+                title: req.body.title,
+                content: req.body.content
+            }});
+            req.flash('success', "Post corrigé avec succès");
+            res.status(200).redirect('/Blog');
+        } catch (err) {res.status(400).json({message: err})}
+    }
 })
 
 router.get('/blog/delete/:blogId', async (req, res) => {
@@ -109,6 +132,34 @@ router.get('/blog/delete/:blogId', async (req, res) => {
         req.flash('success', "Post supprimé avec succès");
         res.status(200).redirect('/Blog');
     } catch (err) {res.status(400).json({message: err})}
+})
+
+router.post('/contact', async (req, res) => {
+    let transporter = nodemailer.createTransport({
+       service: 'gmail',
+       auth: {
+           user: process.env.EMAIL,
+           pass: process.env.EMAILPW
+       }
+    })
+
+    let mailOptions = {
+       from: req.body.email,
+       to: 'Space6Fic@gmail.com',
+       subject: `DE [${req.body.email}] - ${req.body.title}`,
+       text: req.body.content
+    }
+
+    transporter.sendMail(mailOptions, (err, data) => {
+        if (err) {
+            console.log("ERROR", err);
+        } else {
+            console.log("SUCCESS");
+        }
+    })
+
+    req.flash("success", "Email sent!");
+    res.status(200).redirect('/');
 })
 
 module.exports = router;

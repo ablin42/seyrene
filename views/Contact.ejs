@@ -1,9 +1,36 @@
 <% include partials/head %>
 
 <div class="container-fluid"> 
-    <div class="container">
-        
+    <div class="login-form contact-form">
+        <form id="contact-form" method="POST" action="/api/post/contact">
+            <h1 class="form-title">Nous contacter</h1>
+            
+            <div class="txtb">
+                <input type="text" name="name" id="name" onkeyup="Validate.Username(this);"  value="<% if (locals.name) { %><%= locals.name %><% } %>">
+                <span data-placeholder="Username"></span>
+                <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
+            </div>
+            
+            <div class="txtb">
+                <input type="email" name="email" id="email" onkeyup="Validate.Email(this);"  value="<% if (locals.email) { %><%= locals.email %><% } %>">
+                <span data-placeholder="Email"></span>
+                <span id="i_email" class="form-info">E-mail has to be valid</span>
+            </div>
+            
+            <div class="txtb">
+                <input type="text" name="title" id="title">
+                <span data-placeholder="Mail object"></span>
+                <span id="i_title" class="form-info">Title must contain between 4 and 30 characters</span>
+            </div>
+
+            <textarea id="blog-textarea" name="content" placeholder="Whatever you wish to tell us..." required></textarea>
+            
+            <input type="submit" class="logbtn" value="Envoyer" id="submit-contact">
+            
+        </form>
     </div>
+    <script src="/scripts/formFocus.js"></script>
+    <script src="/scripts/frontValidation.js"></script>
 </div>
   
 <% include partials/footer %>
