@@ -1,8 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
+const User = require('../models/User');
 const verifyToken = require('./verifyToken');
 const format = require('date-format');
+
+/*router.get('/updatemongo', async (req, res) => {
+    Blog.updateMany({author:"haaaaarb"}, {$unset: {author: ""}}, 
+    function(err, num) {
+        console.log(num);
+    }
+);
+res.status(200).send("ok")
+})*/
 
 router.get('/blog', async (req, res) => {
     try {
@@ -15,21 +25,42 @@ router.get('/blog', async (req, res) => {
         const result = await Blog.paginate({}, options);
         const blogs = result.docs;
         let blogsParsed = [];
-        blogs.forEach((item, index) => {
+
+        for await (const item of blogs) {
+            await User.findById(item.authorId, (err, elem) => {
+                if (err) console.log(err);
+                let obj = {
+                    _id: item._id,
+                    author: elem.name,
+                    title: item.title,
+                    content: item.content,
+                    date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    __v: 0
+                }
+                console.log(obj.title)
+                blogsParsed.push(obj);
+            })
+        }
+        /*blogs.forEach((item, index) => {
             //search for user name using its id 
-            let obj = {
-                _id: item._id,
-                author: item.author,
-                title: item.title,
-                content: item.content,
-                date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt,
-                __v: 0
-            }
-            console.log(obj)
-            blogsParsed.push(obj);
-        });
+            console.log(item.authorId)
+            user = User.findById(item.authorId, (err, elem) => {
+                let obj = {
+                    _id: item._id,
+                    author: elem.name,
+                    title: item.title,
+                    content: item.content,
+                    date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    __v: 0
+                }
+                console.log(obj.author)
+                blogsParsed.push(obj);
+            })
+        });*/
         res.status(200).json(blogsParsed);
     } catch (err) {res.status(400).json({message: err})}
 })

@@ -4,7 +4,8 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const BlogSchema = mongoose.Schema({
     authorId: {
         type: String,
-        required: true
+        required: true,
+        default: "5d8146c171f8b91548a4b6a8"
     },
     author: {
         type: String,
