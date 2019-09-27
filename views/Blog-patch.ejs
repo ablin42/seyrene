@@ -2,7 +2,7 @@
 
 <div class="container-fluid">
     <div class="login-form blog-form col-6 offset-3">
-        <form id="blog-form" method="POST" action="/api/post/blog/patch/<%= locals.blogContent.id %>"> <!-- /blogId -->
+        <form id="blog-form" method="POST" action="/api/blog/patch/<%= locals.blogContent.id %>"> <!-- /blogId -->
             <h1 class="form-title">Editer un post de blog</h1>
             <div class="txtb">
                 <input type="text" name="title" value="<%= locals.blogContent.title %>" required>
@@ -13,7 +13,7 @@
             <input type="submit" class="logbtn" value="Modifier" id="patch-blog">
         </form>
     <hr />
-    <form method="GET" action="/api/post/blog/delete/<%= locals.blogContent.id %>">
+    <form method="GET" action="/api/blog/delete/<%= locals.blogContent.id %>">
         <input type="submit" class="delbtn" value="SUPPRIMER" id="delete-blog">
     </form>
 </div>

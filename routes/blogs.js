@@ -5,8 +5,6 @@ const User = require('../models/User');
 const verifyToken = require('./verifyToken');
 const format = require('date-format');
 const {blogValidation} = require('../routes/validation');
-const nodemailer = require('nodemailer');
-require('dotenv/config');
 
 /*router.get('/updatemongo', async (req, res) => {
     Blog.updateMany({author:"haaaaarb"}, {$unset: {author: ""}}, 
@@ -59,7 +57,7 @@ async function getBlogs(options) {
     return query;
 }
 
-router.get('/blog', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const options = {
             page: parseInt(req.query.page, 10) || 1,
@@ -72,14 +70,14 @@ router.get('/blog', async (req, res) => {
     } catch (err) {res.status(400).json({message: err})}
 })
 
-router.get('/blog/:blogId', async (req, res) => {
+router.get('/:blogId', async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.blogId);
         res.status(200).json(blog)
     } catch (err) {res.status(400).json({message: err})}
 })
 
-router.post('/blog', verifyToken, async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
     if (req.user.level > 1) {
         const obj = {
             authorId: req.user._id,
@@ -103,7 +101,7 @@ router.post('/blog', verifyToken, async (req, res) => {
     }
 })
 
-router.post('/blog/patch/:blogId', verifyToken, async (req, res) => {
+router.post('/patch/:blogId', verifyToken, async (req, res) => {
     if (req.user.level > 1) {
         try {
             const obj = {
@@ -126,40 +124,12 @@ router.post('/blog/patch/:blogId', verifyToken, async (req, res) => {
     }
 })
 
-router.get('/blog/delete/:blogId', async (req, res) => {
+router.get('/delete/:blogId', async (req, res) => {
     try {
         const removedBlog = await Blog.deleteOne({_id: req.params.blogId});
         req.flash('success', "Post supprimé avec succès");
         res.status(200).redirect('/Blog');
     } catch (err) {res.status(400).json({message: err})}
-})
-
-router.post('/contact', async (req, res) => {
-    let transporter = nodemailer.createTransport({
-       service: 'gmail',
-       auth: {
-           user: process.env.EMAIL,
-           pass: process.env.EMAILPW
-       }
-    })
-
-    let mailOptions = {
-       from: req.body.email,
-       to: 'Space6Fic@gmail.com',
-       subject: `DE [${req.body.email}] - ${req.body.title}`,
-       text: req.body.content
-    }
-
-    transporter.sendMail(mailOptions, (err, data) => {
-        if (err) {
-            console.log("ERROR", err);
-        } else {
-            console.log("SUCCESS");
-        }
-    })
-
-    req.flash("success", "Email sent!");
-    res.status(200).redirect('/');
 })
 
 module.exports = router;

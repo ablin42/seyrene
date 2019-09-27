@@ -89,7 +89,7 @@ router.get('/Contact', verifySession, (req, res) => {
 
 router.get('/Blog', verifySession, async (req, res) => {
     let obj = {};
-    obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/post/blog'));
+    obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -101,7 +101,7 @@ router.get('/Blog', verifySession, async (req, res) => {
 router.get('/Blog/Post', verifySession, async (req, res) => { //verify level access
     if (req.user.level > 1) {
         let obj = {};
-        obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/post/blog'));
+        obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
@@ -118,7 +118,7 @@ router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify 
         let obj = {};
         obj.blogContent = await Blog.findOne({_id: req.params.blogId}); // if exist continue if not redirect
         obj._id = req.params.blogId;
-        obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/post/blog'));
+        obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;

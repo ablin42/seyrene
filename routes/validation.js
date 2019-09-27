@@ -77,9 +77,34 @@ const blogValidation = (data) => {
         return schema.validate(data);
 }
 
+const contactValidation = (data) => {
+        const schema = Joi.object({
+                name: Joi.string()
+                        .min(4)
+                        .max(30)
+                        .required(),
+                email: Joi.string()
+                        .min(3)
+                        .max(255)
+                        .required()
+                        .email(),
+                title: Joi.string()
+                        .min(10)
+                        .max(255)
+                        .required(),
+                content: Joi.string()
+                        .min(100)
+                        .max(1028)
+                        .required()
+        });
+        return schema.validate(data);
+    }
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.nameValidation = nameValidation;
 module.exports.emailValidation = emailValidation;
 module.exports.pwValidation = pwValidation;
 module.exports.blogValidation = blogValidation;
+module.exports.contactValidation = contactValidation;
+

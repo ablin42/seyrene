@@ -1,12 +1,13 @@
 $(window).scroll(async function() {
     val1 = Math.ceil($(window).scrollTop() + $(window).height());
     val2 = $(document).height();
+    console.log(val1, val2)
     if (val1 >= val2) {
         lastId = $(".blog-row:last").attr("id");
         nbItem = $(".blog-row").length;
         page = 1 + Math.floor(nbItem / 5);
             //show/hide loader
-            await fetch(`http://127.0.0.1:8089/api/post/blog?page=${page}`)
+            await fetch(`http://127.0.0.1:8089/api/blog?page=${page}`)
             .then(function(response) {
                 response.json().then(function(data) {
                 data.forEach(blog => {
@@ -28,5 +29,5 @@ $(window).scroll(async function() {
                         $("#container-blog").append(div);
                     }});
                 })
-                })
+            })
 }});

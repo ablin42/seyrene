@@ -43,13 +43,15 @@ app.use(flash());
 // Routes
 const pagesRoute = require('./routes/pages');
 const authRoute = require('./routes/auth');
-const postsRoute = require('./routes/posts');
+const blogsRoute = require('./routes/blogs');
 const userRoute = require('./routes/user');
+const contactRoute = require('./routes/contact');
 
 app.use('/', pagesRoute);
 app.use('/api/auth', authRoute);
-app.use('/api/post', postsRoute);
+app.use('/api/blog', blogsRoute);
 app.use('/api/user', userRoute);
+app.use('/api/contact', contactRoute);
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
