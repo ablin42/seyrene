@@ -121,15 +121,21 @@ router.post('/patch/:blogId', verifyToken, async (req, res) => {
             req.flash('success', "Post corrigé avec succès");
             res.status(200).redirect('/Blog');
         } catch (err) {res.status(400).json({message: err})}
+    } else {
+        res.status(200).send("Unauthorized.");//redirect or 404
     }
 })
 
-router.get('/delete/:blogId', async (req, res) => {
-    try {
-        const removedBlog = await Blog.deleteOne({_id: req.params.blogId});
-        req.flash('success', "Post supprimé avec succès");
-        res.status(200).redirect('/Blog');
-    } catch (err) {res.status(400).json({message: err})}
+router.get('/delete/:blogId', verifyToken, async (req, res) => {
+    if (req.user.level > 1) {
+        try {
+            const removedBlog = await Blog.deleteOne({_id: req.params.blogId});
+            req.flash('success', "Post supprimé avec succès");
+            res.status(200).redirect('/Blog');
+        } catch (err) {res.status(400).json({message: err})}
+    } else {
+        res.status(200).send("Unauthorized.");//redirect or 404
+    }
 })
 
 module.exports = router;

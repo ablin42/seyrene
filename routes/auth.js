@@ -1,37 +1,46 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Token = require('../models/VerificationToken');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path')
 const {registerValidation, loginValidation} = require('./joiValidation');
+const crypto = require('crypto');
+const request = require('request');
 
-router.post('/register', async (req, res) => {
-    // Check fields validity
-    const {error} = await registerValidation(req.body);
-    console.log(req.body);
-    let formData = {
-        name: req.body.name,
-        email: req.body.email
+const nodemailer = require('nodemailer');
+require('dotenv/config');
+
+async function emailExist(req) {
+    if (await User.findOne({email: req.body.email})) {
+        req.flash('warning', "An account already exist with this e-mail.");
+        return true;
+    } 
+    return false;
+}
+
+async function nameExist(req) {
+    if (await User.findOne({name: req.body.name})) {
+        req.flash('warning', "An account already exist with this username.");
+        return true
     }
+    return false;
+}
+
+async function registerUser(req, res) {
+    // Check fields validity
+    let {error} = await registerValidation(req.body);
     if (error) {
         req.flash('warning', error.details[0].message);
         return res.status(400).redirect('/Register');
     }
-    // foreach error.details
-    //error.details[0].message
-
     // Check if email or username exists in DB
-    const emailExist = await User.findOne({email: req.body.email});
-    if (emailExist) {
-        req.flash('warning', "An account already exist with this e-mail.");
+    const [emailTaken, nameTaken] = await Promise.all([emailExist(req), nameExist(req)])
+    if (emailTaken || nameTaken){
         return res.status(400).redirect('/Register');
     }
-    const nameExist = await User.findOne({name: req.body.name});
-    if (nameExist) {
-        req.flash('warning', "An account already exist with this username.");
-        return res.status(400).redirect('/Register');
-    }
+    
     // Hash and salt pw
     const salt = await bcrypt.genSalt(10);
     const hashPw = await bcrypt.hash(req.body.password, salt);
@@ -41,18 +50,67 @@ router.post('/register', async (req, res) => {
         email: req.body.email,
         password: hashPw
     });
-    try {
-        const savedUser = await user.save();
+    //try {
+        const savedUser = await user.save( async (err) => {
+            if (err) console.log(err)
+        });
         // Create user session token
         const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);//have aswell user level access
-        
-        req.session._id = savedUser._id;
-        req.session.name = savedUser.name;
+    //} catch (err) {res.status(400).json({message: err})}*/
 
-        req.flash('success', "Account created successfully");
-        res.header('authToken', token); // save token to header
-        res.redirect('/');
-    } catch (err) {res.status(400).json({message: err})}
+    // Create a verification token for this user
+    let validationToken = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+        
+    let savedToken = await validationToken.save((err) => {
+        if (err) console.log(err)
+    });
+
+    if (await sendValidationMail(user.email, validationToken.token)) {
+        req.flash('info', "An error occured while trying to send the mail, please retry");
+        return res.status(400).redirect('/Register');
+    }
+    
+    req.session._id = user._id;
+    req.session.name = user.name;
+
+    req.flash('success', "Account created successfully, please check your emails to confirm your account");
+    res.header('authToken', token); // save token to header
+    res.redirect('/');
+    return res.status()
+}
+
+async function sendValidationMail(email, token) {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.SERVER_EMAIL,
+            pass: process.env.SERVER_EMAILPW
+        }
+    })
+
+    let mailOptions = {
+        from: process.env.SERVER_EMAIL,
+        to: email,
+        subject: `Account Verification Token for Maral`,
+        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/' + token + '.\n'
+    }
+
+    transporter.sendMail(mailOptions, (err) => {
+        if (err) {
+            console.log("ERROR", err);
+            return true;
+        } else {
+            console.log("SUCCESS");
+        }
+    })
+    return false;
+}
+
+router.post('/register', async (req, res) => {
+    result = await registerUser(req, res);
+ 
+   
+    return ;//res.redirect('/Register')
 })
 
 router.post('/login', async (req, res) => {
@@ -75,6 +133,13 @@ router.post('/login', async (req, res) => {
     if (!validPw){
         req.flash('warning', 'Invalid credentials');
         return res.status(400).render('login', formData);
+    }
+    if (!user.isVerified) {
+        req.flash('info', 'Your account has not been verified. Please check your e-mails');
+        request.post('http://127.0.0.1:8089/api/auth/resend', {
+            json: {email: req.body.email}
+        })
+        return res.status(401).redirect('/Login'); 
     }
     
     // Create user session token
@@ -101,5 +166,74 @@ router.get('/logout', (req, res) => {
     })
     res.redirect('/');
 })
+
+
+router.get('/confirmation/:token', (req, res, next) => {
+    
+    Token.findOne({ token: req.params.token }, function (err, token) {
+        if (!token) {
+            req.flash('info', "We were unable to find a valid token. Your token my have expired.");
+            return res.status(400).redirect('/Login');
+        }
+ 
+        // If we found a token, find a matching user
+        User.findOne({ _id: token._userId }, function (err, user) {
+            if (!user) {
+                req.flash('info', "We were unable to find a user for this token.");
+                return res.status(400).redirect('/Login');
+            } 
+            if (user.isVerified) {
+                req.flash('info', "This user has already been verified.");                
+                return res.status(400).redirect('/Login');
+            }
+ 
+            // Verify and save the user
+            user.isVerified = true;
+            user.save(function (err) {
+                if (err) { 
+                    req.flash('warning', err.message);    
+                    return res.status(500).redirect('/Login'); 
+                }
+                req.flash('success', "The account has been verified. Please log in.");    
+                res.status(200).redirect('/Login');
+            });
+        });
+
+    });
+});
+
+
+router.post('/resend', (req, res, next) => {
+ 
+    User.findOne({ email: req.body.email }, function (err, user) {
+        if (!user) {
+            req.flash('info', "We were unable to find a user with that email.");    
+            return res.status(400).redirect('/Login');
+        }
+        if (user.isVerified) {
+            req.flash('info', "This account has already been verified. Please log in.");    
+            return res.status(400).redirect('/Login');
+        }
+ 
+        // Create a verification token, save it, and send email
+        var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+ 
+        // Save the token
+        token.save(async (err, savedToken) => {
+            if (err) { 
+                req.flash('warning', err.message);    
+                return res.status(500).redirect('/Login'); 
+            }
+ 
+            // Send the email
+            if (await sendValidationMail(user.email, savedToken.token)) {
+                req.flash('info', "An error occured while trying to send the mail, please retry");
+                return res.status(400).redirect('/Register');
+            }
+            req.flash('info', `A verification email has been sent to ${user.email}.`);
+            res.status(200).redirect('/Login');
+            });
+        });
+});
 
 module.exports = router;
