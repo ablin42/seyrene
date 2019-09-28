@@ -57,7 +57,10 @@ app.use('/api/contact', contactRoute);
 app.set('view engine', 'ejs');
 
 app.get('*', (req, res) => {
-    res.status(404).send('404');
+    let obj = {
+        active: "404"
+    }
+    res.status(404).render('404', obj);
   });
 
 const port = process.env.PORT || 8089;

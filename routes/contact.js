@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {contactValidation} = require('../routes/validation');
+const {contactValidation} = require('./joiValidation');
 const nodemailer = require('nodemailer');
 require('dotenv/config');
 
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
 
     let mailOptions = {
        from: req.body.email,
-       to: 'Space6Fic@gmail.com',
+       to: 'Maral.canvas@gmail.com',
        subject: `DE [${req.body.email}] - ${req.body.title}`,
        text: req.body.content
     }

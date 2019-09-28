@@ -42,12 +42,7 @@ body, html {
   }
 }
 
-.form-info
-{
-    font-style: italic;
-    color: #a87906;
-    display: none;
-}
+/* HEADER */
 
 nav {
   display: flex!important;
@@ -89,6 +84,10 @@ nav:hover .navbar-text {
   text-decoration: none;
   border-bottom: 3px solid #465775;
   padding-bottom: 3px;
+}
+
+.active {
+  border-bottom: 4px solid #465775;
 }
 
 .name-header {
@@ -137,6 +136,47 @@ nav:hover .navbar-text {
   transform: rotate(45deg) translate(-8px, -9px);
 }
 
+/* END HEADER */
+
+/* FOOTER */
+
+footer {
+  /*position: absolute;
+  bottom: 0;*/
+  width: 100%;
+  background-color: white;
+  -webkit-box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
+}
+
+.footer-links {
+  text-align: center;
+}
+
+.footer-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.footer-list li {
+  display: inline-block;
+  margin: 0 10px 0 10px;
+}
+
+.footer-copyright {
+  background-color: #cecece;
+}
+
+.footer-logo {
+width: 40px;
+height: 40px;
+}
+
+/* END FOOTER */
+
+/* GLOBAL */
+
 .alert {
   width: 60%;
   margin: auto;
@@ -145,19 +185,189 @@ nav:hover .navbar-text {
 }
 
 .container {
-    margin-top: 1rem;
-    background-color: #ffffff;
-    border-radius: 5px;
-    padding: 2em;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 1em;
-    grid-auto-rows: minmax(100px, auto);
+  margin-top: 1rem;
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 2em;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1em;
+  grid-auto-rows: minmax(100px, auto);
 }
 
 .container-fluid {
-  margin-top: 1rem;
+margin-top: 1rem;
 }
+
+.register-form h1{
+  margin-bottom: 20px!important;
+}
+
+.err404 {
+text-align: center;
+font-size: 10em;
+color: white;
+text-shadow: 1px 2px black;
+position: absolute;
+transform: translate(50%, 50%);
+}
+
+/* END GLOBAL */
+
+/* LOGIN */
+
+*{
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: montserrat;
+  box-sizing: border-box;
+}
+
+.form-title {
+  color: #465775;
+}
+
+.login-form{
+  width: 360px;
+  background: #f1f1f1;
+  /*height: 500px;*/
+  padding: 40px 40px;
+  border-radius: 10px;
+  position: relative;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+}
+
+.login-form h1{
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* END LOGIN */
+
+.form-info
+{
+    font-style: italic;
+    color: #a87906;
+    display: none;
+}
+
+/* FORMS */
+
+.txtb{
+  border-bottom: 2px solid #adadad;
+  position: relative;
+  margin: 30px 0;
+}
+
+.txtb input{
+  font-size: 15px;
+  color: #333;
+  border: none;
+  width: 100%;
+  outline: none;
+  background: none;
+  padding: 0 5px;
+  height: 40px;
+}
+
+.txtb span::before{
+  content: attr(data-placeholder);
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  color: #adadad;
+  transform: translateY(-50%);
+  z-index: -1;
+  transition: .5s;
+}
+
+.txtb span::after{
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0px;
+  bottom: -5%;
+  background: linear-gradient(160deg, #93BEDF,#465775);
+  transition: .5s;
+}
+
+.focus + span::before{
+  top: -5px;
+}
+.focus + span::after{
+  width: 100%;
+  left: 0px;
+  bottom: -5%;
+}
+
+.logbtn{
+  display: block;
+  width: 100%;
+  height: 50px;
+  border: none;
+  background: linear-gradient(160deg,#3498db,#93BEDF,#465775);
+  background-size: 200%;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.delbtn {
+  display: block;
+  width: 100%;
+  height: 50px;
+  border: none;
+  background: linear-gradient(160deg,#c10539,#de3f71,#a7012f);
+  background-size: 200%;
+  color: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: .5s;
+}
+
+.delbtn:hover{
+  background-position: right!important;
+}
+
+.logbtn:hover{
+  background-position: right;
+}
+
+.bottom-text{
+  text-align: center;
+  font-size: 13px;
+}
+
+/* END FORMS  */
+
+/* HOME */
+
+.carousel {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
+.carousel-container {
+    margin-top: 1rem;
+    position: relative;
+    width: 60%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.carousel-item img {
+    height: 500px; /*this needs to be changed to responsive */
+}
+
+/* END HOME */
+
+/* BLOG */
 
 .container-blog {
   display: block!important;
@@ -205,193 +415,13 @@ nav:hover .navbar-text {
   box-shadow: 0px 0px 3px 0px rgba(13, 143, 255, 0.75)
 }
 
-.carousel {
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+/* END BLOG */
+
+.info-update {
+  border: 1px solid #adadad;
+  border-radius: 5px;
+  /*position: relative;
+  left: 50%;
+  top: 40%;*/
+  transform: translate(0%, 0%);
 }
-
-.carousel-container {
-    margin-top: 1rem;
-    position: relative;
-    width: 60%;
-    left: 50%;
-    transform: translate(-50%, 0%);
-}
-
-.carousel-item img {
-    height: 500px; /*this needs to be changed to responsive */
-}
-
-/* FOOTER */
-
-footer {
-    /*position: absolute;
-    bottom: 0;*/
-    width: 100%;
-    background-color: white;
-    -webkit-box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
-    box-shadow: 0px -1px 10px 0px rgba(0,0,0,0.75);
-}
-
-.footer-links {
-    text-align: center;
-}
-
-.footer-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.footer-list li {
-    display: inline-block;
-    margin: 0 10px 0 10px;
-}
-
-.footer-copyright {
-    background-color: #cecece;
-}
-
-.footer-logo {
-  width: 40px;
-  height: 40px;
-}
-
-/* LOGIN FORM */
-*{
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    font-family: montserrat;
-    box-sizing: border-box;
-  }
-  
-  .form-title {
-    color: #465775;
-  }
-
-  .login-form{
-    width: 360px;
-    background: #f1f1f1;
-    /*height: 500px;*/
-    padding: 40px 40px;
-    border-radius: 10px;
-    position: relative;
-    left: 50%;
-    top: 40%;
-    transform: translate(-50%, -50%);
-  }
-  
-  .login-form h1{
-    text-align: center;
-    margin-bottom: 40px;
-  }
-
-  .register-form h1{
-    margin-bottom: 20px!important;
-  }
-  
-  .txtb{
-    border-bottom: 2px solid #adadad;
-    position: relative;
-    margin: 30px 0;
-  }
-  
-  .txtb input{
-    font-size: 15px;
-    color: #333;
-    border: none;
-    width: 100%;
-    outline: none;
-    background: none;
-    padding: 0 5px;
-    height: 40px;
-  }
-  
-  .txtb span::before{
-    content: attr(data-placeholder);
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    color: #adadad;
-    transform: translateY(-50%);
-    z-index: -1;
-    transition: .5s;
-  }
-  
-  .txtb span::after{
-    content: '';
-    position: absolute;
-    width: 0%;
-    height: 2px;
-    left: 0px;
-    bottom: -5%;
-    background: linear-gradient(160deg, #93BEDF,#465775);
-    transition: .5s;
-  }
-  
-  .focus + span::before{
-    top: -5px;
-  }
-  .focus + span::after{
-    width: 100%;
-    left: 0px;
-    bottom: -5%;
-  }
-  
-  .logbtn{
-    display: block;
-    width: 100%;
-    height: 50px;
-    border: none;
-    background: linear-gradient(160deg,#3498db,#93BEDF,#465775);
-    background-size: 200%;
-    color: #fff;
-    outline: none;
-    cursor: pointer;
-    transition: .5s;
-  }
-
-  .delbtn {
-    display: block;
-    width: 100%;
-    height: 50px;
-    border: none;
-    background: linear-gradient(160deg,#c10539,#de3f71,#a7012f);
-    background-size: 200%;
-    color: #fff;
-    outline: none;
-    cursor: pointer;
-    transition: .5s;
-  }
-  
-  .delbtn:hover{
-    background-position: right!important;
-  }
-
-  .logbtn:hover{
-    background-position: right;
-  }
-  
-  .bottom-text{
-    text-align: center;
-    font-size: 13px;
-  }
-  
-  .info-update {
-    border: 1px solid #adadad;
-    border-radius: 5px;
-    /*position: relative;
-    left: 50%;
-    top: 40%;*/
-    transform: translate(0%, 0%);
-  }
-
-  .large-navbar {
-    width: 100%;
-  }
-
-  .small-navbar {
-    display: none;
-  }

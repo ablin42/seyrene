@@ -15,7 +15,9 @@ const router = express.Router();
 // important
 
 router.get('/', verifySession, (req, res) => {
-    let obj = {};//{root: path.join(__dirname, '/pages/')};
+    let obj = {
+        active: "Home"
+    };//{root: path.join(__dirname, '/pages/')};
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -24,7 +26,9 @@ router.get('/', verifySession, (req, res) => {
 })
 
 router.get('/Galerie', verifySession, (req, res) => {
-    let obj = {};
+    let obj = {
+        active: "Galerie"
+    };
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -33,7 +37,9 @@ router.get('/Galerie', verifySession, (req, res) => {
 })
 
 router.get('/Login', verifySession, (req, res) => { //had verifyToken here, weird, might have forgotten to delete it
-    let obj = {};
+    let obj = {
+        active: "Login"
+    };
     if (req.user._id) {
         return res.status(200).redirect('/');
     }
@@ -41,7 +47,9 @@ router.get('/Login', verifySession, (req, res) => { //had verifyToken here, weir
 })
 
 router.get('/Register', verifySession, (req, res) => {
-    let obj = {};
+    let obj = {
+        active: "Register"
+    };
     if (req.user._id) {
         return res.status(200).redirect('/');
     }
@@ -53,6 +61,7 @@ router.get('/User', verifySession, async (req, res) => {
     if (req.user._id != undefined) {
         obj = await User.findOne({_id: req.user._id});
         obj.password = undefined;
+        obj.active = "User";
         res.status(200).render('user', obj);
     } else {
         req.flash('warning', "You need to be logged in")
@@ -61,7 +70,9 @@ router.get('/User', verifySession, async (req, res) => {
 })
 
 router.get('/Bio', verifySession, (req, res) => {
-    let obj = {};
+    let obj = {
+        active: "Biographie"
+    };
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -70,7 +81,9 @@ router.get('/Bio', verifySession, (req, res) => {
 })
 
 router.get('/Shop', verifySession, (req, res) => {
-    let obj = {};
+    let obj = {
+        active: "Shop"
+    };
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -79,7 +92,9 @@ router.get('/Shop', verifySession, (req, res) => {
 })
 
 router.get('/Contact', verifySession, (req, res) => {
-    let obj = {};
+    let obj = {
+        active: "Contact"
+    };
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -88,7 +103,9 @@ router.get('/Contact', verifySession, (req, res) => {
 })
 
 router.get('/Blog', verifySession, async (req, res) => {
-    let obj = {};
+    let obj = {
+        active: "Blog"
+    };
     obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
@@ -100,7 +117,9 @@ router.get('/Blog', verifySession, async (req, res) => {
 
 router.get('/Blog/Post', verifySession, async (req, res) => { //verify level access
     if (req.user.level > 1) {
-        let obj = {};
+        let obj = {
+            active: "Post a blog"
+        };
         obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
         if (req.user) {
             obj.userId = req.user._id;
@@ -115,7 +134,9 @@ router.get('/Blog/Post', verifySession, async (req, res) => { //verify level acc
 
 router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify level access
     if (req.user.level > 1) {
-        let obj = {};
+        let obj = {
+            active: "Edit a blog"
+        };
         obj.blogContent = await Blog.findOne({_id: req.params.blogId}); // if exist continue if not redirect
         obj._id = req.params.blogId;
         obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));

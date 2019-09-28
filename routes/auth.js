@@ -4,7 +4,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path')
-const {registerValidation, loginValidation} = require('../routes/validation');
+const {registerValidation, loginValidation} = require('./joiValidation');
 
 router.post('/register', async (req, res) => {
     // Check fields validity

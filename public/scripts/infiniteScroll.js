@@ -1,8 +1,4 @@
-$(window).scroll(async function() {
-    val1 = Math.ceil($(window).scrollTop() + $(window).height());
-    val2 = $(document).height();
-    console.log(val1, val2)
-    if (val1 >= val2) {
+async function infiniteScroll() {
         lastId = $(".blog-row:last").attr("id");
         nbItem = $(".blog-row").length;
         page = 1 + Math.floor(nbItem / 5);
@@ -30,4 +26,12 @@ $(window).scroll(async function() {
                     }});
                 })
             })
-}});
+}
+
+$(window).scroll(function() {
+    val1 = Math.ceil($(window).scrollTop() + $(window).height());
+    val2 = $(document).height();
+    if (val1 >= val2) {
+        infiniteScroll();
+    }
+});

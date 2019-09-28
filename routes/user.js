@@ -4,8 +4,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verifySession = require('./verifySession');
-const {nameValidation, emailValidation, pwValidation} = require('../routes/validation');
-
+const {nameValidation, emailValidation, pwValidation} = require('./joiValidation');
 
 router.get('/', async (req, res) => {
     try {

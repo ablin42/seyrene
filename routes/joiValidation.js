@@ -107,4 +107,3 @@ module.exports.emailValidation = emailValidation;
 module.exports.pwValidation = pwValidation;
 module.exports.blogValidation = blogValidation;
 module.exports.contactValidation = contactValidation;
-
