@@ -8,7 +8,7 @@ const tokenSchema = new mongoose.Schema({
     },
     token: { 
         type: String,
-         required: true 
+        required: true 
     },
     createdAt: { 
         type: Date, 

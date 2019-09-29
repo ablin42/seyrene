@@ -405,7 +405,7 @@ transform: translate(50%, 50%);
   left: 25%!important;
 }
 
-#blog-textarea {
+.blog-textarea {
   width: 100%;
   min-height: 175px;
   padding: 15px;

@@ -98,8 +98,20 @@ const contactValidation = (data) => {
                         .required()
         });
         return schema.validate(data);
-    }
+}
 
+const galleryValidation = (data) => {
+        const schema = Joi.object({
+                title: Joi.string()
+                        .required(),
+                content: Joi.string()
+                        .required(),
+                imgPath: Joi.string(),
+                tags: Joi.array()
+        });
+        return schema.validate(data);
+}
+   
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.nameValidation = nameValidation;
@@ -107,3 +119,4 @@ module.exports.emailValidation = emailValidation;
 module.exports.pwValidation = pwValidation;
 module.exports.blogValidation = blogValidation;
 module.exports.contactValidation = contactValidation;
+module.exports.galleryValidation = galleryValidation;

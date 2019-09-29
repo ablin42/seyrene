@@ -1,0 +1,49 @@
+<% include partials/head %>
+
+<script src="/scripts/bootstrap-tagsinput.js"></script>
+
+<div class="container-fluid"> 
+    <form id="gallery-form" method="POST" action="/api/gallery/" class="login-form blog-form col-6 offset-3" onsubmit="trigger(event);">
+        <h1 class="form-title">Ajouter un item à la gallerie</h1>
+            
+        <div class="txtb">
+            <input type="text" name="title" id="title" required>
+            <span data-placeholder="Title"></span>
+        </div>
+
+        <textarea class="blog-textarea" id="content" name="content" placeholder="Item description.." required></textarea>
+
+        <div class="form-group">
+            <input v-bind="selectedTags" type="text" value="" data-role="tagsinput" id="tagInput" class="form-control">
+            <span data-placeholder="Tags"></span>
+        </div>
+    
+        <input type="submit" class="logbtn" value="Sauvegarder" id="submit-gallery">
+    </form>
+    
+    <script>
+    async function trigger(e) {
+        e.preventDefault();
+        let tagInput = document.getElementsByClassName("label-info"),
+            title = $("#title").val(),
+            content = $("#content").val(),
+            tags = [];
+        for (i = 0; i < tagInput.length; i++)
+            tags.push(tagInput[i].textContent);
+        console.log({title, content, tags})
+        const response = await fetch('/api/gallery/', {
+            method: 'post',
+            mode: 'same-origin',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                title: title, content: content, tags: tags
+            })
+        })
+        console.log(response)
+        window.location.href = response.url;
+    }
+    </script>
+    <script src="/scripts/formFocus.js"></script>
+</div>
+  
+<% include partials/footer %>

@@ -151,4 +151,21 @@ router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify 
     }
 })
 
+router.get('/Galerie/Post', async (req, res) => { //verifyToken
+    //if (req.user.level > 1) {
+        try {
+            let obj = {
+                active: "Post a gallery item"
+            };
+            if (req.user) { // what for?
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+            return res.status(200).render('gallery-post', obj);
+        } catch (err) {res.status(400).json({message: err})}
+    //}
+    res.status(404).send("404 error"); // 404 page render here
+})
+
 module.exports = router;

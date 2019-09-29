@@ -65,7 +65,6 @@ router.get('/', async (req, res) => {
             sort: { date: -1 }
         }
         const result = await getBlogs(options);
-        //console.log("return:", result.length)
         res.status(200).json(result);
     } catch (err) {res.status(400).json({message: err})}
 })
