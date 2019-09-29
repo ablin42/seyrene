@@ -37,8 +37,9 @@ app.use(session({
      resave: false,
      saveUninitialized: true
     }));
-// Flash
+//-- Flash --//
 app.use(flash());
+
 
 // Routes
 const pagesRoute = require('./routes/pages');

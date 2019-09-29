@@ -10,8 +10,9 @@ const GallerySchema = mongoose.Schema({
         type: String,
         required: true
     },
-    imgPath: {
-        type: String
+    img: {
+        data: Buffer,
+        contentType: String
     },
     tags: {
         type: Array

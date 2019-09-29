@@ -106,7 +106,6 @@ const galleryValidation = (data) => {
                         .required(),
                 content: Joi.string()
                         .required(),
-                imgPath: Joi.string(),
                 tags: Joi.array()
         });
         return schema.validate(data);
