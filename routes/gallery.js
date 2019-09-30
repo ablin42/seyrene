@@ -48,7 +48,8 @@ router.post('/post', upload.single('img'), async (req, res) => {//verifyToken
             await gallery.save();
 
             req.flash('success', "Item uploadé avec succès");
-            return res.status(200).redirect('/Galerie/Post');
+            return res.status(200).send("Ok")
+            //return res.status(200).redirect('/Galerie/Post');
         } catch (err) {console.log(err)}
 
         return res.status(200).send("OK2");   //
@@ -85,7 +86,8 @@ router.post('/patch/:id', upload.single('img'), async (req, res) => {//verifyTok
             await Gallery.updateOne({_id: req.params.id}, {$set: obj});
 
             req.flash('success', "Item modifié avec succès");
-            return res.status(200).redirect('/Galerie');
+            return res.status(200).send("Ok")
+            //return res.status(200).redirect('/Galerie');
         } catch (err) {console.log(err)}
 
         return res.status(200).send("OK2");   //

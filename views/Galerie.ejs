@@ -13,16 +13,34 @@
           <% if(locals.galleries){ %>
             <% Object.keys(locals.galleries).forEach(function (index) { %>
               <div class="card" style="width: 18rem;">
-                <img src="/api/gallery/image/<%= locals.galleries[index]._id %>" class="card-img-top" alt="<%= locals.galleries[index].title %>">
+                <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries[index]._id %>" class="card-img-top" alt="<%= locals.galleries[index].title %>"></a>
                 <div class="card-body">
                   <h5 class="card-title"><i><%= locals.galleries[index].title %></i></h5>
                   <a href="/Galerie/Patch/<%= locals.galleries[index]._id %>"><i class="fas fa-edit"></i></a>
                   <p class="card-text gallery-description"><%= locals.galleries[index].content %></p>
-                  <p class="card-text"><a href="#">#bleu</a> </p><!-- foreach <%= locals.galleries[index].tags %> tags -->
+                  <p class="card-text">
+                    <% locals.galleries[index].tags.forEach(function (tag) { %>
+                      <a href="#">#<%= tag %></a>
+                    <% }) %></p>
                 </div>
               </div>
             <% }) %>
           <% } %>
     </div>
 </div>
+
+<script>
+  function expand(image){
+    let expand = $("#expandImg");
+    expand.src = image.src;
+    expand.attr("src", image.src)
+
+  }
+</script>
 <% include partials/footer %>
+
+<a class="lightbox-close" href="#">
+  <div class="lightbox-target" id="expand">
+    <img id="expandImg" src="/api/gallery/image/<%= locals.galleries[0]._id %>"/>
+  </div>
+</a>

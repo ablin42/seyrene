@@ -37,7 +37,6 @@ router.get('/Galerie', verifySession, async (req, res) => {
         obj.name = req.user.name;
         obj.level = req.user.level;
     }
-    console.log(obj.root)
     res.status(200).render('galerie', obj);
 })
 
@@ -130,7 +129,7 @@ router.get('/Blog/Post', verifySession, async (req, res) => { //verify level acc
             obj.name = req.user.name;
             obj.level = req.user.level;
         }
-        return res.status(200).render('blog-post', obj);
+        return res.status(200).render('restricted/blog-post', obj);
     } else {
         res.status(404).send("404 error"); // 404 page render here
     }
@@ -148,7 +147,7 @@ router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify 
             obj.name = req.user.name;
             obj.level = req.user.level;
         }
-        return res.status(200).render('blog-patch', obj);
+        return res.status(200).render('restricted/blog-patch', obj);
     } else {
         res.status(404).send("404 error"); // 404 page render here
     }
@@ -164,7 +163,7 @@ router.get('/Galerie/Post', async (req, res) => { //verifyToken
                 obj.name = req.user.name;
                 obj.level = req.user.level;
             }
-            return res.status(200).render('gallery-post', obj);
+            return res.status(200).render('restricted/gallery-post', obj);
         } catch (err) {res.status(400).json({message: err})}
     //}
     res.status(404).send("404 error"); // 404 page render here
@@ -182,7 +181,7 @@ router.get('/Galerie/Patch/:galleryId', async (req, res) => { //verifyToken
                 obj.level = req.user.level;
             }
 
-            return res.status(200).render('gallery-patch', obj);
+            return res.status(200).render('restricted/gallery-patch', obj);
         } catch (err) {console.log(err)}
         return res.status(200).send("NOT OK");   //
     //}
