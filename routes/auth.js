@@ -32,7 +32,7 @@ async function registerUser(req, res) {
     // Check fields validity
     let {error} = await registerValidation(req.body);
     if (error) {
-        req.flash('warning', error.details[0].message);
+        req.flash('warning', error.message);
         return res.status(400).redirect('/Register');
     }
     // Check if email or username exists in DB

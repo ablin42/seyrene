@@ -40,7 +40,6 @@ app.use(session({
 //-- Flash --//
 app.use(flash());
 
-
 // Routes
 const pagesRoute = require('./routes/pages');
 const authRoute = require('./routes/auth');
