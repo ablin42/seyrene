@@ -3,7 +3,7 @@
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 
 <div class="container-fluid"> 
-    <form id="gallery-form" method="POST" action="/api/gallery/" class="login-form blog-form col-6 offset-3" enctype="multipart/form-data" onsubmit="trigger(event);">
+    <form id="gallery-form" method="POST" action="/api/gallery/post" class="login-form blog-form col-6 offset-3" enctype="multipart/form-data" onsubmit="trigger(event);">
         <h1 class="form-title">Ajouter un item à la gallerie</h1>
             
         <div class="txtb">
@@ -43,7 +43,7 @@
         formData.append('content', content);
         formData.append('tags', JSON.stringify(tags));
         
-        const response = await fetch('/api/gallery/', {
+        const response = await fetch('/api/gallery/post', {
             method: 'post',
             mode: 'same-origin',
             body: formData

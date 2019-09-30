@@ -184,6 +184,11 @@ height: 40px;
   margin: 10px auto 0 auto;
 }
 
+.bootstrap-tagsinput .tag [data-role="remove"]:after {
+  content: "x";
+  padding: 0px 2px;
+}
+
 .container {
   margin-top: 1rem;
   background-color: #ffffff;
@@ -433,3 +438,4 @@ transform: translate(50%, 50%);
 }
 
 /* END BIO */
+

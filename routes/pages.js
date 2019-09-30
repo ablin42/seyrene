@@ -6,6 +6,7 @@ const request = require('request-promise');
 const format = require('date-format');
 const Blog = require('../models/Blog');
 const User = require('../models/User');
+const Gallery = require('../models/Gallery');
 
 const router = express.Router();
 
@@ -154,10 +155,9 @@ router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify 
 router.get('/Galerie/Post', async (req, res) => { //verifyToken
     //if (req.user.level > 1) {
         try {
-            let obj = {
-                active: "Post a gallery item"
-            };
-            if (req.user) { // what for?
+            let obj = {active: "Post a gallery item"};
+
+            if (req.user) { // have user name in bar etc
                 obj.userId = req.user._id;
                 obj.name = req.user.name;
                 obj.level = req.user.level;
@@ -166,6 +166,25 @@ router.get('/Galerie/Post', async (req, res) => { //verifyToken
         } catch (err) {res.status(400).json({message: err})}
     //}
     res.status(404).send("404 error"); // 404 page render here
+})
+
+router.get('/Galerie/Patch/:galleryId', async (req, res) => { //verifyToken
+    //if (req.user.level > 1) {
+        try {
+            let obj = {active: "Edit a gallery item"};
+
+            obj = await Gallery.findOne({_id: req.params.galleryId}); // if exist continue if not redirect
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+
+            return res.status(200).render('gallery-patch', obj);
+        } catch (err) {console.log(err)}
+        return res.status(200).send("NOT OK");   //
+    //}
+    //res.status(404).send("404 error"); // 404 page render here
 })
 
 module.exports = router;
