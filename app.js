@@ -41,12 +41,12 @@ app.use(session({
 app.use(flash());
 
 // Routes
-const pagesRoute = require('./routes/pages');
-const authRoute = require('./routes/auth');
-const blogsRoute = require('./routes/blogs');
-const userRoute = require('./routes/user');
-const contactRoute = require('./routes/contact');
-const galleryRoute = require('./routes/gallery');
+const pagesRoute = require('./controllers/pages');
+const authRoute = require('./controllers/auth');
+const blogsRoute = require('./controllers/blogs');
+const userRoute = require('./controllers/user');
+const contactRoute = require('./controllers/contact');
+const galleryRoute = require('./controllers/gallery');
 
 app.use('/', pagesRoute);
 app.use('/api/auth', authRoute);
