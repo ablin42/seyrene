@@ -7,7 +7,7 @@ require('dotenv/config');
 router.post('/', async (req, res) => {
     const {error} = await contactValidation(req.body);
     if (error) {
-        req.flash('warning', error.details[0].message);
+        req.flash('warning', error.message);
         return res.status(400).redirect('/Contact');
     }
     let transporter = nodemailer.createTransport({

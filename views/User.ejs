@@ -11,7 +11,7 @@
         <div class="info-update"><!--change class form id etc api url-->
             <form id="name-form" method="POST" action="/api/user/patch/name">
                 <div class="txtb">
-                  <input type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.Username(this);" required>
+                  <input type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
                   <span data-placeholder="Username"></span>
                   <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
                 </div>
@@ -35,7 +35,7 @@
                 <div class="txtb">
                     <input type="password" id="password" name="password" onkeyup="Validate.Password(this);" required>
                     <span data-placeholder="Password"></span>
-                    <span id="i_password" class="form-info">Password must contain between 8 and 30 characters and has to be atleast alphanumeric</span>
+                    <span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
                 </div>
                 <div class="txtb">
                     <input type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required>

@@ -108,7 +108,6 @@ async function sendValidationMail(email, token) {
 
 router.post('/register', async (req, res) => {
     result = await registerUser(req, res);
- 
    
     return ;//res.redirect('/Register')
 })
@@ -118,7 +117,7 @@ router.post('/login', async (req, res) => {
     const {error} = loginValidation(req.body); //not really necessary in login
     let formData = {"email": req.body.email};
     if (error){
-        req.flash('warning', error.details[0].message);
+        req.flash('warning', error.message);
         return res.status(400).render('login', formData); 
     }
 

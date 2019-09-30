@@ -7,11 +7,13 @@
         <h1 class="form-title">Ajouter un item à la gallerie</h1>
             
         <div class="txtb">
-            <input type="text" name="title" id="title" required>
+            <input type="text" name="title" id="title" onkeyup="Validate.String(this, 1, 256);" required>
             <span data-placeholder="Title"></span>
+            <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
         </div>
 
-        <textarea class="blog-textarea" id="content" name="content" placeholder="Item description.." required></textarea>
+        <textarea class="blog-textarea" id="content" name="content" placeholder="Item description.." onkeyup="Validate.String(this, 1, 2048);" required></textarea>
+        <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>  
        
         <div class="form-group">
             <input type="file" name="img" id="img">
@@ -22,7 +24,7 @@
                 <span data-placeholder="Tags"></span>
         </div>
 
-        <input type="submit" class="logbtn" value="Sauvegarder" id="submit-gallery">
+        <input type="submit" class="logbtn" value="Save" id="submit-gallery">
     </form>
     
     <script>
@@ -51,6 +53,7 @@
         window.location.href = "/Galerie";
     }
     </script>
+    <script src="/scripts/frontValidation.js"></script>
     <script src="/scripts/formFocus.js"></script>
 </div>
   

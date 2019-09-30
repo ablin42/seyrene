@@ -20,12 +20,13 @@
             </div>
             
             <div class="txtb">
-                <input type="text" name="title" id="title">
+                <input type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);">
                 <span data-placeholder="Mail Title"></span>
-                <span id="i_title" class="form-info">Title must contain between 4 and 30 characters</span>
+                <span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
             </div>
 
-            <textarea id="blog-textarea" name="content" placeholder="Whatever you wish to tell us..." required></textarea>
+            <textarea id="content" onkeyup="Validate.String(this, 64, 2048);" class="blog-textarea" name="content" placeholder="Whatever you wish to tell us..." required></textarea>
+            <span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
             
             <input type="submit" class="logbtn" value="Envoyer" id="submit-contact">
         </form>

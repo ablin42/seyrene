@@ -32,8 +32,7 @@ router.post('/post', upload.single('img'), async (req, res) => {//verifyToken
 
             const {error} = await galleryValidation(obj);
             if (error) {
-                console.log(error.details[0].message)
-                req.flash('warning', error.details[0].message);
+                req.flash('warning', error.message);
                 return res.status(400).redirect('/Galerie/Post');
             }
 
@@ -69,8 +68,7 @@ router.post('/patch/:id', upload.single('img'), async (req, res) => {//verifyTok
 
             const {error} = await galleryValidation(obj);
             if (error) {
-                console.log(error.details[0].message)
-                req.flash('warning', error.details[0].message);
+                req.flash('warning', error.message);
                 return res.status(400).redirect('/Galerie/Post');
             }
             if (req.file) {

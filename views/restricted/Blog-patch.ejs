@@ -5,18 +5,22 @@
         <form id="blog-form" method="POST" action="/api/blog/patch/<%= locals.blogContent.id %>"> <!-- /blogId -->
             <h1 class="form-title">Editer un post de blog</h1>
             <div class="txtb">
-                <input type="text" name="title" value="<%= locals.blogContent.title %>" required>
-                <span data-placeholder="Titre"></span>
+                <input id="title" type="text" name="title" value="<%= locals.blogContent.title %>" onkeyup="Validate.String(this, 4, 256);" required>
+                <span data-placeholder="Title"></span>
+                <span id="i_title" class="form-info">Title must contain between 4 and 256 characters</span>
             </div>
-            <textarea id="blog-textarea" class="blog-textarea" name="content" placeholder="Your blog content here" required><%= locals.blogContent.content %></textarea>
 
-            <input type="submit" class="logbtn" value="Modifier" id="patch-blog">
+            <textarea id="content" class="blog-textarea" name="content" placeholder="Your blog content here" onkeyup="Validate.String(this, 128, 4096);" required><%= locals.blogContent.content %></textarea>
+            <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
+
+            <input type="submit" class="logbtn" value="Update" id="patch-blog">
         </form>
     <hr />
     <form method="GET" action="/api/blog/delete/<%= locals.blogContent.id %>">
-        <input type="submit" class="delbtn" value="SUPPRIMER" id="delete-blog">
+        <input type="submit" class="delbtn" value="DELETE" id="delete-blog">
     </form>
 </div>
+    <script src="/scripts/frontValidation.js"></script>
     <script src="/scripts/formFocus.js"></script>
 </div>
   

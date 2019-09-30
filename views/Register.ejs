@@ -6,7 +6,7 @@
         <h1 class="form-title">Inscription</h1>
 
         <div class="txtb">
-          <input type="text" name="name" id="name" onkeyup="Validate.Username(this);"  value="<% if (locals.name) { %><%= locals.name %><% } %>">
+          <input type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);"  value="<% if (locals.name) { %><%= locals.name %><% } %>">
           <span data-placeholder="Username"></span>
           <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
         </div>
@@ -20,7 +20,7 @@
         <div class="txtb">
           <input type="password" name="password" id="password" onkeyup="Validate.Password(this);">
           <span data-placeholder="Password"></span>
-          <span id="i_password" class="form-info">Password must contain between 8 and 30 characters and has to be atleast alphanumeric</span>
+          <span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
         </div>
 
         <div class="txtb">
@@ -39,8 +39,8 @@
       </form>
     </div>
 
-      <script src="/scripts/formFocus.js"></script>
-      <script src="/scripts/frontValidation.js"></script>
+    <script src="/scripts/formFocus.js"></script>
+    <script src="/scripts/frontValidation.js"></script>
 </div>
   
 <% include partials/footer %>

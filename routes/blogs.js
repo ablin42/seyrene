@@ -85,8 +85,8 @@ router.post('/', verifyToken, async (req, res) => {
         };
         const {error} = await blogValidation(obj);
         if (error) {
-            req.flash('warning', error.details[0].message);
-            return res.status(400).redirect('blog-post');
+            req.flash('warning', error.message);
+            return res.status(400).redirect('/Blog/Post');
         }
         const blog = new Blog(obj)
         try {
@@ -110,7 +110,7 @@ router.post('/patch/:blogId', verifyToken, async (req, res) => {
             };
             const {error} = await blogValidation(obj);
             if (error) {
-                req.flash('warning', error.details[0].message);
+                req.flash('warning', error.message);
                 return res.status(400).redirect('blog-post');
             }
             const patchedBlog = await Blog.updateOne({_id: req.params.blogId}, {$set: {

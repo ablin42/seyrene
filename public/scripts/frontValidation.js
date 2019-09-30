@@ -1,28 +1,28 @@
 let Validate = {
-    Username: function(username) {
-        let inputId = username.id,
-            spanInfo = document.getElementById(`i_${inputId}`);
-            
-        if (username.value.length !== 0 && (username.value.length < 4 || username.value.length > 30)) {
+    String: function(item, min, max) {
+        let inputId = item.id,
+        spanInfo = document.getElementById(`i_${inputId}`);
+        
+        if (item.value.length !== 0 && (item.value.length < min || item.value.length > max)) {
             spanInfo.style.display = "inline-block";
-            username.classList.add("invalid");
+            item.classList.add("invalid");
         }
-        else if (username.value.length >= 4 || username.value.length <= 30) {
+        else if (item.value.length >= min || item.value.length <= max) {
             spanInfo.style.display = "none";
-            username.classList.remove("invalid");
-            username.classList.add("valid");
+            item.classList.remove("invalid");
+            item.classList.add("valid");
         }
         else {
             spanInfo.style.display = "none";
-            username.classList.remove("invalid");
-            username.classList.remove("valid");
+            item.classList.remove("invalid");
+            item.classList.remove("valid");
         }
     },
     Email: function(email) {
         let inputId = email.id
             spanInfo = document.getElementById(`i_${inputId}`);
 
-        if (email.value.length !== 0 && (email.value.length < 3 || email.value.length > 255)){
+        if (email.value.length !== 0 && (email.value.length < 3 || email.value.length > 256)){
             spanInfo.style.display = "inline-block";
             email.classList.add("invalid");
         }
@@ -45,7 +45,7 @@ let Validate = {
             spanInfo = document.getElementById(`i_${inputId}`),
             password2 = document.getElementById(`${inputId}2`);
 
-        if (password.value.length > 0 && (password.value.length > 30 || !/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/.test(password.value))) {
+        if (password.value.length > 0 && (password.value.length > 256 || !/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/.test(password.value))) {
             spanInfo.style.display = "inline-block";
             password.classList.add("invalid");
         }

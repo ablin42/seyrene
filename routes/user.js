@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 router.post('/patch/name', verifySession, async (req, res) => {
     const {error} = await nameValidation(req.body);
     if (error) {
-        req.flash('warning', error.details[0].message);
+        req.flash('warning', error.message);
         return res.status(400).redirect('/User');
     }
     if (req.user._id != undefined) {
@@ -28,7 +28,7 @@ router.post('/patch/name', verifySession, async (req, res) => {
                 return res.status(400).redirect('/User');
             }
             const patchedUser = await User.updateOne({_id: req.user._id}, {$set: {name: req.body.name}});
-            req.flash('success', "Nom modifié avec succès");
+            req.flash('success', "Username successfully modified");
             res.status(200).redirect('/User');
         } catch (err) {res.status(400).json({message: err})}  
     }
@@ -40,7 +40,7 @@ router.post('/patch/name', verifySession, async (req, res) => {
 router.post('/patch/email', verifySession, async (req, res) => {
     const {error} = await emailValidation(req.body);
     if (error) {
-        req.flash('warning', error.details[0].message);
+        req.flash('warning', error.message);
         return res.status(400).redirect('/User');
     }
     if (req.user._id != undefined) {
@@ -52,7 +52,7 @@ router.post('/patch/email', verifySession, async (req, res) => {
                 return res.status(400).redirect('/User');
             }
             const patchedUser = await User.updateOne({_id: req.user._id}, {$set: {email: req.body.email}});
-            req.flash('success', "Email modifié avec succès");
+            req.flash('success', "Email successfully modified");
             res.status(200).redirect('/User');
         } catch (err) {res.status(400).json({message: err})}  
     }
@@ -64,7 +64,7 @@ router.post('/patch/email', verifySession, async (req, res) => {
 router.post('/patch/password', verifySession, async (req, res) => {
     const {error} = await pwValidation(req.body);
     if (error) {
-        req.flash('warning', error.details[0].message);
+        req.flash('warning', error.message);
         return res.status(400).redirect('/User');
     }
     if (req.user._id != undefined) {
@@ -86,7 +86,7 @@ router.post('/patch/password', verifySession, async (req, res) => {
             const hashPw = await bcrypt.hash(req.body.password, salt);
           
             const patchedUser = await User.updateOne({_id: req.user._id}, {$set: {password: hashPw}});
-            req.flash('success', "Mot de passe modifié avec succès");
+            req.flash('success', "Password successfully modified");
             res.status(200).redirect('/User');
         } catch (err) {res.status(400).json({message: err})}  
     }
