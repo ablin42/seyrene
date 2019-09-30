@@ -26,14 +26,18 @@ router.get('/', verifySession, (req, res) => {
     res.status(200).render('home', obj);
 })
 
-router.get('/Galerie', verifySession, (req, res) => {
+router.get('/Galerie', verifySession, async (req, res) => {
     let obj = {
-        active: "Galerie"
+        active: "Galerie",
+        root: path.join(__dirname, '/pages/')
     };
+    obj.galleries = JSON.parse(await request('http://127.0.0.1:8089/api/gallery/'));
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
+        obj.level = req.user.level;
     }
+    console.log(obj.root)
     res.status(200).render('galerie', obj);
 })
 
@@ -121,7 +125,6 @@ router.get('/Blog/Post', verifySession, async (req, res) => { //verify level acc
         let obj = {
             active: "Post a blog"
         };
-        obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
@@ -140,7 +143,6 @@ router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify 
         };
         obj.blogContent = await Blog.findOne({_id: req.params.blogId}); // if exist continue if not redirect
         obj._id = req.params.blogId;
-        obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
