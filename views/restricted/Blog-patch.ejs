@@ -2,7 +2,7 @@
 
 <div class="container-fluid">
     <div class="login-form blog-form col-6 offset-3">
-        <form id="blog-form" method="POST" action="/api/blog/patch/<%= locals.blogContent.id %>"> <!-- /blogId -->
+        <form id="blog" method="POST" action="/api/blog/patch/<%= locals.blogContent.id %>"> <!-- /blogId -->
             <h1 class="form-title">Editer un post de blog</h1>
             <div class="txtb">
                 <input id="title" type="text" name="title" value="<%= locals.blogContent.title %>" onkeyup="Validate.String(this, 4, 256);" required>
@@ -13,7 +13,7 @@
             <textarea id="content" class="blog-textarea" name="content" placeholder="Your blog content here" onkeyup="Validate.String(this, 128, 4096);" required><%= locals.blogContent.content %></textarea>
             <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
 
-            <input type="submit" class="logbtn" value="Update" id="patch-blog">
+            <input type="submit" class="logbtn" value="Update" id="submit-blog">
         </form>
     <hr />
     <form method="GET" action="/api/blog/delete/<%= locals.blogContent.id %>">

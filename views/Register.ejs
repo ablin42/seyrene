@@ -2,34 +2,34 @@
 
 <div class="container-fluid"> 
   <div class="login-form">
-    <form id="register-form" method="POST" action="/api/auth/register">
+    <form id="register" method="POST" action="/api/auth/register">
         <h1 class="form-title">Inscription</h1>
 
         <div class="txtb">
-          <input type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);"  value="<% if (locals.name) { %><%= locals.name %><% } %>">
+          <input type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.name) { %><%= locals.name %><% } %>" required>
           <span data-placeholder="Username"></span>
           <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
         </div>
 
         <div class="txtb">
-          <input type="email" name="email" id="email" onkeyup="Validate.Email(this);"  value="<% if (locals.email) { %><%= locals.email %><% } %>">
+          <input type="email" name="email" id="email" onkeyup="Validate.Email(this);"  value="<% if (locals.email) { %><%= locals.email %><% } %>" required>
           <span data-placeholder="Email"></span>
           <span id="i_email" class="form-info">E-mail has to be valid</span>
         </div>
 
         <div class="txtb">
-          <input type="password" name="password" id="password" onkeyup="Validate.Password(this);">
+          <input type="password" name="password" id="password" onkeyup="Validate.Password(this);" required>
           <span data-placeholder="Password"></span>
           <span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
         </div>
 
         <div class="txtb">
-            <input type="password" name="password2" id="password2" onkeyup="Validate.Password2(this);">
+            <input type="password" name="password2" id="password2" onkeyup="Validate.Password2(this);" required>
             <span data-placeholder="Password confirmation"></span>
             <span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
           </div>
 
-        <input type="submit" class="logbtn" value="S'inscrire" id="submit-register">
+        <input type="submit" class="logbtn" value="Register" id="submit-register">
 
         <hr />
         <div class="bottom-text mt-4">

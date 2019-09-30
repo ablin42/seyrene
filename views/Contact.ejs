@@ -2,25 +2,25 @@
 
 <div class="container-fluid"> 
     <div class="login-form contact-form col-6">
-        <form id="contact-form" method="POST" action="/api/contact/" >
+        <form id="contact" method="POST" action="/api/contact/" >
             <h1 class="form-title">Nous contacter</h1>
             <div class="bottom-text">
                 Nous avons besoin de votre email pour pouvoir vous répondre, et le nom d'utilisateur est à titre indicatif
             </div>
             <div class="txtb">
-                <input type="text" name="name" id="name" onkeyup="Validate.Username(this);"  value="<% if (locals.name) { %><%= locals.name %><% } %>">
+                <input type="text" name="name" id="name" onkeyup="Validate.Username(this);" value="<% if (locals.name) { %><%= locals.name %><% } %>" required>
                 <span data-placeholder="Username"></span>
                 <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
             </div>
             
             <div class="txtb">
-                <input type="email" name="email" id="email" onkeyup="Validate.Email(this);"  value="<% if (locals.email) { %><%= locals.email %><% } %>">
+                <input type="email" name="email" id="email" onkeyup="Validate.Email(this);" value="<% if (locals.email) { %><%= locals.email %><% } %>" required>
                 <span data-placeholder="Email"></span>
                 <span id="i_email" class="form-info">E-mail has to be valid</span>
             </div>
             
             <div class="txtb">
-                <input type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);">
+                <input type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);" required>
                 <span data-placeholder="Mail Title"></span>
                 <span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
             </div>

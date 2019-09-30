@@ -9,25 +9,25 @@
             <%= locals.date %>
         <% } %>
         <div class="info-update"><!--change class form id etc api url-->
-            <form id="name-form" method="POST" action="/api/user/patch/name">
+            <form id="nameform" method="POST" action="/api/user/patch/name">
                 <div class="txtb">
                   <input type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
                   <span data-placeholder="Username"></span>
                   <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
                 </div>
-                <input type="submit" class="logbtn info-update-btn" value="Modifier">
+                <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-nameform">
               </form>
 
-            <form id="email-form" method="POST" action="/api/user/patch/email">
+            <form id="emailform" method="POST" action="/api/user/patch/email">
               <div class="txtb">
                 <input type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
                 <span data-placeholder="Email"></span>
                 <span id="i_email" class="form-info">E-mail has to be valid</span>
               </div>
-              <input type="submit" class="logbtn info-update-btn" value="Modifier">
+              <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-emailform">
             </form>
         
-            <form id="password-form" method="POST" action="/api/user/patch/password">
+            <form id="passwordform" method="POST" action="/api/user/patch/password">
                 <div class="txtb">
                   <input type="password" name="cpassword" required>
                   <span data-placeholder="Current Password"></span>
@@ -42,7 +42,7 @@
                     <span data-placeholder="Confirm password"></span>
                     <span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
                 </div>
-                <input type="submit" class="logbtn info-update-btn" value="Modifier">
+                <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-passwordform">
               </form>
           </div>
     </div>

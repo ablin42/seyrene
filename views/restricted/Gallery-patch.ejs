@@ -4,13 +4,14 @@
 
 <div class="container-fluid">
     <div class="login-form blog-form col-6 offset-3">
-        <form id="blog-form" method="POST" action="/api/gallery/patch/<%= locals._id %>" enctype="multipart/form-data" onsubmit="trigger(event);"> 
+        <form id="gallery" method="POST" action="/api/gallery/patch/<%= locals._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event);"> 
             <h1 class="form-title">Editer un item de la gallerie</h1>
             <div class="txtb">
                 <input type="text" name="title" id="title" value="<%= locals.title %>" onkeyup="Validate.String(this, 1, 256);" required>
                 <span data-placeholder="Title"></span>
                 <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
             </div>
+            
             <textarea id="content" name="content" class="blog-textarea" placeholder="Your item description here" onkeyup="Validate.String(this, 1, 2048);" required><%= locals.content %></textarea>
             <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
 
@@ -24,7 +25,7 @@
                 <span data-placeholder="Tags"></span>
             </div>
 
-            <input type="submit" class="logbtn" value="Update" id="patch-blog">
+            <input type="submit" class="logbtn" value="Update" id="submit-gallery">
         </form>
     <hr />
     <form method="GET" action="/api/gallery/delete/<%= locals._id %>">
@@ -42,7 +43,7 @@
         for (i = 0; i < tags.length; i++)
             tagInput.tagsinput('add', tags[i]);
        
-        async function trigger(e) {
+        async function patchGallery(e) {
             e.preventDefault();
             let tagInput = document.getElementsByClassName("label-info"),
                 title = $("#title").val(),

@@ -3,7 +3,7 @@
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 
 <div class="container-fluid"> 
-    <form id="gallery-form" method="POST" action="/api/gallery/post" class="login-form blog-form col-6 offset-3" enctype="multipart/form-data" onsubmit="trigger(event);">
+    <form id="gallery" method="POST" action="/api/gallery/post" class="login-form blog-form col-6 offset-3" enctype="multipart/form-data" onsubmit="postGallery(event);">
         <h1 class="form-title">Ajouter un item à la gallerie</h1>
             
         <div class="txtb">
@@ -16,7 +16,7 @@
         <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>  
        
         <div class="form-group">
-            <input type="file" name="img" id="img">
+            <input type="file" name="img" id="img" required>
         </div>
 
         <div class="form-group">
@@ -28,7 +28,7 @@
     </form>
     
     <script>
-    async function trigger(e) {
+    async function postGallery(e) {
         e.preventDefault();
         let tagInput = document.getElementsByClassName("label-info"),
             title = $("#title").val(),
