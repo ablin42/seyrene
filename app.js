@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
+const expressSanitizer = require('express-sanitizer');
 require('dotenv/config');
 
 //Connect to DB
@@ -39,6 +39,9 @@ app.use(session({
     }));
 //-- Flash --//
 app.use(flash());
+
+// Mount express-sanitizer middleware here
+app.use(expressSanitizer());
 
 // Routes
 const pagesRoute = require('./controllers/pages');

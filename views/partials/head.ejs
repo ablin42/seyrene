@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div>
+    <div id="header">
         <nav>
             <div class="logo">
                 <a href="/"><h1 class="name-header navbar-text">Maral</h1></a>
@@ -47,7 +47,7 @@
             <% if(messages){ %>
                 <% Object.keys(messages).forEach(function (type) { %>
                 <% messages[type].forEach(function (message) { %>
-                    <div class="alert alert-<%= type %>" role="alert">
+                    <div id="alert" class="alert alert-<%= type %>" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <%= message %>
                     </div>

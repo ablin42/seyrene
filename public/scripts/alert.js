@@ -15,10 +15,9 @@ function addAlert(alert, where)
 
     node.setAttribute("id", "alertwrapper");
     if (alertDiv){
-        if (wrap)
+        if (wrap) 
             wrap.remove();
-        else
-            alertDiv.remove();
+        alertDiv.remove();
     }
     node.innerHTML += alert;
     $(where).append(node);
