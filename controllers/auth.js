@@ -8,8 +8,7 @@ const path = require('path')
 const {registerValidation, loginValidation} = require('./helpers/joiValidation');
 const crypto = require('crypto');
 const request = require('request');
-
-const nodemailer = require('nodemailer');
+const mailer = require('./helpers/mailer');
 require('dotenv/config');
 
 async function emailExist(req) {
@@ -60,50 +59,24 @@ async function registerUser(req, res) {
 
     // Create a verification token for this user
     let validationToken = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+    console.log(validationToken)
         
     let savedToken = await validationToken.save((err) => {
         if (err) console.log(err)
     });
 
-    if (await sendValidationMail(user.email, validationToken.token)) {
+    if (await mailer(user.email, validationToken.token)) {
         req.flash('info', "An error occured while trying to send the mail, please retry");
         return res.status(400).redirect('/Register');
     }
     
-    req.session._id = user._id;
-    req.session.name = user.name;
+    //req.session._id = user._id;
+    //req.session.name = user.name;
 
     req.flash('success', "Account created successfully, please check your emails to confirm your account");
     res.header('authToken', token); // save token to header
     res.redirect('/');
     return res.status()
-}
-
-async function sendValidationMail(email, token) {
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.SERVER_EMAIL,
-            pass: process.env.SERVER_EMAILPW
-        }
-    })
-
-    let mailOptions = {
-        from: process.env.SERVER_EMAIL,
-        to: email,
-        subject: `Account Verification Token for Maral`,
-        text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/' + token + '.\n'
-    }
-
-    transporter.sendMail(mailOptions, (err) => {
-        if (err) {
-            console.log("ERROR", err);
-            return true;
-        } else {
-            console.log("SUCCESS");
-        }
-    })
-    return false;
 }
 
 router.post('/register', async (req, res) => {
@@ -166,7 +139,6 @@ router.get('/logout', (req, res) => {
     res.redirect('/');
 })
 
-
 router.get('/confirmation/:token', (req, res, next) => {
     
     Token.findOne({ token: req.params.token }, function (err, token) {
@@ -225,7 +197,7 @@ router.post('/resend', (req, res, next) => {
             }
  
             // Send the email
-            if (await sendValidationMail(user.email, savedToken.token)) {
+            if (await mailer(user.email, savedToken.token)) {
                 req.flash('info', "An error occured while trying to send the mail, please retry");
                 return res.status(400).redirect('/Register');
             }

@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Token = require('../models/VerificationToken');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verifySession = require('./helpers/verifySession');
 const {nameValidation, emailValidation, pwValidation} = require('./helpers/joiValidation');
+const crypto = require('crypto');
+const mailer = require('./helpers/mailer');
+require('dotenv/config');
+
 
 router.get('/', async (req, res) => {
     try {
@@ -38,6 +43,7 @@ router.post('/patch/name', verifySession, async (req, res) => {
 })
 
 router.post('/patch/email', verifySession, async (req, res) => {
+    let newEmail = req.body.email;
     const {error} = await emailValidation(req.body);
     if (error) {
         req.flash('warning', error.message);
@@ -51,8 +57,16 @@ router.post('/patch/email', verifySession, async (req, res) => {
                 req.flash('warning', "An account already exist with this e-mail.");
                 return res.status(400).redirect('/User');
             }
-            const patchedUser = await User.updateOne({_id: req.user._id}, {$set: {email: req.body.email}});
-            req.flash('success', "Email successfully modified");
+            vToken = crypto.randomBytes(16).toString('hex');
+            const patchedUser = await User.updateOne({_id: req.user._id}, {$set: {email: newEmail, isVerified: false}});
+            const updatedToken = await Token.updateOne({_userId: req.user._id}, {$set: {token: vToken}});
+            //send mail
+            if (await mailer(newEmail, vToken)) {
+                req.flash('info', "An error occured while trying to send the mail, please retry");
+                return res.status(400).redirect('/User');
+            }
+
+            req.flash('success', "Email successfully modified, please confirm your new e-mail by clicking on the link we sent you");
             res.status(200).redirect('/User');
         } catch (err) {res.status(400).json({message: err})}  
     }
