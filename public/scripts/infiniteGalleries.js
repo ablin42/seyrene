@@ -1,5 +1,4 @@
 async function infiniteGalleries() {
-    console.log("called")
     lastId = $(".card:last").attr("id");
     nbItem = $(".card").length;
     page = 1 + Math.floor(nbItem / 5);
@@ -7,7 +6,6 @@ async function infiniteGalleries() {
         await fetch(`http://127.0.0.1:8089/api/gallery?page=${page}`)
         .then(function(response) {
             response.json().then(function(data) {
-                console.log(data)
             data.forEach(gallery => {
                 let id = gallery._id;
                 if ($(`#${id}`).length === 0) {

@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
             sort: { date: -1 }
         }
         const result = await Gallery.paginate({}, options);
-        const galleries = result.docs;
+        const galleries = result.docs; //probably can remove img since we use id and api to load it 
         res.status(200).json(galleries);
     } catch (err) {res.status(400).json({message: err})}
 })
