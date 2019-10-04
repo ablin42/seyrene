@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Gallery = require('../models/Gallery');
-const verifyToken = require('./verifyToken');
+const verifyToken = require('./helpers/verifyToken');
 const multer = require('multer');
-const gHelpers = require('./galleryHelpers');
+const gHelpers = require('./helpers/galleryHelpers');
 
 upload = multer({
     storage: multer.memoryStorage(),

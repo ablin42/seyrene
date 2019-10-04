@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 const User = require('../models/User');
-const verifyToken = require('./verifyToken');
+const verifyToken = require('./helpers/verifyToken');
 const format = require('date-format');
-const {blogValidation} = require('./joiValidation');
+const {blogValidation} = require('./helpers/joiValidation');
 
 /*router.get('/updatemongo', async (req, res) => {
     Blog.updateMany({author:"haaaaarb"}, {$unset: {author: ""}}, 

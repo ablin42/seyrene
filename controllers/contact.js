@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {contactValidation} = require('./joiValidation');
+const {contactValidation} = require('./helpers/joiValidation');
 const nodemailer = require('nodemailer');
 require('dotenv/config');
 

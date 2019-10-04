@@ -5,7 +5,7 @@ const Token = require('../models/VerificationToken');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path')
-const {registerValidation, loginValidation} = require('./joiValidation');
+const {registerValidation, loginValidation} = require('./helpers/joiValidation');
 const crypto = require('crypto');
 const request = require('request');
 

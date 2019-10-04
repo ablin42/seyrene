@@ -3,8 +3,8 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const verifySession = require('./verifySession');
-const {nameValidation, emailValidation, pwValidation} = require('./joiValidation');
+const verifySession = require('./helpers/verifySession');
+const {nameValidation, emailValidation, pwValidation} = require('./helpers/joiValidation');
 
 router.get('/', async (req, res) => {
     try {
