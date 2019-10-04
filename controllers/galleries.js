@@ -19,13 +19,15 @@ router.get('/', async (req, res) => {
     try {
         const options = {
             page: parseInt(req.query.page, 10) || 1,
-            limit: 5,
+            limit: 6,
             sort: { date: -1 }
         }
-        const result = await Gallery.find();//getBlogs(options);
-        res.status(200).json(result);
+        const result = await Gallery.paginate({}, options);
+        const galleries = result.docs;
+        res.status(200).json(galleries);
     } catch (err) {res.status(400).json({message: err})}
 })
+
 
 //sanitize input
 router.post('/post', verifyToken, async (req, res) => {
@@ -103,46 +105,55 @@ if (req.user.level > 1) {
     return res.status(200).json({url: "/Login", error: "Unauthorized. Contact your administrator if you think this is a mistake"});
 }})
 
+//delete item using its id + sanitize :id
 router.get('/delete/:id', verifyToken, async (req, res) => {
+    let id = req.params.id;
     if (req.user.level > 1) {
         try {
-            const removedGallery = await Gallery.deleteOne({_id: req.params.id});
+            await Gallery.deleteOne({_id: id});
             req.flash('success', "Item successfully deleted!");
-            res.status(200).redirect('/Galerie');
-        } catch (err) {res.status(400).json({message: err})}
+            return res.status(200).redirect('/Galerie');
+        } catch (err) {
+            req.flash('warning', "An error occured, please retry");            
+            res.status(400).redirect(`/Galerie/Patch/${id}`);
+        }
     } else {
-        res.status(200).send("Unauthorized.");//redirect or 404
+        req.flash('warning', "Unauthorized. Contact your administrator if you think this is a mistake"); 
+        return res.status(200).redirect('/Login');//redirect or 404  
     }
 })
 
+//show all item's id
 router.get('/item', async (req, res) => {
-    const result = await Gallery.find()
+    const result = await Gallery.find();
     const resArray = result.map(element => element._id);
      
-    res.send(resArray)
+    return res.status(200).json(resArray);
 });
 
+//sanitize :id
 router.get('/item/:id', (req, res) => {
-    Gallery.findOne({'_id': req.params.id }, (err, result) => {
+    let id = req.params.id;
+    Gallery.findOne({'_id': id }, (err, result) => {
     if (err) {
         return console.log(err)
     }
 
-    result.img = "";//set it to this so it doesnt fuck rendering of response (buffer)
-    res.send(result);
+    result.img = undefined;//set it to this so it doesnt fuck rendering of response (buffer)
+    return res.status(200).send(result);
     })
 })
 
+//sanitize :id
 router.get('/image/:id', (req, res) => {
-    Gallery.findOne({'_id': req.params.id }, (err, result) => {
+    let id = req.params.id;
+    Gallery.findOne({'_id': id }, (err, result) => {
     if (err) {
         return console.log(err)
     }
     res.set('Content-Type', result.img.contentType)
-    res.send(result.img.data);
+    return res.status(200).send(result.img.data);
     })
 })
-
-
 
 module.exports = router;

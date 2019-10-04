@@ -1,5 +1,6 @@
 <% include partials/head %>
 
+<script src="/scripts/infiniteGalleries.js"></script>
 <div class="container-fluid">
     <% if (locals.level && locals.level > 1) { %>
       <div class="alert alert-info" role="alert">
@@ -9,10 +10,10 @@
         <a href="/Galerie/Post">post gallery item</a>
       </div>
     <% } %>
-    <div class="container">
+    <div class="container" id="container-gallery">
           <% if(locals.galleries){ %>
             <% Object.keys(locals.galleries).forEach(function (index) { %>
-              <div class="card" style="width: 18rem;">
+              <div class="card" style="width: 18rem;" id="<%= locals.galleries[index]._id %>">
                 <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries[index]._id %>" class="card-img-top" alt="<%= locals.galleries[index].title %>"></a>
                 <div class="card-body">
                   <h5 class="card-title"><i><%= locals.galleries[index].title %></i></h5>
@@ -27,6 +28,9 @@
             <% }) %>
           <% } %>
     </div>
+    <div class="col-6 offset-3 mb-3 mt-3">
+      <input type="submit" class="logbtn" value="Load more" onclick="infiniteGalleries();">
+  </div>
 </div>
 
 <script>

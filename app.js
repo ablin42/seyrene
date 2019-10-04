@@ -49,7 +49,7 @@ const authRoute = require('./controllers/auth');
 const blogsRoute = require('./controllers/blogs');
 const userRoute = require('./controllers/user');
 const contactRoute = require('./controllers/contact');
-const galleryRoute = require('./controllers/gallery');
+const galleryRoute = require('./controllers/galleries');
 
 app.use('/', pagesRoute);
 app.use('/api/auth', authRoute);
