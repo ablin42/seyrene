@@ -13,16 +13,19 @@ async function infiniteGalleries() {
                     div.setAttribute("id", id);
                     div.setAttribute("class", "card");//blog-row
                     div.setAttribute("style", "width: 18rem");
-                    div.innerHTML =  `
+                    let toAppend =  `
                         <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/${id}" class="card-img-top" alt="${gallery.title}"></a>
                         <div class="card-body">
                             <h5 class="card-title"><i>${gallery.title}</i></h5>
                             <a href="/Galerie/Patch/${id}"><i class="fas fa-edit"></i></a>
                             <p class="card-text gallery-description">${gallery.content}</p>
-                            <p class="card-text">
-                                <a href="#">#TAGS</a>
-                            </p>
-                        </div>`;
+                            <p class="card-text">`;
+                    
+                    gallery.tags.forEach(tag => {
+                        toAppend += `<a href="#">#${tag} </a>`;
+                    })
+                    toAppend += `</p></div>`;
+                    div.innerHTML = toAppend;  
                     /* 
                      <p class="card-text">
                             <% locals.galleries[index].tags.forEach(function (tag) { %>
@@ -30,6 +33,7 @@ async function infiniteGalleries() {
                             <% }) %>
                         </p>
                     */
+                   
                     id++;
                     $("#container-gallery").append(div);
                 }});
