@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Token = require('../models/VerificationToken');
+const PwToken = require('../models/PasswordToken');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verifySession = require('./helpers/verifySession');
@@ -16,6 +17,53 @@ router.get('/', async (req, res) => {
         const users = await User.find();
         res.status(200).json(users);
     } catch (err) {res.status(400).json({message: err})}
+})
+
+router.post('/lostpw', async (req, res) => { //have to check if email exist in db
+    try {
+        let email = req.body.email;
+        let token = crypto.randomBytes(16).toString('hex');
+        let user = await User.findOne({ email: email });
+        let pwToken = new PwToken({ _userId: user._id, token: token });
+
+        await pwToken.save((err) => {
+            if (err) console.log(err)
+        });
+
+        let subject = "Password Reset Token for Maral";
+        let content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n http:\/\/127.0.0.1:8089\/resetpw\/${pwToken._id}\/${token}`;
+        mailer(email, subject, content);
+    
+        res.status(200).json(req.body.email);
+    } catch (err) {console.log(err)}
+})
+
+router.post('/resetpw', async (req, res) => {
+    try {
+        let tokenId = req.body.tokenId,
+            token = req.body.token,
+            pw = req.body.password,
+            pw2 = req.body.password2;
+
+        // Check if pw matches
+        //const validPw = await bcrypt.compare(pw, pw2);
+        if (pw !== pw2){
+            //req.flash('warning', 'Invalid credentials');
+            return res.status(400).send('err pass not matching');
+        }
+        // Hash and salt pw
+        const salt = await bcrypt.genSalt(10);
+        const hashPw = await bcrypt.hash(pw, salt);
+
+        pwToken = await PwToken.findOne({_id: tokenId, token: token}); //if result is positive do sth else err
+        user = await User.updateOne({_id: pwToken._userId}, {$set: {password: hashPw}}); //on success/failure
+        deletePwToken = await PwToken.deleteOne({_id: tokenId});
+        console.log(deletePwToken);
+        console.log(user);
+        console.log({tokenId, token, pw, pw2});
+
+        res.status(200).json(user);
+    } catch (err) {console.log(err)}
 })
 
 router.post('/patch/name', verifySession, async (req, res) => {

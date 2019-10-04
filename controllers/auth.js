@@ -58,14 +58,17 @@ async function registerUser(req, res) {
     //} catch (err) {res.status(400).json({message: err})}*/
 
     // Create a verification token for this user
-    let validationToken = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
-    console.log(validationToken)
+    let vToken = crypto.randomBytes(16).toString('hex');
+    let validationToken = new Token({ _userId: user._id, token: vToken });
         
     let savedToken = await validationToken.save((err) => {
         if (err) console.log(err)
     });
-
-    if (await mailer(user.email, validationToken.token)) {
+   //subject: `Account Verification Token for Maral`,
+        //text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/' + token + '.\n'
+    let subject = `Account Verification Token for Maral`;
+    let content = `Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/'${vToken}'.`;
+    if (await mailer(user.email, subject, content)) {
         req.flash('info', "An error occured while trying to send the mail, please retry");
         return res.status(400).redirect('/Register');
     }
@@ -121,9 +124,7 @@ router.post('/login', async (req, res) => {
     req.session._id = user._id;
     req.session.name = user.name;
     req.session.level = user.level;
-    
     req.session.token = token;
-    console.log(token)
     
     res.header('authToken', token); // save token to header
     req.flash('success', 'Logged in successfully!');
@@ -187,7 +188,8 @@ router.post('/resend', (req, res, next) => {
         }
  
         // Create a verification token, save it, and send email
-        var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+        let vToken = crypto.randomBytes(16).toString('hex');
+        let token = new Token({ _userId: user._id, token: vToken });
  
         // Save the token
         token.save(async (err, savedToken) => {
@@ -196,8 +198,9 @@ router.post('/resend', (req, res, next) => {
                 return res.status(500).redirect('/Login'); 
             }
  
-            // Send the email
-            if (await mailer(user.email, savedToken.token)) {
+            let subject = `Account Verification Token for Maral`;
+            let content = `Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/'${vToken}'.`;
+            if (await mailer(user.email, subject, content)) {
                 req.flash('info', "An error occured while trying to send the mail, please retry");
                 return res.status(400).redirect('/Register');
             }

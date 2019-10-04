@@ -1,0 +1,27 @@
+<% include partials/head %>
+
+<div class="container-fluid"> 
+  <div class="login-form">
+    <form id="login-form" method="POST" action="/api/user/resetpw">
+      <h1 class="form-title">Reset password</h1>
+      <div class="txtb">
+        <input type="password" name="password" required>
+        <span data-placeholder="Password"></span>
+      </div>
+
+      <div class="txtb">
+        <input type="password" name="password2" required>
+        <span data-placeholder="Password Confirmation"></span>
+      </div>
+
+      <input type="hidden" name="tokenId" value="<%= locals.tokenId %>" required>
+      <input type="hidden" name="token" value="<%= locals.token %>" required>
+
+      <input type="submit" class="logbtn" value="Update Password" id="submit-resetpw">
+    </form>
+  </div>
+
+  <script src="/scripts/formFocus.js"></script> <!-- formvalidation passwords have to match and respect criterias -->
+</div>
+  
+<% include partials/footer %>

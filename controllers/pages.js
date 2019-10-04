@@ -119,6 +119,26 @@ router.get('/Blog', verifySession, async (req, res) => {
     res.status(200).render('blog', obj);
 })
 
+
+router.get('/Lostpw', async (req, res) => { //if user connected, redirect to home
+    let obj = {
+        active: "Lost password",
+        root: path.join(__dirname, '/pages/')
+    };
+    res.status(200).render('Lostpw', obj);
+})
+
+router.get('/Resetpw/:tokenId/:token', async (req, res) => { //if user connected, redirect to home
+    let obj = {
+        active: "Reset password",
+        root: path.join(__dirname, '/pages/'),
+        tokenId: req.params.tokenId,
+        token: req.params.token
+    };
+    //check if token exist / user exist, if not redirect
+    res.status(200).render('Resetpw', obj);
+})
+
 router.get('/Blog/Post', verifySession, async (req, res) => { //verify level access
     if (req.user.level > 1) {
         let obj = {

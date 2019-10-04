@@ -1,0 +1,24 @@
+<% include partials/head %>
+
+<div class="container-fluid"> 
+  <div class="login-form">
+    <form id="login-form" method="POST" action="/api/user/lostpw">
+      <h1 class="form-title">Lost Password</h1>
+      <div class="txtb">
+        <input type="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" required>
+        <span data-placeholder="Email"></span>
+      </div>
+
+      <input type="submit" class="logbtn" value="Reset" id="submit-lostpw">
+
+      <hr />
+      <div class="bottom-text mt-4">
+        Nous vous enverrons un <b>mail</b> pour réinitaliser votre mot de passe
+      </div>
+    </form>
+  </div>
+
+  <script src="/scripts/formFocus.js"></script>
+</div>
+  
+<% include partials/footer %>
