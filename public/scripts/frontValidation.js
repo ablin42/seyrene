@@ -42,7 +42,6 @@ let Validate = {
             email.classList.add("invalid");
         }
         else if (email.value.length !== 0) {
-            console.log(email.value.length, "middle")
             if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value))
             {
                 spanInfo.style.display = "none";

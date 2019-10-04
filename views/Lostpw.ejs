@@ -2,11 +2,12 @@
 
 <div class="container-fluid"> 
   <div class="login-form">
-    <form id="login-form" method="POST" action="/api/user/lostpw">
+    <form id="lostpw" method="POST" action="/api/user/lostpw">
       <h1 class="form-title">Lost Password</h1>
       <div class="txtb">
-        <input type="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" required>
+        <input type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
         <span data-placeholder="Email"></span>
+        <span id="i_email" class="form-info">E-mail has to be valid</span>
       </div>
 
       <input type="submit" class="logbtn" value="Reset" id="submit-lostpw">
@@ -19,6 +20,7 @@
   </div>
 
   <script src="/scripts/formFocus.js"></script>
+  <script src="/scripts/frontValidation.js"></script>
 </div>
   
 <% include partials/footer %>

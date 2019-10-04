@@ -86,6 +86,21 @@ const pwValidation = (data) => {
         return schema.validate(data);
 }
 
+
+const resetPwValidation = (data) => {
+        const schema = Joi.object({
+                password: Joi.string()
+                        .min(8)
+                        .max(256)
+                        .pattern(/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/)
+                        .required()
+                        .error(new Error('Password must contain between 8 and 256 characters and has to be atleast alphanumeric')),
+                password2: Joi.ref('password')//.error(new Error('Passwords not matching')),
+                       
+        });
+        return schema.validate(data);
+}
+
 const blogValidation = (data) => {
         const schema = Joi.object({
                 authorId: Joi.string()
@@ -161,6 +176,7 @@ module.exports.loginValidation = loginValidation;
 module.exports.nameValidation = nameValidation;
 module.exports.emailValidation = emailValidation;
 module.exports.pwValidation = pwValidation;
+module.exports.resetPwValidation = resetPwValidation;
 module.exports.blogValidation = blogValidation;
 module.exports.contactValidation = contactValidation;
 module.exports.galleryValidation = galleryValidation;

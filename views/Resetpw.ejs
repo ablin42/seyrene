@@ -2,16 +2,18 @@
 
 <div class="container-fluid"> 
   <div class="login-form">
-    <form id="login-form" method="POST" action="/api/user/resetpw">
+    <form id="resetpw" method="POST" action="/api/user/resetpw">
       <h1 class="form-title">Reset password</h1>
       <div class="txtb">
-        <input type="password" name="password" required>
+        <input type="password" id="password" name="password" onkeyup="Validate.Password(this);" required>
         <span data-placeholder="Password"></span>
+        <span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
       </div>
 
       <div class="txtb">
-        <input type="password" name="password2" required>
+        <input type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required>
         <span data-placeholder="Password Confirmation"></span>
+        <span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
       </div>
 
       <input type="hidden" name="tokenId" value="<%= locals.tokenId %>" required>
@@ -22,6 +24,7 @@
   </div>
 
   <script src="/scripts/formFocus.js"></script> <!-- formvalidation passwords have to match and respect criterias -->
+  <script src="/scripts/frontValidation.js"></script>
 </div>
   
 <% include partials/footer %>

@@ -15,16 +15,14 @@ module.exports =  async function sendValidationMail(email, subject, text) {
         to: email,
         subject: subject,
         text: text
-        //subject: `Account Verification Token for Maral`,
-        //text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/' + token + '.\n'
     }
 
     transporter.sendMail(mailOptions, (err) => {
         if (err) {
-            console.log("ERROR", err);
+            console.log("MAILING ERROR:", err);
             return true;
         } else {
-            console.log("SUCCESS");
+            console.log("MAIL SENT SUCCESSFULLY");
         }
     })
     return false;

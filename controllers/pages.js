@@ -7,6 +7,7 @@ const format = require('date-format');
 const Blog = require('../models/Blog');
 const User = require('../models/User');
 const Gallery = require('../models/Gallery');
+const PwToken = require('../models/PasswordToken');
 
 const router = express.Router();
 
@@ -120,22 +121,40 @@ router.get('/Blog', verifySession, async (req, res) => {
 })
 
 
-router.get('/Lostpw', async (req, res) => { //if user connected, redirect to home
+router.get('/Lostpw', verifySession, async (req, res) => { //if user connected, redirect to home
     let obj = {
         active: "Lost password",
         root: path.join(__dirname, '/pages/')
     };
+    if (req.user._id != undefined) {
+        obj.userId = req.user._id;
+        obj.name = req.user.name;
+        obj.level = req.user.level;
+        req.flash('info', "You're logged in, you can change your password here.")
+        return res.status(200).redirect('/User');
+    }
     res.status(200).render('Lostpw', obj);
 })
 
-router.get('/Resetpw/:tokenId/:token', async (req, res) => { //if user connected, redirect to home
+router.get('/Resetpw/:tokenId/:token', verifySession, async (req, res) => { //if user connected, redirect to home
     let obj = {
         active: "Reset password",
         root: path.join(__dirname, '/pages/'),
         tokenId: req.params.tokenId,
         token: req.params.token
     };
-    //check if token exist / user exist, if not redirect
+    if (req.user._id != undefined) {
+        obj.userId = req.user._id;
+        obj.name = req.user.name;
+        obj.level = req.user.level;
+        req.flash('info', "You're logged in, you can change your password here.")
+        return res.status(200).redirect('/User');
+    }
+    let pwToken = await PwToken.findOne({_id: obj.tokenId, token: obj.token});
+    if (pwToken === null) {
+        req.flash('warning', 'Invalid token, please try to request another one here');
+        return res.status(200).redirect('/Lostpw');
+    } 
     res.status(200).render('Resetpw', obj);
 })
 
