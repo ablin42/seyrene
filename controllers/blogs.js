@@ -57,6 +57,7 @@ async function getBlogs(options) {
     return query;
 }
 
+//blog pagination
 router.get('/', async (req, res) => {
     try {
         const options = {
@@ -69,6 +70,7 @@ router.get('/', async (req, res) => {
     } catch (err) {res.status(400).json({message: err})}
 })
 
+// get a blog object
 router.get('/:blogId', async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.blogId);

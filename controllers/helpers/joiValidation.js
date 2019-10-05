@@ -33,12 +33,12 @@ const loginValidation = (data) => {
                 .min(1)
                 .max(256)
                 .email()
-                .error(new Error('Email must contain between 1 and 256 characters, with a valid format')),
+                .error(new Error('Invalid email format')),
         password: Joi.string()
                 .min(1)
                 .max(256)
                 .required()
-                .error(new Error('Password must contain between 1 and 256')),
+                .error(new Error('Invalid password format')),
     });
     return schema.validate(data);
 }
