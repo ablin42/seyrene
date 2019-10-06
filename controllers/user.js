@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-
 const bcrypt = require('bcryptjs');
+const pe = require('parse-error');
+
 const {nameValidation, emailValidation, pwValidation, resetPwValidation} = require('./helpers/joiValidation');
 const mailer = require('./helpers/mailer');
 const verifySession = require('./helpers/verifySession');
@@ -24,50 +25,38 @@ router.post('/lostpw', async (req, res) => { //check if pwtoken already exist
 try {
     const email = req.body.email,
           token = crypto.randomBytes(16).toString('hex');
-
     // find user using email
-    User.findOne({ email: email }, async (err, user) => {
-        if (err) //if user === null
-            throw new Error("Invalid e-mail, please make sure you entered the correct e-mail");
-             // fetch token using user id, if it return null, create a token and save it
-        PwToken.findOne({ _userId: user._id}, (err, pwToken) => {
-            if (err) // si pwtoken === null
-                throw new Error("ISSOU")
-            if (pwToken === null) {
-                pwToken = new PwToken({ _userId: user._id, token: token });
-                pwToken.save((err) => {
-                    if (err) 
-                        throw new Error("An error occured while saving your token, please try again");
-                });
-            } else {
-                // update token if one already exist
-                PwToken.updateOne({ _userId: user._id}, {$set: {token: token}}, (err) => {
-                    if (err) 
-                        throw new Error("An error occured while updating your token, please try again");
-                });
-            }
-        })
-        const subject = "Password Reset Token for Maral",
-            content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n http:\/\/127.0.0.1:8089\/resetpw\/${pwToken._id}\/${token}`;
-        if (await mailer(email, subject, content)) 
-            throw new Error("An error occured while send the e-mail, please try again");
-        
-        req.flash('success', "An e-mail was sent to your address, please follow the link we sent you");
-        return res.status(200).redirect('/');
-    });
-      
-
-          
-
  
-    /*
-    if (user === null) 
+    let err, result, user, pwToken;
+    [err, user] = await utils.to(User.findOne({ email: email }));
+    if (err)
+        throw new Error("An error occured while looking for your account, please retry");
+    if (user === null)
         throw new Error("Invalid e-mail, please make sure you entered the correct e-mail");
+
+    [err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id}));
+    if (err)
+        throw new Error("An error occured while looking for your token, please retry");
+
     if (pwToken === null) {
         pwToken = new PwToken({ _userId: user._id, token: token });
-        */
+        [err, result] = await utils.to(pwToken.save());
+        if (err) 
+            throw new Error("An error occured while saving your token, please try again");
+    } else {
+        // update token if one already exist
+        [err, result] = await utils.to(PwToken.updateOne({ _userId: user._id}, {$set: {token: token}}))
+            if (err) 
+                throw new Error("An error occured while updating your token, please try again");
+    }
 
-   
+    const subject = "Password Reset Token for Maral",
+          content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n http:\/\/127.0.0.1:8089\/resetpw\/${pwToken._id}\/${token}`;
+    if (await mailer(email, subject, content)) 
+        throw new Error("An error occured while send the e-mail, please try again");
+            
+    req.flash('success', "An e-mail was sent to your address, please follow the link we sent you");
+    return res.status(200).redirect('/');
 } catch (err) {
     console.log("ERROR LOSTPW:", err);
     req.flash('warning', err.message);
@@ -75,11 +64,12 @@ try {
 }})
 
 router.post('/resetpw', async (req, res) => {
+const tokenId = req.body.tokenId,//sanitize + has to be outside of try for catch block
+      token = req.body.token,
+      pw = req.body.password,
+      pw2 = req.body.password2;
 try {
-    const tokenId = req.body.tokenId,//sanitize
-          token = req.body.token,
-          pw = req.body.password,
-          pw2 = req.body.password2;
+    let err, pwToken, user;
 
     // check passwords validity
     const {error} = await resetPwValidation({password: pw, password2: pw2});
@@ -92,25 +82,24 @@ try {
         throw new Error("An error occured while encrypting your data, please try again");
 
     // check if token is valid
-    PwToken.findOne({_id: tokenId, token: token}, (err, pwToken) => {
-        if (err)
-            throw new Error("Invalid token, please try to request another one here");
-        // update password and delete token
-        User.updateOne({_id: pwToken._userId}, {$set: {password: hashPw}}, (err) => {
-            if (err)
-                throw new Error("An error occured while updating your password, please try again");
-            PwToken.deleteOne({_id: tokenId}, (err) => {
-                if (err)
-                    throw new Error("An error occured while cleaning up your token, please try again");
-                req.flash('success', "Password successfully modified");
-                return res.status(200).redirect('/Login');
-            });
-        });
-    });
+    [err, pwToken] = await utils.to(PwToken.findOne({_id: tokenId, token: token}));
+    if (err)
+        throw new Error("Invalid token, please try to request another one here");
+
+    // update password and delete token
+    [err, user] = await utils.to(User.updateOne({_id: pwToken._userId}, {$set: {password: hashPw}}));
+    if (err)
+        throw new Error("An error occured while updating your password, please try again");
+    [err, pwToken] = await utils.to(PwToken.deleteOne({_id: tokenId}));
+    if (err)
+        throw new Error("An error occured while cleaning up your token, please try again");
+
+    req.flash('success', "Password successfully modified");
+    return res.status(200).redirect('/Login');
 } catch (err) {
     console.log("ERROR RESETPW:", err);
     req.flash('warning', err.message);
-    return res.status(400).redirect('/Lostpw');
+    return res.status(400).redirect(`/Resetpw/${tokenId}/${token}`);
 }})
 
 router.post('/patch/name', verifySession, async (req, res) => {
@@ -127,12 +116,11 @@ try {
         if (nameExist)
             throw new Error("An account already exist with this username")
         // Update username
-        User.updateOne({_id: id}, {$set: {name: name}}, (err) => {
-            if (err)
-                throw new Error("An error occured while updating your username, please try again")
-            req.flash('success', "Username successfully modified");
-            res.status(200).redirect('/User');
-        });
+        var [err, user] = await utils.to(User.updateOne({_id: id}, {$set: {name: name}}));
+        if (err)
+            throw new Error("An error occured while updating your username, please try again")
+        req.flash('success', "Username successfully modified");
+        res.status(200).redirect('/User');
     }
     else 
         throw new Error("Unauthorized, please make sure you are logged in");
@@ -148,6 +136,7 @@ try {
         const newEmail = req.body.email, //sanitize
               id = req.user._id,
               vToken = crypto.randomBytes(16).toString('hex'); 
+        //let err, user, token;
         const {error} = await emailValidation(req.body);
         if (error)
             throw new Error(error.message);
@@ -156,14 +145,12 @@ try {
         if (emailExist) 
             throw new Error("An account already exist with this e-mail");
 
-        User.updateOne({_id: id}, {$set: {email: newEmail, isVerified: false}}, (err) => {
-            if (err)
-                throw new Error("An error occured while updating your email, please try again");
-        }); 
-        Token.updateOne({_userId: id}, {$set: {token: vToken}}, (err) => {
-            if (err)
-                throw new Error("An error occured while updating your token, please try again");
-        }); 
+        var [err, user] = await utils.to(User.updateOne({_id: id}, {$set: {email: newEmail, isVerified: false}}));
+        if (err)
+            throw new Error("An error occured while updating your email, please try again");
+        var [err, token] = await utils.to(Token.updateOne({_userId: id}, {$set: {token: vToken}}));
+        if (err)
+            throw new Error("An error occured while updating your token, please try again"); 
         
         //send mail
         let subject = `Account Verification Token for Maral`,
@@ -194,28 +181,24 @@ try {
               password = req.body.password,
               password2 = req.body.password2;
         
-        User.findById(id, async (err, user) => {
-            if (err)
-                throw new Error("An error occured, please make sure you are logged in and try again");
+        var [err, user] = await utils.to(User.findById(id));
+        if (err)
+            throw new Error("An error occured, please make sure you are logged in and try again");
             
-            // Check if pw matches
-            const validPw = await bcrypt.compare(cpassword, user.password);
-            if (!validPw)
-                throw new Error("This is not your current password!");
-            if (password !== password2)
-                throw new Error("The passwords you entered didn't match!");
-            // Hash and salt pw
-            const hashPw = await bcrypt.hash(password, 10);
-            if (!hashPw)
-                throw new Error("An error occured while encrypting your data, please try again");
+        // Check if pw matches
+        const validPw = await bcrypt.compare(cpassword, user.password);
+        if (!validPw)
+            throw new Error("This is not your current password!");
+        // Hash and salt pw
+        const hashPw = await bcrypt.hash(password, 10);
+        if (!hashPw)
+            throw new Error("An error occured while encrypting your data, please try again");
             
-            User.updateOne({_id: id}, {$set: {password: hashPw}}, (err) => {
-                if (err)
-                    throw new Error("An error occured while updating your password, please try again");
-                    req.flash('success', "Password successfully modified");
-                    res.status(200).redirect('/User');
-            });
-        });
+        var [err, user] = await utils.to(User.updateOne({_id: id}, {$set: {password: hashPw}}));
+        if (err)
+            throw new Error("An error occured while updating your password, please try again");
+        req.flash('success', "Password successfully modified");
+        res.status(200).redirect('/User');
     }
     else 
         throw new Error("Unauthorized, please make sure you are logged in");
