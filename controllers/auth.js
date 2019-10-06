@@ -64,7 +64,7 @@ try {
     
     // Send account confirmation mail to user
     let subject = `Account Verification Token for Maral`;
-    let content = `Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/'${vToken}'.`;
+    let content = `Hello,\n\n Please verify your account by following the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
     if (await mailer(user.email, subject, content)) {
         throw new Error("An error occured while trying to send the mail, please retry");
     }
@@ -211,7 +211,7 @@ try {
         return res.status(200).redirect('/Login');
     });
 } catch (err) {
-    console.log("ERROR CONFIRMATION TOKEN:", err);
+    console.log("ERROR SENDING TOKEN:", err);
     req.flash('warning', err.message);
     return res.status(400).redirect('/Login');
 }});

@@ -81,7 +81,7 @@ const pwValidation = (data) => {
                         .required()
                         .error(new Error('Password must contain between 8 and 256 characters and has to be atleast alphanumeric')),
                 password2: Joi.ref('password')
-                        .error(new Error('Passwords not matching'))
+                        //.error(new Error('Passwords not matching'))
         });
         return schema.validate(data);
 }
