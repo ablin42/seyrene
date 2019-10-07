@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = function(req, res, next){
     req.user = {
-        "_id": 'noid_admin',
+        "_id": "5d810b9365761c0840e0de25",
         "name": "HARBINGER",
         "level": 3
     };

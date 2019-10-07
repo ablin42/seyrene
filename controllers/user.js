@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const pe = require('parse-error');
 
 const {nameValidation, emailValidation, pwValidation, resetPwValidation} = require('./helpers/joiValidation');
 const mailer = require('./helpers/mailer');
@@ -178,9 +177,8 @@ try {
 
         const id = req.user._id,
               cpassword = req.body.cpassword,
-              password = req.body.password,
-              password2 = req.body.password2;
-        
+              password = req.body.password;
+                      
         var [err, user] = await utils.to(User.findById(id));
         if (err)
             throw new Error("An error occured, please make sure you are logged in and try again");

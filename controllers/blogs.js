@@ -1,142 +1,116 @@
 const express = require('express');
 const router = express.Router();
+
 const Blog = require('../models/Blog');
-const User = require('../models/User');
 const verifyToken = require('./helpers/verifyToken');
-const format = require('date-format');
+const bHelpers = require('./helpers/blogHelpers');
+const utils = require('./helpers/utils');
 const {blogValidation} = require('./helpers/joiValidation');
-
-/*router.get('/updatemongo', async (req, res) => {
-    Blog.updateMany({author:"haaaaarb"}, {$unset: {author: ""}}, 
-    function(err, num) {
-        console.log(num);
-    }
-);
-res.status(200).send("ok")
-})*/
-
-async function getName (authorId) {
-    user = await User.findById(authorId, (err, elem) => {})
-    return user.name;
-}
-
-async function objBlog (item) {
-    let obj = {
-        _id: item._id,
-        author: "",
-        title: item.title,
-        content: item.content,
-        date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        __v: 0
-    };
-    obj.author = await getName(item.authorId);
-    return obj;
-}
-
-async function parseBlogs(blogs) {
-    let blogsParsed = [];
-    for (let item of blogs) {
-        let obj = await objBlog(item);
-        blogsParsed.push(obj);
-    }
-
-    /*blogsParsed.forEach((item, index) => {
-        console.log(index, item.author, item.title)
-    })*/
-    return blogsParsed;
-}
-
-async function getBlogs(options) {
-    query = await Blog.paginate({}, options).then(async (res) => {
-        const blogs = res.docs;
-        blogsParsed = await parseBlogs(blogs);
-        return blogsParsed;
-    })
-    return query;
-}
 
 //blog pagination
 router.get('/', async (req, res) => {
-    try {
-        const options = {
-            page: parseInt(req.query.page, 10) || 1,
-            limit: 5,
-            sort: { date: -1 }
-        }
-        const result = await getBlogs(options);
-        res.status(200).json(result);
-    } catch (err) {res.status(400).json({message: err})}
-})
+try {
+    const options = {
+        page: parseInt(req.query.page, 10) || 1,
+        limit: 5,
+        sort: { date: -1 }
+    }
+    const result = await bHelpers.getBlogs(options);
+    res.status(200).json(result);
+} catch (err) {
+    console.log("BLOG FETCH ERROR", err)
+    res.status(200).json({error: true, message: err.message})
+}})
 
 // get a blog object
 router.get('/:blogId', async (req, res) => {
-    try {
-        const blog = await Blog.findById(req.params.blogId);
-        res.status(200).json(blog)
-    } catch (err) {res.status(400).json({message: err})}
+try {
+    var err, blog;
+    [err, blog] = await utils.to(Blog.findById(req.params.blogId));
+    if (err)
+        throw new Error("An error occured while fetching the blog's data, please try again");
+    if (blog === null)
+        throw new Error("No blog post exist with this ID");
+    return res.status(200).json(blog)
+} catch (err) {
+    console.log("ERROR FETCHING A BLOG:", err);
+    return res.status(400).json({message: err.message})
+}
 })
 
+// post a blog
 router.post('/', verifyToken, async (req, res) => {
+try {
     if (req.user.level > 1) {
-        const obj = {
+        const obj = { //sanitize
             authorId: req.user._id,
             title: req.body.title,
             content: req.body.content
         };
         const {error} = await blogValidation(obj);
-        if (error) {
-            req.flash('warning', error.message);
-            return res.status(400).redirect('/Blog/Post');
-        }
-        const blog = new Blog(obj)
-        try {
-            const savedBlog = await blog.save();
-            req.flash('success', "Post uploadé avec succès");
-            res.status(200).redirect('/Blog');
-        } catch (err) {res.status(400).json({message: err})}
+        if (error)
+            throw new Error(error.message);
+        const blog = new Blog(obj);
+        var err, savedBlog;
+        [err, savedBlog] = await utils.to(blog.save());
+        if (err)
+            throw new Error("An error occured while posting your blog, please try again");
+        req.flash('success', "Post successfully uploaded");
+        res.status(200).redirect('/Blog');
     }
-    else {
-        res.status(200).send("Unauthorized.");//redirect or 404
-    }
-})
+    else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+} catch (err) {
+    console.log("POST BLOG ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/Blog/Post")
+}})
 
+// patch a blog
 router.post('/patch/:blogId', verifyToken, async (req, res) => {
+try {
     if (req.user.level > 1) {
-        try {
-            const obj = {
-                authorId: req.user._id,
-                title: req.body.title,
-                content: req.body.content
-            };
-            const {error} = await blogValidation(obj);
-            if (error) {
-                req.flash('warning', error.message);
-                return res.status(400).redirect('blog-post');
-            }
-            const patchedBlog = await Blog.updateOne({_id: req.params.blogId}, {$set: {
-                title: req.body.title,
-                content: req.body.content
-            }});
-            req.flash('success', "Post corrigé avec succès");
-            res.status(200).redirect('/Blog');
-        } catch (err) {res.status(400).json({message: err})}
-    } else {
-        res.status(200).send("Unauthorized.");//redirect or 404
-    }
-})
+        const obj = { //sanitize
+            authorId: req.user._id,
+            title: req.body.title,
+            content: req.body.content
+        };
+        const {error} = await blogValidation(obj);
+        if (error)
+            throw new Error(error.message);
+        var err, patchedBlog;
+        [err, patchedBlog] = await utils.to(Blog.updateOne({_id: req.params.blogId}, {$set: {
+            title: req.body.title,
+            content: req.body.content
+        }}));
+        if (err)
+            throw new Error("An error occured while updating the blog, please try again");
+        req.flash('success', "Post corrigé avec succès");
+        res.status(200).redirect('/Blog');
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+} catch (err) {
+    console.log("PATCH BLOG ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect(`/Blog/Patch/${req.params.blogId}`);
+}})
 
+// delete a blog
 router.get('/delete/:blogId', verifyToken, async (req, res) => {
+try {
     if (req.user.level > 1) {
-        try {
-            const removedBlog = await Blog.deleteOne({_id: req.params.blogId});
-            req.flash('success', "Post supprimé avec succès");
-            res.status(200).redirect('/Blog');
-        } catch (err) {res.status(400).json({message: err})}
-    } else {
-        res.status(200).send("Unauthorized.");//redirect or 404
+        var [err, removedBlog] = await utils.to(Blog.deleteOne({_id: req.params.blogId}));
+        if (err)
+            throw new Error("An error occured while deleting the blog, please try again");
+        req.flash('success', "Post supprimé avec succès");
+        res.status(200).redirect('/Blog');
     }
-})
+    else
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+} catch (err) {
+    console.log("DELETE BLOG ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/Blog");
+}})
 
 module.exports = router;

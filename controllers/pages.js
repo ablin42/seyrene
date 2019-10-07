@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const verifyToken = require('./helpers/verifyToken');
 const verifySession = require('./helpers/verifySession');
+const utils = require('./helpers/utils');
 const request = require('request-promise');
 const format = require('date-format');
 const Blog = require('../models/Blog');
@@ -28,18 +29,25 @@ router.get('/', verifySession, (req, res) => {
 })
 
 router.get('/Galerie', verifySession, async (req, res) => {
+try {
     let obj = {
         active: "Galerie",
         root: path.join(__dirname, '/pages/')
     };
     obj.galleries = JSON.parse(await request('http://127.0.0.1:8089/api/gallery/'));
+    if (obj.galleries.error)
+            throw new Error(obj.galleries.message);
     if (req.user._id != undefined) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
     }
     res.status(200).render('galerie', obj);
-})
+} catch (err) {
+    console.log("GALLERY ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/");
+}})
 
 router.get('/Login', verifySession, (req, res) => { //had verifyToken here, weird, might have forgotten to delete it
     let obj = {
@@ -108,16 +116,24 @@ router.get('/Contact', verifySession, (req, res) => {
 })
 
 router.get('/Blog', verifySession, async (req, res) => {
-    let obj = {
-        active: "Blog"
-    };
-    obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
-    if (req.user._id != undefined) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-    }
-    res.status(200).render('blog', obj);
+    try {
+        let obj = {
+            active: "Blog"
+        };
+        obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
+        if (obj.blogs.error)
+            throw new Error(obj.blogs.message);
+        if (req.user._id != undefined) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        return res.status(200).render('blog', obj);
+    } catch (err) {
+        console.log("BLOG ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        return res.status(200).redirect('/');
+    } 
 })
 
 
@@ -159,6 +175,7 @@ router.get('/Resetpw/:tokenId/:token', verifySession, async (req, res) => { //if
 })
 
 router.get('/Blog/Post', verifySession, async (req, res) => { //verify level access
+try {
     if (req.user.level > 1) {
         let obj = {
             active: "Post a blog"
@@ -169,17 +186,28 @@ router.get('/Blog/Post', verifySession, async (req, res) => { //verify level acc
             obj.level = req.user.level;
         }
         return res.status(200).render('restricted/blog-post', obj);
-    } else {
-        res.status(404).send("404 error"); // 404 page render here
-    }
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+} catch (err) {
+    console.log("BLOG POST ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    return res.status(200).redirect("/");
+}
 })
 
 router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify level access
+try {
     if (req.user.level > 1) {
         let obj = {
             active: "Edit a blog"
         };
-        obj.blogContent = await Blog.findOne({_id: req.params.blogId}); // if exist continue if not redirect
+        var err, blog;
+        [err, blog] = await utils.to(Blog.findOne({_id: req.params.blogId}));
+        if (err)
+            throw new Error("An error occured while loading the blog, please try again");
+        if (blog === null)
+            throw new Error("No blog exists with this ID");
+        obj.blogContent = blog;
         obj._id = req.params.blogId;
         if (req.user) {
             obj.userId = req.user._id;
@@ -187,10 +215,13 @@ router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify 
             obj.level = req.user.level;
         }
         return res.status(200).render('restricted/blog-patch', obj);
-    } else {
-        res.status(404).send("404 error"); // 404 page render here
-    }
-})
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+} catch (err) {
+    console.log("BLOG PATCH ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    return res.status(200).redirect("/");
+}})
 
 router.get('/Galerie/Post', async (req, res) => { //verifyToken
     //if (req.user.level > 1) {

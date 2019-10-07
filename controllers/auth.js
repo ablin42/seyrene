@@ -52,15 +52,15 @@ try {
         token: vToken 
     });
      
+    var err, result;
     // Save User and validationToken to DB
-    user.save((err) => {
-        if (err)
-            throw new Error("An error occured while creating your account, please try again");
-    });
-    validationToken.save((err) => {
-        if (err) 
-            throw new Error("An error occured while creating your confirmation token, please try again");
-    });
+    [err, result] = await utils.to(user.save());
+    if (err)
+        throw new Error("An error occured while creating your account, please try again");
+
+    [err, user] = await utils.to(validationToken.save());
+    if (err) 
+        throw new Error("An error occured while creating your confirmation token, please try again");
     
     // Send account confirmation mail to user
     let subject = `Account Verification Token for Maral`;
@@ -95,9 +95,11 @@ try {
         password: req.body.password
     }
 
-
+    var err, user;
     // Check if email exists in DB
-    const user = await User.findOne({email: obj.email});
+    [err, user] = await utils.to(User.findOne({email: obj.email}));
+    if (err)
+        throw new Error("An error occured while looking for your user account, please try again");
     if (!user)
         throw new Error("Invalid credentials");
 
@@ -157,12 +159,17 @@ try {
 router.get('/confirmation/:token', async (req, res) => {
 try {
     const receivedToken = req.params.token;//sanitiwe
-    const token = await Token.findOne({ token: receivedToken });
+    var err, token, user;
+    [err, token] = await utils.to(Token.findOne({ token: receivedToken }));
+    if (err)
+        throw new Error("An error occured while looking for your token, please try again");
     if (!token) 
         throw new Error("We were unable to find a valid token. Your token may have expired");
 
     // If we found a token, find a matching user
-    let user = await User.findOne({ _id: token._userId });
+    [err, user] = await utils.to(User.findOne({ _id: token._userId }));
+    if (err)
+        throw new Error("An error occured while looking for your user account, please try again");
     if (!user) 
         throw new Error("We were unable to find a user for this token");
             
@@ -171,12 +178,11 @@ try {
  
     // Verify and save the user
     user.isVerified = true;
-    user.save(function (err) {
-        if (err)
-            throw new Error(err.message);
-        req.flash('success', "Your account has been verified. Please log in.");    
-        return res.status(200).redirect('/Login');
-    });
+    [err, user] = await utils.to(user.save()); 
+    if (err)
+        throw new Error(err.message);
+    req.flash('success', "Your account has been verified. Please log in.");    
+    return res.status(200).redirect('/Login');
 } catch (err) {
     console.log("ERROR CONFIRMATION TOKEN:", err);
     req.flash('warning', err.message);
@@ -187,8 +193,11 @@ try {
 router.post('/resend', async (req, res) => {
 try {
     const email = req.body.email;//sanitize
-    const user = await User.findOne({ email: email });
+    var err, user, savedToken;
+    [err, user] = await utils.to(User.findOne({ email: email }));
     // Check if an user exist with this email and check if his account is verified
+    if (err)
+        throw new Error("An error occured while looking for you user account, please try again");
     if (!user) 
         throw new Error("We were unable to find a user with that email");
     if (user.isVerified) 
@@ -199,17 +208,16 @@ try {
     let token = new Token({ _userId: user._id, token: vToken });
  
     // Save the token
-    token.save(async (err, savedToken) => {
-        if (err)  
-            throw new Error("An error occured while saving your token, please try again")        
+    [err, savedToken] = await utils.to(token.save());
+    if (err)  
+        throw new Error("An error occured while saving your token, please try again")        
  
-        let subject = `Account Verification Token for Maral`;
-        let content = `Hello,\n\n Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
-        if (await mailer(user.email, subject, content))
-            throw new Error("An error occured while sending your the email, please try again")
-        req.flash('info', `A verification email has been sent to ${user.email}`);
-        return res.status(200).redirect('/Login');
-    });
+    let subject = `Account Verification Token for Maral`;
+    let content = `Hello,\n\n Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
+    if (await mailer(user.email, subject, content))
+        throw new Error("An error occured while sending your the email, please try again")
+    req.flash('info', `A verification email has been sent to ${user.email}`);
+    return res.status(200).redirect('/Login');
 } catch (err) {
     console.log("ERROR SENDING TOKEN:", err);
     req.flash('warning', err.message);

@@ -1,4 +1,5 @@
 const User = require('../../models/User');
+const pe = require('parse-error');
 
 module.exports = {
     emailExist: async function emailExist(email) {
