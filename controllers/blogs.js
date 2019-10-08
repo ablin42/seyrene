@@ -51,8 +51,7 @@ try {
         if (error)
             throw new Error(error.message);
         const blog = new Blog(obj);
-        var err, savedBlog;
-        [err, savedBlog] = await utils.to(blog.save());
+        var [err, savedBlog] = await utils.to(blog.save());
         if (err)
             throw new Error("An error occured while posting your blog, please try again");
         req.flash('success', "Post successfully uploaded");
@@ -78,8 +77,7 @@ try {
         const {error} = await blogValidation(obj);
         if (error)
             throw new Error(error.message);
-        var err, patchedBlog;
-        [err, patchedBlog] = await utils.to(Blog.updateOne({_id: req.params.blogId}, {$set: {
+        var [err, patchedBlog] = await utils.to(Blog.updateOne({_id: req.params.blogId}, {$set: {
             title: req.body.title,
             content: req.body.content
         }}));

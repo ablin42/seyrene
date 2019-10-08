@@ -4,19 +4,19 @@
 
 <div class="container-fluid">
     <div class="login-form blog-form col-6 offset-3">
-        <form id="gallery" method="POST" action="/api/gallery/patch/<%= locals._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event);"> 
+        <form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event);"> 
             <h1 class="form-title">Editer un item de la gallerie</h1>
             <div class="txtb">
-                <input type="text" name="title" id="title" value="<%= locals.title %>" onkeyup="Validate.String(this, 1, 256);" required>
+                <input type="text" name="title" id="title" value="<%= locals.gallery.title %>" onkeyup="Validate.String(this, 1, 256);" required>
                 <span data-placeholder="Title"></span>
                 <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
             </div>
             
-            <textarea id="content" name="content" class="blog-textarea" placeholder="Your item description here" onkeyup="Validate.String(this, 1, 2048);" required><%= locals.content %></textarea>
+            <textarea id="content" name="content" class="blog-textarea" placeholder="Your item description here" onkeyup="Validate.String(this, 1, 2048);" required><%= locals.gallery.content %></textarea>
             <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
 
             <div class="form-group">
-                <img src="/api/gallery/image/<%= locals._id %>"/>
+                <img src="/api/gallery/image/<%= locals.gallery._id %>"/>
                 <input type="file" name="img" id="img">
             </div>
         
@@ -28,14 +28,14 @@
             <input type="submit" class="logbtn" value="Update" id="submit-gallery">
         </form>
     <hr />
-    <form method="GET" action="/api/gallery/delete/<%= locals._id %>">
+    <form method="GET" action="/api/gallery/delete/<%= locals.gallery._id %>">
         <input type="submit" class="delbtn" value="DELETE" id="delete-blog">
     </form>
 </div>
 
 <script>
     let tagInput = $("#tagInput");
-    let tags = "<%= locals.tags %>";
+    let tags = "<%= locals.gallery.tags %>";
     tags = tags.split(',')
 
     tagInput.tagsinput('add', "");
@@ -61,7 +61,7 @@
         formData.append('content', content);
         formData.append('tags', JSON.stringify(tags));
             
-        fetch('/api/gallery/patch/<%= locals._id %>', {
+        fetch('/api/gallery/patch/<%= locals.gallery._id %>', {
             method: 'post',
             mode: 'same-origin',
             body: formData

@@ -17,7 +17,7 @@ try {
     const users = await User.find();
     return res.status(200).json(users);
 } catch (err) {
-    return res.status(400).json({message: err})
+    return res.status(400).json({message: err.message})
 }})
 
 router.post('/lostpw', async (req, res) => { //check if pwtoken already exist
@@ -26,25 +26,25 @@ try {
           token = crypto.randomBytes(16).toString('hex');
     // find user using email
  
-    let err, result, user, pwToken;
-    [err, user] = await utils.to(User.findOne({ email: email }));
+    //let err, result, user, pwToken;
+    var [err, user] = await utils.to(User.findOne({ email: email }));
     if (err)
         throw new Error("An error occured while looking for your account, please retry");
     if (user === null)
         throw new Error("Invalid e-mail, please make sure you entered the correct e-mail");
 
-    [err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id}));
+    var [err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id}));
     if (err)
         throw new Error("An error occured while looking for your token, please retry");
 
     if (pwToken === null) {
         pwToken = new PwToken({ _userId: user._id, token: token });
-        [err, result] = await utils.to(pwToken.save());
+        var [err, result] = await utils.to(pwToken.save());
         if (err) 
             throw new Error("An error occured while saving your token, please try again");
     } else {
         // update token if one already exist
-        [err, result] = await utils.to(PwToken.updateOne({ _userId: user._id}, {$set: {token: token}}))
+        var [err, result] = await utils.to(PwToken.updateOne({ _userId: user._id}, {$set: {token: token}}))
             if (err) 
                 throw new Error("An error occured while updating your token, please try again");
     }
@@ -68,8 +68,6 @@ const tokenId = req.body.tokenId,//sanitize + has to be outside of try for catch
       pw = req.body.password,
       pw2 = req.body.password2;
 try {
-    let err, pwToken, user;
-
     // check passwords validity
     const {error} = await resetPwValidation({password: pw, password2: pw2});
     if (error) 
@@ -81,15 +79,15 @@ try {
         throw new Error("An error occured while encrypting your data, please try again");
 
     // check if token is valid
-    [err, pwToken] = await utils.to(PwToken.findOne({_id: tokenId, token: token}));
+    var [err, pwToken] = await utils.to(PwToken.findOne({_id: tokenId, token: token}));
     if (err)
         throw new Error("Invalid token, please try to request another one here");
 
     // update password and delete token
-    [err, user] = await utils.to(User.updateOne({_id: pwToken._userId}, {$set: {password: hashPw}}));
+    var [err, user] = await utils.to(User.updateOne({_id: pwToken._userId}, {$set: {password: hashPw}}));
     if (err)
         throw new Error("An error occured while updating your password, please try again");
-    [err, pwToken] = await utils.to(PwToken.deleteOne({_id: tokenId}));
+    var [err, pwToken] = await utils.to(PwToken.deleteOne({_id: tokenId}));
     if (err)
         throw new Error("An error occured while cleaning up your token, please try again");
 

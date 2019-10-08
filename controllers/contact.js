@@ -16,7 +16,8 @@ try {
         subject = `FROM ${name}, [${req.body.email}] - ${req.body.title}`,
         content = req.body.content;
 
-    if (await mailer("Maral.canvas@gmail.com", subject, content)) 
+        //maral.canvas@gmail.com
+    if (await mailer("ablin@byom.de", subject, content)) 
         throw new Error("An error occured while trying to send the mail, please retry");
 
     req.flash("success", "Email sent! We will answer as soon as we can");

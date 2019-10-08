@@ -99,52 +99,64 @@ try {
 
 //delete item using its id + sanitize :id
 router.get('/delete/:id', verifyToken, async (req, res) => { /////////////////////// HERE
-let id = req.params.id;
 try {
     if (req.user.level > 1) {
-        await Gallery.deleteOne({_id: id});
+        let id = req.params.id; //sanitize
+        var [err, gallery] = await utils.to(Gallery.deleteOne({_id: id}));
+        if (err)
+            throw new Error("An error occured while deleting the item, please try again");
         req.flash('success', "Item successfully deleted!");
         return res.status(200).redirect('/Galerie');
-    } else {
-        req.flash('warning', "Unauthorized. Contact your administrator if you think this is a mistake"); 
-        return res.status(200).redirect('/Login');//redirect or 404  
-    }
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
 } catch (err) {
-    req.flash('warning', "An error occured, please retry");            
-    res.status(400).redirect(`/Galerie/Patch/${id}`);
+    console.log("DELETE GALLERY ERROR", err);
+    req.flash('warning', err.message);            
+    res.status(400).redirect(`/Galerie/`);
 }})
 
 //show all item's id
-router.get('/item', async (req, res) => {
-    const result = await Gallery.find();
+router.get('/items', async (req, res) => {
+try {
+    var [err, result] = await utils.to(Gallery.find());
+    if (err)
+        throw new Error("An error occured while fetching galleries")
     const resArray = result.map(element => element._id);
      
     return res.status(200).json(resArray);
-});
+} catch (err) {
+    console.log("GALLERY ITEMS ERROR", err);
+    return res.status(400).json(err.message)
+}});
 
 //sanitize :id
-router.get('/item/:id', (req, res) => {
+router.get('/item/:id', async (req, res) => {
+try {
     let id = req.params.id;
-    Gallery.findOne({'_id': id }, (err, result) => {
-    if (err) {
-        return console.log(err)
-    }
+    var [err, result] = await utils.to(Gallery.findOne({'_id': id }));
+    if (err) 
+        throw new Error("An error occured while fetching the gallery item");
 
     result.img = undefined;//set it to this so it doesnt fuck rendering of response (buffer)
-    return res.status(200).send(result);
-    })
-})
+    return res.status(200).json(result);
+} catch (err) {
+    console.log("GALLERY ITEM ERROR", err);
+    return res.status(400).json(err.message);
+}})
 
 //sanitize :id
-router.get('/image/:id', (req, res) => {
+router.get('/image/:id', async (req, res) => {
+try {
     let id = req.params.id;
-    Gallery.findOne({'_id': id }, (err, result) => {
-    if (err) {
-        return console.log(err)
-    }
+    var [err, result] = await utils.to(Gallery.findOne({'_id': id }));
+    if (err) 
+        throw new Error("An error occured while fetching the image");
+
     res.set('Content-Type', result.img.contentType)
     return res.status(200).send(result.img.data);
-    })
-})
+} catch (err) {
+    console.log("GALLERY IMAGE ERROR", err);
+    return res.status(400).json(err.message);
+}})
 
 module.exports = router;

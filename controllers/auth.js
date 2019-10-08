@@ -58,7 +58,8 @@ try {
     if (err)
         throw new Error("An error occured while creating your account, please try again");
 
-    [err, user] = await utils.to(validationToken.save());
+    [err, result] = await utils.to(validationToken.save());
+    console.log(result)
     if (err) 
         throw new Error("An error occured while creating your confirmation token, please try again");
     
@@ -193,29 +194,29 @@ try {
 router.post('/resend', async (req, res) => {
 try {
     const email = req.body.email;//sanitize
-    var err, user, savedToken;
-    [err, user] = await utils.to(User.findOne({ email: email }));
+    var [err, user] = await utils.to(User.findOne({ email: email }));
     // Check if an user exist with this email and check if his account is verified
     if (err)
         throw new Error("An error occured while looking for you user account, please try again");
     if (!user) 
         throw new Error("We were unable to find a user with that email");
     if (user.isVerified) 
-        throw new Error("This account has already been verified. Please log in")
+        throw new Error("This account has already been verified. Please log in");
  
     // Create a verification token, save it, and send email
     let vToken = crypto.randomBytes(16).toString('hex');
     let token = new Token({ _userId: user._id, token: vToken });
  
     // Save the token
-    [err, savedToken] = await utils.to(token.save());
+    var [err, savedToken] = await utils.to(token.save());
     if (err)  
-        throw new Error("An error occured while saving your token, please try again")        
+        throw new Error("An error occured while saving your token, please try again");  
  
     let subject = `Account Verification Token for Maral`;
     let content = `Hello,\n\n Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
     if (await mailer(user.email, subject, content))
-        throw new Error("An error occured while sending your the email, please try again")
+        throw new Error("An error occured while sending your the email, please try again");
+
     req.flash('info', `A verification email has been sent to ${user.email}`);
     return res.status(200).redirect('/Login');
 } catch (err) {
