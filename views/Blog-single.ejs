@@ -1,0 +1,26 @@
+<% include partials/head %>
+
+<script src="/scripts/bootstrap-tagsinput.js"></script>
+
+<div class="container-fluid">
+    <div class="container" id="container-gallery">
+        <% if(locals.blogs){ %>
+                <div class="row blog-row" id="<%= locals.blogs._id %>">
+                  <div class="col-8 offset-2">
+                    <h3 class="blog-title"><%= locals.blogs.title %></h3> 
+                    <p class="blog-info">posté par 
+                      <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>
+                      <% if (locals.level && locals.level > 1) { %>
+                        <a href="/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
+                      <% } %>  
+                    </p>
+                    <p class="blog-content"><%= locals.blogs.content %></p>
+                  </div>
+                </div>
+          <% } %>
+  </div>
+    <script src="/scripts/frontValidation.js"></script>
+    <script src="/scripts/formFocus.js"></script>
+</div>
+  
+<% include partials/footer %>

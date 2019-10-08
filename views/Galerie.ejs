@@ -16,12 +16,11 @@
               <div class="card" style="width: 18rem;" id="<%= locals.galleries[index]._id %>">
                 <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries[index]._id %>" class="card-img-top" alt="<%= locals.galleries[index].title %>"></a>
                 <div class="card-body">
-                  <h5 class="card-title"><i><%= locals.galleries[index].title %></i></h5>
-                  <a href="/Galerie/Patch/<%= locals.galleries[index]._id %>"><i class="fas fa-edit"></i></a>
+                  <h5 class="card-title"><i><a href="Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].title %></a></i></h5>
                   <p class="card-text gallery-description"><%= locals.galleries[index].content %></p>
                   <p class="card-text">
                     <% locals.galleries[index].tags.forEach(function (tag) { %>
-                      <a href="#">#<%= tag %></a>
+                      <a href="#<%= tag %>">#<%= tag %></a>
                     <% }) %></p>
                 </div>
               </div>

@@ -15,12 +15,9 @@
       <% Object.keys(locals.blogs).forEach(function (index) { %>
           <div class="row blog-row" id="<%= locals.blogs[index]._id %>">
             <div class="col-8 offset-2">
-              <h3 class="blog-title"><%= locals.blogs[index].title %></h3> 
+              <h3 class="blog-title"><a href="Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].title %></a></h3> 
               <p class="blog-info">posté par 
                 <b class="blog-author"><%= locals.blogs[index].author %></b>, <i class="blog-date"><%= locals.blogs[index].date %></i>
-                <% if (locals.level && locals.level > 1) { %>
-                  <a href="/Blog/Patch/<%= locals.blogs[index]._id %>"><i class="fas fa-edit"></i></a>
-                <% } %>  
               </p>
               <p class="blog-content"><%= locals.blogs[index].content %></p>
             </div>

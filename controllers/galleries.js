@@ -130,18 +130,18 @@ try {
 }});
 
 //sanitize :id
-router.get('/item/:id', async (req, res) => {
+router.get('/single/:id', async (req, res) => {
 try {
     let id = req.params.id;
-    var [err, result] = await utils.to(Gallery.findOne({'_id': id }));
-    if (err) 
+    var [err, result] = await utils.to(Gallery.findById(id));
+    if (err || result === null) 
         throw new Error("An error occured while fetching the gallery item");
 
     result.img = undefined;//set it to this so it doesnt fuck rendering of response (buffer)
     return res.status(200).json(result);
 } catch (err) {
-    console.log("GALLERY ITEM ERROR", err);
-    return res.status(400).json(err.message);
+    console.log("GALLERY SINGLE ERROR", err);
+    return res.status(200).json({error: true, message: err.message})
 }})
 
 //sanitize :id

@@ -16,7 +16,7 @@ async function infiniteGalleries() {
                     let toAppend =  `
                         <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/${id}" class="card-img-top" alt="${gallery.title}"></a>
                         <div class="card-body">
-                            <h5 class="card-title"><i>${gallery.title}</i></h5>
+                            <h5 class="card-title"><i><a href="Galerie/${id}">${gallery.title}</a></i></h5>
                             <a href="/Galerie/Patch/${id}"><i class="fas fa-edit"></i></a>
                             <p class="card-text gallery-description">${gallery.content}</p>
                             <p class="card-text">`;

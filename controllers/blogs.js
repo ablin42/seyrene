@@ -23,7 +23,7 @@ try {
 }})
 
 // get a blog object
-router.get('/:blogId', async (req, res) => {
+router.get('/single/:blogId', async (req, res) => {
 try {
     var err, blog;
     [err, blog] = await utils.to(Blog.findById(req.params.blogId));
@@ -31,12 +31,12 @@ try {
         throw new Error("An error occured while fetching the blog's data, please try again");
     if (blog === null)
         throw new Error("No blog post exist with this ID");
+    blog = await bHelpers.parseBlogs(blog, true);
     return res.status(200).json(blog)
 } catch (err) {
     console.log("ERROR FETCHING A BLOG:", err);
-    return res.status(400).json({message: err.message})
-}
-})
+    res.status(200).json({error: true, message: err.message});
+}})
 
 // post a blog
 router.post('/', verifyToken, async (req, res) => {

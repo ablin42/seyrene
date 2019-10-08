@@ -25,14 +25,18 @@ module.exports = {
         obj.author = await this.getName(item.authorId);
         return obj;
     },
-    
-    parseBlogs: async function (blogs) {
+    parseBlogs: async function (blogs, one = false) {
         let blogsParsed = [];
-        for (let item of blogs) {
-            let obj = await this.objBlog(item);
-            blogsParsed.push(obj);
+        if (one === false) {
+            for (let item of blogs) {
+                let obj = await this.objBlog(item);
+                blogsParsed.push(obj);
+            }
+        } else {
+            let obj = await this.objBlog(blogs);
+            return obj;
         }
-    
+       
         return blogsParsed;
     },
     getBlogs: async function (options) {

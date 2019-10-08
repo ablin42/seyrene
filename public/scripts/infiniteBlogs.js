@@ -14,7 +14,7 @@ async function infiniteBlogs() {
                         div.setAttribute("class", "blog-row");
                         div.innerHTML = 
                             `<div class='col-8 offset-2'>
-                                <h3 class="blog-title">${blog.title}</h3> 
+                                <h3 class="blog-title"><a href="Blog/${id}">${blog.title}</a></h3> 
                                 <p class="blog-info">posté par 
                                     <b class="blog-author">${blog.author}</b>, <i class="blog-date">${blog.date}</i>
                                 </p>

@@ -15,14 +15,14 @@ const router = express.Router();
 router.get('/', verifySession, (req, res) => {
 try {
     let obj = {active: "Home"};//{root: path.join(__dirname, '/pages/')};
-    if (req.user._id != undefined) {
+    if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
     }
     res.status(200).render('home', obj);
 } catch (err) {
-    console.log("GALLERY ROUTE ERROR", err);
+    console.log("HOME ROUTE ERROR", err);
     res.status(400).render('home');
 }})
 
@@ -35,7 +35,7 @@ try {
     obj.galleries = JSON.parse(await request('http://127.0.0.1:8089/api/gallery/'));
     if (obj.galleries.error)
             throw new Error(obj.galleries.message);
-    if (req.user._id != undefined) {
+    if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
@@ -47,10 +47,32 @@ try {
     res.status(400).redirect("/");
 }})
 
+router.get('/Galerie/:id', verifySession, async (req, res) => {
+    try {
+        let id = req.params.id;
+        let obj = {
+            active: "Galerie",
+            root: path.join(__dirname, '/pages/')
+        };
+        obj.galleries = JSON.parse(await request(`http://127.0.0.1:8089/api/gallery/single/${id}`));
+        if (obj.galleries.error)
+                throw new Error(obj.galleries.message);
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        res.status(200).render('galerie-single', obj);
+    } catch (err) {
+        console.log("GALLERY SINGLE ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Galerie");
+}})
+
 router.get('/Login', verifySession, (req, res) => {
 try {
     let obj = {active: "Login"};
-    if (req.user._id != undefined) {
+    if (req.user) {
         req.flash("info", "You're already logged in");
         return res.status(200).redirect('/');
     }
@@ -64,7 +86,7 @@ try {
 router.get('/Register', verifySession, (req, res) => {
 try {
     let obj = {active: "Register"};
-    if (req.user._id) {
+    if (req.user) {
         req.flash("info", "You're already logged in");
         return res.status(200).redirect('/');
     }
@@ -78,7 +100,7 @@ try {
 router.get('/User', verifySession, async (req, res) => {
 try {
     let obj = {};
-    if (req.user._id != undefined) {
+    if (req.user) {
         obj = await User.findOne({_id: req.user._id});
         obj.password = undefined;
         obj.active = "User";
@@ -94,7 +116,7 @@ try {
 router.get('/Bio', verifySession, (req, res) => {
 try {
     let obj = {active: "Biographie"};
-    if (req.user._id != undefined) {
+    if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
@@ -109,7 +131,7 @@ try {
 router.get('/Shop', verifySession, (req, res) => {
 try {
     let obj = {active: "Shop"};
-    if (req.user._id != undefined) {
+    if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
@@ -124,7 +146,7 @@ try {
 router.get('/Contact', verifySession, (req, res) => {
 try {
     let obj = {active: "Contact"};
-    if (req.user._id != undefined) {
+    if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
@@ -142,7 +164,7 @@ try {
     obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
     if (obj.blogs.error)
         throw new Error(obj.blogs.message);
-    if (req.user._id != undefined) {
+    if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
@@ -154,10 +176,28 @@ try {
     return res.status(200).redirect('/');
 }})
 
+router.get('/Blog/:id', verifySession, async (req, res) => {
+    try {
+        let id = req.params.id;
+        let obj = {active: "Blog"};
+        obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
+        if (obj.blogs.error)
+            throw new Error(obj.blogs.message);
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        return res.status(200).render('blog-single', obj);
+    } catch (err) {
+        console.log("BLOG ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        return res.status(200).redirect('/Blog');
+}})
 
 router.get('/Lostpw', verifySession, async (req, res) => {
 try {
-    if (req.user._id != undefined) {
+    if (req.user) {
         req.flash('info', "You're logged in, you can change your password here.")
         return res.status(200).redirect('/User');
     } else {
@@ -175,7 +215,7 @@ try {
 
 router.get('/Resetpw/:tokenId/:token', verifySession, async (req, res) => { //if user connected, redirect to home
 try {
-    if (req.user._id != undefined) {
+    if (req.user) {
         req.flash('info', "You're logged in, you can change your password here.")
         return res.status(200).redirect('/User');
     } else {
@@ -201,7 +241,7 @@ try {
 
 router.get('/Blog/Post', verifySession, async (req, res) => { //verify level access
 try {
-    if (req.user.level > 1) {
+    if (req.user) {
         let obj = {active: "Post a blog"};
         if (req.user) {
             obj.userId = req.user._id;
@@ -219,7 +259,7 @@ try {
 
 router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify level access
 try {
-    if (req.user.level > 1) {
+    if (req.user) {
         let obj = {
             active: "Edit a blog"
         };
@@ -247,7 +287,7 @@ try {
 
 router.get('/Galerie/Post', verifySession, async (req, res) => {
 try {
-    if (req.user.level > 1) {
+    if (req.user) {
         let obj = {active: "Post a gallery item"};
         if (req.user) {
             obj.userId = req.user._id;
@@ -266,7 +306,7 @@ try {
 
 router.get('/Galerie/Patch/:galleryId', verifySession, async (req, res) => {
 try {
-    if (req.user.level > 1) {
+    if (req.user) {
         let obj = {active: "Edit a gallery item"};
         if (req.user) {
             obj.userId = req.user._id;

@@ -1,5 +1,6 @@
 module.exports = function(req, res, next){
-    if (req.session) {
+    if (req.session._id) {
+        console.log("logged state")
         const user = {
             "_id": req.session._id,
             "name": req.session.name,
@@ -7,5 +8,7 @@ module.exports = function(req, res, next){
         }
         req.user = user;
     }
+    else 
+        console.log("not logged state")
     next();
 }

@@ -101,7 +101,7 @@ try {
 
 router.post('/patch/name', verifySession, async (req, res) => {
 try {
-    if (req.user._id != undefined) {
+    if (req.user) {
         const {error} = await nameValidation(req.body);
         if (error)
             throw new Error(error.message);
@@ -129,7 +129,7 @@ try {
 
 router.post('/patch/email', verifySession, async (req, res) => {
 try {
-    if (req.user._id != undefined) {
+    if (req.user) {
         const newEmail = req.body.email, //sanitize
               id = req.user._id,
               vToken = crypto.randomBytes(16).toString('hex'); 
@@ -168,7 +168,7 @@ try {
 
 router.post('/patch/password', verifySession, async (req, res) => {
 try {
-    if (req.user._id != undefined) {
+    if (req.user) {
         const {error} = await pwValidation(req.body);
         if (error)
             throw new Error(error.message);
