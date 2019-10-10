@@ -2,12 +2,6 @@
 
 <div class="container-fluid"> 
     <div class="container">
-        <% if (locals._id) { %>
-            <%= locals._id %>
-            <%= locals.name %>
-            <%= locals.email %>
-            <%= locals.date %>
-        <% } %>
         <div class="info-update"><!--change class form id etc api url-->
             <form id="nameform" method="POST" action="/api/user/patch/name">
                 <div class="txtb">

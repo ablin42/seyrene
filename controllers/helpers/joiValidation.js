@@ -20,7 +20,7 @@ const registerValidation = (data) => {
                 .pattern(/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/)
                 .required()
                 .error(new Error('Password must contain between 8 and 256 characters and has to be atleast alphanumeric')),
-        password2: Joi.ref('password')
+        password2: Joi.string()
                 //.error(new Error('Passwords not matching'))
     });
     return schema.validate(data);
@@ -80,8 +80,7 @@ const pwValidation = (data) => {
                         .pattern(/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/)
                         .required()
                         .error(new Error('Password must contain between 8 and 256 characters and has to be atleast alphanumeric')),
-                password2: Joi.ref('password')
-                        //.error(new Error('Passwords not matching'))
+                password2: Joi.string()
         });
         return schema.validate(data);
 }
@@ -95,7 +94,7 @@ const resetPwValidation = (data) => {
                         .pattern(/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/)
                         .required()
                         .error(new Error('Password must contain between 8 and 256 characters and has to be atleast alphanumeric')),
-                password2: Joi.ref('password')//.error(new Error('Passwords not matching')),
+                password2: Joi.string()
                        
         });
         return schema.validate(data);

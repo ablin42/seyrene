@@ -14,6 +14,9 @@ require('dotenv/config');
 
 router.post('/register', async (req, res) => {
 try {
+    //sanitize dada
+    if (req.body.password != req.body.password2)
+        throw new Error("Passwords not matching");
     // Check fields validity
     let {error} = await registerValidation(req.body);
     if (error)

@@ -69,6 +69,8 @@ const tokenId = req.body.tokenId,//sanitize + has to be outside of try for catch
       pw2 = req.body.password2;
 try {
     // check passwords validity
+    if (pw != pw2)
+        throw new Error("Passwords not matching");
     const {error} = await resetPwValidation({password: pw, password2: pw2});
     if (error) 
         throw new Error(error.message);
@@ -169,6 +171,8 @@ try {
 router.post('/patch/password', verifySession, async (req, res) => {
 try {
     if (req.user) {
+        if (req.body.password != req.body.password2)
+            throw new Error("Passwords not matching");
         const {error} = await pwValidation(req.body);
         if (error)
             throw new Error(error.message);
