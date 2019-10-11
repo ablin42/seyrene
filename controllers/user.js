@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const {validationResult} = require('express-validator');
+const {vName, vEmail, vPassword, vLostPw} = require('./validators/vUser');
 
-const {nameValidation, emailValidation, pwValidation, resetPwValidation} = require('./helpers/joiValidation');
 const mailer = require('./helpers/mailer');
 const verifySession = require('./helpers/verifySession');
 const utils = require('./helpers/utils')
@@ -20,14 +21,19 @@ try {
     return res.status(400).json({message: err.message})
 }})
 
-router.post('/lostpw', async (req, res) => { //check if pwtoken already exist
+router.post('/lostpw', vLostPw, async (req, res) => { //check if pwtoken already exist
 try {
-    const email = req.body.email,
-          token = crypto.randomBytes(16).toString('hex');
+    // Check form inputs validity
+    const vResult = validationResult(req);
+    if (!vResult.isEmpty()) {
+        vResult.errors.forEach((item) => {
+            req.flash("info", item.msg)
+        })
+        throw new Error("Incorrect form input");
+    }
+
     // find user using email
- 
-    //let err, result, user, pwToken;
-    var [err, user] = await utils.to(User.findOne({ email: email }));
+    var [err, user] = await utils.to(User.findOne({ email: req.body.email }));
     if (err)
         throw new Error("An error occured while looking for your account, please retry");
     if (user === null)
@@ -37,6 +43,7 @@ try {
     if (err)
         throw new Error("An error occured while looking for your token, please retry");
 
+    const token = crypto.randomBytes(16).toString('hex');
     if (pwToken === null) {
         pwToken = new PwToken({ _userId: user._id, token: token });
         var [err, result] = await utils.to(pwToken.save());
@@ -51,7 +58,7 @@ try {
 
     const subject = "Password Reset Token for Maral",
           content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n http:\/\/127.0.0.1:8089\/resetpw\/${pwToken._id}\/${token}`;
-    if (await mailer(email, subject, content)) 
+    if (await mailer(req.body.email, subject, content)) 
         throw new Error("An error occured while send the e-mail, please try again");
             
     req.flash('success', "An e-mail was sent to your address, please follow the link we sent you");
@@ -62,26 +69,24 @@ try {
     return res.status(400).redirect('/Lostpw');
 }})
 
-router.post('/resetpw', async (req, res) => {
-const tokenId = req.body.tokenId,//sanitize + has to be outside of try for catch block
-      token = req.body.token,
-      pw = req.body.password,
-      pw2 = req.body.password2;
+router.post('/resetpw', vPassword, async (req, res) => {
 try {
-    // check passwords validity
-    if (pw != pw2)
-        throw new Error("Passwords not matching");
-    const {error} = await resetPwValidation({password: pw, password2: pw2});
-    if (error) 
-        throw new Error(error.message);
+    // Check form inputs validity
+    const vResult = validationResult(req);
+    if (!vResult.isEmpty()) {
+        vResult.errors.forEach((item) => {
+            req.flash("info", item.msg)
+        })
+        throw new Error("Incorrect form input");
+    }
         
     // hash and salt pw
-    const hashPw = await bcrypt.hash(pw, 10);
+    const hashPw = await bcrypt.hash(req.body.password, 10);
     if (!hashPw)
         throw new Error("An error occured while encrypting your data, please try again");
 
     // check if token is valid
-    var [err, pwToken] = await utils.to(PwToken.findOne({_id: tokenId, token: token}));
+    var [err, pwToken] = await utils.to(PwToken.findOne({_id: req.body.tokenId, token: req.body.token}));
     if (err)
         throw new Error("Invalid token, please try to request another one here");
 
@@ -89,7 +94,7 @@ try {
     var [err, user] = await utils.to(User.updateOne({_id: pwToken._userId}, {$set: {password: hashPw}}));
     if (err)
         throw new Error("An error occured while updating your password, please try again");
-    var [err, pwToken] = await utils.to(PwToken.deleteOne({_id: tokenId}));
+    var [err, pwToken] = await utils.to(PwToken.deleteOne({_id: req.body.tokenId}));
     if (err)
         throw new Error("An error occured while cleaning up your token, please try again");
 
@@ -98,15 +103,21 @@ try {
 } catch (err) {
     console.log("ERROR RESETPW:", err);
     req.flash('warning', err.message);
-    return res.status(400).redirect(`/Resetpw/${tokenId}/${token}`);
+    return res.status(400).redirect(`/Resetpw/${req.body.tokenId}/${req.body.token}`);
 }})
 
-router.post('/patch/name', verifySession, async (req, res) => {
+router.post('/patch/name', vName, verifySession, async (req, res) => {
 try {
     if (req.user) {
-        const {error} = await nameValidation(req.body);
-        if (error)
-            throw new Error(error.message);
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+                req.flash("info", item.msg)
+            })
+            throw new Error("Incorrect form input");
+        }
+      
         const name = req.body.name,
               id = req.user._id; //sanitize
         
@@ -129,16 +140,22 @@ try {
     return res.status(400).redirect('/User');
 }})
 
-router.post('/patch/email', verifySession, async (req, res) => {
+router.post('/patch/email', vEmail, verifySession, async (req, res) => {
 try {
     if (req.user) {
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+                req.flash("info", item.msg)
+            })
+            throw new Error("Incorrect form input");
+        }
+
         const newEmail = req.body.email, //sanitize
               id = req.user._id,
               vToken = crypto.randomBytes(16).toString('hex'); 
-        //let err, user, token;
-        const {error} = await emailValidation(req.body);
-        if (error)
-            throw new Error(error.message);
+
         // Check if email is already in use on another account
         const emailExist = await utils.emailExist(newEmail);
         if (emailExist) 
@@ -168,14 +185,17 @@ try {
     return res.status(400).redirect('/User');
 }})
 
-router.post('/patch/password', verifySession, async (req, res) => {
+router.post('/patch/password', vPassword, verifySession, async (req, res) => {
 try {
     if (req.user) {
-        if (req.body.password != req.body.password2)
-            throw new Error("Passwords not matching");
-        const {error} = await pwValidation(req.body);
-        if (error)
-            throw new Error(error.message);
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+                req.flash("info", item.msg)
+            })
+            throw new Error("Incorrect form input");
+        }
 
         const id = req.user._id,
               cpassword = req.body.cpassword,

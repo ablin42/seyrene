@@ -1,21 +1,33 @@
 const express = require('express');
 const router = express.Router();
+const {validationResult} = require('express-validator');
+const {vContact} = require('./validators/vContact');
 
-const {contactValidation} = require('./helpers/joiValidation');
 const mailer = require('./helpers/mailer');
 require('dotenv/config');
 
 // Send us a mail
-router.post('/', async (req, res) => {
+router.post('/', vContact, async (req, res) => {
 try {
-    const {error} = await contactValidation(req.body);
-    if (error) 
-        throw new Error(error.message);
-    let name = req.body.name; //sanitize
-        email = req.body.email,
-        subject = `FROM ${name}, [${req.body.email}] - ${req.body.title}`,
-        content = req.body.content;
-
+    const subject = `FROM ${req.body.name}, [${req.body.email}] - ${req.body.title}`;
+    const content = req.body.content;
+    const formData = {
+        name: req.body.name,
+        email:  req.body.email,
+        subject: req.body.title,
+        content: content
+    }
+    req.session.formData = formData;
+    
+    // Check form inputs validity
+    const vResult = validationResult(req);
+    if (!vResult.isEmpty()) {
+        vResult.errors.forEach((item) => {
+              req.flash("info", item.msg)
+        })
+        throw new Error("Incorrect form input");
+    }
+   
         //maral.canvas@gmail.com
     if (await mailer("ablin@byom.de", subject, content)) 
         throw new Error("An error occured while trying to send the mail, please retry");

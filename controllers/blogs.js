@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const {validationResult} = require('express-validator');
+const {vBlog} = require('./validators/vBlog');
 
 const Blog = require('../models/Blog');
 const verifyToken = require('./helpers/verifyToken');
 const bHelpers = require('./helpers/blogHelpers');
 const utils = require('./helpers/utils');
-const {blogValidation} = require('./helpers/joiValidation');
 
 //blog pagination
 router.get('/', async (req, res) => {
@@ -25,13 +26,12 @@ try {
 // get a blog object
 router.get('/single/:blogId', async (req, res) => {
 try {
-    var err, blog;
-    [err, blog] = await utils.to(Blog.findById(req.params.blogId));
+    var [err, blog] = await utils.to(Blog.findById(req.params.blogId));
     if (err)
         throw new Error("An error occured while fetching the blog's data, please try again");
     if (blog === null)
         throw new Error("No blog post exist with this ID");
-    blog = await bHelpers.parseBlogs(blog, true);
+    var blog = await bHelpers.parseBlogs(blog, true);
     return res.status(200).json(blog)
 } catch (err) {
     console.log("ERROR FETCHING A BLOG:", err);
@@ -39,7 +39,7 @@ try {
 }})
 
 // post a blog
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, vBlog, async (req, res) => {
 try {
     if (req.user.level > 1) {
         const obj = { //sanitize
@@ -47,13 +47,26 @@ try {
             title: req.body.title,
             content: req.body.content
         };
-        const {error} = await blogValidation(obj);
-        if (error)
-            throw new Error(error.message);
+        const formData = {
+            title: obj.title,
+            content: obj.content
+        }
+        req.session.formData = formData;
+
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+                req.flash("info", item.msg)
+            })
+            throw new Error("Incorrect form input");
+        }
+
         const blog = new Blog(obj);
         var [err, savedBlog] = await utils.to(blog.save());
         if (err)
             throw new Error("An error occured while posting your blog, please try again");
+
         req.flash('success', "Post successfully uploaded");
         res.status(200).redirect('/Blog');
     }
@@ -66,23 +79,25 @@ try {
 }})
 
 // patch a blog
-router.post('/patch/:blogId', verifyToken, async (req, res) => {
+router.post('/patch/:blogId', verifyToken, vBlog, async (req, res) => {
 try {
     if (req.user.level > 1) {
-        const obj = { //sanitize
-            authorId: req.user._id,
-            title: req.body.title,
-            content: req.body.content
-        };
-        const {error} = await blogValidation(obj);
-        if (error)
-            throw new Error(error.message);
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+                req.flash("info", item.msg)
+            })
+            throw new Error("Incorrect form input");
+        }
+
         var [err, patchedBlog] = await utils.to(Blog.updateOne({_id: req.params.blogId}, {$set: {
             title: req.body.title,
             content: req.body.content
         }}));
         if (err)
             throw new Error("An error occured while updating the blog, please try again");
+
         req.flash('success', "Post corrigé avec succès");
         res.status(200).redirect('/Blog');
     } else 
@@ -100,6 +115,7 @@ try {
         var [err, removedBlog] = await utils.to(Blog.deleteOne({_id: req.params.blogId}));
         if (err)
             throw new Error("An error occured while deleting the blog, please try again");
+
         req.flash('success', "Post supprimé avec succès");
         res.status(200).redirect('/Blog');
     }

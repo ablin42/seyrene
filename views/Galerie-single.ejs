@@ -8,7 +8,7 @@
             <div class="card" style="width: 18rem;" id="<%= locals.galleries._id %>">
               <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries._id %>" class="card-img-top" alt="<%= locals.galleries.title %>"></a>
               <div class="card-body">
-                <h5 class="card-title"><i><a href="Galerie/<%= locals.galleries._id %>"><%= locals.galleries.title %></a></i></h5>
+                <h5 class="card-title"><i><%= locals.galleries.title %></i></h5>
                 <% if (locals.level && locals.level > 1) { %>
                     <a href="/Galerie/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
                 <% } %>

@@ -42,6 +42,7 @@ try {
         upload(req, res, async function (err) {
             try {
                 const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
+
                 gHelpers.multerErr(err);
                 obj.tags = gHelpers.parseTags(req.body.tags); 
                 validation = await gHelpers.validationCheck(obj);

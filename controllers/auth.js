@@ -4,42 +4,40 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const request = require('request');
+const {validationResult} = require('express-validator');
+const {vRegister, vLogin} = require('./validators/vAuth');
 
-const {registerValidation, loginValidation} = require('./helpers/joiValidation');
 const mailer = require('./helpers/mailer');
 const utils = require('./helpers/utils')
 const User = require('../models/User');
 const Token = require('../models/VerificationToken');
+
 require('dotenv/config');
 
-router.post('/register', async (req, res) => {
+router.post('/register', vRegister, async (req, res) => {
 try {
-    //sanitize dada
-    if (req.body.password != req.body.password2)
-        throw new Error("Passwords not matching");
-    // Check fields validity
-    let {error} = await registerValidation(req.body);
-    if (error)
-        throw new Error(error.message);
-    
-    //sanitize
     const obj = {
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
         password2: req.body.password2
     }
-    
-    // Check if email or username exists in DB
-    const [emailTaken, nameTaken] = await Promise.all([utils.emailExist(obj.email), utils.nameExist(obj.name)]);
-    
-    if (nameTaken)
-        throw new Error("An account already exist with this username");
-    if (emailTaken)
-        throw new Error("An account already exist with this e-mail");
-        
+    const formData = {
+        name: obj.name,
+        email: obj.email
+    }
+    req.session.formData = formData;
+
+    const vResult = validationResult(req);
+    if (!vResult.isEmpty()) {
+        vResult.errors.forEach((item) => {
+            req.flash("info", item.msg)
+        })
+        throw new Error("Incorrect form input");
+    }
+   
     // Hash and salt pw
-    const hashPw = await bcrypt.hash(obj.password, 10);
+    const hashPw = await bcrypt.hash(req.body.password, 10);
     if (!hashPw)
         throw new Error("An error occured while encrypting your data, please try again");
         
@@ -55,23 +53,20 @@ try {
         token: vToken 
     });
      
-    var err, result;
     // Save User and validationToken to DB
-    [err, result] = await utils.to(user.save());
+    var [err, result] = await utils.to(user.save());
     if (err)
         throw new Error("An error occured while creating your account, please try again");
 
     [err, result] = await utils.to(validationToken.save());
-    console.log(result)
     if (err) 
         throw new Error("An error occured while creating your confirmation token, please try again");
     
     // Send account confirmation mail to user
     let subject = `Account Verification Token for Maral`;
     let content = `Hello,\n\n Please verify your account by following the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
-    if (await mailer(user.email, subject, content)) {
+    if (await mailer(user.email, subject, content)) 
         throw new Error("An error occured while trying to send the mail, please retry");
-    }
     
     // Create user session token and session data
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);//have aswell user level access
@@ -83,39 +78,39 @@ try {
     return res.status(200).redirect('/Login');
 } catch (err) {
     console.log("ERROR REGISTER:", err);
-    req.flash('warning', err.message);
+    req.flash("warning", err.message);
     return res.status(400).redirect('/Register');
 }})
 
-router.post('/login', async (req, res) => {
+router.post('/login', vLogin, async (req, res) => {
 try {
-    // Check fields validity
-    const {error} = loginValidation(req.body); //not really necessary in login
-    if (error)
-        throw new Error(error.message);
-  
-    const obj = { //sanitize
-        email: req.body.email,
-        password: req.body.password
+    const formData = {email: req.body.email};
+    req.session.formData = formData;
+
+    const vResult = validationResult(req);
+    if (!vResult.isEmpty()) {
+        vResult.errors.forEach((item) => {
+            req.flash("info", item.msg)
+        })
+        throw new Error("Incorrect form input");
     }
 
-    var err, user;
     // Check if email exists in DB
-    [err, user] = await utils.to(User.findOne({email: obj.email}));
+    var [err, user] = await utils.to(User.findOne({email: req.body.email}));
     if (err)
         throw new Error("An error occured while looking for your user account, please try again");
     if (!user)
         throw new Error("Invalid credentials");
 
     // Check if pw matches
-    const validPw = await bcrypt.compare(obj.password, user.password);
+    const validPw = await bcrypt.compare(req.body.password, user.password);
     if (!validPw)
         throw new Error("Invalid credentials");
     
     // Check if user is verified
     if (!user.isVerified) {
         request.post('http://127.0.0.1:8089/api/auth/resend', {
-            json: {email: obj.email}
+            json: {email: req.body.email}
         }, (err) => {
             if (err)
                 throw new Error("An error occured while sending your validation token, please try again")
@@ -163,15 +158,14 @@ try {
 router.get('/confirmation/:token', async (req, res) => {
 try {
     const receivedToken = req.params.token;//sanitiwe
-    var err, token, user;
-    [err, token] = await utils.to(Token.findOne({ token: receivedToken }));
+    var [err, token] = await utils.to(Token.findOne({ token: receivedToken }));
     if (err)
         throw new Error("An error occured while looking for your token, please try again");
     if (!token) 
         throw new Error("We were unable to find a valid token. Your token may have expired");
 
     // If we found a token, find a matching user
-    [err, user] = await utils.to(User.findOne({ _id: token._userId }));
+    var [err, user] = await utils.to(User.findOne({ _id: token._userId }));
     if (err)
         throw new Error("An error occured while looking for your user account, please try again");
     if (!user) 
@@ -182,7 +176,7 @@ try {
  
     // Verify and save the user
     user.isVerified = true;
-    [err, user] = await utils.to(user.save()); 
+    var [err, user] = await utils.to(user.save()); 
     if (err)
         throw new Error(err.message);
     req.flash('success', "Your account has been verified. Please log in.");    

@@ -28,6 +28,7 @@
     "express-flash": "0.0.2",
     "express-sanitizer": "^1.0.5",
     "express-session": "^1.16.2",
+    "express-validator": "^6.2.0",
     "image-type": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongo-sanitize": "^1.0.1",

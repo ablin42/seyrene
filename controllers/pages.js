@@ -47,31 +47,13 @@ try {
     res.status(400).redirect("/");
 }})
 
-router.get('/Galerie/:id', verifySession, async (req, res) => {
-    try {
-        let id = req.params.id;
-        let obj = {
-            active: "Galerie",
-            root: path.join(__dirname, '/pages/')
-        };
-        obj.galleries = JSON.parse(await request(`http://127.0.0.1:8089/api/gallery/single/${id}`));
-        if (obj.galleries.error)
-                throw new Error(obj.galleries.message);
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-        res.status(200).render('galerie-single', obj);
-    } catch (err) {
-        console.log("GALLERY SINGLE ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        res.status(400).redirect("/Galerie");
-}})
-
 router.get('/Login', verifySession, (req, res) => {
 try {
     let obj = {active: "Login"};
+    if (req.session.formData) {
+        obj.formData = req.session.formData;
+        req.session.formData = undefined;
+    }
     if (req.user) {
         req.flash("info", "You're already logged in");
         return res.status(200).redirect('/');
@@ -86,6 +68,10 @@ try {
 router.get('/Register', verifySession, (req, res) => {
 try {
     let obj = {active: "Register"};
+    if (req.session.formData) {
+        obj.formData = req.session.formData;
+        req.session.formData = undefined;
+    }
     if (req.user) {
         req.flash("info", "You're already logged in");
         return res.status(200).redirect('/');
@@ -146,6 +132,10 @@ try {
 router.get('/Contact', verifySession, (req, res) => {
 try {
     let obj = {active: "Contact"};
+    if (req.session.formData) {
+        obj.formData = req.session.formData;
+        req.session.formData = undefined;
+    }
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -174,25 +164,6 @@ try {
     console.log("BLOG ROUTE ERROR", err);
     req.flash("warning", err.message);
     return res.status(200).redirect('/');
-}})
-
-router.get('/Blog/:id', verifySession, async (req, res) => {
-    try {
-        let id = req.params.id;
-        let obj = {active: "Blog"};
-        obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
-        if (obj.blogs.error)
-            throw new Error(obj.blogs.message);
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-        return res.status(200).render('blog-single', obj);
-    } catch (err) {
-        console.log("BLOG ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        return res.status(200).redirect('/Blog');
 }})
 
 router.get('/Lostpw', verifySession, async (req, res) => {
@@ -239,10 +210,14 @@ try {
     return res.status(200).redirect("/Lostpw");
 }})
 
-router.get('/Blog/Post', verifySession, async (req, res) => { //verify level access
+router.get('/Blog/Post', verifySession, async (req, res) => {
 try {
     if (req.user) {
         let obj = {active: "Post a blog"};
+        if (req.session.formData) {
+            obj.formData = req.session.formData;
+            req.session.formData = undefined;
+        }
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
@@ -257,7 +232,7 @@ try {
     return res.status(200).redirect("/Blog");
 }})
 
-router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { //verify level access
+router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { 
 try {
     if (req.user) {
         let obj = {
@@ -283,6 +258,25 @@ try {
     console.log("BLOG PATCH ROUTE ERROR", err);
     req.flash("warning", err.message);
     return res.status(200).redirect("/");
+}})
+
+router.get('/Blog/:id', verifySession, async (req, res) => {
+    try {
+        let id = req.params.id;
+        let obj = {active: "Blog"};
+        obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
+        if (obj.blogs.error)
+            throw new Error(obj.blogs.message);
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        return res.status(200).render('blog-single', obj);
+    } catch (err) {
+        console.log("BLOG ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        return res.status(200).redirect('/Blog');
 }})
 
 router.get('/Galerie/Post', verifySession, async (req, res) => {
@@ -326,6 +320,28 @@ try {
     console.log("GALLERY PATCH ROUTE ERROR", err);
     req.flash("warning", err.message);
     res.status(400).redirect("/Galerie");
+}})
+
+router.get('/Galerie/:id', verifySession, async (req, res) => {
+    try {
+        let id = req.params.id;
+        let obj = {
+            active: "Galerie",
+            root: path.join(__dirname, '/pages/')
+        };
+        obj.galleries = JSON.parse(await request(`http://127.0.0.1:8089/api/gallery/single/${id}`));
+        if (obj.galleries.error)
+                throw new Error(obj.galleries.message);
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        res.status(200).render('galerie-single', obj);
+    } catch (err) {
+        console.log("GALLERY SINGLE ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Galerie");
 }})
 
 module.exports = router;

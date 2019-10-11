@@ -5,7 +5,7 @@
     <form id="login-form" method="POST" action="/api/auth/login">
       <h1 class="form-title">Se connecter</h1>
       <div class="txtb">
-        <input type="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" required>
+        <input type="email" name="email" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required>
         <span data-placeholder="Email"></span>
       </div>
 
