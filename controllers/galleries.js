@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const {validationResult} = require('express-validator');
+const {vGallery} = require('./validators/vGallery');
 
 const Gallery = require('../models/Gallery');
 const verifyToken = require('./helpers/verifyToken');
@@ -34,31 +36,30 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
-
 //sanitize input
-router.post('/post', verifyToken, async (req, res) => {
+router.post('/post', upload, verifyToken, vGallery, async (req, res) => {
 try {
     if (req.user.level > 1) {
-        upload(req, res, async function (err) {
-            try {
-                const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+               throw new Error(item.msg);
+            })}
+        const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
 
-                gHelpers.multerErr(err);
-                obj.tags = gHelpers.parseTags(req.body.tags); 
-                validation = await gHelpers.validationCheck(obj);
-                obj.img = await gHelpers.imgEncode(req.file);
-            
-                const gallery = new Gallery(obj);
-                var [err, result] = await utils.to(gallery.save());
-                if (err)
-                    throw new Error("Something went wrong while uploading your file");
+        obj.tags = gHelpers.parseTags(req.body.tags); 
 
-                req.flash('success', "Item successfully uploaded!");
-                return res.status(200).json({url: "/Galerie", msg: "Item successfully uploaded!"});
-            } catch (err) {
-                console.log("FILE UPLOAD ERROR", err)
-                return res.status(400).json({url: "/Galerie/Post", msg: err.message, err: true});
-            }});
+        validation = await gHelpers.validationCheck(obj);
+        obj.img = await gHelpers.imgEncode(req.file);
+    
+        const gallery = new Gallery(obj);
+        var [err, result] = await utils.to(gallery.save());
+        if (err)
+            throw new Error("Something went wrong while uploading your file");
+
+        req.flash('success', "Item successfully uploaded!");
+        return res.status(200).json({url: "/Galerie", msg: "Item successfully uploaded!"});
     } else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
 } catch (err) {
@@ -67,30 +68,30 @@ try {
 }})
 
 //sanitize :id (and input)
-router.post('/patch/:id', verifyToken, async (req, res) => {
+router.post('/patch/:id', upload, verifyToken, vGallery, async (req, res) => {
 try {
     if (req.user.level > 1) {
-        let id = req.params.id;        
-        upload(req, res, async function (err) {
-            try {
-                const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
-                gHelpers.multerErr(err);
-                obj.tags = gHelpers.parseTags(req.body.tags); 
-                validation = await gHelpers.validationCheck(obj);
-                     
-                if (req.file)
-                    obj.img = await gHelpers.imgEncode(req.file);
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+            throw new Error(item.msg);
+        })}
+        let id = req.params.id;      
+        const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
 
-                var [err, result] = await utils.to(Gallery.updateOne({_id: id}, {$set: obj}));
-                if (err)
-                    throw new Error("Something went wrong while updating your file");
-            
-                req.flash('success', "Item successfully updated!");
-                return res.status(200).json({url: "/Galerie", msg: "Item successfully updated!"});
-            } catch (err) {
-                console.log("FILE UPLOAD ERROR", err)
-                return res.status(400).json({url: "/Galerie/Patch/", msg: err.message, err: true});
-            }});
+        obj.tags = gHelpers.parseTags(req.body.tags); 
+        validation = await gHelpers.validationCheck(obj);
+        if (req.file)
+            obj.img = await gHelpers.imgEncode(req.file);
+    
+        //const gallery = new Gallery(obj);
+        var [err, result] = await utils.to(Gallery.updateOne({_id: id}, {$set: obj}));
+        if (err)
+            throw new Error("Something went wrong while updating your file");
+
+        req.flash('success', "Item successfully updated!");
+        return res.status(200).json({url: "/Galerie", msg: "Item successfully updated!"});
     } else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
 } catch (err) {

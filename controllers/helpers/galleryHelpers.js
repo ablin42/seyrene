@@ -26,8 +26,13 @@ module.exports = {
     },
     parseTags: function (tags) {
         try {
-            if (tags != undefined) 
-            return JSON.parse(tags);
+            if (tags != undefined) {
+                var parsed = JSON.parse(tags);
+                trimmed = parsed.map((item) => {
+                    return item = item.trim();
+                })
+                return trimmed;
+            }
         else 
             return [];
         } catch (err) {throw new Error("An error occured while parsing your tags, please try again")}
