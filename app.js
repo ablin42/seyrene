@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
 const expressSanitizer = require('express-sanitizer');
+const filter = require('content-filter')  
 require('dotenv/config');
 
 //Connect to DB
@@ -36,9 +37,12 @@ app.use(session({
      cookie: { maxAge: 600000 },
      resave: false,
      saveUninitialized: true
-    }));
+}));
+
 //-- Flash --//
 app.use(flash());
+var blacklist = ['$','{','&&','||'];
+app.use(filter({urlBlackList: blacklist, bodyBlackList: blacklist, bodyMessage: 'A forbidden expression has been found in your data', urlMessage: 'A forbidden expression has been found in your data', dispatchToErrorHandler: true}));
 
 // Mount express-sanitizer middleware here
 app.use(expressSanitizer());
@@ -65,12 +69,11 @@ app.use((err, req, res, next) => {//////
       return next();
     }
     console.error(err.stack);
-    console.log(req.originalUrl)
     // error as json
     if (req.originalUrl.indexOf("/api/gallery/") != -1) 
         return res.status(500).json({url: "/", msg: err.message, err: true})
     req.flash("warning", err.message)
-    return res.status(500).redirect("/")
+    return res.status(500).redirect("back")
 });
    
 // set the view engine to ejs

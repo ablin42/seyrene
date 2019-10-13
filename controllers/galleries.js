@@ -5,7 +5,7 @@ const {validationResult} = require('express-validator');
 const {vGallery} = require('./validators/vGallery');
 
 const Gallery = require('../models/Gallery');
-const verifyToken = require('./helpers/verifyToken');
+const verifySession = require('./helpers/verifySession');
 const gHelpers = require('./helpers/galleryHelpers');
 const utils = require('./helpers/utils');
 
@@ -37,7 +37,7 @@ try {
 }})
 
 //sanitize input
-router.post('/post', upload, verifyToken, vGallery, async (req, res) => {
+router.post('/post', upload, verifySession, vGallery, async (req, res) => {
 try {
     if (req.user.level > 1) {
         // Check form inputs validity
@@ -68,7 +68,7 @@ try {
 }})
 
 //sanitize :id (and input)
-router.post('/patch/:id', upload, verifyToken, vGallery, async (req, res) => {
+router.post('/patch/:id', upload, verifySession, vGallery, async (req, res) => {
 try {
     if (req.user.level > 1) {
         // Check form inputs validity
@@ -100,7 +100,7 @@ try {
 }})
 
 //delete item using its id + sanitize :id
-router.get('/delete/:id', verifyToken, async (req, res) => { /////////////////////// HERE
+router.get('/delete/:id', verifySession, async (req, res) => { /////////////////////// HERE
 try {
     if (req.user.level > 1) {
         let id = req.params.id; //sanitize

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const request = require('request');
 const {validationResult} = require('express-validator');
@@ -16,15 +15,9 @@ require('dotenv/config');
 
 router.post('/register', vRegister, async (req, res) => {
 try {
-    const obj = {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        password2: req.body.password2
-    }
     const formData = {
-        name: obj.name,
-        email: obj.email
+        name: req.body.name,
+        email: req.body.email
     }
     req.session.formData = formData;
 
@@ -43,8 +36,8 @@ try {
         
     // Create User and validationToken objects
     const user = new User({
-        name: obj.name,
-        email: obj.email,
+        name: formData.name,
+        email: formData.email,
         password: hashPw
     });
     const vToken = crypto.randomBytes(16).toString('hex');
@@ -68,13 +61,7 @@ try {
     if (await mailer(user.email, subject, content)) 
         throw new Error("An error occured while trying to send the mail, please retry");
     
-    // Create user session token and session data
-    const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);//have aswell user level access
-    //req.session._id = user._id;
-    //req.session.name = user.name;
-    
     req.flash('success', "Account created successfully, please check your emails to confirm your account");
-    res.header('authToken', token); // save token to header
     return res.status(200).redirect('/Login');
 } catch (err) {
     console.log("ERROR REGISTER:", err);
@@ -96,7 +83,7 @@ try {
     }
 
     // Check if email exists in DB
-    var [err, user] = await utils.to(User.findOne({email: req.body.email}));
+    var [err, user] = await utils.to(User.findOne({email: formData.email}));
     if (err)
         throw new Error("An error occured while looking for your user account, please try again");
     if (!user)
@@ -110,7 +97,7 @@ try {
     // Check if user is verified
     if (!user.isVerified) {
         request.post('http://127.0.0.1:8089/api/auth/resend', {
-            json: {email: req.body.email}
+            json: {email: formData.email}
         }, (err) => {
             if (err)
                 throw new Error("An error occured while sending your validation token, please try again")
@@ -118,19 +105,11 @@ try {
         throw new Error("Your account has not been verified. Please check your e-mails");
     }
     
-    // Create user session token
-    const token = jwt.sign({_id: user._id, name: user.name, level: user.level}, process.env.TOKEN_SECRET, {}, (err => {
-        if (err)
-            throw new Error("An error occured while generating your token");
-    }));// callback and expiration date
-
     // Create session variables
     req.session._id = user._id;
     req.session.name = user.name;
     req.session.level = user.level;
-    req.session.token = token;
     
-    res.header('authToken', token); // save token to header
     req.flash('success', 'Logged in successfully!');
     res.redirect('/');
 } catch (err) {

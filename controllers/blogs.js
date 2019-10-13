@@ -4,7 +4,7 @@ const {validationResult} = require('express-validator');
 const {vBlog} = require('./validators/vBlog');
 
 const Blog = require('../models/Blog');
-const verifyToken = require('./helpers/verifyToken');
+const verifySession = require('./helpers/verifySession');
 const bHelpers = require('./helpers/blogHelpers');
 const utils = require('./helpers/utils');
 
@@ -39,7 +39,7 @@ try {
 }})
 
 // post a blog
-router.post('/', verifyToken, vBlog, async (req, res) => {
+router.post('/', verifySession, vBlog, async (req, res) => {
 try {
     if (req.user.level > 1) {
         const obj = { //sanitize
@@ -79,7 +79,7 @@ try {
 }})
 
 // patch a blog
-router.post('/patch/:blogId', verifyToken, vBlog, async (req, res) => {
+router.post('/patch/:blogId', verifySession, vBlog, async (req, res) => {
 try {
     if (req.user.level > 1) {
         // Check form inputs validity
@@ -109,7 +109,7 @@ try {
 }})
 
 // delete a blog
-router.get('/delete/:blogId', verifyToken, async (req, res) => {
+router.get('/delete/:blogId', verifySession, async (req, res) => {
 try {
     if (req.user.level > 1) {
         var [err, removedBlog] = await utils.to(Blog.deleteOne({_id: req.params.blogId}));

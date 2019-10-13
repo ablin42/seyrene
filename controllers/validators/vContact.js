@@ -12,6 +12,6 @@ module.exports.vContact = [
     body('title')
     .isLength({ min: 10, max: 256}).withMessage('Title must contain between 10 and 256 characters'),
     body('content')
-    .isLength({ min: 64, max: 2048}).withMessage('Content must contain between 64 and 2048 characters')
     .trim()
+    .isLength({ min: 64, max: 2048}).withMessage('Content must contain between 64 and 2048 characters')
 ];

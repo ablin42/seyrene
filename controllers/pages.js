@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const request = require('request-promise');
 
-const verifyToken = require('./helpers/verifyToken');
 const verifySession = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 const Blog = require('../models/Blog');
