@@ -1,46 +1,46 @@
 <% include partials/head %>
 
-<div class="container-fluid"> 
-    <div class="container">
-        <div class="info-update"><!--change class form id etc api url-->
-            <form id="nameform" method="POST" action="/api/user/patch/name">
-                <div class="txtb">
-                  <input type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
-                  <span data-placeholder="Username"></span>
-                  <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
-                </div>
-                <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-nameform">
-              </form>
+<div class="container">
+  <div class="form-container info-update"><!--change class form id etc api url-->
+    <h1 class="form-title">Paramètres</h1>
+    <form id="nameform" method="POST" action="/api/user/patch/name">
+      <div class="txtb">
+        <input type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
+        <span data-placeholder="Username"></span>
+        <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
+      </div>
+      <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-nameform">
+    </form>
 
-            <form id="emailform" method="POST" action="/api/user/patch/email">
-              <div class="txtb">
-                <input type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
-                <span data-placeholder="Email"></span>
-                <span id="i_email" class="form-info">E-mail has to be valid</span>
-              </div>
-              <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-emailform">
-            </form>
+    <form id="emailform" method="POST" action="/api/user/patch/email">
+      <div class="txtb">
+        <input type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
+        <span data-placeholder="Email"></span>
+        <span id="i_email" class="form-info">E-mail has to be valid</span>
+        </div>
+        <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-emailform">
+    </form>
         
-            <form id="passwordform" method="POST" action="/api/user/patch/password">
-                <div class="txtb">
-                  <input type="password" name="cpassword" required>
-                  <span data-placeholder="Current Password"></span>
-                </div>
-                <div class="txtb">
-                    <input type="password" id="password" name="password" onkeyup="Validate.Password(this);" required>
-                    <span data-placeholder="Password"></span>
-                    <span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
-                </div>
-                <div class="txtb">
-                    <input type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required>
-                    <span data-placeholder="Confirm password"></span>
-                    <span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
-                </div>
-                <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-passwordform">
-              </form>
-          </div>
-    </div>
+    <form id="passwordform" method="POST" action="/api/user/patch/password">
+      <div class="txtb">
+        <input type="password" name="cpassword" required>
+        <span data-placeholder="Current Password"></span>
+      </div>
+      <div class="txtb">
+        <input type="password" id="password" name="password" onkeyup="Validate.Password(this);" required>
+        <span data-placeholder="Password"></span>
+        <span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
+      </div>
+      <div class="txtb">
+        <input type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required>
+        <span data-placeholder="Confirm password"></span>
+        <span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
+      </div>
+      <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-passwordform">
+    </form>
+  </div>
 </div>
+
 <script src="/scripts/formFocus.js"></script>
 <script src="/scripts/frontValidation.js"></script>
   

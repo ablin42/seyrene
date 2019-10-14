@@ -2,8 +2,8 @@
 
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 
-<div class="container-fluid">
-    <div class="login-form blog-form col-6 offset-3">
+<div class="container">
+    <div class="form-container gallery-form">
         <form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event);"> 
             <h1 class="form-title">Editer un item de la gallerie</h1>
             <div class="txtb">

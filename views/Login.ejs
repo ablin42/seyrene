@@ -1,7 +1,7 @@
 <% include partials/head %>
 
-<div class="container-fluid"> 
-  <div class="login-form">
+<div class="container"> 
+  <div class="form-container login-form">
     <form id="login-form" method="POST" action="/api/auth/login">
       <h1 class="form-title">Se connecter</h1>
       <div class="txtb">
@@ -17,7 +17,7 @@
       <input type="submit" class="logbtn" value="Log in" id="submit-login">
 
       <hr />
-      <div class="bottom-text mt-4">
+      <div class="bottom-text mt-2">
           <a href="/Lostpw">Mot de passe oublié?</a><br />
         Pas encore de compte? Créez en un <a href="/Register">ici</a>
       </div>

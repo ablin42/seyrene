@@ -1,21 +1,23 @@
 <% include ../partials/head %>
 
-<div class="container-fluid"> 
-    <form id="blog" method="POST" action="/api/blog/" class="login-form blog-form col-6 offset-3">
-        <h1 class="form-title">Rédiger un post de blog</h1>
-            
-        <div class="txtb">
-            <input id="title" type="text" name="title" onkeyup="Validate.String(this, 4, 256);" value="<% if (locals.formData) { %><%= locals.formData.title %><% } %>" required>
-            <span data-placeholder="Title"></span>
-            <span id="i_title" class="form-info">Title must contain between 4 and 256 characters</span>
-        </div>
+<div class="container"> 
+    <div class="form-container blog-form">
+        <form id="blog" method="POST" action="/api/blog/">
+            <h1 class="form-title">Rédiger un post de blog</h1>
+                
+            <div class="txtb">
+                <input id="title" type="text" name="title" onkeyup="Validate.String(this, 4, 256);" value="<% if (locals.formData) { %><%= locals.formData.title %><% } %>" required>
+                <span data-placeholder="Title"></span>
+                <span id="i_title" class="form-info">Title must contain between 4 and 256 characters</span>
+            </div>
 
-        <textarea id="content" class="blog-textarea" name="content" placeholder="Your blog content here" onkeyup="Validate.String(this, 128, 4096);" required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
-        <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
+            <textarea id="content" class="blog-textarea" name="content" placeholder="Your blog content here" onkeyup="Validate.String(this, 128, 4096);" required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
+            <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
 
-        <input type="submit" class="logbtn" value="Save" id="submit-blog">
-    
-    </form>
+            <input type="submit" class="logbtn" value="Save" id="submit-blog">
+        
+        </form>
+    </div>
     <script src="/scripts/frontValidation.js"></script>
     <script src="/scripts/formFocus.js"></script>
 </div>

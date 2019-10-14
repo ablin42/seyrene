@@ -2,27 +2,28 @@
 
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 
-<div class="container-fluid">
-    <div class="container" id="container-gallery">
-        <% if (locals.galleries){ %>
-            <div class="card" style="width: 18rem;" id="<%= locals.galleries._id %>">
-              <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries._id %>" class="card-img-top" alt="<%= locals.galleries.title %>"></a>
-              <div class="card-body">
-                <h5 class="card-title"><i><%= locals.galleries.title %></i></h5>
-                <% if (locals.level && locals.level > 1) { %>
-                    <a href="/Galerie/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
-                <% } %>
-                <p class="card-text gallery-description"><%= locals.galleries.content %></p>
-                <p class="card-text">
-                  <% locals.galleries.tags.forEach(function (tag) { %>
-                    <a href="#<%= tag %>">#<%= tag %></a>
-                  <% }) %></p>
-              </div>
-            </div>
-        <% } %>
+<div class="container">
+  <div id="single-gallery">
+    <% if (locals.galleries){ %>
+      <div class="card" style="width: 18rem;" id="<%= locals.galleries._id %>">
+        <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries._id %>" class="card-img-top" alt="<%= locals.galleries.title %>"></a>
+        <div class="card-body">
+          <h5 class="card-title"><i><%= locals.galleries.title %></i></h5>
+          <% if (locals.level && locals.level > 1) { %>
+            <a href="/Galerie/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
+          <% } %>
+          <p class="card-text gallery-description"><%= locals.galleries.content %></p>
+          <p class="card-text">
+            <% locals.galleries.tags.forEach(function (tag) { %>
+              <a href="#<%= tag %>">#<%= tag %></a>
+            <% }) %>
+          </p>
+        </div>
+      </div>
+    <% } %>
   </div>
-    <script src="/scripts/frontValidation.js"></script>
-    <script src="/scripts/formFocus.js"></script>
 </div>
+<script src="/scripts/frontValidation.js"></script>
+<script src="/scripts/formFocus.js"></script>
   
 <% include partials/footer %>

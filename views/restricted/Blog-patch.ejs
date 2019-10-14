@@ -1,7 +1,7 @@
 <% include ../partials/head %>
 
-<div class="container-fluid">
-    <div class="login-form blog-form col-6 offset-3">
+<div class="container">
+    <div class="form-container blog-form">
         <form id="blog" method="POST" action="/api/blog/patch/<%= locals.blogContent.id %>"> <!-- /blogId -->
             <h1 class="form-title">Editer un post de blog</h1>
             <div class="txtb">
@@ -15,11 +15,11 @@
 
             <input type="submit" class="logbtn" value="Update" id="submit-blog">
         </form>
-    <hr />
-    <form method="GET" action="/api/blog/delete/<%= locals.blogContent.id %>">
-        <input type="submit" class="delbtn" value="DELETE" id="delete-blog">
-    </form>
-</div>
+        <hr />
+        <form method="GET" action="/api/blog/delete/<%= locals.blogContent.id %>">
+            <input type="submit" class="delbtn" value="DELETE" id="delete-blog">
+        </form>
+    </div>
     <script src="/scripts/frontValidation.js"></script>
     <script src="/scripts/formFocus.js"></script>
 </div>
