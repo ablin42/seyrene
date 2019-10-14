@@ -1,7 +1,7 @@
 <% include partials/head %>
 
 <script src="/scripts/infiniteGalleries.js"></script>
-<div class="container-fluid">
+<div class="container">
     <% if (locals.level && locals.level > 1) { %>
       <div class="alert alert-info" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -10,10 +10,10 @@
         <a href="/Galerie/Post">post gallery item</a>
       </div>
     <% } %>
-    <div class="container" id="container-gallery">
+    <div class="container-gallery" id="container-gallery">
           <% if(locals.galleries){ %>
             <% Object.keys(locals.galleries).forEach(function (index) { %>
-              <div class="card" style="width: 18rem;" id="<%= locals.galleries[index]._id %>">
+              <div class="card" id="<%= locals.galleries[index]._id %>">
                 <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries[index]._id %>" class="card-img-top" alt="<%= locals.galleries[index].title %>"></a>
                 <div class="card-body">
                   <h5 class="card-title"><i><a href="Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].title %></a></i></h5>
