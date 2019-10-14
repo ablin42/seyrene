@@ -15,7 +15,6 @@
 
 /* Medium devices (tablets, 768px and up) */
 @media (max-width: 768px) {
-  body {overflow-x: hidden;}
   .nav-links{
     width: 20%!important;
     min-width: 120px;
@@ -45,11 +44,10 @@
   .register-form {transform: translate(-50%, 0%)!important;}
   .info-update {transform: translate(-50%, 0%)!important;}
   .lostpw-form {transform: translate(-50%, 5%)!important;}
+  .err404 {transform: translate(0%, 10%)!important; font-size: 8em!important;}
 }
 
-.container {
-  max-width: 1340px!important;
-}
+.container {max-width: 1340px!important;}
 
 /* Large devices (desktops, 992px and up) */
 @media (max-width: 992px) {
@@ -65,7 +63,7 @@ body, html {
   height: 100%;
   width: 100%;
   min-width: 500px;
-  overflow-x: hidden;
+  /*overflow-x: hidden;*/
   background-image: linear-gradient(160deg,#93BEDF,#465775);
 }
 
@@ -260,12 +258,11 @@ height: 40px;
 }
 
 .err404 {
-text-align: center;
-font-size: 10em;
-color: white;
-text-shadow: 1px 2px black;
-position: absolute;
-transform: translate(50%, 50%);
+  text-align: center;
+  font-size: 10em;
+  color: white;
+  text-shadow: 1px 2px black;
+  transform: translate(0%, 50%);
 }
 
 /* END GLOBAL */
@@ -482,10 +479,14 @@ div.carousel-item.active {
 /* BLOG */
 
 .container-blog {
-  display: block!important;
   text-align: center;
-  margin-bottom: 0;
-  padding-bottom: 0;
+  background: #f1f1f1;
+  padding: 40px 40px;
+  border-radius: 10px;
+  border: 1px solid #3498db;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
 }
 
 .blog-title {
@@ -528,6 +529,19 @@ div.carousel-item.active {
   box-shadow: 0px 0px 3px 0px rgba(13, 143, 255, 0.75)
 }
 
+/* SINGLE */
+
+.single-blog {
+  background: #f1f1f1;
+  padding: 40px 40px;
+  border-radius: 10px;
+  border: 1px solid #3498db;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
+/* END SINGLE */
 /* END BLOG */
 
 .info-update {
