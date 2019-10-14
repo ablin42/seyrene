@@ -25,5 +25,10 @@
 </div>
 <script src="/scripts/frontValidation.js"></script>
 <script src="/scripts/formFocus.js"></script>
+<a class="lightbox-close" href="#close">
+    <div class="lightbox-target" id="expand">
+      <img id="expandImg" src="/api/gallery/image/<%= locals.galleries._id %>"/>
+    </div>
+  </a>
   
 <% include partials/footer %>
