@@ -14,10 +14,6 @@ const GallerySchema = mongoose.Schema({
         data: Buffer,
         contentType: String
     },
-    price: {
-        type: mongoose.Decimal128,
-        required: true
-    },
     tags: {
         type: Array
     },

@@ -19,6 +19,26 @@ upload = multer({
     }
 }).single('img')
 
+function parsePrice(galleries) {
+let result = [];
+for (i = 0; i < galleries.length; i++) {
+    let obj = {
+        "_id": galleries[i]._id,
+        "title": galleries[i].title,
+        "content": galleries[i].content,
+        "price": parseFloat(galleries[i].price.toString()),
+        "tags": galleries[i].tags,
+        "date": galleries[i].date,
+        "img": galleries[i].img,
+        "createdAt": galleries[i].createdAt,
+        "updatedAt": galleries[i].updatedAt,
+        "__v": galleries[i].__v
+    };
+    result.push(obj);
+}
+return result;
+}
+
 router.get('/', async (req, res) => {
 try {
     const options = {
@@ -29,8 +49,9 @@ try {
     var [err, result] = await utils.to(Gallery.paginate({}, options));
     if (err)
         throw new Error("An error occured while fetching galleries");
-    const galleries = result.docs; //probably can remove img since we use id and api to load it 
-    return res.status(200).json(galleries);
+    var galleries = result.docs; //probably can remove img since we use id and api to load it
+    ress = await parsePrice(galleries);
+    return res.status(200).json(ress);
 } catch (err) {
     console.log("FETCHING GALLERIES ERROR:", err);
     return res.status(200).json({error: true, message: err.message})
