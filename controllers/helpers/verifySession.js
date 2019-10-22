@@ -17,5 +17,5 @@ module.exports = function(req, res, next){
         "level": 3
     };
     */
-    next();
+    return next();
 }

@@ -6,7 +6,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
 const expressSanitizer = require('express-sanitizer');
-const filter = require('content-filter')  
+const filter = require('content-filter');
+const MongoStore = require('connect-mongo')(session);
 require('dotenv/config');
 
 //Connect to DB
@@ -34,18 +35,22 @@ app.use(cookieParser());
 //-- Express Session --//
 app.use(session({
      secret: 'keyboard cat', 
-     cookie: { maxAge: 600000 },
      resave: false,
-     saveUninitialized: true
+     saveUninitialized: true,
+     //store: new MongoStore({mongooseConnection: mongoose.connection}),
+     cookie: {maxAge: 180 * 60 * 1000} // 180 = 3mn
 }));
-
 //-- Flash --//
 app.use(flash());
 var blacklist = ['$','{','&&','||'];
 app.use(filter({urlBlackList: blacklist, bodyBlackList: blacklist, bodyMessage: 'A forbidden expression has been found in your data', urlMessage: 'A forbidden expression has been found in your data', dispatchToErrorHandler: true}));
-
 // Mount express-sanitizer middleware here
 app.use(expressSanitizer());
+
+app.use((req, res, next) => {
+    res.locals.session = req.session;
+    next();
+})
 
 // Routes
 const pagesRoute = require('./controllers/pages');
@@ -75,6 +80,41 @@ app.use((err, req, res, next) => {//////
     req.flash("warning", err.message)
     return res.status(500).redirect("back")
 });
+
+const Cart = require('./models/Cart');
+const Gallery = require('./models/Gallery');
+
+app.get('/add-to-cart/:itemId', async (req, res) => {
+try {
+    let productId = req.params.itemId;
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+
+    Gallery.findById(productId, (err, product) => {
+        if (err)
+            throw new Error("An error occured while looking for the product");
+        cart.add(product, product.id);
+        req.session.cart = cart;
+        console.log(cart)
+        req.flash("success", "Item added to cart");
+        res.status(200).redirect('/Galerie');
+    })
+} catch (err) {
+    console.log("ADD TO CART ERROR");
+    req.flash("info", err.message);
+    return res.status(400).redirect('/');
+}})
+
+app.get('/shopping-cart', (req, res) => {
+try {
+    if (!req.session.cart) 
+        return res.status(200).render('cart', {products: null});
+    let cart = new Cart(req.session.cart);
+    res.status(200).render('cart', {products: cart.generateArray(), totalPrice: cart.totalPrice, totalQty: cart.totalQty});
+} catch (err) {
+    console.log("CART ERROR");
+    req.flash("info", err.message);
+    return res.status(400).redirect('/');
+}})
    
 // set the view engine to ejs
 app.set('view engine', 'ejs');

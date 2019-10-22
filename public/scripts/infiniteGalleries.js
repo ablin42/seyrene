@@ -20,6 +20,7 @@ async function infiniteGalleries() {
                             <a href="/Galerie/Patch/${id}"><i class="fas fa-edit"></i></a>
                             <p class="card-text gallery-description">${gallery.content}</p>
                             <p class="card-text"><b>${gallery.price}€</b></p>
+                            <input type="submit" class="logbtn" value="Add to cart">
                             <p class="card-text">`;
                     gallery.tags.forEach(tag => {
                         toAppend += `<a href="#">#${tag} </a>`;
