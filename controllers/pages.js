@@ -8,6 +8,7 @@ const Blog = require('../models/Blog');
 const User = require('../models/User');
 const Gallery = require('../models/Gallery');
 const PwToken = require('../models/PasswordToken');
+const Cart = require('../models/Cart');
 
 const router = express.Router();
 
@@ -44,6 +45,18 @@ try {
     console.log("GALLERY ROUTE ERROR", err);
     req.flash("warning", err.message);
     res.status(400).redirect("/");
+}})
+
+router.get('/shopping-cart', (req, res) => {
+try {
+    if (!req.session.cart) 
+        return res.status(200).render('cart', {products: null, totalPrice: 0, totalQty: 0});
+    let cart = new Cart(req.session.cart);
+    res.status(200).render('cart', {products: cart.generateArray(), totalPrice: cart.totalPrice, totalQty: cart.totalQty});
+} catch (err) {
+    console.log("CART ERROR", err);
+    req.flash("info", err.message);
+    return res.status(400).redirect('/');
 }})
 
 router.get('/Login', verifySession, (req, res) => {

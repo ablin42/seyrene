@@ -3,7 +3,23 @@
 <div class="container"> 
   <div class="form-container login-form">
     <% if(locals.totalPrice){ %>
-        <%= locals.totalPrice %>
+        TOTAL PRICE: <%= locals.totalPrice %>€<br/>
+    <% } %>
+    <% if(locals.totalQty){ %>
+        NUMBER OF ITEMS: <%= locals.totalQty %>
+    <% } %>
+    <hr/>
+    <% if(locals.products){ %>
+        <% Object.keys(locals.products).forEach(function (index) { %>
+            ITEM: <%= locals.products[index].item.title %><br/>
+            DESCRIPTION: <%= locals.products[index].item.content %><br/>
+            <img style="width: 150px;" src="/api/gallery/image/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>"><br/>
+            PRICE: <%= locals.products[index].price %>€<br/>
+            QTY: <%= locals.products[index].qty %><br/>
+            <a style="font-size: 40px" href="/add-to-cart/<%= locals.products[index].item._id %>">+</a>
+            <a style="font-size: 40px" href="#delete">-</a>
+            <hr/>
+          <% }) %>
       <% } %>
   </div>
 

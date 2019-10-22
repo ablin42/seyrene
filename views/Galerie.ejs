@@ -20,7 +20,7 @@
                   <p class="card-text gallery-description"><%= locals.galleries[index].content %></p>
                   <p class="card-text"><b><%= locals.galleries[index].price %>€</b></p>
                   <input type="submit" class="logbtn" value="Add to cart" onclick="addToCart('<%= locals.galleries[index]._id %>')">
-                  <a href="/add-to-cart/<%= locals.galleries[index]._id %>">ADD</a>
+                  <a href="/api/cart/add-to-cart/<%= locals.galleries[index]._id %>">ADD</a>
                   <p class="card-text">
                     <% locals.galleries[index].tags.forEach(function (tag) { %>
                       <a href="#<%= tag %>">#<%= tag %></a>
@@ -43,7 +43,7 @@
     expand.attr("src", image.src)
   }
   async function addToCart(itemId) {
-    await fetch(`http://127.0.0.1:8089/add-to-cart/${itemId}`)
+    await fetch(`http://127.0.0.1:8089/api/cart/add-to-cart/${itemId}`)
     .then(function(response) {
       console.log(response)
     })

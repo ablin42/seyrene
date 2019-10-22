@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const GallerySchema = mongoose.Schema({
+    itemId: {
+        type: ObjectId,
+        required: true,
+    },
     title: {
         type: String,
         required: true
@@ -13,6 +17,10 @@ const GallerySchema = mongoose.Schema({
     img: {
         data: Buffer,
         contentType: String
+    },
+    price: {
+        type: mongoose.Decimal128,
+        required: true
     },
     tags: {
         type: Array

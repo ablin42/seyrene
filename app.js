@@ -59,6 +59,7 @@ const blogsRoute = require('./controllers/blogs');
 const userRoute = require('./controllers/user');
 const contactRoute = require('./controllers/contact');
 const galleryRoute = require('./controllers/galleries');
+const cartRoute = require('./controllers/cart');
 
 app.use('/', pagesRoute);
 app.use('/api/auth', authRoute);
@@ -66,6 +67,7 @@ app.use('/api/blog', blogsRoute);
 app.use('/api/user', userRoute);
 app.use('/api/contact', contactRoute);
 app.use('/api/gallery', galleryRoute);
+app.use('/api/cart', cartRoute);
 
 // Handles multer error
 app.use((err, req, res, next) => {//////
@@ -81,40 +83,6 @@ app.use((err, req, res, next) => {//////
     return res.status(500).redirect("back")
 });
 
-const Cart = require('./models/Cart');
-const Gallery = require('./models/Gallery');
-
-app.get('/add-to-cart/:itemId', async (req, res) => {
-try {
-    let productId = req.params.itemId;
-    let cart = new Cart(req.session.cart ? req.session.cart : {});
-
-    Gallery.findById(productId, (err, product) => {
-        if (err)
-            throw new Error("An error occured while looking for the product");
-        cart.add(product, product.id);
-        req.session.cart = cart;
-        console.log(cart)
-        req.flash("success", "Item added to cart");
-        res.status(200).redirect('/Galerie');
-    })
-} catch (err) {
-    console.log("ADD TO CART ERROR");
-    req.flash("info", err.message);
-    return res.status(400).redirect('/');
-}})
-
-app.get('/shopping-cart', (req, res) => {
-try {
-    if (!req.session.cart) 
-        return res.status(200).render('cart', {products: null});
-    let cart = new Cart(req.session.cart);
-    res.status(200).render('cart', {products: cart.generateArray(), totalPrice: cart.totalPrice, totalQty: cart.totalQty});
-} catch (err) {
-    console.log("CART ERROR");
-    req.flash("info", err.message);
-    return res.status(400).redirect('/');
-}})
    
 // set the view engine to ejs
 app.set('view engine', 'ejs');
