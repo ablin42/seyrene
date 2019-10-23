@@ -1,5 +1,37 @@
 <% include partials/head %>
 
+<script src="https://checkout.stripe.com/checkout.js" ></script>
+<script>
+  const stripePublicKey = '<%= locals.stripePublicKey %>';
+</script>
+<!--<script src="scripts/store.js"></script>-->
+<script>
+    let stripeHandler = StripeCheckout.configure({
+      key: stripePublicKey,
+      locale: "auto",
+      token: function (token) {
+        let items = [];
+        
+        for (let i = 0; i < 0; i++) { // i < nb of rows (different items)
+          let id = "";
+          let quantity = "";
+          items.push({
+            id: id,
+            quantity: quantity
+          });
+        }
+        
+      }
+    })
+  
+    let price = parseFloat("<%= locals.totalPrice %>") * 100;
+    function submitCheckout () {
+      stripeHandler.open({
+        amount: price
+      })
+    }
+  </script>
+
 <div class="container"> 
   <div class="form-container login-form">
     <% if(locals.totalPrice){ %>
@@ -8,21 +40,27 @@
     <% if(locals.totalQty){ %>
         NUMBER OF ITEMS: <%= locals.totalQty %>
     <% } %>
+    
+    <a href="#" onclick="submitCheckout();">CHECKOUT</a>
     <hr/>
     <% if(locals.products){ %>
         <% Object.keys(locals.products).forEach(function (index) { %>
+          <div id="<%= locals.products[index].item._id %>">
             ITEM: <%= locals.products[index].item.title %><br/>
             DESCRIPTION: <%= locals.products[index].item.content %><br/>
             <img style="width: 150px;" src="/api/gallery/image/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>"><br/>
             PRICE: <%= locals.products[index].price %>€<br/>
             QTY: <%= locals.products[index].qty %><br/>
-            <a style="font-size: 40px" href="/add-to-cart/<%= locals.products[index].item._id %>">+</a>
+            <a style="font-size: 40px" href="/api/cart/add-to-cart/<%= locals.products[index].item._id %>">+</a>
             <a style="font-size: 40px" href="#delete">-</a>
+          </div>
             <hr/>
           <% }) %>
       <% } %>
+      
   </div>
-
 </div>
+
+
   
 <% include partials/footer %>

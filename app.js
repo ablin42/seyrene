@@ -10,6 +10,21 @@ const filter = require('content-filter');
 const MongoStore = require('connect-mongo')(session);
 require('dotenv/config');
 
+const stripeSecret = process.env.STRIPE_SECRET;
+const stripePublic = process.env.STRIPE_PUBLIC;
+
+/*
+const stripe = require("stripe")(stripeSecret);//put api key in dotenv
+(async () => {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 1000,
+      currency: 'eur',
+      payment_method_types: ['card'],
+      receipt_email: 'jenny.rodzzdsen@example.com',
+    });
+    console.log(paymentIntent)
+  })();*/
+
 //Connect to DB
 mongoose.connect(
     process.env.DB_CONNECTION, { 
@@ -38,7 +53,7 @@ app.use(session({
      resave: false,
      saveUninitialized: true,
      //store: new MongoStore({mongooseConnection: mongoose.connection}),
-     cookie: {maxAge: 180 * 60 * 1000} // 180 = 3mn
+     cookie: {maxAge: 180 * 60 * 1000}//, sameSite: 'none', secure: true}, // 180 = 3mn
 }));
 //-- Flash --//
 app.use(flash());

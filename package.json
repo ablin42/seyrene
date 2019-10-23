@@ -38,7 +38,8 @@
     "nodemailer": "^6.3.0",
     "parse-error": "^0.2.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "stripe": "^7.10.0"
   },
   "devDependencies": {
     "live-server": "^1.2.1"

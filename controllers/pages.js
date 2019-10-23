@@ -9,6 +9,10 @@ const User = require('../models/User');
 const Gallery = require('../models/Gallery');
 const PwToken = require('../models/PasswordToken');
 const Cart = require('../models/Cart');
+require('dotenv/config');
+
+const stripeSecret = process.env.STRIPE_SECRET;
+const stripePublic = process.env.STRIPE_PUBLIC;
 
 const router = express.Router();
 
@@ -24,6 +28,17 @@ try {
 } catch (err) {
     console.log("HOME ROUTE ERROR", err);
     res.status(400).render('home');
+}})
+
+router.get('/checkout', verifySession, (req, res) => {
+try {
+    if (!req.session.cart) 
+        return res.status(200).redirect('/shopping-cart');
+    let cart = new Cart(req.session.cart);
+    res.status(200).render('checkout', {total: cart.totalPrice}); 
+} catch (err) {
+    console.log("CHECKOUT ROUTE ERROR", err);
+    res.status(400).redirect('/shopping-cart');
 }})
 
 router.get('/Galerie', verifySession, async (req, res) => {
@@ -50,9 +65,9 @@ try {
 router.get('/shopping-cart', (req, res) => {
 try {
     if (!req.session.cart) 
-        return res.status(200).render('cart', {products: null, totalPrice: 0, totalQty: 0});
+        return res.status(200).render('cart', {products: null, totalPrice: 0, totalQty: 0, stripePublicKey: stripePublic});
     let cart = new Cart(req.session.cart);
-    res.status(200).render('cart', {products: cart.generateArray(), totalPrice: cart.totalPrice, totalQty: cart.totalQty});
+    res.status(200).render('cart', {products: cart.generateArray(), totalPrice: cart.totalPrice, totalQty: cart.totalQty, stripePublicKey: stripePublic});
 } catch (err) {
     console.log("CART ERROR", err);
     req.flash("info", err.message);
