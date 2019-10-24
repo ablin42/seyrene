@@ -20,7 +20,7 @@
             quantity: quantity
           });
         }
-        
+
       }
     })
   
@@ -33,31 +33,47 @@
   </script>
 
 <div class="container"> 
-  <div class="form-container login-form">
-    <% if(locals.totalPrice){ %>
-        TOTAL PRICE: <%= locals.totalPrice %>€<br/>
-    <% } %>
-    <% if(locals.totalQty){ %>
-        NUMBER OF ITEMS: <%= locals.totalQty %>
-    <% } %>
-    
-    <a href="#" onclick="submitCheckout();">CHECKOUT</a>
-    <hr/>
+  <div class="container-cart">
+    <div class="cart-row">
+      <span class="cart-item cart-header cart-column">ITEM</span>
+      <span class="cart-price cart-header cart-column">PRICE</span>
+      <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+    </div>
     <% if(locals.products){ %>
-        <% Object.keys(locals.products).forEach(function (index) { %>
-          <div id="<%= locals.products[index].item._id %>">
-            ITEM: <%= locals.products[index].item.title %><br/>
-            DESCRIPTION: <%= locals.products[index].item.content %><br/>
-            <img style="width: 150px;" src="/api/gallery/image/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>"><br/>
-            PRICE: <%= locals.products[index].price %>€<br/>
-            QTY: <%= locals.products[index].qty %><br/>
-            <a style="font-size: 40px" href="/api/cart/add-to-cart/<%= locals.products[index].item._id %>">+</a>
-            <a style="font-size: 40px" href="#delete">-</a>
+      <% Object.keys(locals.products).forEach(function (index) { %>
+        <div class="cart-row" id="<%= locals.products[index].item._id %>">
+          <div class="cart-item cart-column">
+            <img class="cart-img" src="/api/gallery/image/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
+            <div class="cart-title-description">
+              <h4 class="cart-item-title"><b><%= locals.products[index].item.title %></b></h4>
+              <p class="cart-item-description"><%= locals.products[index].item.content %></p>
+            </div>
           </div>
-            <hr/>
-          <% }) %>
+              
+          <div class="cart-price cart-column ">
+            <p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
+          </div>
+              
+          <div class="cart-quantity cart-column">
+            <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDelete('<%= locals.products[index].item._id %>')"></i>
+            <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
+            <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>')"></i>
+            <!--<a class="qty-update qty-decrease" href="#delete">-</a> 
+            <h4 class="cart-item-qty"><%= locals.products[index].qty %></h4>
+            <a class="qty-update qty-increase" href="/api/cart/add-to-cart/<%= locals.products[index].item._id %>">+</a>-->
+          </div>
+      </div>
+      <% }) %>
+    <% } %>
+    <div class="cart-total">
+      <% if(locals.totalPrice){ %>
+          TOTAL PRICE: <b><%= locals.totalPrice %>€</b>
       <% } %>
-      
+      <% if(locals.totalQty){ %>
+          NUMBER OF ITEMS: <b><%= locals.totalQty %></b><br/>
+      <% } %>
+      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
+    </div>
   </div>
 </div>
 
