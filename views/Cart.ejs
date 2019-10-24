@@ -5,32 +5,6 @@
   const stripePublicKey = '<%= locals.stripePublicKey %>';
 </script>
 <!--<script src="scripts/store.js"></script>-->
-<script>
-    let stripeHandler = StripeCheckout.configure({
-      key: stripePublicKey,
-      locale: "auto",
-      token: function (token) {
-        let items = [];
-        
-        for (let i = 0; i < 0; i++) { // i < nb of rows (different items)
-          let id = "";
-          let quantity = "";
-          items.push({
-            id: id,
-            quantity: quantity
-          });
-        }
-
-      }
-    })
-  
-    let price = parseFloat("<%= locals.totalPrice %>") * 100;
-    function submitCheckout () {
-      stripeHandler.open({
-        amount: price
-      })
-    }
-  </script>
 
 <div class="container"> 
   <div class="container-cart">
@@ -41,7 +15,7 @@
     </div>
     <% if(locals.products){ %>
       <% Object.keys(locals.products).forEach(function (index) { %>
-        <div class="cart-row" id="<%= locals.products[index].item._id %>">
+        <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %>">
           <div class="cart-item cart-column">
             <img class="cart-img" src="/api/gallery/image/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
             <div class="cart-title-description">
@@ -77,6 +51,48 @@
   </div>
 </div>
 
+
+<script>
+        let items = [];
+        let rows = $(".cart-row-item")
+        
+        for (let i = 0; i < rows.length; i++) { 
+          let id = rows[i].id;
+          let quantity = parseInt($("div.cart-quantity.cart-column > h4 > b")[i].innerText);
+          let price = parseFloat($("div.cart-price.cart-column > p > b")[i].innerText);
+          items.push({
+            id: id,
+            price: price,
+            quantity: quantity
+          });
+        }
+        console.log(items)
+    let stripeHandler = StripeCheckout.configure({
+      key: stripePublicKey,
+      locale: "auto",
+      token: function (token) {
+        let items = [];
+        let rows = $(".cart-row-item");
+        console.log(rows)
+        
+        for (let i = 0; i < 0; i++) { // i < nb of rows (different items)
+          let id = $("body > div > div > div:nth-child(2)")
+          let quantity = "";
+          items.push({
+            id: id,
+            quantity: quantity
+          });
+        }
+      }
+    })
+  
+    let price = parseFloat("<%= locals.totalPrice %>") * 100;
+    function submitCheckout () {
+      stripeHandler.open({
+        amount: price
+      })
+    }
+</script>
 
   
 <% include partials/footer %>
