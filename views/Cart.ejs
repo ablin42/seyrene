@@ -53,45 +53,53 @@
 
 
 <script>
-        let items = [];
-        let rows = $(".cart-row-item")
+let stripeHandler = StripeCheckout.configure({
+  key: stripePublicKey,
+  locale: "auto",
+  token: function (token) {
+    let items = [];
+    let rows = $(".cart-row-item")
         
-        for (let i = 0; i < rows.length; i++) { 
-          let id = rows[i].id;
-          let quantity = parseInt($("div.cart-quantity.cart-column > h4 > b")[i].innerText);
-          let price = parseFloat($("div.cart-price.cart-column > p > b")[i].innerText);
-          items.push({
-            id: id,
-            price: price,
-            quantity: quantity
-          });
-        }
-        console.log(items)
-    let stripeHandler = StripeCheckout.configure({
-      key: stripePublicKey,
-      locale: "auto",
-      token: function (token) {
-        let items = [];
-        let rows = $(".cart-row-item");
-        console.log(rows)
-        
-        for (let i = 0; i < 0; i++) { // i < nb of rows (different items)
-          let id = $("body > div > div > div:nth-child(2)")
-          let quantity = "";
-          items.push({
-            id: id,
-            quantity: quantity
-          });
-        }
-      }
-    })
-  
-    let price = parseFloat("<%= locals.totalPrice %>") * 100;
-    function submitCheckout () {
-      stripeHandler.open({
-        amount: price
-      })
+    for (let i = 0; i < rows.length; i++) { 
+      let id = rows[i].id;
+      let quantity = parseInt($("div.cart-quantity.cart-column > h4 > b")[i].innerText);
+      let price = parseFloat($("div.cart-price.cart-column > p > b")[i].innerText);
+      items.push({
+        id: id,
+        price: price,
+        quantity: quantity
+      });
     }
+
+    fetch('/api/cart/purchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        stripeTokenId: token.id,
+        items: items
+      })
+    })
+    .then((res) => {return res.json();})
+    .then((data) => {
+      console.log(data);
+      alert('SUCCESS');
+      // CLEAR CART 
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
+})
+  
+let price = parseFloat("<%= locals.totalPrice %>") * 100;
+function submitCheckout () {
+  stripeHandler.open({
+    amount: price
+  })
+}
 </script>
 
   
