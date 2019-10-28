@@ -11,6 +11,8 @@ async function cartAdd(itemId) {
     .then((res) => {return res.json()})
     .then(function(response) {
       console.log(response)
+      var cartQty = parseInt(document.getElementById("cartQty").innerText) + 1;
+      document.getElementById("cartQty").innerText = cartQty;
       //update cart on front end
       //location.reload();
     })  
@@ -33,6 +35,10 @@ async function cartDel(itemId) {
     .then((res) => {return res.json()})
     .then(function(response) {
       console.log(response)
+      var cartQty = parseInt(document.getElementById("cartQty").innerText) - 1;
+      if (cartQty < 0)
+        cartQty = 0;
+      document.getElementById("cartQty").innerText = cartQty;
       //update cart on front end
       //location.reload();
     })  

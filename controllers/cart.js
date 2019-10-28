@@ -40,7 +40,7 @@ try {
         cart.add(product, product.id);
         req.session.cart = cart;
         req.flash("success", "Item added to cart");
-        return res.status(200).json({"response": "okx"})
+        return res.status(200).json({"response": "ok!"})
     })
 } catch (err) {
     console.log("ADD TO CART ERROR");
@@ -59,7 +59,7 @@ try {
         cart.delete(product, product.id);
         req.session.cart = cart;
         req.flash("success", "Item deleted from cart");
-        return res.status(200).json({"response": "okx"})
+        return res.status(200).json({"response": "ok!"})
     })
 } catch (err) {
     console.log("DELETE FROM CART ERROR");
