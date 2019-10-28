@@ -1,6 +1,7 @@
 <% include partials/head %>
 
 <script src="https://checkout.stripe.com/checkout.js" ></script>
+<script src="/scripts/cart.js"></script>
 <script>
   const stripePublicKey = '<%= locals.stripePublicKey %>';
 </script>
@@ -29,7 +30,7 @@
           </div>
               
           <div class="cart-quantity cart-column">
-            <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDelete('<%= locals.products[index].item._id %>')"></i>
+            <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDel('<%= locals.products[index].item._id %>')"></i>
             <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
             <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>')"></i>
             <!--<a class="qty-update qty-decrease" href="#delete">-</a> 
@@ -85,8 +86,8 @@ let stripeHandler = StripeCheckout.configure({
     .then((res) => {return res.json();})
     .then((data) => {
       console.log(data);
-      alert('SUCCESS');
-      // CLEAR CART 
+      //if purchase successfull else dont clear
+      window.location.href = "http://localhost:8089/api/cart/clear";
     })
     .catch((err) => {
       console.log(err);

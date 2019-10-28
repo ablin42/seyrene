@@ -8,8 +8,9 @@ require('dotenv/config');
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
-router.get('/add-to-cart/:itemId', async (req, res) => {
+router.get('/add/:itemId', async (req, res) => {
 try {
+    console.log(req.session.cart)
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
     
@@ -23,6 +24,77 @@ try {
     })
 } catch (err) {
     console.log("ADD TO CART ERROR");
+    req.flash("warning", err.message);
+    return res.status(400).redirect('/');
+}})
+
+router.get('/addd/:itemId', async (req, res) => {
+try {
+    console.log(req.session.cart)
+    let productId = req.params.itemId;
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+        
+    Gallery.findById(productId, (err, product) => {
+        if (err)
+            throw new Error("An error occured while looking for the product");
+        cart.add(product, product.id);
+        req.session.cart = cart;
+        req.flash("success", "Item added to cart");
+        return res.status(200).json({"response": "okx"})
+    })
+} catch (err) {
+    console.log("ADD TO CART ERROR");
+    req.flash("warning", err.message);
+    return res.status(400).json({"response": "not ok"})
+}})
+
+router.get('/dell/:itemId', async (req, res) => {
+try {
+    let productId = req.params.itemId;
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+            
+    Gallery.findById(productId, (err, product) => {
+        if (err)
+            throw new Error("An error occured while looking for the product");
+        cart.delete(product, product.id);
+        req.session.cart = cart;
+        req.flash("success", "Item deleted from cart");
+        return res.status(200).json({"response": "okx"})
+    })
+} catch (err) {
+    console.log("DELETE FROM CART ERROR");
+    req.flash("warning", err.message);
+    return res.status(400).redirect('/');
+}})
+
+router.get('/del/:itemId', async (req, res) => {
+try {
+    let productId = req.params.itemId;
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+        
+    Gallery.findById(productId, (err, product) => {
+        if (err)
+            throw new Error("An error occured while looking for the product");
+        cart.delete(product, product.id);
+        req.session.cart = cart;
+        req.flash("success", "Item deleted from cart");
+        return res.status(200).redirect('/Galerie');
+    })
+} catch (err) {
+    console.log("DELETE FROM CART ERROR");
+    req.flash("warning", err.message);
+    return res.status(400).redirect('/');
+}})
+
+router.get('/clear', async (req, res) => {
+try {
+    let cart = new Cart({});
+    cart.clearCart();
+    req.session.cart = cart;
+    console.log(req.session.cart)
+    return res.status(200).redirect('/');//redirect ty for purchase
+} catch (err) {
+    console.log("CLEAR CART ERROR");
     req.flash("warning", err.message);
     return res.status(400).redirect('/');
 }})
