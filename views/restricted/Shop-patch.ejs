@@ -1,7 +1,5 @@
 <% include ../partials/head %>
 
-<script src="/scripts/bootstrap-tagsinput.js"></script>
-
 <div class="container">
     <div class="form-container gallery-form">
         <form id="shop" method="POST" action="/api/shop/patch/<%= locals.shop._id %>" enctype="multipart/form-data" onsubmit="patchShop(event);"> 
@@ -19,12 +17,16 @@
                 <img src="/api/shop/image/<%= locals.shop._id %>"/>
                 <input type="file" name="img" id="img">
             </div>
-        
+            
             <div class="form-group">
-                <input v-bind="selectedTags" type="text" value="" data-role="tagsinput" id="tagInput" class="form-control">
-                <span data-placeholder="Tags"></span>
+                <label>price</label>
+                <input type="number" id="price" name="price">
             </div>
-
+            <div class="form-group">
+                <label>check if this is an unique item</label>
+                <input type="checkbox" name="isUnique" id="isUnique">
+            </div>
+        
             <input type="submit" class="logbtn" value="Update" id="submit-shop">
         </form>
     <hr />
@@ -34,32 +36,16 @@
 </div>
 
 <script>
-    let tagInput = $("#tagInput");
-    let tags = "<%= locals.shop.tags %>";
-    tags = tags.split(',')
-
-    tagInput.tagsinput('add', "");
-
-    // Load tags from db and put them in the input field
-    for (i = 0; i < tags.length; i++)
-        tagInput.tagsinput('add', tags[i]);
-       
     async function patchShop(e) {
         e.preventDefault();
-        let tagInput = document.getElementsByClassName("label-info"),
-            title = $("#title").val(),
+        let title = $("#title").val(),
             content = $("#content").val(),
             img = document.querySelector('#img'),
-            formData = new FormData(),
-            tags = [];
+            formData = new FormData();
             
-        for (i = 0; i < tagInput.length; i++)
-            tags.push(tagInput[i].textContent);
-    
         formData.append('img', img.files[0]);
         formData.append('title', title);
         formData.append('content', content);
-        formData.append('tags', JSON.stringify(tags));
             
         fetch('/api/shop/patch/<%= locals.shop._id %>', {
             method: 'post',

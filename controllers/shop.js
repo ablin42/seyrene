@@ -7,6 +7,7 @@ const {vShop} = require('./validators/vShop');
 const Shop = require('../models/Shop');
 const verifySession = require('./helpers/verifySession');
 const gHelpers = require('./helpers/galleryHelpers'); //////////
+//const sHelpers = require('./helpers/shopHelpers');
 const utils = require('./helpers/utils');
 
 upload = multer({
@@ -27,7 +28,6 @@ for (i = 0; i < shopItems.length; i++) {
         "title": shopItems[i].title,
         "content": shopItems[i].content,
         "price": parseFloat(shopItems[i].price.toString()),
-        "tags": shopItems[i].tags,
         "date": shopItems[i].date,
         "img": shopItems[i].img,
         "createdAt": shopItems[i].createdAt,
@@ -68,8 +68,6 @@ try {
                throw new Error(item.msg);
             })}
         const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
-
-        validation = await gHelpers.validationCheck(obj);
         obj.img = await gHelpers.imgEncode(req.file);
     
         const shop = new Shop(obj);
@@ -99,8 +97,6 @@ try {
         let id = req.params.id;      
         const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
 
-        obj.tags = gHelpers.parseTags(req.body.tags); 
-        validation = await gHelpers.validationCheck(obj);
         if (req.file)
             obj.img = await gHelpers.imgEncode(req.file);
     
