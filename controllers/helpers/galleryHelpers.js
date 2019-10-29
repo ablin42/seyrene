@@ -1,6 +1,5 @@
 const multer = require('multer');
 const imageType = require('image-type');
-const {galleryValidation} = require('./joiValidation');
 
 module.exports = {
     sanitizeFile: function (req, file, cb) {
@@ -37,16 +36,6 @@ module.exports = {
             return [];
         } catch (err) {throw new Error("An error occured while parsing your tags, please try again")}
        
-    },
-    validationCheck: async function (obj) {
-        try {
-            const {error} = await galleryValidation(obj);
-            if (error) 
-                throw new Error(error.message);
-            return {err: false}
-        } catch (err) {
-            throw new Error(err.message);
-        }
     },
     imgEncode: async function (file) {
         try {

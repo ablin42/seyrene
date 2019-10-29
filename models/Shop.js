@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-const GallerySchema = mongoose.Schema({
-    itemId: {
-        type: ObjectId,
-        required: true,
+const ShopSchema = mongoose.Schema({
+    isUnique: {
+        type: Boolean,
+        default: false
     },
     title: {
         type: String,
@@ -22,14 +22,11 @@ const GallerySchema = mongoose.Schema({
         type: mongoose.Decimal128,
         required: true
     },
-    tags: {
-        type: Array
-    },
     date: {
         type: Date,
         default: Date.now
     }
 }, {timestamps: true});
 
-GallerySchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('Gallery', GallerySchema);
+ShopSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('Shop', ShopSchema);

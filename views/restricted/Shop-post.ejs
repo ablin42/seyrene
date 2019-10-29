@@ -4,8 +4,8 @@
 
 <div class="container"> 
     <div class="form-container gallery-form">
-        <form id="gallery" method="POST" action="/api/gallery/post" enctype="multipart/form-data" onsubmit="postGallery(event);">
-            <h1 class="form-title">Ajouter un item à la galerie</h1>
+        <form id="shop" method="POST" action="/api/shop/post" enctype="multipart/form-data" onsubmit="postShop(event);">
+            <h1 class="form-title">Ajouter un item à la boutique</h1>
                 
             <div class="txtb">
                 <input type="text" name="title" id="title" onkeyup="Validate.String(this, 1, 256);" required>
@@ -19,18 +19,25 @@
             <div class="form-group">
                 <input type="file" name="img" id="img" required>
             </div>
+            <div class="form-group">
+                <input type="number" id="price" name="price">
+            </div>
+            <div class="form-group">
+                <label>check if this is an unique item</label>
+                <input type="checkbox" name="isUnique" id="isUnique">
+            </div>
 
             <div class="form-group">
                     <input v-bind="selectedTags" type="text" value="" data-role="tagsinput" id="tagInput" class="form-control">
                     <span data-placeholder="Tags"></span>
             </div>
 
-            <input type="submit" class="logbtn" value="Save" id="submit-gallery">
+            <input type="submit" class="logbtn" value="Save" id="submit-shop">
         </form>
     </div>
     
     <script>
-        async function postGallery(e) {
+        async function postShop(e) {
             e.preventDefault();
             let tagInput = document.getElementsByClassName("label-info"),
                 title = $("#title").val(),
@@ -47,7 +54,7 @@
             formData.append('content', content);
             formData.append('tags', JSON.stringify(tags));
             
-            fetch('/api/gallery/post', {
+            fetch('/api/shop/post', {
                 method: 'post',
                 mode: 'same-origin',
                 body: formData
