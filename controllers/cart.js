@@ -30,7 +30,6 @@ try {
 
 router.get('/addd/:itemId', async (req, res) => {
 try {
-    console.log(req.session.cart)
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
         
@@ -39,13 +38,13 @@ try {
             throw new Error("An error occured while looking for the product");
         cart.add(product, product.id);
         req.session.cart = cart;
-        req.flash("success", "Item added to cart");
-        return res.status(200).json({"response": "ok!"})
+        //req.flash("success", "Item added to cart"); //add alert from front
+        return res.status(200).json({"error": false, "totalPrice": cart.totalPrice})
     })
 } catch (err) {
     console.log("ADD TO CART ERROR");
     req.flash("warning", err.message);
-    return res.status(400).json({"response": "not ok"})
+    return res.status(400).json({"error": true})
 }})
 
 router.get('/dell/:itemId', async (req, res) => {
@@ -58,13 +57,13 @@ try {
             throw new Error("An error occured while looking for the product");
         cart.delete(product, product.id);
         req.session.cart = cart;
-        req.flash("success", "Item deleted from cart");
-        return res.status(200).json({"response": "ok!"})
+        //req.flash("success", "Item deleted from cart"); //add alert from front
+        return res.status(200).json({"error": false, "totalPrice": cart.totalPrice})
     })
 } catch (err) {
     console.log("DELETE FROM CART ERROR");
     req.flash("warning", err.message);
-    return res.status(400).redirect('/');
+    return res.status(400).json({"error": true})
 }})
 
 router.get('/del/:itemId', async (req, res) => {

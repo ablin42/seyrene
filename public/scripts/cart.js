@@ -1,4 +1,10 @@
-async function cartAdd(itemId) {
+async function cartAdd(itemId, caller) {
+    caller.disabled = true;
+    caller.style.pointerEvents = 'none';
+    setTimeout(() => {
+      caller.disabled = false;
+      caller.style.pointerEvents = 'auto';
+    }, 1500);
     await fetch(`http://localhost:8089/api/cart/addd/${itemId}`, {
       method: 'GET',
       headers: {
@@ -10,11 +16,23 @@ async function cartAdd(itemId) {
     })
     .then((res) => {return res.json()})
     .then(function(response) {
-      console.log(response)
-      var cartQty = parseInt(document.getElementById("cartQty").innerText) + 1;
-      document.getElementById("cartQty").innerText = cartQty;
-      //update cart on front end
-      //location.reload();
+      if (response.error === false) {
+        console.log(response)
+        var cartQty = parseInt(document.getElementById("cartQty").innerText) + 1;
+        document.getElementById("cartQty").innerText = cartQty;
+        let rowId = document.getElementById(itemId);
+        if (rowId.childNodes[5] != undefined && rowId.childNodes[5].childNodes[3] != undefined && rowId.childNodes[5].childNodes[3].childNodes[0] != undefined) {
+          let currTotal = parseFloat(document.getElementById("total-price").innerText);
+          console.log(currTotal, response.totalPrice)
+          if (currTotal != response.totalPrice) {
+            let currQty = parseInt(rowId.childNodes[5].childNodes[3].childNodes[0].innerText);
+            rowId.childNodes[5].childNodes[3].childNodes[0].innerText = currQty + 1;
+            document.getElementById("total-price").innerText = response.totalPrice + "€";
+            document.getElementById("total-qty").innerText = parseInt(document.getElementById("total-qty").innerText) + 1;
+            document.getElementById("total-price-input").setAttribute("value", response.totalPrice);
+          }
+        }
+      }
     })  
     .catch((err) => {
       console.log(err);
@@ -22,7 +40,13 @@ async function cartAdd(itemId) {
     return ;
 }
 
-async function cartDel(itemId) {
+async function cartDel(itemId, caller) {
+    caller.disabled = true;
+    caller.style.pointerEvents = 'none';
+    setTimeout(() => {
+      caller.disabled = false;
+      caller.style.pointerEvents = 'auto';
+    }, 1500);
     await fetch(`http://localhost:8089/api/cart/dell/${itemId}`, {
       method: 'GET',
       headers: {
@@ -34,13 +58,28 @@ async function cartDel(itemId) {
     })
     .then((res) => {return res.json()})
     .then(function(response) {
-      console.log(response)
-      var cartQty = parseInt(document.getElementById("cartQty").innerText) - 1;
-      if (cartQty < 0)
-        cartQty = 0;
-      document.getElementById("cartQty").innerText = cartQty;
-      //update cart on front end
-      //location.reload();
+      if (response.error === false) {
+        console.log(response)
+        var cartQty = parseInt(document.getElementById("cartQty").innerText) - 1;
+        if (cartQty < 0)
+          cartQty = 0;
+        document.getElementById("cartQty").innerText = cartQty;
+        let rowId = document.getElementById(itemId);
+        if (rowId.childNodes[5] != undefined && rowId.childNodes[5].childNodes[3] != undefined && rowId.childNodes[5].childNodes[3].childNodes[0] != undefined) {
+          let currTotal = parseFloat(document.getElementById("total-price").innerText);
+          console.log(currTotal, response.totalPrice)
+          if (currTotal != response.totalPrice) {
+            let currQty = parseInt(rowId.childNodes[5].childNodes[3].childNodes[0].innerText);
+            document.getElementById("total-price").innerText = response.totalPrice + "€";
+            document.getElementById("total-qty").innerText = parseInt(document.getElementById("total-qty").innerText) - 1;
+            document.getElementById("total-price-input").setAttribute("value", response.totalPrice);
+            if (currQty <= 1)
+              rowId.remove();
+            else 
+              rowId.childNodes[5].childNodes[3].childNodes[0].innerText = currQty - 1;
+          }
+        }
+      }
     })  
     .catch((err) => {
       console.log(err);

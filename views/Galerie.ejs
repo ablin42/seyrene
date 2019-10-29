@@ -20,7 +20,7 @@
                   <h5 class="card-title"><i><a href="Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].title %></a></i></h5>
                   <p class="card-text gallery-description"><%= locals.galleries[index].content %></p>
                   <p class="card-text"><b><%= locals.galleries[index].price %>€</b></p>
-                  <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.galleries[index]._id %>')">
+                  <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.galleries[index]._id %>', this)">
                   <a href="/api/cart/add/<%= locals.galleries[index]._id %>">ADD</a>
                   <a href="/api/cart/del/<%= locals.galleries[index]._id %>">DEL</a>
                   <p class="card-text">

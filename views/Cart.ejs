@@ -30,9 +30,9 @@
           </div>
               
           <div class="cart-quantity cart-column">
-            <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDel('<%= locals.products[index].item._id %>')"></i>
+            <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
             <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
-            <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>')"></i>
+            <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
             <!--<a class="qty-update qty-decrease" href="#delete">-</a> 
             <h4 class="cart-item-qty"><%= locals.products[index].qty %></h4>
             <a class="qty-update qty-increase" href="/api/cart/add-to-cart/<%= locals.products[index].item._id %>">+</a>-->
@@ -42,11 +42,12 @@
     <% } %>
     <div class="cart-total">
       <% if(locals.totalPrice){ %>
-          TOTAL PRICE: <b><%= locals.totalPrice %>€</b>
+          TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b>
       <% } %>
       <% if(locals.totalQty){ %>
-          NUMBER OF ITEMS: <b><%= locals.totalQty %></b><br/>
+          NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
       <% } %>
+      <input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
       <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
     </div>
   </div>
@@ -94,9 +95,10 @@ let stripeHandler = StripeCheckout.configure({
     })
   }
 })
-  
-let price = parseFloat("<%= locals.totalPrice %>") * 100;
+
 function submitCheckout () {
+  let price = parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100;
+  console.log(price)
   stripeHandler.open({
     amount: price
   })

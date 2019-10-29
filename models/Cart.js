@@ -25,7 +25,7 @@ module.exports = function Cart(oldCart) {
                 this.items[id] = undefined;
                 storedItem = undefined;
                 this.totalQty--;
-                this.totalPrice -= singlePrice;
+                this.totalPrice = Math.round((this.totalPrice - singlePrice) * 100) / 100;
             } else if (storedItem.qty > 1) {
                 storedItem.qty--;
                 storedItem.price = storedItem.qty * singlePrice;
