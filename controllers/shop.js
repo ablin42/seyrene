@@ -96,7 +96,7 @@ try {
             throw new Error(item.msg);
         })}
         let id = req.params.id;      
-        const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
+        const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: req.body.price};// need to sanitize data
 
         if (req.file)
             obj.img = await gHelpers.imgEncode(req.file);

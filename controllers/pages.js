@@ -6,6 +6,7 @@ const verifySession = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 const Blog = require('../models/Blog');
 const User = require('../models/User');
+const Shop = require('../models/Shop');
 const Gallery = require('../models/Gallery');
 const PwToken = require('../models/PasswordToken');
 const Cart = require('../models/Cart');
@@ -321,15 +322,14 @@ router.get('/Shop/Patch/:shopId', verifySession, async (req, res) => {
 try {
     if (req.user) {
         let obj = {active: "Edit a shop item"};
+        var [err, result] = await utils.to(Shop.findOne({_id: req.params.shopId}));
+        if (err)
+            throw new Error("An error occured while fetching the gallery item");
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
             obj.level = req.user.level;
-        }
-    
-        var [err, result] = await utils.to(Shop.findOne({_id: req.params.shopId}));
-        if (err)
-            throw new Error("An error occured while fetching the gallery item");
+        }   
         obj.shop = result;
           
         return res.status(200).render('restricted/shop-patch', obj);
@@ -339,6 +339,28 @@ try {
     console.log("SHOP PATCH ROUTE ERROR", err);
     req.flash("warning", err.message);
     res.status(400).redirect("/Shop");
+}})
+
+router.get('/Shop/:id', verifySession, async (req, res) => {
+    try {
+        let id = req.params.id;
+        let obj = {
+            active: "Galerie",
+            root: path.join(__dirname, '/pages/')
+        };
+        obj.shopItem = JSON.parse(await request(`http://127.0.0.1:8089/api/shop/single/${id}`));
+        if (obj.shopItem.error)
+                throw new Error(obj.shopItem.message);
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        res.status(200).render('shop-single', obj);
+    } catch (err) {
+        console.log("SHOP SINGLE ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Shop");
 }})
 
 router.get('/Galerie/Post', verifySession, async (req, res) => {

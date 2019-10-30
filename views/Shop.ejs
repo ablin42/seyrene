@@ -17,7 +17,7 @@
                 <div class="card" id="<%= locals.shopItems[index]._id %>">
                   <a href="#expand"><img onclick="expand(this);" src="/api/shop/image/<%= locals.shopItems[index]._id %>" class="card-img-top" alt="<%= locals.shopItems[index].title %>"></a>
                   <div class="card-body">
-                    <h5 class="card-title"><i><a href="Galerie/<%= locals.shopItems[index]._id %>"><%= locals.shopItems[index].title %></a></i></h5>
+                    <h5 class="card-title"><i><a href="Shop/<%= locals.shopItems[index]._id %>"><%= locals.shopItems[index].title %></a></i></h5>
                     <p class="card-text gallery-description"><%= locals.shopItems[index].content %></p>
                     <p class="card-text">
                         <%= locals.shopItems[index].price %>€<br />
