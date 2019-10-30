@@ -20,7 +20,7 @@
             
             <div class="form-group">
                 <label>price</label>
-                <input type="number" id="price" name="price">
+                <input type="number" min="1" step="any" id="price" name="price" required>
             </div>
             <div class="form-group">
                 <label>check if this is an unique item</label>
@@ -36,12 +36,16 @@
             e.preventDefault();
             let title = $("#title").val(),
                 content = $("#content").val(),
+                price = $("#price").val(),
+                isUnique = $("#isUnique").is(":checked"),
                 img = document.querySelector('#img'),
                 formData = new FormData();
             
             formData.append('img', img.files[0]);
             formData.append('title', title);
             formData.append('content', content);
+            formData.append('price', price);
+            formData.append('isUnique', isUnique);
             
             fetch('/api/shop/post', {
                 method: 'post',

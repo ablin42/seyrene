@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
-const Gallery = require('../models/Gallery');
+const Shop = require('../models/Shop');
 const utils = require('./helpers/utils');
 require('dotenv/config');
 
@@ -14,7 +14,7 @@ try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
     
-    Gallery.findById(productId, (err, product) => {
+    Shop.findById(productId, (err, product) => {
         if (err)
             throw new Error("An error occured while looking for the product");
         cart.add(product, product.id);
@@ -33,7 +33,7 @@ try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
         
-    Gallery.findById(productId, (err, product) => {
+    Shop.findById(productId, (err, product) => {
         if (err)
             throw new Error("An error occured while looking for the product");
         cart.add(product, product.id);
@@ -52,7 +52,7 @@ try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
             
-    Gallery.findById(productId, (err, product) => {
+    Shop.findById(productId, (err, product) => {
         if (err)
             throw new Error("An error occured while looking for the product");
         cart.delete(product, product.id);
@@ -71,7 +71,7 @@ try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
         
-    Gallery.findById(productId, (err, product) => {
+    Shop.findById(productId, (err, product) => {
         if (err)
             throw new Error("An error occured while looking for the product");
         cart.delete(product, product.id);
@@ -106,7 +106,7 @@ try {
     console.log(items)
 
     for (let i = 0; i < items.length; i++) {
-        var [err, item] = await utils.to(Gallery.findById(items[i].id));
+        var [err, item] = await utils.to(Shop.findById(items[i].id));
         if (err || item === null)
             throw new Error("An error occured while looking for an item you tried to purchase");
         else 

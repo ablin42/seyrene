@@ -130,9 +130,12 @@ try {
     res.status(400).redirect("/");
 }})
 
-router.get('/Shop', verifySession, (req, res) => {
+router.get('/Shop', verifySession, async (req, res) => {
 try {
     let obj = {active: "Shop"};
+    obj.shopItems = JSON.parse(await request('http://127.0.0.1:8089/api/shop/'));
+    if (obj.shopItems.error)
+        throw new Error(obj.shopItems.message);
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;

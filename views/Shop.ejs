@@ -1,5 +1,6 @@
 <% include partials/head %>
 
+<script src="/scripts/cart.js"></script>
 <div class="container-fluid">
     <% if (locals.level && locals.level > 1) { %>
         <div class="alert alert-info" role="alert">
@@ -10,8 +11,43 @@
         </div>
     <% } %> 
     <div class="container">
-            <h1>KEEP SHOP API AND FRONT FOR LATER</h1>
+        <div class="container-gallery" id="container-gallery">
+            <% if(locals.shopItems){ %>
+              <% Object.keys(locals.shopItems).forEach(function (index) { %>
+                <div class="card" id="<%= locals.shopItems[index]._id %>">
+                  <a href="#expand"><img onclick="expand(this);" src="/api/shop/image/<%= locals.shopItems[index]._id %>" class="card-img-top" alt="<%= locals.shopItems[index].title %>"></a>
+                  <div class="card-body">
+                    <h5 class="card-title"><i><a href="Galerie/<%= locals.shopItems[index]._id %>"><%= locals.shopItems[index].title %></a></i></h5>
+                    <p class="card-text gallery-description"><%= locals.shopItems[index].content %></p>
+                    <p class="card-text">
+                        <%= locals.shopItems[index].price %>€<br />
+                        <% if (locals.shopItems[index].isUnique) { %>
+                            <b>Toile unique</b>
+                        <% } %>
+                    </p>
+                    <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItems[index]._id %>', this)">
+                  </div>
+                </div>
+              <% }) %>
+            <% } %>
+      </div>
+      <div class="col-6 offset-3 mb-3 mt-3">
+        <input type="submit" class="logbtn" value="Load more" onclick="infiniteshopItems();">
+      </div>
     </div>
 </div>
+<script>
+    function expand(image){
+      let expand = $("#expandImg");
+      expand.src = image.src;
+      expand.attr("src", image.src);
+    }
+</script>
   
 <% include partials/footer %>
+
+<a class="lightbox-close" href="#close">
+  <div class="lightbox-target" id="expand">
+    <img id="expandImg" src="/api/shop/image/<%= locals.shopItems[0]._id %>"/>
+  </div>
+</a>

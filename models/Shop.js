@@ -19,7 +19,7 @@ const ShopSchema = mongoose.Schema({
         contentType: String
     },
     price: {
-        type: mongoose.Decimal128,
+        type: String,
         required: true
     },
     date: {

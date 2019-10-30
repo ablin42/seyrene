@@ -27,9 +27,9 @@ for (i = 0; i < shopItems.length; i++) {
         "_id": shopItems[i]._id,
         "title": shopItems[i].title,
         "content": shopItems[i].content,
-        "price": parseFloat(shopItems[i].price.toString()),
+        "price": shopItems[i].price,
+        "isUnique": shopItems[i].isUnique,
         "date": shopItems[i].date,
-        "img": shopItems[i].img,
         "createdAt": shopItems[i].createdAt,
         "updatedAt": shopItems[i].updatedAt,
         "__v": shopItems[i].__v
@@ -61,17 +61,18 @@ try {
 router.post('/post', upload, verifySession, vShop, async (req, res) => {
 try {
     if (req.user.level > 1) {
+        console.log(req.body)
         // Check form inputs validity
         const vResult = validationResult(req);
         if (!vResult.isEmpty()) {
             vResult.errors.forEach((item) => {
                throw new Error(item.msg);
-            })}
-        const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
+        })}
+        const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: req.body.price};// need to sanitize data
         obj.img = await gHelpers.imgEncode(req.file);
     
         const shop = new Shop(obj);
-        var [err, result] = await utils.to(Shop.save());
+        var [err, result] = await utils.to(shop.save());
         if (err)
             throw new Error("Something went wrong while uploading your file");
 
