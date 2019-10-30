@@ -18,7 +18,7 @@
       <% Object.keys(locals.products).forEach(function (index) { %>
         <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %>">
           <div class="cart-item cart-column">
-            <img class="cart-img" src="/api/gallery/image/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
+            <img class="cart-img" src="/api/shop/image/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
             <div class="cart-title-description">
               <h4 class="cart-item-title"><b><%= locals.products[index].item.title %></b></h4>
               <p class="cart-item-description"><%= locals.products[index].item.content %></p>
@@ -97,11 +97,18 @@ let stripeHandler = StripeCheckout.configure({
 })
 
 function submitCheckout () {
-  let price = parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100;
-  console.log(price)
-  stripeHandler.open({
-    amount: price
-  })
+  //check if user is logged in or not
+  let isLogged = "<%= locals.name %>";
+  console.log(isLogged, "x")
+  if (isLogged === "") {
+    window.location.href= "http://localhost:8089/Login"; //need req message
+  } else {
+    let price = parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100;
+    stripeHandler.open({
+      amount: price,
+      currency: "eur"
+    })
+  }
 }
 </script>
 

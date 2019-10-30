@@ -52,12 +52,21 @@ try {
     res.status(400).redirect("/");
 }})
 
-router.get('/shopping-cart', (req, res) => {
+router.get('/shopping-cart', verifySession, (req, res) => {
 try {
-    if (!req.session.cart) 
-        return res.status(200).render('cart', {products: null, totalPrice: 0, totalQty: 0, stripePublicKey: stripePublic, active: "Panier"});
-    let cart = new Cart(req.session.cart);
-    res.status(200).render('cart', {products: cart.generateArray(), totalPrice: cart.totalPrice, totalQty: cart.totalQty, stripePublicKey: stripePublic, active: "Panier"});
+    let obj = {active: "Cart", stripePublicKey: stripePublic, products: null, totalPrice: 0, totalQty: 0}
+    if (req.user) {
+        obj.userId = req.user._id;
+        obj.name = req.user.name;
+        obj.level = req.user.level;
+    }
+    if (req.session.cart)  {
+        let cart = new Cart(req.session.cart);
+        obj.products = cart.generateArray();
+        obj.totalPrice = cart.totalPrice;
+        obj.totalQty = cart.totalQty
+    }
+    res.status(200).render('cart', obj);
 } catch (err) {
     console.log("CART ERROR", err);
     req.flash("info", err.message);

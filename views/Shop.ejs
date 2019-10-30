@@ -1,5 +1,6 @@
 <% include partials/head %>
 
+<script src="/scripts/infiniteShops.js"></script>
 <script src="/scripts/cart.js"></script>
 <div class="container-fluid">
     <% if (locals.level && locals.level > 1) { %>
@@ -20,7 +21,7 @@
                     <h5 class="card-title"><i><a href="Shop/<%= locals.shopItems[index]._id %>"><%= locals.shopItems[index].title %></a></i></h5>
                     <p class="card-text gallery-description"><%= locals.shopItems[index].content %></p>
                     <p class="card-text">
-                        <%= locals.shopItems[index].price %>€<br />
+                        <b><%= locals.shopItems[index].price %>€</b><br />
                         <% if (locals.shopItems[index].isUnique) { %>
                             <b>Toile unique</b>
                         <% } %>
@@ -32,7 +33,7 @@
             <% } %>
       </div>
       <div class="col-6 offset-3 mb-3 mt-3">
-        <input type="submit" class="logbtn" value="Load more" onclick="infiniteshopItems();">
+        <input type="submit" class="logbtn" value="Load more" onclick="infiniteShopItems();">
       </div>
     </div>
 </div>

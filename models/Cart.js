@@ -5,11 +5,9 @@ module.exports = function Cart(oldCart) {
 
     this.add = function (item, id) {
         var storedItem = this.items[id];
-        if (!storedItem) {
+        if (!storedItem) 
             storedItem = this.items[id] = {item: item, qty: 0, price: 0};
-            itemPrice = parseFloat(storedItem.item.price);
-        } else 
-            itemPrice = parseFloat(storedItem.item.price.$numberDecimal);
+        itemPrice = parseFloat(storedItem.item.price);
 
         storedItem.qty++;
         storedItem.price = itemPrice * storedItem.qty;
