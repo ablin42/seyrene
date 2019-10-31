@@ -143,9 +143,12 @@ try {
 router.get('/Shop', verifySession, async (req, res) => {
 try {
     let obj = {active: "Shop"};
-    obj.shopItems = JSON.parse(await request('http://127.0.0.1:8089/api/shop/'));
-    if (obj.shopItems.error)
-        throw new Error(obj.shopItems.message);
+    obj.original = JSON.parse(await request('http://127.0.0.1:8089/api/shop/'));
+    if (obj.original.error)
+        throw new Error(obj.original.message);
+    obj.print = JSON.parse(await request('http://127.0.0.1:8089/api/shop?tab=print'));
+    if (obj.print.error)
+        throw new Error(obj.print.message);
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;

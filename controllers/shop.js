@@ -46,7 +46,10 @@ try {
         limit: 6,
         sort: { date: -1 }
     }
-    var [err, result] = await utils.to(Shop.paginate({}, options));
+    let query = {isUnique: true};
+    if (req.query.tab === "print")
+        query.isUnique = false;
+    var [err, result] = await utils.to(Shop.paginate(query, options));
     if (err)
         throw new Error("An error occured while fetching the shop items");
     var shopItems = result.docs; //probably can remove img since we use id and api to load it

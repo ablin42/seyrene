@@ -1,11 +1,10 @@
 async function infiniteShopItems(tab) {
-    console.log(tab)
-    //if og else if print
-    lastId = $(".card:last").attr("id");
-    nbItem = $(".card").length;
-    page = 1 + Math.floor(nbItem / 5);
+    lastId = $(`#${tab} > .card:last`).attr("id");
+    nbItem = $(`#${tab} > .card`).length;
+    page = 1 + Math.floor(nbItem / 6);
+    url = `http://127.0.0.1:8089/api/shop?page=${page}&tab=${tab}`;
         //show/hide loader
-        await fetch(`http://127.0.0.1:8089/api/shop?page=${page}`)
+        await fetch(url)
         .then(function(response) {
             response.json().then(function(data) {
             data.forEach(shop => {
@@ -30,7 +29,7 @@ async function infiniteShopItems(tab) {
                   
                     div.innerHTML = toAppend;  
                     id++;
-                    $("#container-gallery").append(div);
+                    $(`#${tab}`).append(div);
                 }});
             })
         })
