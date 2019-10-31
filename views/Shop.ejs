@@ -12,28 +12,57 @@
         </div>
     <% } %> 
     <div class="container">
+        <button class="w3-bar-item w3-button active" onclick="openTab('original')">Original</button>
+        <button class="w3-bar-item w3-button" onclick="openTab('print')">Print</button>
         <div class="container-gallery" id="container-gallery">
-            <% if(locals.shopItems){ %>
-              <% Object.keys(locals.shopItems).forEach(function (index) { %>
-                <div class="card" id="<%= locals.shopItems[index]._id %>">
-                  <a href="#expand"><img onclick="expand(this);" src="/api/shop/image/<%= locals.shopItems[index]._id %>" class="card-img-top" alt="<%= locals.shopItems[index].title %>"></a>
-                  <div class="card-body">
-                    <h5 class="card-title"><i><a href="Shop/<%= locals.shopItems[index]._id %>"><%= locals.shopItems[index].title %></a></i></h5>
-                    <p class="card-text gallery-description"><%= locals.shopItems[index].content %></p>
-                    <p class="card-text">
-                        <b><%= locals.shopItems[index].price %>€</b><br />
-                        <% if (locals.shopItems[index].isUnique) { %>
-                            <b>Toile unique</b>
-                        <% } %>
-                    </p>
-                    <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItems[index]._id %>', this)">
+            <div id="original" class="tab container-gallery">
+              <% if (locals.shopItems){ %>
+                <% Object.keys(locals.shopItems).forEach(function (index) { %>
+                  <% if (locals.shopItems[index].isUnique) { %>
+                  <div class="card" id="<%= locals.shopItems[index]._id %>">
+                    <a href="#expand"><img onclick="expand(this);" src="/api/shop/image/<%= locals.shopItems[index]._id %>" class="card-img-top" alt="<%= locals.shopItems[index].title %>"></a>
+                    <div class="card-body">
+                      <h5 class="card-title"><i><a href="Shop/<%= locals.shopItems[index]._id %>"><%= locals.shopItems[index].title %></a></i></h5>
+                      <p class="card-text gallery-description"><%= locals.shopItems[index].content %></p>
+                      <p class="card-text">
+                          <b><%= locals.shopItems[index].price %>€</b><br />
+                          <% if (locals.shopItems[index].isUnique) { %>
+                              <b>Toile unique</b>
+                          <% } %>
+                      </p>
+                      <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItems[index]._id %>', this)">
+                    </div>
                   </div>
-                </div>
-              <% }) %>
-            <% } %>
+                  <% } %>
+                <% }) %>
+              <% } %>
+          </div>
+          <div id="print" class="tab container-gallery" style="display:none">
+              <% if(locals.shopItems){ %>
+                <% Object.keys(locals.shopItems).forEach(function (index) { %>
+                  <% if (!locals.shopItems[index].isUnique) { %>
+                  <div class="card" id="<%= locals.shopItems[index]._id %>">
+                    <a href="#expand"><img onclick="expand(this);" src="/api/shop/image/<%= locals.shopItems[index]._id %>" class="card-img-top" alt="<%= locals.shopItems[index].title %>"></a>
+                    <div class="card-body">
+                      <h5 class="card-title"><i><a href="Shop/<%= locals.shopItems[index]._id %>"><%= locals.shopItems[index].title %></a></i></h5>
+                      <p class="card-text gallery-description"><%= locals.shopItems[index].content %></p>
+                      <p class="card-text">
+                          <b><%= locals.shopItems[index].price %>€</b><br />
+                          <% if (locals.shopItems[index].isUnique) { %>
+                              <b>Toile unique</b>
+                          <% } %>
+                      </p>
+                      <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItems[index]._id %>', this)">
+                    </div>
+                  </div>
+                  <% } %>
+                <% }) %>
+              <% } %>
+          </div>
+          </div>
       </div>
       <div class="col-6 offset-3 mb-3 mt-3">
-        <input type="submit" class="logbtn" value="Load more" onclick="infiniteShopItems();">
+        <input id="load" type="submit" class="logbtn" value="Load more" onclick="infiniteShopItems('original');">
       </div>
     </div>
 </div>
@@ -42,6 +71,14 @@
       let expand = $("#expandImg");
       expand.src = image.src;
       expand.attr("src", image.src);
+    }
+    function openTab(tabName) {
+      let tab = document.getElementsByClassName("tab");
+      for (let i = 0; i < tab.length; i++) {
+        tab[i].style.display = "none";  
+      }
+      document.getElementById(tabName).style.display = "grid";
+      document.getElementById("load").setAttribute("onclick", `infiniteShopItems("${tabName}");`);
     }
 </script>
   

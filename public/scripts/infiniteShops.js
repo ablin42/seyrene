@@ -1,4 +1,6 @@
-async function infiniteShopItems() {
+async function infiniteShopItems(tab) {
+    console.log(tab)
+    //if og else if print
     lastId = $(".card:last").attr("id");
     nbItem = $(".card").length;
     page = 1 + Math.floor(nbItem / 5);
@@ -37,7 +39,10 @@ async function infiniteShopItems() {
 $(window).scroll(function() {
 val1 = Math.ceil($(window).scrollTop() + $(window).height());
 val2 = $(document).height();
+let tab = "original";
+if (document.getElementById("load").getAttribute("onclick").indexOf("original") === -1)
+    tab = "print";
 if (val1 >= val2) {
-    infiniteShopItems();
+    infiniteShopItems(tab);
 }
 });
