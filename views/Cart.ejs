@@ -99,7 +99,6 @@ let stripeHandler = StripeCheckout.configure({
 function submitCheckout () {
   //check if user is logged in or not
   let isLogged = "<%= locals.name %>";
-  console.log(isLogged, "x")
   if (isLogged === "") {
     window.location.href= "http://localhost:8089/Login"; //need req message
   } else {

@@ -10,32 +10,13 @@ const stripe = require('stripe')(stripeSecret);
 
 router.get('/add/:itemId', async (req, res) => {
 try {
-    console.log(req.session.cart)
-    let productId = req.params.itemId;
-    let cart = new Cart(req.session.cart ? req.session.cart : {});
-    
-    Shop.findById(productId, (err, product) => {
-        if (err)
-            throw new Error("An error occured while looking for the product");
-        cart.add(product, product.id);
-        req.session.cart = cart;
-        req.flash("success", "Item added to cart");
-        res.status(200).redirect('/Galerie');
-    })
-} catch (err) {
-    console.log("ADD TO CART ERROR");
-    req.flash("warning", err.message);
-    return res.status(400).redirect('/');
-}})
-
-router.get('/addd/:itemId', async (req, res) => {
-try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
         
     Shop.findById(productId, (err, product) => {
         if (err)
             throw new Error("An error occured while looking for the product");
+        // if product.isUnique === true && product.id already exist in cart -> dont add any more and return a message
         cart.add(product, product.id);
         req.session.cart = cart;
         //req.flash("success", "Item added to cart"); //add alert from front
@@ -47,7 +28,7 @@ try {
     return res.status(400).json({"error": true})
 }})
 
-router.get('/dell/:itemId', async (req, res) => {
+router.get('/del/:itemId', async (req, res) => {
 try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -66,25 +47,6 @@ try {
     return res.status(400).json({"error": true})
 }})
 
-router.get('/del/:itemId', async (req, res) => {
-try {
-    let productId = req.params.itemId;
-    let cart = new Cart(req.session.cart ? req.session.cart : {});
-        
-    Shop.findById(productId, (err, product) => {
-        if (err)
-            throw new Error("An error occured while looking for the product");
-        cart.delete(product, product.id);
-        req.session.cart = cart;
-        req.flash("success", "Item deleted from cart");
-        return res.status(200).redirect('/Galerie');
-    })
-} catch (err) {
-    console.log("DELETE FROM CART ERROR");
-    req.flash("warning", err.message);
-    return res.status(400).redirect('/');
-}})
-
 router.get('/clear', async (req, res) => {
 try {
     let cart = new Cart({});
@@ -100,7 +62,7 @@ try {
 
 router.post('/purchase', async (req, res) => {
 try {
-    let items = req.body.items;
+    var items = req.body.items;
     let token = req.body.stripeTokenId;
     let total = 0;
     console.log(items)
@@ -119,8 +81,12 @@ try {
         source: token,
         currency: 'eur'
     })
-    .then(() => {
-        console.log("charging successful")
+    .then(async () => {
+        for (let index = 0;  index < items.length;  index++) {
+            var [err, item] = await utils.to(Shop.findOneAndDelete({_id: items[index].id, isUnique: true}));
+            if (err) 
+                throw new Error("An error occured while deleting the unique item");
+        }
         //return res
     })
     .catch((err) => {

@@ -5,7 +5,7 @@ async function cartAdd(itemId, caller) {
       caller.disabled = false;
       caller.style.pointerEvents = 'auto';
     }, 1500);
-    await fetch(`http://localhost:8089/api/cart/addd/${itemId}`, {
+    await fetch(`http://localhost:8089/api/cart/add/${itemId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ async function cartDel(itemId, caller) {
       caller.disabled = false;
       caller.style.pointerEvents = 'auto';
     }, 1500);
-    await fetch(`http://localhost:8089/api/cart/dell/${itemId}`, {
+    await fetch(`http://localhost:8089/api/cart/del/${itemId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
