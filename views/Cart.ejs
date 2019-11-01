@@ -32,7 +32,9 @@
           <div class="cart-quantity cart-column">
             <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
             <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
-            <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
+            <% if (locals.products[index].item.isUnique !== true) { %>
+              <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
+            <% } %>
             <!--<a class="qty-update qty-decrease" href="#delete">-</a> 
             <h4 class="cart-item-qty"><%= locals.products[index].qty %></h4>
             <a class="qty-update qty-increase" href="/api/cart/add-to-cart/<%= locals.products[index].item._id %>">+</a>-->
@@ -103,10 +105,12 @@ function submitCheckout () {
     window.location.href= "http://localhost:8089/Login"; //need req message
   } else {
     let price = parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100;
-    stripeHandler.open({
-      amount: price,
-      currency: "eur"
-    })
+    if (price != 0) {
+      stripeHandler.open({
+        amount: price,
+        currency: "eur"
+      })
+    }
   }
 }
 </script>

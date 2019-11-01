@@ -33,6 +33,9 @@ async function cartAdd(itemId, caller) {
           }
         }
       }
+      else {
+        console.log("error:", response)
+      }
     })  
     .catch((err) => {
       console.log(err);

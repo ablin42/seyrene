@@ -16,7 +16,14 @@ try {
     Shop.findById(productId, (err, product) => {
         if (err)
             throw new Error("An error occured while looking for the product");
-        // if product.isUnique === true && product.id already exist in cart -> dont add any more and return a message
+        if (product.isUnique === true) {
+            let arr = cart.generateArray();
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].item._id == product._id) {
+                    return res.status(200).json({"error": true})
+                } 
+            }
+        }
         cart.add(product, product.id);
         req.session.cart = cart;
         //req.flash("success", "Item added to cart"); //add alert from front
