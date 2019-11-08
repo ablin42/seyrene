@@ -54,3 +54,7 @@ module.exports.vLostPw = [
         });
     })
 ];
+
+module.exports.vDelivery = [
+   
+];

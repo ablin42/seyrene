@@ -36,12 +36,34 @@ async function cartAdd(itemId, caller) {
       else {
         console.log("error:", response)
       }
+      let alert = `<div id="alert" class="alert alert-info" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      ${response.msg}
+                    </div>`;
+      addAlert(alert, "#header");
     })  
     .catch((err) => {
       console.log(err);
     })
     return ;
 }
+
+/* 
+
+  .then(response => response.json())
+            .then(data => {
+                if (data.err) {
+                    let alert = `
+                    <div id="alert" class="alert alert-warning" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${data.msg}
+                    </div>`;
+                    addAlert(alert, "#header")
+                } else 
+                    window.location.href = data.url                
+            })
+
+            */
 
 async function cartDel(itemId, caller) {
     caller.disabled = true;
@@ -83,6 +105,14 @@ async function cartDel(itemId, caller) {
           }
         }
       }
+      else {
+        console.log("error:", response)
+      }
+      let alert = `<div id="alert" class="alert alert-info" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      ${response.msg}
+                    </div>`;
+      addAlert(alert, "#header");
     })  
     .catch((err) => {
       console.log(err);

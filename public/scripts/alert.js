@@ -20,5 +20,5 @@ function addAlert(alert, where)
         alertDiv.remove();
     }
     node.innerHTML += alert;
-    $(where).append(node);
+    $(where).after(node);
 }

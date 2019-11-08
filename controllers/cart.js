@@ -20,19 +20,17 @@ try {
             let arr = cart.generateArray();
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].item._id == product._id) {
-                    return res.status(200).json({"error": true})
+                    return res.status(200).json({"error": true, "msg": "You can't buy an unique painting more than once!"})
                 } 
             }
         }
         cart.add(product, product.id);
         req.session.cart = cart;
-        //req.flash("success", "Item added to cart"); //add alert from front
-        return res.status(200).json({"error": false, "totalPrice": cart.totalPrice})
+        return res.status(200).json({"error": false, "msg": "Item added to cart", "totalPrice": cart.totalPrice})
     })
 } catch (err) {
     console.log("ADD TO CART ERROR");
-    req.flash("warning", err.message);
-    return res.status(400).json({"error": true})
+    return res.status(400).json({"error": true, "msg": err.message})
 }})
 
 router.get('/del/:itemId', async (req, res) => {
@@ -45,13 +43,11 @@ try {
             throw new Error("An error occured while looking for the product");
         cart.delete(product, product.id);
         req.session.cart = cart;
-        //req.flash("success", "Item deleted from cart"); //add alert from front
-        return res.status(200).json({"error": false, "totalPrice": cart.totalPrice})
+        return res.status(200).json({"error": false, "msg": "Item removed from cart", "totalPrice": cart.totalPrice})
     })
 } catch (err) {
     console.log("DELETE FROM CART ERROR");
-    req.flash("warning", err.message);
-    return res.status(400).json({"error": true})
+    return res.status(400).json({"error": true, "msg": err.message})
 }})
 
 router.get('/clear', async (req, res) => {
@@ -59,8 +55,7 @@ try {
     let cart = new Cart({});
     cart.clearCart();
     req.session.cart = cart;
-    console.log(req.session.cart)
-    return res.status(200).redirect('/');//redirect ty for purchase
+    return res.status(200).send("ty for purchasing");//redirect ty for purchase
 } catch (err) {
     console.log("CLEAR CART ERROR");
     req.flash("warning", err.message);
@@ -108,7 +103,7 @@ try {
     console.log("PURCHASE ERROR");
     console.log(err.message)
     req.flash("warning", err.message);
-    return res.status(400).redirect('/');
+    return res.status(400).redirect('/shopping-cart');
 }})
 
 module.exports = router;

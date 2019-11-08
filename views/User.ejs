@@ -3,6 +3,42 @@
 <div class="container">
   <div class="form-container info-update"><!--change class form id etc api url-->
     <h1 class="form-title">Paramètres</h1>
+    <form id="deliveryform" method="POST" action="/api/user/patch/delivery-info">
+      <div class="txtb">
+        <input type="text" id="fullname" name="fullname" value="Andréas blin" required>
+        <span data-placeholder="Full name"></span>
+      </div>
+      <div class="txtb">
+        <input type="text" id="country" name="country" value="France (select)" required>
+        <span data-placeholder="Country"></span>
+      </div>
+      <div class="txtb">
+        <input type="text" id="street" name="street" value="12 rue du général (autocomplete/select or fuck it)" required>
+        <span data-placeholder="Street"></span>
+      </div>
+      <div class="txtb">
+        <input type="text" id="city" name="city" value="Paris (autocomplete/select)" required>
+        <span data-placeholder="City"></span>
+      </div>
+      <div class="txtb">
+        <input type="text" id="state" name="state" value="ile de france (autocomplete/select)" required>
+        <span data-placeholder="State/District/Region"></span>
+      </div>
+      <div class="txtb">
+        <input type="text" id="zip" name="zip" value="75017 (check if valid/select)" required>
+        <span data-placeholder="ZIP CODE"></span>
+      </div>
+      <div class="txtb">
+        <input type="text" id="phone" name="phone" value="0689 (check format)" >
+        <span data-placeholder="Phone number"></span>
+      </div>
+      <div class="txtb">
+        <input type="text" id="instructions" name="instructions" value="do not knock (textarea)">
+        <span data-placeholder="Specific instructions"></span>
+      </div>
+      <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-deliveryform">
+    </form>
+
     <form id="nameform" method="POST" action="/api/user/patch/name">
       <div class="txtb">
         <input type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>

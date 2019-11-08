@@ -31,7 +31,8 @@
               
           <div class="cart-quantity cart-column">
             <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
-            <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
+            <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4><!-- INPUT SELECT QTY HERE //////////////////////////////////////////// with js to check  -->
+            <!--<input class="cart-item-qty" type="number" value="<%= locals.products[index].qty %>" name="cart-item-qty">-->
             <% if (locals.products[index].item.isUnique !== true) { %>
               <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
             <% } %>
@@ -101,6 +102,9 @@ let stripeHandler = StripeCheckout.configure({
 function submitCheckout () {
   //check if user is logged in or not
   let isLogged = "<%= locals.name %>";
+  
+  //check if user delivery informations exist in database, if not redirect to user settings to make user fill them, else proceeds
+
   if (isLogged === "") {
     window.location.href= "http://localhost:8089/Login"; //need req message
   } else {
@@ -114,6 +118,5 @@ function submitCheckout () {
   }
 }
 </script>
-
   
 <% include partials/footer %>

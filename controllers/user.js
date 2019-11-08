@@ -3,7 +3,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const {validationResult} = require('express-validator');
-const {vName, vEmail, vPassword, vLostPw} = require('./validators/vUser');
+const {vName, vEmail, vPassword, vLostPw, vDelivery} = require('./validators/vUser');
 
 const mailer = require('./helpers/mailer');
 const verifySession = require('./helpers/verifySession');
@@ -222,6 +222,17 @@ try {
     }
     else 
         throw new Error("Unauthorized, please make sure you are logged in");
+} catch (err) {
+    console.log("ERROR PATCHING PASSWORD:", err);
+    req.flash('warning', err.message);
+    return res.status(400).redirect('/User');
+}})
+
+router.post('/patch/delivery-info', vDelivery, verifySession, async (req, res) => {
+try {
+    req.flash('success', "Delivery informations successfully modified");
+    res.status(200).redirect('/User');
+    console.log("XDDD");
 } catch (err) {
     console.log("ERROR PATCHING PASSWORD:", err);
     req.flash('warning', err.message);
