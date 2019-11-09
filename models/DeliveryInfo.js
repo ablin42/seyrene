@@ -5,7 +5,7 @@ const deliverySchema = new mongoose.Schema({
         type: String, 
         required: true, 
         ref: 'User' 
-    },
+    }, //maybe even status (preparing, in delivery, delivered..)
     fullname: {
         type: String,
         required: true,
