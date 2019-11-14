@@ -4,39 +4,40 @@
   <div class="panel panel-primary">
     <div class="panel-heading">
       <h2 class="panel-title">Add your Address</h2>
+      <h6>*Make sure the informations you enter are correct, we will be using them for delivery</h6>
     </div>
     <form id="deliveryform" method="POST" action="/api/user/patch/delivery-info">
     <div class="panel-body">
-      <input id="autocomplete" name="fulltext-address" placeholder="Enter your address" onFocus="geolocate()" type="text" class="form-control">
+      <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" type="text" class="form-control" required>
       <div id="address">
         <div class="row">
-          <div class="col-md-6">
-            <label class="control-label">Street address</label>
-            <input class="form-control" id="street_number" name="street_number" disabled="true">
-          </div>
-          <div class="col-md-6">
+            <!--<div class="col-md-6">
+            <label class="control-label">Street number</label>
+            <input class="form-control" id="street_number" name="street_number" required>
+          </div>-->
+          <div class="col-md-12">
             <label class="control-label">Route</label>
-            <input class="form-control" id="route" name="street_name" disabled="true">
+            <input class="form-control" id="route" name="street_name" required>
           </div>
         </div>
         <div class="row">
           <div class="col-md-6">
             <label class="control-label">City</label>
-            <input class="form-control field" id="locality" name="city" disabled="true">
+            <input class="form-control field" id="locality" name="city" required>
           </div>
           <div class="col-md-6"> 
             <label class="control-label">State</label>
-            <input class="form-control" id="administrative_area_level_1" name="state" disabled="true">
+            <input class="form-control" id="administrative_area_level_1" name="state" required>
           </div>
         </div>
         <div class="row">
           <div class="col-md-6">
             <label class="control-label">Zip code</label>
-            <input class="form-control" id="postal_code" name="postal_code" disabled="true">
+            <input class="form-control" id="postal_code" name="postal_code" required>
           </div>
           <div class="col-md-6">
             <label class="control-label">Country</label>
-            <input class="form-control" id="country" name="country" disabled="true">
+            <input class="form-control" id="country" name="country" required>
           </div>
         </div>
       </div>

@@ -56,5 +56,31 @@ module.exports.vLostPw = [
 ];
 
 module.exports.vDelivery = [
-   
+    //removed street nb
+    body('fulltext_address')
+    .trim()
+    .stripLow()
+    .isLength({min: 1}).withMessage("Address cannot be empty!"),
+    body('street_name')
+    .trim()
+    .stripLow()
+    .isLength({min: 1}).withMessage("Street name cannot be empty!"),
+    body('city')
+    .trim()
+    .stripLow()
+    .isLength({min: 1}).withMessage("City cannot be empty!"),
+    body('state')
+    .trim()
+    .stripLow()
+    .isLength({min: 1}).withMessage("State cannot be empty!"),
+    body('postal_code')
+    .trim()
+    .stripLow()
+    .isLength({min: 1}).withMessage("Postal code cannot be empty!"),
+    body('country')
+    .trim()
+    .stripLow()
+    .isLength({min: 1}).withMessage("Country cannot be empty!")
+    // body('street_number').isNumeric().withMessage("Street number can only contain numbers")
+    //.isLength({min: 1}).withMessage("Street number cannot be empty!"),
 ];

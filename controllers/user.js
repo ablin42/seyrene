@@ -231,11 +231,19 @@ try {
 
 router.post('/patch/delivery-info', vDelivery, verifySession, async (req, res) => {
 try {
-    let street = "12%20Rue%20du%20G%C3%A9n%C3%A9ral%20Henrys";
-    let country = "%20France";
-    //convert url to correct format
+    //let doubleCheck = encodeURI(req.body.street_name + "," + req.body.city + "," + req.body.country);
+    let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
+    let encoded_address = encodeURI(req.body.fulltext_address);
+    let street_address = req.body.street_name.replace(/[0-9]/g, '').trim();
+    let street_number = parseInt(req.body.street_name);
+    
+    if (Number.isNaN(street_number))
+        throw new Error("You did not mention a street number!");
+    
+
+    console.log(encoded_address, street_number, street_address);
     let options = {
-        uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${street}%20${country}&inputtype=textquery&key=AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI`,
+        uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
         json: true
     }
     rp(options)
@@ -243,9 +251,11 @@ try {
         if (data.status != "OK") {
             console.log("no match found")
         } else {
+            //check if delivery is doable using deliverer's API
             console.log(data.candidates);
         }
     })
+   
     req.flash('success', "Delivery informations successfully modified");
     res.status(200).redirect('/User');
     console.log(req.body);

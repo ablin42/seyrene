@@ -1,3 +1,4 @@
+// https://developers.google.com/maps/documentation/javascript/places-autocomplete
 var placeSearch, autocomplete;
   var componentForm = {
     street_number: 'short_name',
@@ -25,17 +26,24 @@ function fillInAddress() {
   var place = autocomplete.getPlace();
 
   for (var component in componentForm) {
-    document.getElementById(component).value = '';
-    document.getElementById(component).disabled = false;
+    if (component !== "street_number") {
+      document.getElementById(component).value = '';
+      document.getElementById(component).disabled = false;
+    }
   }
 
   // Get each component of the address from the place details
   // and fill the corresponding field on the form.
   for (var i = 0; i < place.address_components.length; i++) {
-    var addressType = place.address_components[i].types[0];
+    var addressType = place.address_components[i].types[0];   
     if (componentForm[addressType]) {
-      var val = place.address_components[i][componentForm[addressType]];
-      document.getElementById(addressType).value = val;
+      var val = place.address_components[i][componentForm[addressType]] + " ";
+      if (addressType === "street_number") 
+        document.getElementById("route").value = val;
+      else if (addressType === "route") 
+        document.getElementById(addressType).value += val;
+      else 
+        document.getElementById(addressType).value = val;
     }
   }
 }
