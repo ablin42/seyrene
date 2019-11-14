@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const rp = require('request-promise');
 const {validationResult} = require('express-validator');
 const {vName, vEmail, vPassword, vLostPw, vDelivery} = require('./validators/vUser');
 
@@ -230,9 +231,24 @@ try {
 
 router.post('/patch/delivery-info', vDelivery, verifySession, async (req, res) => {
 try {
+    let street = "12%20Rue%20du%20G%C3%A9n%C3%A9ral%20Henrys";
+    let country = "%20France";
+    //convert url to correct format
+    let options = {
+        uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${street}%20${country}&inputtype=textquery&key=AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI`,
+        json: true
+    }
+    rp(options)
+    .then((data) => {
+        if (data.status != "OK") {
+            console.log("no match found")
+        } else {
+            console.log(data.candidates);
+        }
+    })
     req.flash('success', "Delivery informations successfully modified");
     res.status(200).redirect('/User');
-    console.log("XDDD");
+    console.log(req.body);
 } catch (err) {
     console.log("ERROR PATCHING PASSWORD:", err);
     req.flash('warning', err.message);
