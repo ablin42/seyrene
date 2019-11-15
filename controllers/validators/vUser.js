@@ -57,6 +57,7 @@ module.exports.vLostPw = [
 
 module.exports.vDelivery = [
     //removed street nb
+    //phone and full name
     body('fulltext_address')
     .trim()
     .stripLow()
@@ -80,7 +81,15 @@ module.exports.vDelivery = [
     body('country')
     .trim()
     .stripLow()
-    .isLength({min: 1}).withMessage("Country cannot be empty!")
+    .isLength({min: 1}).withMessage("Country cannot be empty!"),
+    body('firstname')
+    .trim()
+    .stripLow()
+    .isLength({min: 2, max: 128}).withMessage("First Name must contain between 8 and 256 characters"),
+    body('lastname')
+    .trim()
+    .stripLow()
+    .isLength({min: 2, max: 128}).withMessage("Last Name must contain between 8 and 256 characters"),
     // body('street_number').isNumeric().withMessage("Street number can only contain numbers")
     //.isLength({min: 1}).withMessage("Street number cannot be empty!"),
 ];

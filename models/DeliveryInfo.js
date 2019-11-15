@@ -6,7 +6,13 @@ const deliverySchema = new mongoose.Schema({
         required: true, 
         ref: 'User' 
     }, //maybe even status (preparing, in delivery, delivered..)
-    fullname: {
+    firstname: {
+        type: String,
+        required: true,
+        min: 2,
+        max: 128
+    },
+    lastname: {
         type: String,
         required: true,
         min: 2,
@@ -31,12 +37,6 @@ const deliverySchema = new mongoose.Schema({
     zipcode: {
         type: String,
         required: true,
-    },
-    phone: {
-        type: String,
-    },
-    instructions: {
-        type: String,
     },
     date: {
         type: Date,

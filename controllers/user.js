@@ -231,34 +231,46 @@ try {
 
 router.post('/patch/delivery-info', vDelivery, verifySession, async (req, res) => {
 try {
-    //let doubleCheck = encodeURI(req.body.street_name + "," + req.body.city + "," + req.body.country);
-    let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
-    let encoded_address = encodeURI(req.body.fulltext_address);
-    let street_address = req.body.street_name.replace(/[0-9]/g, '').trim();
-    let street_number = parseInt(req.body.street_name);
-    
-    if (Number.isNaN(street_number))
-        throw new Error("You did not mention a street number!");
-    
-
-    console.log(encoded_address, street_number, street_address);
-    let options = {
-        uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
-        json: true
-    }
-    rp(options)
-    .then((data) => {
-        if (data.status != "OK") {
-            console.log("no match found")
-        } else {
-            //check if delivery is doable using deliverer's API
-            console.log(data.candidates);
+    if (req.user) {
+        // Check form inputs validity
+        const vResult = validationResult(req);
+        if (!vResult.isEmpty()) {
+            vResult.errors.forEach((item) => {
+                req.flash("info", item.msg)
+            })
+            throw new Error("Incorrect form input");
         }
-    })
-   
-    req.flash('success', "Delivery informations successfully modified");
-    res.status(200).redirect('/User');
-    console.log(req.body);
+
+        //let doubleCheck = encodeURI(req.body.street_name + "," + req.body.city + "," + req.body.country);
+        let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
+        let encoded_address = encodeURI(req.body.fulltext_address);
+        let street_address = req.body.street_name.replace(/[0-9]/g, '').trim();
+        let street_number = parseInt(req.body.street_name);
+     
+        if (Number.isNaN(street_number))
+            throw new Error("You did not mention a street number!");
+        
+    
+        console.log(encoded_address, street_number, street_address);
+        let options = {
+            uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
+            json: true
+        }
+        rp(options)
+        .then((data) => {
+            if (data.status != "OK") {
+                console.log("no match found")
+            } else {
+                //check if delivery is doable using deliverer's API
+                console.log(data.candidates);
+            }
+        })
+        
+        req.flash('success', "Delivery informations successfully modified");
+        res.status(200).redirect('/User');
+        console.log(req.body);
+    } else 
+        throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {
     console.log("ERROR PATCHING PASSWORD:", err);
     req.flash('warning', err.message);
