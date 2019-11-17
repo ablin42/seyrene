@@ -12,6 +12,7 @@ const utils = require('./helpers/utils')
 const User = require('../models/User');
 const Token = require('../models/VerificationToken');
 const PwToken = require('../models/PasswordToken');
+const DeliveryInfo = require('../models/DeliveryInfo');
 require('dotenv/config');
 
 router.get('/', async (req, res) => {//later
@@ -53,8 +54,8 @@ try {
     } else {
         // update token if one already exist
         var [err, result] = await utils.to(PwToken.updateOne({ _userId: user._id}, {$set: {token: token}}))
-            if (err) 
-                throw new Error("An error occured while updating your token, please try again");
+        if (err) 
+            throw new Error("An error occured while updating your token, please try again");
     }
 
     const subject = "Password Reset Token for Maral",
@@ -240,34 +241,76 @@ try {
             })
             throw new Error("Incorrect form input");
         }
-
         //let doubleCheck = encodeURI(req.body.street_name + "," + req.body.city + "," + req.body.country);
         let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
         let encoded_address = encodeURI(req.body.fulltext_address);
-        let street_address = req.body.street_name.replace(/[0-9]/g, '').trim();
+        let street_name = req.body.street_name.replace(/[0-9]/g, '').trim();
         let street_number = parseInt(req.body.street_name);
-     
         if (Number.isNaN(street_number))
             throw new Error("You did not mention a street number!");
         
-    
-        console.log(encoded_address, street_number, street_address);
+        console.log(encoded_address, street_number, street_name);
         let options = {
             uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
             json: true
         }
         rp(options)
-        .then((data) => {
-            if (data.status != "OK") {
-                console.log("no match found")
-            } else {
-                //check if delivery is doable using deliverer's API
-                console.log(data.candidates);
+        .then(async (data) => {
+            try {
+                if (data.status != "OK") {
+                    if (err)
+                        throw new Error("We could not find your address, please make sure it is valid");
+                } else {
+                    //check if delivery is doable using deliverer's API
+
+                    var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+                    if (err)
+                        throw new Error("An error occured while looking for your delivery informations, please retry");
+                    if (infos === null) {
+                        let info = new DeliveryInfo({
+                            _userId: req.user._id,
+                            firstname: req.body.firstname,
+                            lastname: req.body.lastname,
+                            full_address: req.body.fulltext_address,
+                            full_street: req.body.street_name,
+                            country: req.body.country,
+                            street_name: street_name,
+                            street_number: street_number,
+                            city: req.body.city,
+                            state: req.body.state,
+                            zipcode: req.body.postal_code,
+                            instructions: req.body.instructions
+                        })
+                        // Save info to DB if no entry exist yet
+                        var [err, result] = await utils.to(info.save());
+                        if (err)
+                            throw new Error("An error occured while updating your delivery informations, please try again");
+                    } else {
+                        let obj = {
+                            firstname: req.body.firstname,
+                            lastname: req.body.lastname,
+                            full_address: req.body.fulltext_address,
+                            full_street: req.body.street_name,
+                            country: req.body.country,
+                            street_name: street_name,
+                            street_number: street_number,
+                            city: req.body.city,
+                            state: req.body.state,
+                            zipcode: req.body.postal_code,
+                            instructions: req.body.instructions
+                        }
+                        // Update if user already has an entry in DB
+                        var [err, result] = await utils.to(DeliveryInfo.updateOne({_userId: req.user._id}, {$set: obj}));
+                        if (err)
+                            throw new Error("An error occured while updating your delivery informations, please try again");
+                    }
+                    req.flash('success', "Delivery informations successfully updated");
+                    res.status(200).redirect('/User');
+                }
+            } catch (err) {
+                console.log(err)
             }
         })
-        
-        req.flash('success', "Delivery informations successfully modified");
-        res.status(200).redirect('/User');
         console.log(req.body);
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");

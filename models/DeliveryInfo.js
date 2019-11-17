@@ -5,7 +5,7 @@ const deliverySchema = new mongoose.Schema({
         type: String, 
         required: true, 
         ref: 'User' 
-    }, //maybe even status (preparing, in delivery, delivered..)
+    },
     firstname: {
         type: String,
         required: true,
@@ -18,11 +18,23 @@ const deliverySchema = new mongoose.Schema({
         min: 2,
         max: 128
     },
+    full_address: {
+        type: String,
+        required: true
+    },
+    full_street: {
+        type: String,
+        required: true
+    },
     country: {
         type: String,
         required: true,
     },
-    street: {
+    street_name: {
+        type: String,
+        required: true,
+    },
+    street_number: {
         type: String,
         required: true,
     },
@@ -37,6 +49,9 @@ const deliverySchema = new mongoose.Schema({
     zipcode: {
         type: String,
         required: true,
+    },
+    instructions: {
+        type: String,
     },
     date: {
         type: Date,

@@ -50,6 +50,8 @@
       <% if(locals.totalQty){ %>
           NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
       <% } %>
+      <%= locals.delivery.full_address %>!!!!!!!!!!!!!!!!!!
+
       <input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
       <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
     </div>
@@ -102,18 +104,28 @@ let stripeHandler = StripeCheckout.configure({
 function submitCheckout () {
   //check if user is logged in or not
   let isLogged = "<%= locals.name %>";
-  
-  //check if user delivery informations exist in database, if not redirect to user settings to make user fill them, else proceeds
+  let isDelivery = "<%= locals.isDelivery %>";
 
+  //check if user delivery informations exist in database, if not redirect to user settings to make user fill them, else proceeds
   if (isLogged === "") {
     window.location.href= "http://localhost:8089/Login"; //need req message
   } else {
-    let price = parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100;
-    if (price != 0) {
-      stripeHandler.open({
-        amount: price,
-        currency: "eur"
-      })
+    if (isDelivery === "true") {
+      let price = parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100;
+      if (price != 0) {
+        stripeHandler.open({
+          amount: price,
+          currency: "eur"
+        })
+      }
+    } else {
+      console.log("you need to add delivery info");
+      let alert = `<div id="alert" class="alert alert-info" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        You need to fill your delivery informations <a href="/User">here</a> in order to be able to purchase!
+                    </div>`;
+      addAlert(alert, "#header");
+      // add alert and link to user profile in alert 
     }
   }
 }

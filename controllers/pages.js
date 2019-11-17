@@ -8,6 +8,7 @@ const Blog = require('../models/Blog');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
 const Gallery = require('../models/Gallery');
+const DeliveryInfo = require('../models/DeliveryInfo');
 const PwToken = require('../models/PasswordToken');
 const Cart = require('../models/Cart');
 require('dotenv/config');
@@ -52,13 +53,22 @@ try {
     res.status(400).redirect("/");
 }})
 
-router.get('/shopping-cart', verifySession, (req, res) => {
+router.get('/shopping-cart', verifySession, async (req, res) => {
 try {
     let obj = {active: "Cart", stripePublicKey: stripePublic, products: null, totalPrice: 0, totalQty: 0}
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
+        obj.isDelivery = false;
+        obj.delivery = null;
+        var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+        if (err)
+            throw new Error("An error occured while looking for your delivery informations, please retry");
+        if (result != null) {
+            obj.delivery = result;
+            obj.isDelivery = true
+        }
     }
     if (req.session.cart)  {
         let cart = new Cart(req.session.cart);
@@ -116,6 +126,12 @@ try {
         obj = await User.findOne({_id: req.user._id});
         obj.password = undefined;
         obj.active = "User";
+        obj.delivery = false;
+        var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+        if (err)
+            throw new Error("An error occured while looking for your delivery informations, please retry");
+        if (result != null)
+            obj.delivery = result;
         res.status(200).render('user', obj);
     } else 
         throw new Error("You need to be logged in");
