@@ -50,11 +50,75 @@
       <% if(locals.totalQty){ %>
           NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
       <% } %>
-      <%= locals.delivery.full_address %>!!!!!!!!!!!!!!!!!!
-
-      <input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
-      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
+      <!--<input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
+      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>-->
     </div>
+
+    <% if(locals.isDelivery){ %>
+      <div class="panel-heading">
+        <h2 class="panel-title">Delivery Informations</h2>
+        <h6>*Make sure the informations you enter are correct, we will be using them for delivery</h6>
+      </div>
+      <div class="panel panel-primary">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="control-label">Last Name</label>
+              <input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>" readonly>
+              <span id="i_lastname" class="form-info">Last Name must contain between 2 and 128 characters</span>
+            </div>
+            <div class="col-md-6">
+              <label class="control-label">First Name</label>
+              <input class="form-control" id="firstname" name="firstname" placeholder="John" value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>" readonly>
+              <span id="i_firstname" class="form-info">First Name must contain between 2 and 128 characters</span>
+            </div>
+          </div>
+        <div class="panel-body">
+          <label class="control-label">Address</label>        
+          <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" class="form-control" value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>" readonly>
+          <div id="address">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="control-label">Route</label>
+                <input class="form-control" id="route" name="street_name" value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>" readonly>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label class="control-label">City</label>
+                <input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" readonly>
+              </div>
+              <div class="col-md-6"> 
+                <label class="control-label">State</label>
+                <input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>" readonly>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label class="control-label">Zip code</label>
+                <input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="control-label">Country</label>
+                <input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" readonly>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 offset-3">
+                <textarea id="instructions" class="blog-textarea mt-2" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+    <% if(locals.totalPrice){ %>
+      TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b>
+    <% } %>
+    <% if(locals.totalQty){ %>
+        NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
+    <% } %>
+    <input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
+    <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
   </div>
 </div>
 
@@ -119,13 +183,11 @@ function submitCheckout () {
         })
       }
     } else {
-      console.log("you need to add delivery info");
       let alert = `<div id="alert" class="alert alert-info" role="alert">
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                         You need to fill your delivery informations <a href="/User">here</a> in order to be able to purchase!
                     </div>`;
       addAlert(alert, "#header");
-      // add alert and link to user profile in alert 
     }
   }
 }
