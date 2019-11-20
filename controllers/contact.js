@@ -28,7 +28,7 @@ try {
         throw new Error("Incorrect form input");
     }
    
-        //maral.canvas@gmail.com
+    //maral.canvas@gmail.com
     if (await mailer("ablin@byom.de", subject, content)) 
         throw new Error("An error occured while trying to send the mail, please retry");
 

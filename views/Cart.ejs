@@ -115,10 +115,12 @@
       TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b>
     <% } %>
     <% if(locals.totalQty){ %>
-        NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
+      NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
     <% } %>
-    <input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
-    <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
+    <% if(locals.totalPrice){ %>
+      <input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
+      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
+    <% } %>
   </div>
 </div>
 
