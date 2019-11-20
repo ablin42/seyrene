@@ -1,0 +1,35 @@
+<% include partials/head %>
+
+<div class="container"> 
+    <div class="container-cart">
+        <h1>THANKS FOR YOUR PURCHASE</h1>
+        <% if (locals.order) { %>
+            <h1>order</h1>
+            _id: <%= locals.order._id %><br />
+            status: <%= locals.order.status %><br />
+            _userId: <%= locals.order._userId %><br />
+            <hr />
+            <h1>items</h1>
+            <% Object.keys(locals.order.items).forEach(function (index) { %>
+            <!--<%= locals.order.items %> foreach-->
+                id: <%= locals.order.items[index].id %><br />
+                price: <%= locals.order.items[index].price %><br />
+                qty: <%= locals.order.items[index].quantity %><br />
+            <% }) %>
+            <hr />
+            <h1>delivery</h1>
+            firstname: <%= locals.order.firstname %><br />
+            lastname: <%= locals.order.lastname %><br />
+            full_address: <%= locals.order.full_address %><br />
+            full_street: <%= locals.order.full_street %><br />
+            country: <%= locals.order.country %><br />
+            street_number: <%= locals.order.street_number %><br />
+            street_name: <%= locals.order.street_name %><br />
+            city: <%= locals.order.city %><br />
+            state: <%= locals.order.state %><br />
+            instructions: <%= locals.order.instructions %><br />
+        <% } %>
+    </div>
+</div>
+  
+<% include partials/footer %>

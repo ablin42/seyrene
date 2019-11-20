@@ -60,7 +60,7 @@ try {
     let cart = new Cart({});
     cart.clearCart();
     req.session.cart = cart;
-    return res.status(200).send("ty for purchasing");//redirect ty for purchase
+    return res.status(200).redirect("/Order/5d810b9365761c0840e0de25");//redirect ty for purchase
 } catch (err) {
     console.log("CLEAR CART ERROR");
     req.flash("warning", err.message);

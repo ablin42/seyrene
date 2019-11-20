@@ -7,6 +7,7 @@ const utils = require('./helpers/utils');
 const Blog = require('../models/Blog');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
+const Order = require('../models/Order');
 const Gallery = require('../models/Gallery');
 const DeliveryInfo = require('../models/DeliveryInfo');
 const PwToken = require('../models/PasswordToken');
@@ -51,6 +52,29 @@ try {
     console.log("GALLERY ROUTE ERROR", err);
     req.flash("warning", err.message);
     res.status(400).redirect("/");
+}})
+
+router.get('/Order/:id', verifySession, async (req, res) => {
+    try {
+        let obj = {active: "Order recap"};
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        var [err, order] = await utils.to(Order.findById(req.params.id));
+        if (err || order == null)
+            throw new Error("No order exist with this ID!");
+        if ((order._userId === req.user._id) || req.user.level >= 3) {
+            //seek order with id and check if either admin or if user id correspond to user id in order
+            obj.order = order;
+            res.status(200).render('order-recap', obj);
+        } else
+            throw new Error("Please make sure you're logged in to check your order");
+    } catch (err) {
+        console.log("ORDER RECAP ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/");
 }})
 
 router.get('/shopping-cart', verifySession, async (req, res) => {
