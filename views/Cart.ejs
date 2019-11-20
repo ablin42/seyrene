@@ -158,8 +158,12 @@ let stripeHandler = StripeCheckout.configure({
     .then((res) => {return res.json();})
     .then((data) => {
       console.log(data);
-      //if purchase successfull else dont clear
-      window.location.href = "http://localhost:8089/api/cart/clear";
+      if (data.err === false) {
+        console.log("purchase succesful");
+        window.location.href = `http://localhost:8089/api/cart/clear/${data.id}`;
+      } else {
+        console.log("something went wrong with your purchase");
+      }
     })
     .catch((err) => {
       console.log(err);

@@ -55,12 +55,12 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.get('/clear', async (req, res) => {
+router.get('/clear/:id', async (req, res) => {
 try {
     let cart = new Cart({});
     cart.clearCart();
     req.session.cart = cart;
-    return res.status(200).redirect("/Order/5d810b9365761c0840e0de25");//redirect ty for purchase
+    return res.status(200).redirect(`/Order/${req.params.id}`);//redirect ty for purchase
 } catch (err) {
     console.log("CLEAR CART ERROR");
     req.flash("warning", err.message);
@@ -81,7 +81,7 @@ try {
             if (err || item === null)
                 throw new Error("An error occured while looking for an item you tried to purchase");
             else 
-                total += items[i].price;
+                total += items[i].price * items[i].quantity;
         }
         console.log(total);
 
@@ -131,8 +131,8 @@ try {
 
             console.log("add order to db, send mail, etc")
             if (total !== 0)
-                return res.status(200).json({"ok": total});
-            return res.status(200).json({"no": total});
+                return res.status(200).json({"err": false, "id": order._id});
+            return res.status(200).json({"err": true});
             //return res
         })
         .catch((err) => {

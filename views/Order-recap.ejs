@@ -6,6 +6,7 @@
         <% if (locals.order) { %>
             <h1>order</h1>
             _id: <%= locals.order._id %><br />
+            total_price: <%= locals.order.price %><br />
             status: <%= locals.order.status %><br />
             _userId: <%= locals.order._userId %><br />
             <hr />
