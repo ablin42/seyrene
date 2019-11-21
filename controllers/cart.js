@@ -3,6 +3,7 @@ const router = express.Router();
 const Cart = require('../models/Cart');
 const Shop = require('../models/Shop');
 const Order = require('../models/Order');
+const User = require('../models/User');
 const DeliveryInfo = require('../models/DeliveryInfo');
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
@@ -68,7 +69,6 @@ try {
 }})
 
 router.post('/purchase', verifySession, async (req, res) => {
-//if req.user
 try {
     if (req.user) {
         var items = req.body.items;
@@ -81,7 +81,7 @@ try {
             if (err || item === null)
                 throw new Error("An error occured while looking for an item you tried to purchase");
             else 
-                total += items[i].price * items[i].quantity;
+                total += items[i].price;
         }
         console.log(total);
 
@@ -124,9 +124,17 @@ try {
                 throw new Error("An error occured while creating your order, please try again");
 
             let subject = `New Order #${order._id}`;//order id and href to order?
-            let content = `To manage order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Orders/${order._id}">CLICK HERE</a>`;
+            let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Orders/${order._id}">CLICK HERE</a>`;
             //maral.canvas@gmail.com
             if (await mailer("ablin@byom.de", subject, content)) 
+                throw new Error("An error occured while trying to send the mail, please retry");
+
+            var [err, user] = await utils.to(User.findById(req.user._id));
+            if (err || user == null)
+                throw new Error("An error occured while finding your user account, please try again");
+            console.log(user)
+            content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+            if (await mailer(user.email, subject, content))
                 throw new Error("An error occured while trying to send the mail, please retry");
 
             console.log("add order to db, send mail, etc")

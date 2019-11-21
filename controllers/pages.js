@@ -156,6 +156,12 @@ try {
             throw new Error("An error occured while looking for your delivery informations, please retry");
         if (result != null)
             obj.delivery = result;
+        var [err, orders] = await utils.to(Order.find({ _userId: req.user._id }));
+        if (err)
+            throw new Error("An error occured while looking for your orders informations, please retry");
+        if (orders != null)
+            obj.orders = orders;    
+        console.log(orders)
         res.status(200).render('user', obj);
     } else 
         throw new Error("You need to be logged in");

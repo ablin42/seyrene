@@ -43,16 +43,16 @@
       </div>
       <% }) %>
     <% } %>
-    <div class="cart-total">
+     <!--<div class="cart-total">
       <% if(locals.totalPrice){ %>
           TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b>
       <% } %>
       <% if(locals.totalQty){ %>
           NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
       <% } %>
-      <!--<input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
-      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>-->
-    </div>
+      <input type="hidden" id="total-price-input" value="<%= locals.totalPrice %>">
+      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
+    </div>-->
 
     <% if(locals.isDelivery){ %>
       <div class="panel-heading">
@@ -131,7 +131,7 @@ let stripeHandler = StripeCheckout.configure({
   locale: "auto",
   token: function (token) {
     let items = [];
-    let rows = $(".cart-row-item")
+    let rows = $(".cart-row-item");
         
     for (let i = 0; i < rows.length; i++) { 
       let id = rows[i].id;
