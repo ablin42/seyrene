@@ -161,7 +161,6 @@ try {
             throw new Error("An error occured while looking for your orders informations, please retry");
         if (orders != null)
             obj.orders = orders;    
-        console.log(orders)
         res.status(200).render('user', obj);
     } else 
         throw new Error("You need to be logged in");
@@ -288,56 +287,6 @@ try {
     return res.status(200).redirect("/Lostpw");
 }})
 
-router.get('/Blog/Post', verifySession, async (req, res) => {
-try {
-    if (req.user) {
-        let obj = {active: "Post a blog"};
-        if (req.session.formData) {
-            obj.formData = req.session.formData;
-            req.session.formData = undefined;
-        }
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-        return res.status(200).render('restricted/blog-post', obj);
-    } else 
-        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
-} catch (err) {
-    console.log("BLOG POST ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    return res.status(200).redirect("/Blog");
-}})
-
-router.get('/Blog/Patch/:blogId', verifySession, async (req, res) => { 
-try {
-    if (req.user) {
-        let obj = {
-            active: "Edit a blog"
-        };
-        var err, blog;
-        [err, blog] = await utils.to(Blog.findOne({_id: req.params.blogId}));
-        if (err)
-            throw new Error("An error occured while loading the blog, please try again");
-        if (blog === null)
-            throw new Error("No blog exists with this ID");
-        obj.blogContent = blog;
-        obj._id = req.params.blogId;
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-        return res.status(200).render('restricted/blog-patch', obj);
-    } else 
-        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
-} catch (err) {
-    console.log("BLOG PATCH ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    return res.status(200).redirect("/");
-}})
-
 router.get('/Blog/:id', verifySession, async (req, res) => {
     try {
         let id = req.params.id;
@@ -357,53 +306,11 @@ router.get('/Blog/:id', verifySession, async (req, res) => {
         return res.status(200).redirect('/Blog');
 }})
 
-router.get('/Shop/Post', verifySession, async (req, res) => {
-try {
-    if (req.user) {
-        let obj = {active: "Post a shop item"};
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-    
-        return res.status(200).render('restricted/shop-post', obj);
-    } else 
-         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
-} catch (err) {
-    console.log("SHOP POST ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Shop");
-}})
-    
-router.get('/Shop/Patch/:shopId', verifySession, async (req, res) => {
-try {
-    if (req.user) {
-        let obj = {active: "Edit a shop item"};
-        var [err, result] = await utils.to(Shop.findOne({_id: req.params.shopId}));
-        if (err)
-            throw new Error("An error occured while fetching the gallery item");
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }   
-        obj.shop = result;
-          
-        return res.status(200).render('restricted/shop-patch', obj);
-    } else 
-        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
-} catch (err) {
-    console.log("SHOP PATCH ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Shop");
-}})
-
 router.get('/Shop/:id', verifySession, async (req, res) => {
     try {
         let id = req.params.id;
         let obj = {
-            active: "Galerie",
+            active: "Shop",
             root: path.join(__dirname, '/pages/')
         };
         obj.shopItem = JSON.parse(await request(`http://127.0.0.1:8089/api/shop/single/${id}`));
@@ -419,49 +326,6 @@ router.get('/Shop/:id', verifySession, async (req, res) => {
         console.log("SHOP SINGLE ROUTE ERROR", err);
         req.flash("warning", err.message);
         res.status(400).redirect("/Shop");
-}})
-
-router.get('/Galerie/Post', verifySession, async (req, res) => {
-try {
-    if (req.user) {
-        let obj = {active: "Post a gallery item"};
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-
-        return res.status(200).render('restricted/gallery-post', obj);
-    } else 
-        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
-} catch (err) {
-    console.log("GALLERY POST ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Galerie");
-}})
-
-router.get('/Galerie/Patch/:galleryId', verifySession, async (req, res) => {
-try {
-    if (req.user) {
-        let obj = {active: "Edit a gallery item"};
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-
-        var [err, result] = await utils.to(Gallery.findOne({_id: req.params.galleryId}));
-        if (err)
-            throw new Error("An error occured while fetching the gallery item");
-        obj.gallery = result;
-      
-        return res.status(200).render('restricted/gallery-patch', obj);
-    } else 
-        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
-} catch (err) {
-    console.log("GALLERY PATCH ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Galerie");
 }})
 
 router.get('/Galerie/:id', verifySession, async (req, res) => {
@@ -484,6 +348,206 @@ router.get('/Galerie/:id', verifySession, async (req, res) => {
         console.log("GALLERY SINGLE ROUTE ERROR", err);
         req.flash("warning", err.message);
         res.status(400).redirect("/Galerie");
+}})
+
+router.get('/Admin', verifySession, async (req, res) => {
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {active: "Admin"};
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+            return res.status(200).render('restricted/admin', obj);
+        } else 
+            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+    } catch (err) {
+        console.log("ADMIN ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/");
+}})
+
+router.get('/Admin/Orders', verifySession, async (req, res) => {
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {active: "Admin"};
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+            //load all orders
+            var [err, orders] = await utils.to(Order.find());
+            if (err)
+                throw new Error("An error occured while looking for your orders informations, please retry");
+            if (orders != null)
+                obj.orders = orders;    
+            return res.status(200).render('restricted/orders', obj);
+        } else 
+            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+    } catch (err) {
+        console.log("ADMIN ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/");
+}})
+
+router.get('/Admin/Order/:id', verifySession, async (req, res) => {
+try {
+    if (req.user && req.user.level >= 3) {
+        let obj = {active: "Order recap"};
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        var [err, order] = await utils.to(Order.findById(req.params.id));
+        if (err || order == null)
+            throw new Error("No order exist with this ID!");
+        obj.order = order;
+        res.status(200).render('order-recap', obj);
+        } else
+            throw new Error("Please make sure you're logged in to check your order");
+    } catch (err) {
+        console.log("ORDER RECAP ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/");
+}})
+
+router.get('/Admin/Galerie/Post', verifySession, async (req, res) => {
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {active: "Post a gallery item"};
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+    
+            return res.status(200).render('restricted/gallery-post', obj);
+        } else 
+            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+    } catch (err) {
+        console.log("GALLERY POST ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Galerie");
+}})
+
+
+router.get('/Admin/Galerie/Patch/:galleryId', verifySession, async (req, res) => {
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {active: "Edit a gallery item"};
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+    
+            var [err, result] = await utils.to(Gallery.findOne({_id: req.params.galleryId}));
+            if (err)
+                throw new Error("An error occured while fetching the gallery item");
+            obj.gallery = result;
+          
+            return res.status(200).render('restricted/gallery-patch', obj);
+        } else 
+            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+    } catch (err) {
+        console.log("GALLERY PATCH ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Galerie");
+}})
+
+router.get('/Admin/Shop/Post', verifySession, async (req, res) => {
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {active: "Post a shop item"};
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+        
+            return res.status(200).render('restricted/shop-post', obj);
+        } else 
+             throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+    } catch (err) {
+        console.log("SHOP POST ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Shop");
+}})
+ 
+router.get('/Admin/Shop/Patch/:shopId', verifySession, async (req, res) => {
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {active: "Edit a shop item"};
+            var [err, result] = await utils.to(Shop.findOne({_id: req.params.shopId}));
+            if (err)
+                throw new Error("An error occured while fetching the gallery item");
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }   
+            obj.shop = result;
+              
+            return res.status(200).render('restricted/shop-patch', obj);
+        } else 
+            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+    } catch (err) {
+        console.log("SHOP PATCH ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Shop");
+    }})
+
+router.get('/Admin/Blog/Post', verifySession, async (req, res) => {
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {active: "Post a blog"};
+            if (req.session.formData) {
+                obj.formData = req.session.formData;
+                req.session.formData = undefined;
+            }
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+            return res.status(200).render('restricted/blog-post', obj);
+        } else 
+            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+    } catch (err) {
+        console.log("BLOG POST ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        return res.status(200).redirect("/Blog");
+}})
+
+router.get('/Admin/Blog/Patch/:blogId', verifySession, async (req, res) => { 
+    try {
+        if (req.user && req.user.level >= 3) {
+            let obj = {
+                active: "Edit a blog"
+            };
+            var err, blog;
+            [err, blog] = await utils.to(Blog.findOne({_id: req.params.blogId}));
+            if (err)
+                throw new Error("An error occured while loading the blog, please try again");
+            if (blog === null)
+                throw new Error("No blog exists with this ID");
+            obj.blogContent = blog;
+            obj._id = req.params.blogId;
+            if (req.user) {
+                obj.userId = req.user._id;
+                obj.name = req.user.name;
+                obj.level = req.user.level;
+            }
+            return res.status(200).render('restricted/blog-patch', obj);
+        } else 
+            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+    } catch (err) {
+        console.log("BLOG PATCH ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        return res.status(200).redirect("/");
 }})
 
 module.exports = router;

@@ -5,12 +5,12 @@
       <h1>Orders</h1>
       <% if (locals.orders) { %>
         <% Object.keys(locals.orders).forEach(function (index) { %>
-          <a href="/Order/<%= locals.orders[index]._id %>"><%= locals.orders[index]._id %></a><br/>
+          <a href="/Order/<%= locals.orders[index]._id %>"><%= locals.orders[index]._id %></a> - STATUS: <%= locals.orders[index].status %><br/>
         <% }) %>
       <% } %>
   </div>
   <hr />
-
+  
   <div class="panel-heading">
     <h2 class="panel-title">Delivery Informations</h2>
     <h6>*Make sure the informations you enter are correct, we will be using them for delivery</h6>

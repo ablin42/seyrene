@@ -1,14 +1,6 @@
 <% include partials/head %>
 
 <script src="/scripts/infiniteBlogs.js"></script>
-  <% if (locals.level && locals.level > 1) { %>
-    <div class="alert alert-info" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
-      </button>
-      <a href="/Blog/Post">post blog</a>
-    </div>
-  <% } %>
 <div class="container container-blog" id="container-blog">
   <% if(locals.blogs){ %>
     <% Object.keys(locals.blogs).forEach(function (index) { %>

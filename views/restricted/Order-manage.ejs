@@ -1,0 +1,55 @@
+<% include partials/head %>
+
+<div class="container"> 
+    <div class="container-cart">
+        <h1>THANKS FOR YOUR PURCHASE</h1>
+        <% if (locals.order) { %>
+            <h1>order</h1>
+            _id: <%= locals.order._id %><br />
+            total_price: <%= locals.order.price %><br />
+            status: <%= locals.order.status %><br />
+            _userId: <%= locals.order._userId %><br />
+            <hr />
+            <div class="cart-row">
+                    <span class="cart-item cart-header cart-column">ITEM</span>
+                    <span class="cart-price cart-header cart-column">PRICE</span>
+                    <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+                  </div>
+                  <% if(locals.order.items){ %>
+                    <% Object.keys(locals.order.items).forEach(function (index) { %>
+                      <div class="cart-row cart-row-item" id="<%= locals.order.items[index].id %>">
+                        <div class="cart-item cart-column">
+                            <a href="/Shop/<%= locals.order.items[index].id %>"><img class="cart-img" src="/api/shop/image/<%= locals.order.items[index].id %>" alt="<%= locals.order.items[index].title %>"></a>
+                          <div class="cart-title-description">
+                            <h4 class="cart-item-title"><b><%= locals.order.items[index].title %></b></h4>
+                            <p class="cart-item-description"><%= locals.order.items[index].content %></p>
+                          </div>
+                        </div>
+                            
+                        <div class="cart-price cart-column ">
+                          <p class="cart-item-price"><b><%= locals.order.items[index].price %>€</b></p>
+                        </div>
+                            
+                        <div class="cart-quantity cart-column">
+                          <h4 class="cart-item-qty"><b><%= locals.order.items[index].quantity %></b></h4>
+                        </div>
+                    </div>
+                    <% }) %>
+                  <% } %>
+            <hr />
+            <h1>delivery</h1>
+            firstname: <%= locals.order.firstname %><br />
+            lastname: <%= locals.order.lastname %><br />
+            full_address: <%= locals.order.full_address %><br />
+            full_street: <%= locals.order.full_street %><br />
+            country: <%= locals.order.country %><br />
+            street_number: <%= locals.order.street_number %><br />
+            street_name: <%= locals.order.street_name %><br />
+            city: <%= locals.order.city %><br />
+            state: <%= locals.order.state %><br />
+            instructions: <%= locals.order.instructions %><br />
+        <% } %>
+    </div>
+</div>
+  
+<% include partials/footer %>

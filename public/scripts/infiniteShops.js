@@ -18,7 +18,6 @@ async function infiniteShopItems(tab) {
                         <a href="#expand"><img onclick="expand(this);" src="/api/shop/image/${id}" class="card-img-top" alt="${shop.title}"></a>
                         <div class="card-body">
                             <h5 class="card-title"><i><a href="Shop/${id}">${shop.title}</a></i></h5>
-                            <a href="/Shop/Patch/${id}"><i class="fas fa-edit"></i></a>
                             <p class="card-text gallery-description">${shop.content}</p>
                             <p class="card-text">
                                 <b>${shop.price}€</b><br />

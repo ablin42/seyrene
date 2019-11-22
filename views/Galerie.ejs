@@ -3,14 +3,6 @@
 <script src="/scripts/infiniteGalleries.js"></script>
 <script src="/scripts/cart.js"></script>
 <div class="container">
-    <% if (locals.level && locals.level > 1) { %>
-      <div class="alert alert-info" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-        <a href="/Galerie/Post">post gallery item</a>
-      </div>
-    <% } %>
     <div class="container-gallery" id="container-gallery">
           <% if(locals.galleries){ %>
             <% Object.keys(locals.galleries).forEach(function (index) { %>

@@ -11,7 +11,7 @@
           <p class="blog-info">posté par 
             <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>
               <% if (locals.level && locals.level > 1) { %>
-                <a href="/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
+                <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
               <% } %>  
           </p>
           <p class="blog-content"><%= locals.blogs.content %></p>

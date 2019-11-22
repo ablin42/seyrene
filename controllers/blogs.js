@@ -75,7 +75,7 @@ try {
 } catch (err) {
     console.log("POST BLOG ERROR", err);
     req.flash("warning", err.message);
-    res.status(400).redirect("/Blog/Post")
+    res.status(400).redirect("/Admin/Blog/Post")
 }})
 
 // patch a blog
@@ -105,7 +105,7 @@ try {
 } catch (err) {
     console.log("PATCH BLOG ERROR", err);
     req.flash("warning", err.message);
-    res.status(400).redirect(`/Blog/Patch/${req.params.blogId}`);
+    res.status(400).redirect(`/Admin/Blog/Patch/${req.params.blogId}`);
 }})
 
 // delete a blog

@@ -10,7 +10,7 @@
         <div class="card-body">
           <h5 class="card-title"><i><%= locals.galleries.title %></i></h5>
           <% if (locals.level && locals.level > 1) { %>
-            <a href="/Galerie/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
+            <a href="/Admin/Galerie/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
           <% } %>
           <p class="card-text gallery-description"><%= locals.galleries.content %></p>
           <p class="card-text">

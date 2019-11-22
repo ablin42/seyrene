@@ -9,7 +9,7 @@
             <div class="card-body">
                 <h5 class="card-title"><i><a href="Shop/<%= locals.shopItem._id %>"><%= locals.shopItem.title %></a></i></h5>
                 <% if (locals.level && locals.level > 1) { %>
-                    <a href="/Shop/Patch/<%= locals.shopItem._id %>"><i class="fas fa-edit"></i></a>
+                    <a href="/Admin/Shop/Patch/<%= locals.shopItem._id %>"><i class="fas fa-edit"></i></a>
                 <% } %>
                 <p class="card-text gallery-description"><%= locals.shopItem.content %></p>
                 <p class="card-text">

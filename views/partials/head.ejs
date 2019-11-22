@@ -39,9 +39,9 @@
             </div>
                 <ul class="nav-links">
                     <li><a href="/Bio" class="navbar-text <%= (locals.active && locals.active == 'Biographie') ? 'active' : '' %>">Biographie</a></li>
+                    <li><a href="/Contact" class="navbar-text <%= (locals.active && locals.active == 'Contact') ? 'active' : '' %>">Contact</a></li>
                     <li><a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>">Galerie</a></li>
                     <li><a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>">Boutique</a></li>
-                    <li><a href="/Contact" class="navbar-text <%= (locals.active && locals.active == 'Contact') ? 'active' : '' %>">Contact</a></li>
                     <li><a href="/Blog" class="navbar-text <%= (locals.active && locals.active == 'Blog') ? 'active' : '' %>">Blog</a></li>
                     <% if (!locals.name) { %>
                         <li><a href="/Register" class="navbar-text <%= (locals.active && locals.active == 'Register') ? 'active' : '' %>">S'inscrire</a></li>
@@ -49,6 +49,9 @@
                     
                     <% } else { %>
                         <li><a href="/User" class="navbar-text"><%= locals.name %></a></li>
+                        <% if (locals.level >= 3) { %>
+                            <li><a href="/Admin" class="navbar-text">ADMIN PANNEL</a></li>
+                        <% } %>
                         <li><a href="/api/auth/logout" class="navbar-text">Déconnexion</a></li>
                     <% } %>
                         <li><a href="/shopping-cart" class="navbar-text"><i class="fas fa-shopping-cart fa-2x"></i></a><span id="cartQty" class="badge"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span></li>

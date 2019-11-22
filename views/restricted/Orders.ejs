@@ -1,0 +1,14 @@
+<% include ../partials/head %>
+
+<div class="container container-blog">
+    <div class="orders">
+        <h1>Orders</h1>
+        <% if (locals.orders) { %>
+            <% Object.keys(locals.orders).forEach(function (index) { %>
+                <a href="/Admin/Order/<%= locals.orders[index]._id %>"><%= locals.orders[index]._id %></a> - STATUS: <%= locals.orders[index].status %> - LASTNAME: <%= locals.orders[index].lastname %><br/>
+            <% }) %>
+        <% } %>
+    </div>
+</div>
+  
+<% include ../partials/footer %>
