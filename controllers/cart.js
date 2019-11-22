@@ -85,83 +85,76 @@ try {
 router.post('/purchase', verifySession, async (req, res) => {
 try {
     if (req.user) {
-        console.log(req.session.cart);
-        var items = req.body.items;
         let token = req.body.stripeTokenId;
-        let total = 0;
-        console.log(items)
+        let cart = new Cart(req.session.cart ? req.session.cart : {});
+        let total = cart.totalPrice;
+        let items = cart.generateArray();
 
         for (let i = 0; i < items.length; i++) {
-            var [err, item] = await utils.to(Shop.findById(items[i].id));
+            var [err, item] = await utils.to(Shop.findById(items[i].item._id));
             if (err || item === null)
                 throw new Error("An error occured while looking for an item you tried to purchase");
-            else 
-                total += items[i].price; //////////////////PROBLEM HERE
         }
-        if (req.session.cart.totalPrice)
-            total = req.session.cart.totalPrice;
-
-        stripe.charges.create({
-            amount: total * 100,
-            source: token,
-            currency: 'eur'
-        })
-        .then(async () => {
-            for (let index = 0;  index < items.length;  index++) {
-                var [err, item] = await utils.to(Shop.findOneAndDelete({_id: items[index].id, isUnique: true}));
-                if (err) 
-                    throw new Error("An error occured while deleting the unique item");
-            }
-
-            var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-            if (err)
-                throw new Error("An error occured while looking for your delivery informations, please retry");
-
-            const order = new Order({
-                _userId: req.user._id,
-                items: items,
-                price: total,
-                status: "Validated",
-                firstname: infos.firstname,
-                lastname:  infos.lastname,
-                full_address:  infos.full_address,
-                full_street:  infos.full_street,
-                country:  infos.country,
-                street_name:  infos.street_name,
-                street_number:  infos.street_number,
-                city: infos.city,
-                state: infos.state,
-                zipcode: infos.zipcode,
-                instructions:  infos.instructions
-            });
-
-            var [err, result] = await utils.to(order.save());
-            if (err)
-                throw new Error("An error occured while creating your order, please try again");
-
-            let subject = `New Order #${order._id}`;//order id and href to order?
-            let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Orders/${order._id}">CLICK HERE</a>`;
-            //maral.canvas@gmail.com
-            if (await mailer("ablin@byom.de", subject, content)) 
-                throw new Error("An error occured while trying to send the mail, please retry");
-
-            var [err, user] = await utils.to(User.findById(req.user._id));
-            if (err || user == null)
-                throw new Error("An error occured while finding your user account, please try again");
-            console.log(user)
-            content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-            if (await mailer(user.email, subject, content))
-                throw new Error("An error occured while trying to send the mail, please retry");
-
-            console.log("add order to db, send mail, etc")
-            if (total !== 0)
+        if (total > 0) {
+            stripe.charges.create({
+                amount: Math.round(total * 100),
+                source: token,
+                currency: 'eur'
+            })
+            .then(async () => {
+                for (let index = 0;  index < items.length;  index++) {
+                    var [err, item] = await utils.to(Shop.findOneAndDelete({_id: items[index].item._id, isUnique: true}));
+                    if (err) 
+                        throw new Error("An error occured while deleting the unique item");
+                }
+    
+                var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+                if (err)
+                    throw new Error("An error occured while looking for your delivery informations, please retry");
+    
+                const order = new Order({
+                    _userId: req.user._id,
+                    items: items,
+                    price: total,
+                    status: "Validated",
+                    firstname: infos.firstname,
+                    lastname:  infos.lastname,
+                    full_address:  infos.full_address,
+                    full_street:  infos.full_street,
+                    country:  infos.country,
+                    street_name:  infos.street_name,
+                    street_number:  infos.street_number,
+                    city: infos.city,
+                    state: infos.state,
+                    zipcode: infos.zipcode,
+                    instructions:  infos.instructions
+                });
+    
+                var [err, result] = await utils.to(order.save());
+                if (err)
+                    throw new Error("An error occured while creating your order, please try again");
+    
+                let subject = `New Order #${order._id}`;
+                let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Orders/${order._id}">CLICK HERE</a>`;
+                if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+                    throw new Error("An error occured while trying to send the mail, please retry");
+    
+                var [err, user] = await utils.to(User.findById(req.user._id));
+                if (err || user == null)
+                    throw new Error("An error occured while finding your user account, please try again");
+                content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+                if (await mailer(user.email, subject, content))
+                    throw new Error("An error occured while trying to send the mail, please retry");
+    
                 return res.status(200).json({"err": false, "id": order._id});
-            return res.status(200).json({"err": true});
-        })
-        .catch((err) => {
-            console.log("charging failure", err)
-            return res.status(200).json({"err": true, "msg": err.message});
-        })
+            })
+            .catch((err) => {
+                console.log("charging failure", err)
+                return res.status(200).json({"err": true, "msg": err.message});
+            })
+        }
+        else
+            throw new Error("Your cart is empty!");
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {

@@ -36,9 +36,6 @@
             <% if (locals.products[index].item.isUnique !== true) { %>
               <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
             <% } %>
-            <!--<a class="qty-update qty-decrease" href="#delete">-</a> 
-            <h4 class="cart-item-qty"><%= locals.products[index].qty %></h4>
-            <a class="qty-update qty-increase" href="/api/cart/add-to-cart/<%= locals.products[index].item._id %>">+</a>-->
           </div>
       </div>
       <% }) %>
@@ -131,19 +128,6 @@ let stripeHandler = StripeCheckout.configure({
   key: stripePublicKey,
   locale: "auto",
   token: function (token) {
-    let items = [];
-    let rows = $(".cart-row-item");
-        
-    for (let i = 0; i < rows.length; i++) { 
-      let id = rows[i].id;
-      let quantity = parseInt($("div.cart-quantity.cart-column > h4 > b")[i].innerText);
-      let price = parseFloat($("div.cart-price.cart-column > p > b")[i].innerText);
-      items.push({
-        id: id,
-        price: price,
-        quantity: quantity
-      });
-    }
     /* calls to purchase API, clears cart and redirects to order if purchase is succesful */
     fetch('/api/cart/purchase', {
       method: 'POST',
@@ -151,16 +135,12 @@ let stripeHandler = StripeCheckout.configure({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({
-        stripeTokenId: token.id,
-        items: items //items should be taken from cart session
-      })
+      body: JSON.stringify({stripeTokenId: token.id,})
     })
     .then((res) => {return res.json()})
     .then((data) => {
       console.log(data);
       if (data.err === false) {
-        console.log("purchase succesful");
         window.location.href = `http://localhost:8089/api/cart/clear/${data.id}`;
       } else {
         console.log("Something went wrong with your purchase!");
@@ -197,7 +177,6 @@ function submitCheckout () {
     .then((data) => {
       console.log(data);
       if (data.err === false) {
-        //let price = Math.round(parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100); //fetch price using api calling to cart
         let price = Math.round(parseFloat(data.total) * 100); //stripe amount is in cents
         if (price != 0) {
           stripeHandler.open({

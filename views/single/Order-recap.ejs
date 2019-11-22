@@ -17,9 +17,9 @@
                   </div>
                   <% if(locals.order.items){ %>
                     <% Object.keys(locals.order.items).forEach(function (index) { %>
-                      <div class="cart-row cart-row-item" id="<%= locals.order.items[index].id %>">
+                      <div class="cart-row cart-row-item" id="<%= locals.order.items[index].item._id %>">
                         <div class="cart-item cart-column">
-                            <a href="/Shop/<%= locals.order.items[index].id %>"><img class="cart-img" src="/api/shop/image/<%= locals.order.items[index].id %>" alt="<%= locals.order.items[index].title %>"></a>
+                            <a href="/Shop/<%= locals.order.items[index].item._id %>"><img class="cart-img" src="/api/shop/image/<%= locals.order.items[index].item._id %>" alt="<%= locals.order.items[index].title %>"></a>
                           <div class="cart-title-description">
                             <h4 class="cart-item-title"><b><%= locals.order.items[index].title %></b></h4>
                             <p class="cart-item-description"><%= locals.order.items[index].content %></p>
@@ -31,7 +31,7 @@
                         </div>
                             
                         <div class="cart-quantity cart-column">
-                          <h4 class="cart-item-qty"><b><%= locals.order.items[index].quantity %></b></h4>
+                          <h4 class="cart-item-qty"><b><%= locals.order.items[index].qty %></b></h4>
                         </div>
                     </div>
                     <% }) %>
