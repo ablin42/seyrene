@@ -136,7 +136,7 @@ try {
             throw new Error("An error occured while looking for your delivery informations, please retry");
         if (result != null)
             obj.delivery = result;
-        var [err, orders] = await utils.to(Order.find({ _userId: req.user._id }));
+        var [err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, {sort: { date: -1 }}));
         if (err)
             throw new Error("An error occured while looking for your orders informations, please retry");
         if (orders != null)
@@ -226,7 +226,7 @@ try {
 router.get('/Lostpw', verifySession, async (req, res) => {
 try {
     if (req.user) {
-        req.flash('info', "You're logged in, you can change your password here.")
+        req.flash('info', "You're logged in, you can change your password here")
         return res.status(200).redirect('/User');
     } else {
         let obj = {
@@ -241,10 +241,10 @@ try {
     res.status(400).redirect("/");
 }})
 
-router.get('/Resetpw/:tokenId/:token', verifySession, async (req, res) => { //if user connected, redirect to home
+router.get('/Resetpw/:tokenId/:token', verifySession, async (req, res) => {
 try {
     if (req.user) {
-        req.flash('info', "You're logged in, you can change your password here.")
+        req.flash('info', "You're logged in, you can change your password here")
         return res.status(200).redirect('/User');
     } else {
         let obj = {
@@ -386,8 +386,7 @@ router.get('/Admin/Orders', verifySession, async (req, res) => {
                 obj.name = req.user.name;
                 obj.level = req.user.level;
             }
-            //load all orders
-            var [err, orders] = await utils.to(Order.find());
+            var [err, orders] = await utils.to(Order.find({}, {}, {sort: { date: -1 }}));
             if (err)
                 throw new Error("An error occured while looking for your orders informations, please retry");
             if (orders != null)
@@ -414,7 +413,7 @@ try {
         if (err || order == null)
             throw new Error("No order exist with this ID!");
         obj.order = order;
-        res.status(200).render('order-recap', obj);
+        res.status(200).render('single/order-recap', obj);
         } else
             throw new Error("Please make sure you're logged in to check your order");
     } catch (err) {

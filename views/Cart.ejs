@@ -126,6 +126,7 @@
 
 
 <script>
+/* this function handle the payment by stripe */
 let stripeHandler = StripeCheckout.configure({
   key: stripePublicKey,
   locale: "auto",
@@ -143,7 +144,7 @@ let stripeHandler = StripeCheckout.configure({
         quantity: quantity
       });
     }
-
+    /* calls to purchase API, clears cart and redirects to order if purchase is succesful */
     fetch('/api/cart/purchase', {
       method: 'POST',
       headers: {
@@ -152,42 +153,70 @@ let stripeHandler = StripeCheckout.configure({
       },
       body: JSON.stringify({
         stripeTokenId: token.id,
-        items: items
+        items: items //items should be taken from cart session
       })
     })
-    .then((res) => {return res.json();})
+    .then((res) => {return res.json()})
     .then((data) => {
       console.log(data);
       if (data.err === false) {
         console.log("purchase succesful");
         window.location.href = `http://localhost:8089/api/cart/clear/${data.id}`;
       } else {
-        console.log("something went wrong with your purchase");
+        console.log("Something went wrong with your purchase!");
+        throw new Error(data.msg)
       }
     })
     .catch((err) => {
-      console.log(err);
+      let alert = `<div id="alert" class="alert alert-info" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${err.message}
+                    </div>`;
+      addAlert(alert, "#header");
     })
   }
 })
 
 function submitCheckout () {
-  //check if user is logged in or not
   let isLogged = "<%= locals.name %>";
   let isDelivery = "<%= locals.isDelivery %>";
 
-  //check if user delivery informations exist in database, if not redirect to user settings to make user fill them, else proceeds
   if (isLogged === "") {
     window.location.href= "http://localhost:8089/Login"; //need req message
   } else {
     if (isDelivery === "true") {
-      let price = parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100;
-      if (price != 0) {
-        stripeHandler.open({
-          amount: price,
-          currency: "eur"
-        })
+      // fetch total price from API
+      fetch('/api/cart/totalprice', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
+    })
+    .then((res) => {return res.json()})
+    .then((data) => {
+      console.log(data);
+      if (data.err === false) {
+        //let price = Math.round(parseFloat(document.getElementById("total-price-input").getAttribute("value")) * 100); //fetch price using api calling to cart
+        let price = Math.round(parseFloat(data.total) * 100); //stripe amount is in cents
+        if (price != 0) {
+          stripeHandler.open({
+            amount: price,
+            currency: "eur"
+          })
+        }
+      } else {
+        console.log("Something went wrong while fetching your cart items!");
+        throw new Error(data.msg)
+      }
+    })
+    .catch((err) => {
+      let alert = `<div id="alert" class="alert alert-info" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${err.message}
+                    </div>`;
+      addAlert(alert, "#header");
+    })
     } else {
       let alert = `<div id="alert" class="alert alert-info" role="alert">
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>

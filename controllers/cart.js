@@ -61,16 +61,31 @@ try {
     let cart = new Cart({});
     cart.clearCart();
     req.session.cart = cart;
-    return res.status(200).redirect(`/Order/${req.params.id}`);//redirect ty for purchase
+    return res.status(200).redirect(`/Order/${req.params.id}`);
 } catch (err) {
     console.log("CLEAR CART ERROR");
     req.flash("warning", err.message);
     return res.status(400).redirect('/');
 }})
 
+router.get('/totalprice', async (req, res) => {
+try {
+    let total = 0;
+    if (req.session.cart)
+        total = req.session.cart.totalPrice;
+
+    //maybe add delivery fees and taxes etc
+
+    return res.status(400).json({"err": false, "total": total})
+} catch (err) {
+    console.log("TOTAL PRICE CART ERROR");
+    return res.status(400).json({"err": true, "msg": err.message})
+}})
+
 router.post('/purchase', verifySession, async (req, res) => {
 try {
     if (req.user) {
+        console.log(req.session.cart);
         var items = req.body.items;
         let token = req.body.stripeTokenId;
         let total = 0;
@@ -81,9 +96,10 @@ try {
             if (err || item === null)
                 throw new Error("An error occured while looking for an item you tried to purchase");
             else 
-                total += items[i].price;
+                total += items[i].price; //////////////////PROBLEM HERE
         }
-        console.log(total);
+        if (req.session.cart.totalPrice)
+            total = req.session.cart.totalPrice;
 
         stripe.charges.create({
             amount: total * 100,
@@ -141,19 +157,16 @@ try {
             if (total !== 0)
                 return res.status(200).json({"err": false, "id": order._id});
             return res.status(200).json({"err": true});
-            //return res
         })
         .catch((err) => {
             console.log("charging failure", err)
-            //return res
+            return res.status(200).json({"err": true, "msg": err.message});
         })
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {
-    console.log("PURCHASE ERROR");
-    console.log(err.message)
-    req.flash("warning", err.message);
-    return res.status(400).redirect('/shopping-cart');
+    console.log("PURCHASE ERROR:", err);
+    return res.status(200).json({"err": true, "msg": err.message});
 }})
 
 module.exports = router;
