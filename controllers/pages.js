@@ -19,6 +19,8 @@ const stripePublic = process.env.STRIPE_PUBLIC;
 
 const router = express.Router();
 
+/* MAIN ROUTES */
+
 router.get('/', verifySession, (req, res) => {
 try {
     let obj = {active: "Home"};//{root: path.join(__dirname, '/pages/')};
@@ -54,28 +56,6 @@ try {
     res.status(400).redirect("/");
 }})
 
-router.get('/Order/:id', verifySession, async (req, res) => {
-    try {
-        let obj = {active: "Order recap"};
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-        var [err, order] = await utils.to(Order.findById(req.params.id));
-        if (err || order == null)
-            throw new Error("No order exist with this ID!");
-        if ((order._userId === req.user._id) || req.user.level >= 3) {
-            //seek order with id and check if either admin or if user id correspond to user id in order
-            obj.order = order;
-            res.status(200).render('order-recap', obj);
-        } else
-            throw new Error("Please make sure you're logged in to check your order");
-    } catch (err) {
-        console.log("ORDER RECAP ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        res.status(400).redirect("/");
-}})
 
 router.get('/shopping-cart', verifySession, async (req, res) => {
 try {
@@ -287,45 +267,30 @@ try {
     return res.status(200).redirect("/Lostpw");
 }})
 
-router.get('/Blog/:id', verifySession, async (req, res) => {
-    try {
-        let id = req.params.id;
-        let obj = {active: "Blog"};
-        obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
-        if (obj.blogs.error)
-            throw new Error(obj.blogs.message);
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-        return res.status(200).render('blog-single', obj);
-    } catch (err) {
-        console.log("BLOG ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        return res.status(200).redirect('/Blog');
-}})
+/* END MAIN ROUTES */
+/* SINGLE ITEM ROUTES */
 
-router.get('/Shop/:id', verifySession, async (req, res) => {
+router.get('/Order/:id', verifySession, async (req, res) => {
     try {
-        let id = req.params.id;
-        let obj = {
-            active: "Shop",
-            root: path.join(__dirname, '/pages/')
-        };
-        obj.shopItem = JSON.parse(await request(`http://127.0.0.1:8089/api/shop/single/${id}`));
-        if (obj.shopItem.error)
-                throw new Error(obj.shopItem.message);
+        let obj = {active: "Order recap"};
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
             obj.level = req.user.level;
         }
-        res.status(200).render('shop-single', obj);
+        var [err, order] = await utils.to(Order.findById(req.params.id));
+        if (err || order == null)
+            throw new Error("No order exist with this ID!");
+        if ((order._userId === req.user._id) || req.user.level >= 3) {
+            //seek order with id and check if either admin or if user id correspond to user id in order
+            obj.order = order;
+            res.status(200).render('single/order-recap', obj);
+        } else
+            throw new Error("Please make sure you're logged in to check your order");
     } catch (err) {
-        console.log("SHOP SINGLE ROUTE ERROR", err);
+        console.log("ORDER RECAP ROUTE ERROR", err);
         req.flash("warning", err.message);
-        res.status(400).redirect("/Shop");
+        res.status(400).redirect("/");
 }})
 
 router.get('/Galerie/:id', verifySession, async (req, res) => {
@@ -343,12 +308,56 @@ router.get('/Galerie/:id', verifySession, async (req, res) => {
             obj.name = req.user.name;
             obj.level = req.user.level;
         }
-        res.status(200).render('galerie-single', obj);
+        res.status(200).render('single/galerie-single', obj);
     } catch (err) {
         console.log("GALLERY SINGLE ROUTE ERROR", err);
         req.flash("warning", err.message);
         res.status(400).redirect("/Galerie");
 }})
+
+router.get('/Shop/:id', verifySession, async (req, res) => {
+    try {
+        let id = req.params.id;
+        let obj = {
+            active: "Shop",
+            root: path.join(__dirname, '/pages/')
+        };
+        obj.shopItem = JSON.parse(await request(`http://127.0.0.1:8089/api/shop/single/${id}`));
+        if (obj.shopItem.error)
+                throw new Error(obj.shopItem.message);
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        res.status(200).render('single/shop-single', obj);
+    } catch (err) {
+        console.log("SHOP SINGLE ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        res.status(400).redirect("/Shop");
+}})
+
+router.get('/Blog/:id', verifySession, async (req, res) => {
+    try {
+        let id = req.params.id;
+        let obj = {active: "Blog"};
+        obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
+        if (obj.blogs.error)
+            throw new Error(obj.blogs.message);
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        return res.status(200).render('single/blog-single', obj);
+    } catch (err) {
+        console.log("BLOG ROUTE ERROR", err);
+        req.flash("warning", err.message);
+        return res.status(200).redirect('/Blog');
+}})
+
+/* END SINGLE */
+/* ADMIN ROUTES */
 
 router.get('/Admin', verifySession, async (req, res) => {
     try {
