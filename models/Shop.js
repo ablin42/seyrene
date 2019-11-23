@@ -6,6 +6,10 @@ const ShopSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    soldOut: {
+        type: Boolean,
+        default: false
+    },
     title: {
         type: String,
         required: true

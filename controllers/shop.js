@@ -39,6 +39,8 @@ for (i = 0; i < shopItems.length; i++) {
 return result;
 }
 
+
+//update all entries to have soldOut: false
 router.get('/', async (req, res) => {
 try {
     const options = {
@@ -46,7 +48,7 @@ try {
         limit: 6,
         sort: { date: -1 }
     }
-    let query = {isUnique: true};
+    let query = {isUnique: true, soldOut: false};
     if (req.query.tab === "print")
         query.isUnique = false;
     var [err, result] = await utils.to(Shop.paginate(query, options));

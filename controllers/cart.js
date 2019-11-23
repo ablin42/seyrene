@@ -103,14 +103,14 @@ try {
             })
             .then(async () => {
                 for (let index = 0;  index < items.length;  index++) {
-                    var [err, item] = await utils.to(Shop.findOneAndDelete({_id: items[index].item._id, isUnique: true}));
+                    var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: items[index].item._id, isUnique: true}, {$set: {soldOut: true}})); // INSTEAD OF DELETE SET SOLD OUT TO TRUE
                     if (err) 
-                        throw new Error("An error occured while deleting the unique item");
+                        throw new Error("An error occured while deleting the unique item from the store, please try again");
                 }
     
                 var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
                 if (err)
-                    throw new Error("An error occured while looking for your delivery informations, please retry");
+                    throw new Error("An error occured while looking for your delivery informations, please try again");
     
                 const order = new Order({
                     _userId: req.user._id,
