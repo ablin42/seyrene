@@ -70,12 +70,12 @@ try {
 
 router.get('/totalprice', async (req, res) => {
 try {
-    let total = 0;
-    if (req.session.cart)
+    let total = 0;   
+
+    if (req.session.cart) 
         total = req.session.cart.totalPrice;
 
     //maybe add delivery fees and taxes etc
-
     return res.status(400).json({"err": false, "total": total})
 } catch (err) {
     console.log("TOTAL PRICE CART ERROR");
