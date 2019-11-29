@@ -7,6 +7,7 @@ const User = require('../models/User');
 const DeliveryInfo = require('../models/DeliveryInfo');
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
+const rp = require('request-promise');
 
 const verifySession = require('./helpers/verifySession');
 require('dotenv/config');
@@ -91,6 +92,7 @@ try {
         let items = cart.generateArray();
 
         for (let i = 0; i < items.length; i++) {
+            items[i].item.img = undefined;
             var [err, item] = await utils.to(Shop.findById(items[i].item._id));
             if (err || item === null)
                 throw new Error("An error occured while looking for an item you tried to purchase");
@@ -102,54 +104,31 @@ try {
                 currency: 'eur'
             })
             .then(async () => {
-                for (let index = 0;  index < items.length;  index++) {
-                    var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: items[index].item._id, isUnique: true}, {$set: {soldOut: true}})); // INSTEAD OF DELETE SET SOLD OUT TO TRUE
-                    if (err) 
-                        throw new Error("An error occured while deleting the unique item from the store, please try again");
+                let options = {
+                    uri: `http://localhost:8089/api/order/create`,
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    body: {items: items, price: total},
+                    json: true
                 }
-    
-                var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-                if (err)
-                    throw new Error("An error occured while looking for your delivery informations, please try again");
-    
-                const order = new Order({
-                    _userId: req.user._id,
-                    items: items,
-                    price: total,
-                    status: "Validated",
-                    firstname: infos.firstname,
-                    lastname:  infos.lastname,
-                    full_address:  infos.full_address,
-                    full_street:  infos.full_street,
-                    country:  infos.country,
-                    street_name:  infos.street_name,
-                    street_number:  infos.street_number,
-                    city: infos.city,
-                    state: infos.state,
-                    zipcode: infos.zipcode,
-                    instructions:  infos.instructions
-                });
-    
-                var [err, result] = await utils.to(order.save());
-                if (err)
-                    throw new Error("An error occured while creating your order, please try again");
-    
-                let subject = `New Order #${order._id}`;
-                let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Orders/${order._id}">CLICK HERE</a>`;
-                if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-                    throw new Error("An error occured while trying to send the mail, please retry");
-    
-                var [err, user] = await utils.to(User.findById(req.user._id));
-                if (err || user == null)
-                    throw new Error("An error occured while finding your user account, please try again");
-                content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-                if (await mailer(user.email, subject, content))
-                    throw new Error("An error occured while trying to send the mail, please retry");
-    
-                return res.status(200).json({"err": false, "id": order._id});
+                rp(options)
+                .then(function(response) {
+                    if (response.err === false) 
+                        return res.status(200).json({"err": false, "id": response.orderId});
+                    else 
+                        throw new Error(response.message);
+                })  
+                .catch((err) => {
+                    //cancel stripe charging here 
+                    return res.status(200).json({"err": true, "msg": err.message});
+                })
             })
             .catch((err) => {
-                console.log("charging failure", err)
+                console.log("charging failure", err);
+                //cancel stripe charging here 
                 return res.status(200).json({"err": true, "msg": err.message});
             })
         }

@@ -31,7 +31,7 @@ mongoose.connect(
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true }, (err) => {if (err) throw err; console.log("Connected to database")}
+    useUnifiedTopology: true }, (err) => {if (err) throw err; console.log("Connected to database");}
 );  
 
 // Express
@@ -66,7 +66,7 @@ app.use(expressSanitizer());
 app.use((req, res, next) => {
     res.locals.session = req.session;
     next();
-})
+});
 
 // Routes
 const pagesRoute = require('./controllers/pages');
@@ -77,6 +77,7 @@ const contactRoute = require('./controllers/contact');
 const galleryRoute = require('./controllers/galleries');
 const cartRoute = require('./controllers/cart');
 const shopRoute = require('./controllers/shop');
+const orderRoute = require('./controllers/order');
 
 app.use('/', pagesRoute);
 app.use('/api/auth', authRoute);
@@ -86,6 +87,7 @@ app.use('/api/contact', contactRoute);
 app.use('/api/gallery', galleryRoute);
 app.use('/api/cart', cartRoute);
 app.use('/api/shop', shopRoute);
+app.use('/api/order', orderRoute);
 
 
 // Handles multer error
@@ -97,9 +99,9 @@ app.use((err, req, res, next) => {//////
     console.error(err.stack);
     // error as json
     if (req.originalUrl.indexOf("/api/gallery/") != -1) 
-        return res.status(500).json({url: "/", msg: err.message, err: true})
-    req.flash("warning", err.message)
-    return res.status(500).redirect("back")
+        return res.status(500).json({url: "/", msg: err.message, err: true});
+    req.flash("warning", err.message);
+    return res.status(500).redirect("back");
 });
 
    
@@ -109,7 +111,7 @@ app.set('view engine', 'ejs');
 app.get('*', (req, res) => {
     let obj = {
         active: "404"
-    }
+    };
     res.status(404).render('404', obj);
   });
 

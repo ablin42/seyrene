@@ -1,11 +1,50 @@
 <% include partials/head %>
 
+<script>
+  async function cancelOrder(orderId) {
+    console.log("CANCEL ORDER:", orderId);
+    await fetch(`http://localhost:8089/api/order/cancel/${orderId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: "include",
+      mode: "same-origin"
+    })
+    .then((res) => {return res.json()})
+    .then(function(response) {
+      if (response.error === false) {
+        console.log(response)
+   
+      }
+      else {
+        console.log("error:", response)
+      }
+      let alert = `<div id="alert" class="alert alert-info" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      ${response.msg}
+                    </div>`;
+      addAlert(alert, "#header");
+    })  
+    .catch((err) => {
+      console.log(err);
+    })
+    return ;
+  }
+</script>
+
 <div class="container">
   <div class="orders">
       <h1>Orders</h1>
       <% if (locals.orders) { %>
         <% Object.keys(locals.orders).forEach(function (index) { %>
-          <a href="/Order/<%= locals.orders[index]._id %>"><%= locals.orders[index]._id %></a> - STATUS: <%= locals.orders[index].status %><br/>
+          <a href="/Order/<%= locals.orders[index]._id %>"><%= locals.orders[index]._id %></a> - STATUS: <%= locals.orders[index].status %> 
+          <!-- show cancel order and let order be cancellable only if shipping hasnt started -->
+          <% if (locals.orders[index].status === "Validated") { %> <!-- need better condition here -->
+            <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.orders[index]._id %>')" class="far fa-times-circle">CANCEL ORDER</i>
+          <% } %>
+          <br/>
         <% }) %>
       <% } %>
   </div>

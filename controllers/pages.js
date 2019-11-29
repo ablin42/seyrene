@@ -413,7 +413,7 @@ try {
         if (err || order == null)
             throw new Error("No order exist with this ID!");
         obj.order = order;
-        res.status(200).render('single/order-recap', obj);
+        res.status(200).render('restricted/order-manage', obj);
         } else
             throw new Error("Please make sure you're logged in to check your order");
     } catch (err) {
