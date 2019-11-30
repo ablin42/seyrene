@@ -111,7 +111,7 @@ try {
                       'Content-Type': 'application/json',
                       'Accept': 'application/json'
                     },
-                    body: {items: items, price: total},
+                    body: {items: items, price: total, user: req.user},
                     json: true
                 }
                 rp(options)
