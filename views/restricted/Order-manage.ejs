@@ -8,7 +8,22 @@
             <h1>order</h1>
             _id: <%= locals.order._id %><br />
             total_price: <%= locals.order.price %><br />
-            status: <%= locals.order.status %><br />
+            <form id="statusform" method="POST" action="/api/order/update">
+              <div class="form-group">
+                <label for="selectStatus">Order Status</label>
+                <select class="form-control" name="status" id="selectStatus">
+                  <option <% if (locals.order.status == "Validated") {%> selected disabled <% } %> value="Validated">Validated</option>
+                  <option <% if (locals.order.status == "Shipping") {%> selected disabled <% } %> value="Shipping">Shipping</option>
+                  <option <% if (locals.order.status == "Delivered") {%> selected disabled <% } %> value="Delivered">Delivered</option>
+                  <option <% if (locals.order.status == "Cancelled") {%> selected disabled <% } %> <% if (locals.order.status != "Validated") {%> disabled <% } %> value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+              <input type="hidden" name="orderId" value="<%= locals.order._id %>">
+              <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-statusform">
+            </form>
+            <% if (locals.order.status === "Validated") { %> <!-- need better condition here -->
+              <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">CANCEL ORDER</i><br />
+            <% } %>
             _userId: <%= locals.order._userId %><br />
             <hr />
             <div class="cart-row">
