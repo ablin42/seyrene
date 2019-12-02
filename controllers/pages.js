@@ -360,27 +360,47 @@ router.get('/Blog/:id', verifySession, async (req, res) => {
 /* ADMIN ROUTES */
 
 router.get('/Admin', verifySession, async (req, res) => {
-    try {
-        if (req.user && req.user.level >= 3) {
-            let obj = {active: "Admin"};
-            if (req.user) {
-                obj.userId = req.user._id;
-                obj.name = req.user.name;
-                obj.level = req.user.level;
-            }
-            return res.status(200).render('restricted/admin', obj);
-        } else 
-            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
-    } catch (err) {
-        console.log("ADMIN ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        res.status(400).redirect("/");
+try {
+    if (req.user && req.user.level >= 3) {
+        let obj = {active: "Admin"};
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        return res.status(200).render('restricted/admin', obj);
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+} catch (err) {
+    console.log("ADMIN ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/");
 }})
+
+router.get('/Admin/Front', verifySession, async (req, res) => {
+try {
+    if (req.user && req.user.level >= 3) {
+        let obj = {active: "Update Homepage"};
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        //fetch current homepage images
+        return res.status(200).render('restricted/front-post', obj);
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+} catch (err) {
+    console.log("ADMIN FRONT ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/");
+}})
+
 
 router.get('/Admin/Orders', verifySession, async (req, res) => {
     try {
         if (req.user && req.user.level >= 3) {
-            let obj = {active: "Admin"};
+            let obj = {active: "Admin Orders"};
             if (req.user) {
                 obj.userId = req.user._id;
                 obj.name = req.user.name;

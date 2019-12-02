@@ -1,0 +1,81 @@
+<% include ../partials/head %>
+
+<div class="container"> 
+    <div class="form-container gallery-form">
+            <!--<form id="front" method="POST" action="/api/front/post" enctype="multipart/form-data">
+            <h1 class="form-title">Modifier les images de l'accueil</h1>
+                
+            <div class="form-group">
+                <input type="file" name="img" id="img" required>
+            </div>
+
+            <input type="submit" class="logbtn" value="Save" id="submit-front">
+        </form>-->
+        <form name="upload" action="/api/front/post" method="POST" enctype="multipart/form-data" class="text-center">
+            <h1 class="form-title">Modifier les images de l'accueil</h1>
+            <div class="form-group" id="uploadGroup1"><!-- display if no picture is displayed -->
+                <label for="upload1" class="btn btn-outline-warning">Select an image</label>
+                <input type="file" name="upload1" id="upload1" class="inputfile" onchange="readURL(this);"><!-- upload and preview img -->
+            </div>
+            <img id="image1" src="https://petapixel.com/assets/uploads/2019/09/blackhole.png" style="width: 100%; height: auto;" alt="uploadedImg" data-uploaded="false"><!-- preview img or display img in database, remove from front onclick-->
+            <div v-if="dbPath2" class="form-group text-center">
+                <button id="delete1" onclick="deleteImage(this, event);" class="btn btn-outline-warning">Delete</button><!-- delete img from database -->
+            </div>
+            <div id="uploadbtn1" class="form-group" style="display: none;">
+                <button type="submit" name="submit" class="btn btn-outline-warning">Upload</button><!-- upload img to database, display if a picture is uploaded -->
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+window.onload = function () {
+    //do for each image
+    let src = $("#image1")[0].src;
+    if (src) {
+        console.log(src)
+        $("#uploadGroup1").attr('style', "display: none;");
+    }
+}
+
+function deleteImage (item, e) {
+    e.preventDefault();
+    let imageItemId = "image" + item.id.substr(6, 1);
+    let imageItem = document.getElementById(imageItemId);
+
+    removeItem(imageItem);
+    removeItem(item);
+    let groupId = $("#uploadGroup" + item.id.substr(6, 1));
+    let uploadBtnId = $("#uploadbtn" + item.id.substr(6, 1));
+    uploadBtnId.attr("style", "display: none");
+    groupId.attr("style", "display: block");
+
+    //delete image from database through api call
+}
+
+function removeItem (item) {
+    item.style = "display: none;";
+    item.src = "";
+}
+
+function readURL(input) {
+    let targetImgId = "#image" + input.id.substr(6, 1);
+    let targetBtnId = "#uploadGroup" + input.id.substr(6, 1);
+    let targetDeleteId = "#delete" + input.id.substr(6, 1);
+    let targetUploadId = "#uploadbtn" + input.id.substr(6, 1);
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+    
+        reader.onload = function(e) {
+            $(targetImgId).attr('src', e.target.result);
+            $(targetImgId).attr('style',"display: block");
+            $(targetDeleteId).attr('style', "display: inline-block");
+            $(targetUploadId).attr('style', "display: block");
+            $(targetBtnId).attr('style', "display: none");
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+  
+<% include ../partials/footer %>

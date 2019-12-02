@@ -13,18 +13,6 @@ require('dotenv/config');
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
 
-/*
-const stripe = require("stripe")(stripeSecret);//put api key in dotenv
-(async () => {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1000,
-      currency: 'eur',
-      payment_method_types: ['card'],
-      receipt_email: 'jenny.rodzzdsen@example.com',
-    });
-    console.log(paymentIntent)
-  })();*/
-
 //Connect to DB
 mongoose.connect(
     process.env.DB_CONNECTION, { 
@@ -78,6 +66,7 @@ const galleryRoute = require('./controllers/galleries');
 const cartRoute = require('./controllers/cart');
 const shopRoute = require('./controllers/shop');
 const orderRoute = require('./controllers/order');
+const frontRoute = require('./controllers/front');
 
 app.use('/', pagesRoute);
 app.use('/api/auth', authRoute);
@@ -88,7 +77,7 @@ app.use('/api/gallery', galleryRoute);
 app.use('/api/cart', cartRoute);
 app.use('/api/shop', shopRoute);
 app.use('/api/order', orderRoute);
-
+app.use('/api/front', frontRoute);
 
 // Handles multer error
 app.use((err, req, res, next) => {//////
