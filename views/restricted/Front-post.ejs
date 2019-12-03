@@ -2,39 +2,52 @@
 
 <div class="container"> 
     <div class="form-container gallery-form">
-            <!--<form id="front" method="POST" action="/api/front/post" enctype="multipart/form-data">
-            <h1 class="form-title">Modifier les images de l'accueil</h1>
-                
-            <div class="form-group">
-                <input type="file" name="img" id="img" required>
-            </div>
-
-            <input type="submit" class="logbtn" value="Save" id="submit-front">
-        </form>-->
-        <form name="upload" action="/api/front/post" method="POST" enctype="multipart/form-data" class="text-center">
-            <h1 class="form-title">Modifier les images de l'accueil</h1>
-            <div class="form-group" id="uploadGroup1"><!-- display if no picture is displayed -->
-                <label for="upload1" class="btn btn-outline-warning">Select an image</label>
-                <input type="file" name="upload1" id="upload1" class="inputfile" onchange="readURL(this);"><!-- upload and preview img -->
-            </div>
-            <img id="image1" src="https://petapixel.com/assets/uploads/2019/09/blackhole.png" style="width: 100%; height: auto;" alt="uploadedImg" data-uploaded="false"><!-- preview img or display img in database, remove from front onclick-->
-            <div v-if="dbPath2" class="form-group text-center">
-                <button id="delete1" onclick="deleteImage(this, event);" class="btn btn-outline-warning">Delete</button><!-- delete img from database -->
-            </div>
-            <div id="uploadbtn1" class="form-group" style="display: none;">
-                <button type="submit" name="submit" class="btn btn-outline-warning">Upload</button><!-- upload img to database, display if a picture is uploaded -->
-            </div>
-        </form>
+        <h1 class="form-title">Modifier les images de l'accueil</h1>
+        <% if (locals.front) { %>
+            <% for (var index = 0; index < 5; index++) { %>
+                <% if (locals.front[index]) { %>
+                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" class="text-center front-form">
+                        <div class="form-group" id="uploadGroup<%= index %>">
+                            <label for="upload<%= index %>" class="btn btn-outline-warning">Select an image</label>
+                            <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
+                        </div>
+                        <img id="image<%= index %>" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" style="width: 100%; height: auto;" alt="uploadedImg" data-uploaded="true">
+                        <div class="form-group text-center">
+                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning">Replace</button>
+                        </div>
+                        <input type="hidden" name="referenceId" value="<%= index %>">
+                        <div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
+                            <button type="submit" name="submit" class="btn btn-outline-warning">Upload</button>
+                        </div>
+                    </form>
+                <%  } else { %>
+                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" class="text-center front-form">
+                        <div class="form-group" id="uploadGroup<%= index %>">
+                            <label for="upload<%= index %>" class="btn btn-outline-warning">Select an image</label>
+                            <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
+                        </div>
+                        <img id="image<%= index %>" src="" style="width: 100%; height: auto; display: none;" alt="uploadedImg" data-uploaded="false">
+                        <div class="form-group text-center">
+                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning" style="display: none;">Replace</button>
+                        </div>
+                        <input type="hidden" name="referenceId" value="<%= index %>">
+                        <div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
+                            <button type="submit" name="submit" class="btn btn-outline-warning">Upload</button>
+                        </div>
+                    </form>
+                <%  } %>
+            <% } %>
+        <% } %>
     </div>
 </div>
 
 <script>
 window.onload = function () {
-    //do for each image
-    let src = $("#image1")[0].src;
-    if (src) {
-        console.log(src)
-        $("#uploadGroup1").attr('style', "display: none;");
+    for (i = 1; i <= 5; i++) {
+        let src = $(`#image${i}`)[0].getAttribute("data-uploaded");
+        if (src == "true") {
+            $(`#uploadGroup${i}`).attr('style', "display: none");
+        } 
     }
 }
 
@@ -50,6 +63,9 @@ function deleteImage (item, e) {
     uploadBtnId.attr("style", "display: none");
     groupId.attr("style", "display: block");
 
+   /* let url = `/api/front/delete/${item.id.substr(6, 1)}`;
+    console.log(url)
+    window.location.href = url;*/
     //delete image from database through api call
 }
 

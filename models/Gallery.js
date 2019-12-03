@@ -14,7 +14,6 @@ const GallerySchema = mongoose.Schema({
         data: Buffer,
         contentType: String
     },
-   
     tags: {
         type: Array
     },

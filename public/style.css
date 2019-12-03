@@ -13,6 +13,11 @@
   z-index: -1;
 }
 
+.front-form {
+  border: 2px solid red;
+  margin: 5px 0 5px 0;
+}
+
 /* Extra small devices (portrait phones, less than 576px)
  No media query for `xs` since this is the default in Bootstrap*/
 /* bootstrap uses min-width and starts from xs */

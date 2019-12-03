@@ -381,6 +381,7 @@ router.get('/Admin/Front', verifySession, async (req, res) => {
 try {
     if (req.user && req.user.level >= 3) {
         let obj = {active: "Update Homepage"};
+        obj.front = JSON.parse(await request('http://127.0.0.1:8089/api/front/'));
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
