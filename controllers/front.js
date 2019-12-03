@@ -10,7 +10,7 @@ const utils = require('./helpers/utils');
 upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 1000000 //too low probably
+        fileSize: 10000000 //too low probably
     },
     fileFilter: function (req, file, cb) {
         gHelpers.sanitizeFile(req, file, cb);
@@ -32,7 +32,6 @@ try {
 router.post('/post', upload, verifySession, async (req, res) => { //vgallery
 try {
     if (req.user.level >= 3) {
-        console.log(req.body.referenceId)
         if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
             let front = {referenceId: req.body.referenceId};
             front.img = await gHelpers.imgEncode(req.file);
