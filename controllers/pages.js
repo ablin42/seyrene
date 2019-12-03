@@ -21,9 +21,10 @@ const router = express.Router();
 
 /* MAIN ROUTES */
 
-router.get('/', verifySession, (req, res) => {
+router.get('/', verifySession, async (req, res) => {
 try {
     let obj = {active: "Home"};//{root: path.join(__dirname, '/pages/')};
+    obj.front = JSON.parse(await request('http://127.0.0.1:8089/api/front/'));
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
