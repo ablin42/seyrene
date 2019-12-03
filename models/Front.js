@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const FrontSchema = mongoose.Schema({
+    null: {
+        type: Boolean,
+        required: true
+    },
     referenceId: {
         type: Number,
         required: true

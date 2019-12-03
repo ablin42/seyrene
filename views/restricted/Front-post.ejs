@@ -3,9 +3,10 @@
 <div class="container"> 
     <div class="form-container gallery-form">
         <h1 class="form-title">Modifier les images de l'accueil</h1>
+        <h6 class="text-center">*Pensez à utiliser des images au format paysage...</h5>
         <% if (locals.front) { %>
             <% for (var index = 0; index < 5; index++) { %>
-                <% if (locals.front[index]) { %>
+                <% if (locals.front[index].null != true) { %>
                     <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" class="text-center front-form">
                         <div class="form-group" id="uploadGroup<%= index %>">
                             <label for="upload<%= index %>" class="btn btn-outline-warning">Select an image</label>
@@ -13,7 +14,7 @@
                         </div>
                         <img id="image<%= index %>" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" style="width: 100%; height: auto;" alt="uploadedImg" data-uploaded="true">
                         <div class="form-group text-center">
-                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning">Replace</button>
+                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning">Delete</button>
                         </div>
                         <input type="hidden" name="referenceId" value="<%= index %>">
                         <div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
@@ -28,7 +29,7 @@
                         </div>
                         <img id="image<%= index %>" src="" style="width: 100%; height: auto; display: none;" alt="uploadedImg" data-uploaded="false">
                         <div class="form-group text-center">
-                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning" style="display: none;">Replace</button>
+                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning" style="display: none;">Delete</button>
                         </div>
                         <input type="hidden" name="referenceId" value="<%= index %>">
                         <div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
@@ -43,7 +44,8 @@
 
 <script>
 window.onload = function () {
-    for (i = 1; i <= 5; i++) {
+    for (i = 0; i < 5; i++) {
+        console.log($(`#image${i}`))
         let src = $(`#image${i}`)[0].getAttribute("data-uploaded");
         if (src == "true") {
             $(`#uploadGroup${i}`).attr('style', "display: none");
@@ -55,6 +57,7 @@ function deleteImage (item, e) {
     e.preventDefault();
     let imageItemId = "image" + item.id.substr(6, 1);
     let imageItem = document.getElementById(imageItemId);
+    console.log(imageItem, imageItemId, "x")
 
     removeItem(imageItem);
     removeItem(item);
@@ -62,11 +65,11 @@ function deleteImage (item, e) {
     let uploadBtnId = $("#uploadbtn" + item.id.substr(6, 1));
     uploadBtnId.attr("style", "display: none");
     groupId.attr("style", "display: block");
-
-   /* let url = `/api/front/delete/${item.id.substr(6, 1)}`;
-    console.log(url)
-    window.location.href = url;*/
-    //delete image from database through api call
+    
+    if (imageItem.getAttribute("data-uploaded") === "true") {
+        let url = `/api/front/delete/${item.id.substr(6, 1)}`;
+        window.location.href = url;
+    }
 }
 
 function removeItem (item) {
@@ -84,6 +87,7 @@ function readURL(input) {
     
         reader.onload = function(e) {
             $(targetImgId).attr('src', e.target.result);
+            $(targetImgId).attr('data-uploaded', "false");
             $(targetImgId).attr('style',"display: block");
             $(targetDeleteId).attr('style', "display: inline-block");
             $(targetUploadId).attr('style', "display: block");

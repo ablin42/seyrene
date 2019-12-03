@@ -38,19 +38,19 @@ try {
             front.img = await gHelpers.imgEncode(req.file);
 
             var [err, result] = await utils.to(Front.findOne({referenceId: front.referenceId}));
-            if (err)
+            if (err || result == null)
                 throw new Error("Something went wrong while finding reference for your image");
             
-            if (result == null) {
+           /* if (result == null) {
                 newFront = new Front(front);
                 var [err, result] = await utils.to(newFront.save());
                 if (err)
                     throw new Error("Something went wrong while uploading your image");
-            } else {
-                var [err, result] = await utils.to(Front.findOneAndUpdate({referenceId: front.referenceId}, {$set: {img: front.img}}));
+            } else {*/
+                var [err, result] = await utils.to(Front.findOneAndUpdate({referenceId: front.referenceId}, {$set: {null: false, img: front.img}}));
                 if (err)
                     throw new Error("Something went wrong while updating your image");
-            }
+           // }
             
             req.flash('success', "Image successfully uploaded!");
             return res.status(200).redirect("/Admin/Front");
@@ -69,7 +69,7 @@ router.get('/delete/:id', verifySession, async (req, res) => { /////////////////
 try {
     if (req.user.level >= 3) {
         let id = req.params.id; //sanitize
-        var [err, front] = await utils.to(Front.deleteOne({referenceId: id}));
+        var [err, front] = await utils.to(Front.findOneAndUpdate({referenceId: id}, {$set: {null: true}}));
         if (err)
             throw new Error("An error occured while deleting the item, please try again");
         req.flash('success', "Image successfully deleted!");
@@ -77,7 +77,7 @@ try {
     } else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
 } catch (err) {
-    console.log("DELETE GALLERY ERROR", err);
+    console.log("DELETE FRONT ERROR", err);
     req.flash('warning', err.message);            
     res.status(400).redirect(`/Admin/Front`);
 }})
