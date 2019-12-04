@@ -51,16 +51,14 @@ try {
                     throw new Error("Something went wrong while updating your image");
            // }
             
-            req.flash('success', "Image successfully uploaded!");
-            return res.status(200).redirect("/Admin/Front");
-            return res.status(200).json({url: "/Admin/Front", msg: "Image successfully uploaded!"});
+            return res.status(200).json({msg: "Image successfully uploaded!"});
         } else
             throw new Error("Invalid reference, please try again");
     } else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
 } catch (err) {
     console.log("POST FRONT ERROR", err);
-    return res.status(400).json({url: "/", msg: err.message, err: true})
+    return res.status(400).json({err: true, msg: err.message});
 }})
 
 //delete item using its id + sanitize :id
@@ -71,14 +69,12 @@ try {
         var [err, front] = await utils.to(Front.findOneAndUpdate({referenceId: id}, {$set: {null: true}}));
         if (err)
             throw new Error("An error occured while deleting the item, please try again");
-        req.flash('success', "Image successfully deleted!");
-        return res.status(200).redirect('/Admin/Front');
+        return res.status(200).json({msg: "Image successfully deleted!"});
     } else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
 } catch (err) {
     console.log("DELETE FRONT ERROR", err);
-    req.flash('warning', err.message);            
-    res.status(400).redirect(`/Admin/Front`);
+    return res.status(400).json({err: true, msg: err.message});
 }})
 
 //sanitize :id

@@ -7,7 +7,7 @@
         <% if (locals.front) { %>
             <% for (var index = 0; index < 5; index++) { %>
                 <% if (locals.front[index].null != true) { %>
-                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" class="text-center front-form">
+                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);" class="text-center front-form">
                         <div class="form-group" id="uploadGroup<%= index %>">
                             <label for="upload<%= index %>" class="btn btn-outline-warning">Select an image</label>
                             <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
@@ -22,7 +22,7 @@
                         </div>
                     </form>
                 <%  } else { %>
-                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" class="text-center front-form">
+                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);" class="text-center front-form">
                         <div class="form-group" id="uploadGroup<%= index %>">
                             <label for="upload<%= index %>" class="btn btn-outline-warning">Select an image</label>
                             <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
@@ -45,7 +45,6 @@
 <script>
 window.onload = function () {
     for (i = 0; i < 5; i++) {
-        console.log($(`#image${i}`))
         let src = $(`#image${i}`)[0].getAttribute("data-uploaded");
         if (src == "true") {
             $(`#uploadGroup${i}`).attr('style', "display: none");
@@ -57,7 +56,6 @@ function deleteImage (item, e) {
     e.preventDefault();
     let imageItemId = "image" + item.id.substr(6, 1);
     let imageItem = document.getElementById(imageItemId);
-    console.log(imageItem, imageItemId, "x")
 
     removeItem(imageItem);
     removeItem(item);
@@ -67,8 +65,36 @@ function deleteImage (item, e) {
     groupId.attr("style", "display: block");
     
     if (imageItem.getAttribute("data-uploaded") === "true") {
-        let url = `/api/front/delete/${item.id.substr(6, 1)}`;
-        window.location.href = url;
+        fetch(`/api/front/delete/${item.id.substr(6, 1)}`, {
+            method: 'get',
+            mode: 'same-origin',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.err) {
+                let alert = `
+                    <div id="alert" class="alert alert-warning" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${data.msg}
+                    </div>`;
+                addAlert(alert, "#header");
+            } else {
+                let alert = `
+                    <div id="alert" class="alert alert-success" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${data.msg}
+                    </div>`;
+                addAlert(alert, "#header");
+            }
+        })
+    }
+    else {
+        let alert = `
+            <div id="alert" class="alert alert-success" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                Image was successfully deleted!
+            </div>`;
+        addAlert(alert, "#header");
     }
 }
 
@@ -96,6 +122,39 @@ function readURL(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+async function postFront(e, form) {
+            e.preventDefault();
+            
+            let formData = new FormData();
+            formData.append('img', form.querySelector('input[type="file"]').files[0]);
+            formData.append('referenceId', form.querySelector('input[name="referenceId"]').value);
+            
+            fetch('/api/front/post', {
+                method: 'post',
+                mode: 'same-origin',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.err) {
+                    let alert = `
+                    <div id="alert" class="alert alert-warning" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${data.msg}
+                    </div>`;
+                    addAlert(alert, "#header");
+                } else {
+                    let alert = `
+                    <div id="alert" class="alert alert-success" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${data.msg}
+                    </div>`;
+                    addAlert(alert, "#header");
+                }
+            })
+        }
+    </script>
 </script>
   
 <% include ../partials/footer %>
