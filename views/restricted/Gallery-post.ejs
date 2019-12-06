@@ -17,7 +17,8 @@
             <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>  
         
             <div class="form-group">
-                <input type="file" name="img" id="img" required>
+                <input type="file" name="img" id="img" multiple required>
+                <label for="img">5 images maximum</label>
             </div>
 
             <div class="form-group">
@@ -41,8 +42,10 @@
             
             for (i = 0; i < tagInput.length; i++)
                 tags.push(tagInput[i].textContent);
-
-            formData.append('img', img.files[0]);
+            
+            for (i = 0; i < img.files.length; i++) 
+                formData.append('img', img.files[i]);
+         
             formData.append('title', title);
             formData.append('content', content);
             formData.append('tags', JSON.stringify(tags));

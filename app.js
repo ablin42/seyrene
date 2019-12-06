@@ -67,6 +67,7 @@ const cartRoute = require('./controllers/cart');
 const shopRoute = require('./controllers/shop');
 const orderRoute = require('./controllers/order');
 const frontRoute = require('./controllers/front');
+const imageRoute = require('./controllers/images');
 
 app.use('/', pagesRoute);
 app.use('/api/auth', authRoute);
@@ -78,6 +79,7 @@ app.use('/api/cart', cartRoute);
 app.use('/api/shop', shopRoute);
 app.use('/api/order', orderRoute);
 app.use('/api/front', frontRoute);
+app.use('/api/image', imageRoute);
 
 // Handles multer error
 app.use((err, req, res, next) => {//////

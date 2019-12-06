@@ -14,7 +14,7 @@ async function infiniteGalleries() {
                     div.setAttribute("class", "card");
                     div.setAttribute("style", "width: 18rem");
                     let toAppend =  `
-                        <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/${id}" class="card-img-top" alt="${gallery.title}"></a>
+                        <a href="#expand"><img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="card-img-top" alt="${gallery.title}"></a>
                         <div class="card-body">
                             <h5 class="card-title"><i><a href="Galerie/${id}">${gallery.title}</a></i></h5>
                             <p class="card-text gallery-description">${gallery.content}</p>

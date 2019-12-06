@@ -3,6 +3,7 @@ const imageType = require('image-type');
 
 module.exports = {
     sanitizeFile: function (req, file, cb) {
+        console.log("IN HELPER")
         let fileExts = ['png', 'jpg', 'jpeg', 'gif'];
         let isAllowedExt = fileExts.includes(file.originalname.split('.')[1].toLowerCase());
         let isAllowedMimeType = file.mimetype.startsWith("image/");

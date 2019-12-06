@@ -7,7 +7,7 @@
           <% if(locals.galleries){ %>
             <% Object.keys(locals.galleries).forEach(function (index) { %>
               <div class="card" id="<%= locals.galleries[index]._id %>">
-                <a href="#expand"><img onclick="expand(this);" src="/api/gallery/image/<%= locals.galleries[index]._id %>" class="card-img-top" alt="<%= locals.galleries[index].title %>"></a>
+                <a href="#expand"><img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="card-img-top" alt="<%= locals.galleries[index].title %>"></a>
                 <div class="card-body">
                   <h5 class="card-title"><i><a href="Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].title %></a></i></h5>
                   <p class="card-text gallery-description"><%= locals.galleries[index].content %></p>
@@ -37,6 +37,6 @@
 
 <a class="lightbox-close" href="#close">
   <div class="lightbox-target" id="expand">
-    <img id="expandImg" src="/api/gallery/image/<%= locals.galleries[0]._id %>"/>
+    <img id="expandImg" src="/api/image/<%= locals.galleries[0].mainImgId %>"/>
   </div>
 </a>

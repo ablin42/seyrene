@@ -44,7 +44,7 @@ try {
     };
     obj.galleries = JSON.parse(await request('http://127.0.0.1:8089/api/gallery/'));
     if (obj.galleries.error)
-            throw new Error(obj.galleries.message);
+        throw new Error(obj.galleries.message);
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -304,6 +304,10 @@ router.get('/Galerie/:id', verifySession, async (req, res) => {
         obj.galleries = JSON.parse(await request(`http://127.0.0.1:8089/api/gallery/single/${id}`));
         if (obj.galleries.error)
                 throw new Error(obj.galleries.message);
+        obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Gallery/${id}`));
+        if (obj.img.error)
+            throw new Error(obj.img.error);
+        
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
@@ -478,6 +482,10 @@ router.get('/Admin/Galerie/Patch/:galleryId', verifySession, async (req, res) =>
             if (err)
                 throw new Error("An error occured while fetching the gallery item");
             obj.gallery = result;
+
+            obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Gallery/${req.params.galleryId}`));
+            if (obj.img.error)
+                throw new Error(obj.img.error);
           
             return res.status(200).render('restricted/gallery-patch', obj);
         } else 

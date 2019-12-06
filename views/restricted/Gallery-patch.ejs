@@ -16,7 +16,11 @@
             <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
 
             <div class="form-group">
-                <img src="/api/gallery/image/<%= locals.gallery._id %>"/>
+                <% if (locals.img) { %>
+                    <% locals.img.forEach(function (item) { %>
+                        <img src="http://localhost:8089/api/image/<%= item._id %>">
+                    <% }) %>
+                  <% } %>
                 <input type="file" name="img" id="img">
             </div>
         

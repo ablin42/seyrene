@@ -5,9 +5,21 @@ const {validationResult} = require('express-validator');
 const {vGallery} = require('./validators/vGallery');
 
 const Gallery = require('../models/Gallery');
+const Image = require('../models/Image');
 const verifySession = require('./helpers/verifySession');
 const gHelpers = require('./helpers/galleryHelpers');
 const utils = require('./helpers/utils');
+
+/*
+upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 1000000 //too low probably
+    },
+    fileFilter: function (req, file, cb) {
+        gHelpers.sanitizeFile(req, file, cb);
+    }
+}).single('img')*/
 
 upload = multer({
     storage: multer.memoryStorage(),
@@ -17,19 +29,44 @@ upload = multer({
     fileFilter: function (req, file, cb) {
         gHelpers.sanitizeFile(req, file, cb);
     }
-}).single('img')
+}).array('img', 5);
+
+async function fetchMainImg (galleries) {
+    let arr = [];
+    for (let i = 0; i < galleries.length; i++) {
+        let obj = {
+            _id: galleries[i]._id,
+            title: galleries[i].title,
+            content: galleries[i].content,
+            date: galleries[i].date,
+            createdAt: galleries[i].createdAt,
+            updatedAt: galleries[i].updatedAt,
+            tags: galleries[i].tags,
+            mainImgId: "",
+            __v: galleries[i].__v
+        }
+        var [err, img] = await utils.to(Image.findOne({_itemId: galleries[i]._id, itemType: "Gallery", isMain: true}));
+        if (err || img == null) 
+            throw new Error("An error occured while fetching the galleries images");
+        obj.mainImgId = img._id;
+        arr.push(obj);
+    }
+    return arr;
+}
 
 router.get('/', async (req, res) => {
 try {
     const options = {
         page: parseInt(req.query.page, 10) || 1,
-        limit: 6,
+        limit: 2,///////////////////////////////////6
         sort: { date: -1 }
     }
     var [err, result] = await utils.to(Gallery.paginate({}, options));
     if (err)
         throw new Error("An error occured while fetching galleries");
-    var galleries = result.docs; //probably can remove img since we use id and api to load it
+    var galleries = result.docs;
+    galleries = await fetchMainImg(galleries);
+    console.log(galleries)
     return res.status(200).json(galleries);
 } catch (err) {
     console.log("FETCHING GALLERIES ERROR:", err);
@@ -48,14 +85,27 @@ try {
             })}
         const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
 
-        obj.tags = gHelpers.parseTags(req.body.tags);    
-        obj.img = await gHelpers.imgEncode(req.file);
+        obj.tags = gHelpers.parseTags(req.body.tags);   
+        //obj.img = await gHelpers.imgEncode(req.file);
     
         const gallery = new Gallery(obj);
         var [err, result] = await utils.to(gallery.save());
-        console.log(err)
         if (err)
             throw new Error("Something went wrong while uploading your file");
+        for (let i = 0; i < req.files.length; i++) {
+            let isMain = false;
+            if (i + 1 === req.files.length)
+                isMain = true;
+            let image = new Image({
+                _itemId: result._id,
+                itemType: "Gallery",
+                isMain: isMain,
+                img: await gHelpers.imgEncode(req.files[i])
+            });
+            var [err, savedImage] = await utils.to(image.save());
+            if (err)
+                throw new Error("Something went wrong while uploading your image");
+        }
 
         req.flash('success', "Item successfully uploaded!");
         return res.status(200).json({url: "/Galerie", msg: "Item successfully uploaded!"});
@@ -137,26 +187,20 @@ try {
     if (err || result === null) 
         throw new Error("An error occured while fetching the gallery item");
 
+    var [err, images] = await utils.to(Image.find({ _itemId: result._id, itemType: "Gallery"}))
+    if (err) 
+        throw new Error("An error occured while fetching the gallery images");
+
+    /*let imgArr = [];
+    for (let i = 0; i < images.length; i++)
+        imgArr.push(images[i]._id)
+    console.log(imgArr);*/
+
     result.img = undefined;//set it to this so it doesnt fuck rendering of response (buffer)
     return res.status(200).json(result);
 } catch (err) {
     console.log("GALLERY SINGLE ERROR", err);
     return res.status(200).json({error: true, message: err.message})
-}})
-
-//sanitize :id
-router.get('/image/:id', async (req, res) => {
-try {
-    let id = req.params.id;
-    var [err, result] = await utils.to(Gallery.findOne({'_id': id }));
-    if (err) 
-        throw new Error("An error occured while fetching the image");
-
-    res.set('Content-Type', result.img.contentType)
-    return res.status(200).send(result.img.data);
-} catch (err) {
-    console.log("GALLERY IMAGE ERROR", err);
-    return res.status(400).json(err.message);
 }})
 
 module.exports = router;
