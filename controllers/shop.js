@@ -5,6 +5,7 @@ const {validationResult} = require('express-validator');
 const {vShop} = require('./validators/vShop');
 
 const Shop = require('../models/Shop');
+const Image = require('../models/Image');
 const verifySession = require('./helpers/verifySession');
 const gHelpers = require('./helpers/galleryHelpers'); //////////
 //const sHelpers = require('./helpers/shopHelpers');
@@ -18,34 +19,38 @@ upload = multer({
     fileFilter: function (req, file, cb) {
         gHelpers.sanitizeFile(req, file, cb);
     }
-}).single('img')
+}).array('img');
 
-function parsePrice(shopItems) {
-let result = [];
-for (i = 0; i < shopItems.length; i++) {
-    let obj = {
-        "_id": shopItems[i]._id,
-        "title": shopItems[i].title,
-        "content": shopItems[i].content,
-        "price": shopItems[i].price,
-        "isUnique": shopItems[i].isUnique,
-        "date": shopItems[i].date,
-        "createdAt": shopItems[i].createdAt,
-        "updatedAt": shopItems[i].updatedAt,
-        "__v": shopItems[i].__v
-    };
-    result.push(obj);
+async function parsePrice(shopItems) {
+    let arr = [];
+    for (let i = 0; i < shopItems.length; i++) {
+        let obj = {
+            _id: shopItems[i]._id,
+            title: shopItems[i].title,
+            content: shopItems[i].content,
+            price: shopItems[i].price,
+            isUnique: shopItems[i].isUnique,
+            date: shopItems[i].date,
+            createdAt: shopItems[i].createdAt,
+            updatedAt: shopItems[i].updatedAt,
+            mainImgId: "",
+            __v: shopItems[i].__v
+        };
+        var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
+        if (err || img == null) 
+            throw new Error(`An error occured while fetching the shop images ${i}`);
+        obj.mainImgId = img._id;
+        arr.push(obj);
+    }
+    return arr;
 }
-return result;
-}
-
 
 //update all entries to have soldOut: false
 router.get('/', async (req, res) => {
 try {
     const options = {
         page: parseInt(req.query.page, 10) || 1,
-        limit: 6,
+        limit: 1,///////////////////////6
         sort: { date: -1 }
     }
     let query = {isUnique: true, soldOut: false};
@@ -74,15 +79,29 @@ try {
                throw new Error(item.msg);
         })}
         const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: req.body.price};// need to sanitize data
-        obj.img = await gHelpers.imgEncode(req.file);
-    
+        
         const shop = new Shop(obj);
         var [err, result] = await utils.to(shop.save());
         if (err)
             throw new Error("Something went wrong while uploading your file");
 
+        for (let i = 0; i < req.files.length; i++) {
+            let isMain = false;
+            if (i === 0)
+                isMain = true;
+            let image = new Image({
+                _itemId: result._id,
+                itemType: "Shop",
+                isMain: isMain,
+                img: await gHelpers.imgEncode(req.files[i])
+            });
+            var [err, savedImage] = await utils.to(image.save());
+            if (err)
+                throw new Error("Something went wrong while uploading your image");
+        }
+
         req.flash('success', "Item successfully uploaded!");
-        return res.status(200).json({url: "/Shop", msg: "Item successfully uploaded!"});
+        return res.status(200).json({url: `/Admin/Shop/Patch/${result._id}`, msg: "Item successfully uploaded!"});
     } else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
 } catch (err) {
@@ -102,13 +121,22 @@ try {
         })}
         let id = req.params.id;      
         const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: req.body.price};// need to sanitize data
-
-        if (req.file)
-            obj.img = await gHelpers.imgEncode(req.file);
     
         var [err, result] = await utils.to(Shop.updateOne({_id: id}, {$set: obj}));
         if (err)
             throw new Error("Something went wrong while updating your file");
+
+        for (let i = 0; i < req.files.length; i++) {
+            let image = new Image({
+                _itemId: id,
+                itemType: "Shop",
+                isMain: false,
+                img: await gHelpers.imgEncode(req.files[i])
+            });
+            var [err, savedImage] = await utils.to(image.save());
+            if (err)
+                throw new Error("Something went wrong while uploading your image");
+        }
 
         req.flash('success', "Item successfully updated!");
         return res.status(200).json({url: "/Shop", msg: "Item successfully updated!"});
@@ -127,6 +155,11 @@ try {
         var [err, shop] = await utils.to(Shop.deleteOne({_id: id}));
         if (err)
             throw new Error("An error occured while deleting the item, please try again");
+
+        var [err, images] = await utils.to(Image.deleteMany({_itemId: id, itemType: "Shop"}));
+        if (err)
+            throw new Error("An error occured while deleting the images for the shop item, please try again");
+
         req.flash('success', "Item successfully deleted!");
         return res.status(200).redirect('/Shop');
     } else 
@@ -164,21 +197,6 @@ try {
 } catch (err) {
     console.log("SHOP SINGLE ERROR", err);
     return res.status(200).json({error: true, message: err.message})
-}})
-
-//sanitize :id
-router.get('/image/:id', async (req, res) => {
-try {
-    let id = req.params.id;
-    var [err, result] = await utils.to(Shop.findOne({'_id': id }));
-    if (err) 
-        throw new Error("An error occured while fetching the image");
-
-    res.set('Content-Type', result.img.contentType)
-    return res.status(200).send(result.img.data);
-} catch (err) {
-    console.log("SHOP IMAGE ERROR", err);
-    return res.status(400).json(err.message);
 }})
 
 module.exports = router;

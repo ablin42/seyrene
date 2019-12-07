@@ -5,7 +5,7 @@
   <div id="single-gallery">
     <% if (locals.shopItem){ %>
         <div class="card" id="<%= locals.shopItem._id %>">
-            <a href="#expand"><img onclick="expand(this);" src="/api/shop/image/<%= locals.shopItem._id %>" class="card-img-top" alt="<%= locals.shopItem.title %>"></a>
+            <a href="#expand"><img onclick="expand(this);" src="/api/image/<%= locals.img[0]._id %>" class="card-img-top" alt="<%= locals.shopItem.title %>"></a>
             <div class="card-body">
                 <h5 class="card-title"><i><a href="Shop/<%= locals.shopItem._id %>"><%= locals.shopItem.title %></a></i></h5>
                 <% if (locals.level && locals.level > 1) { %>
@@ -21,6 +21,13 @@
                 <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)">
             </div>
         </div>
+        <% if (locals.img) { %>
+            <% locals.img.forEach(function (item) { %>
+              <% if (item.isMain !== true) { %>
+                <a href="#expand"><img onclick="expand(this);" src="http://localhost:8089/api/image/<%= item._id %>"></a>
+              <% } %>
+            <% }) %>
+        <% } %>
     <% } %>
   </div>
 </div>
@@ -31,6 +38,6 @@
 
 <a class="lightbox-close" href="#close">
     <div class="lightbox-target" id="expand">
-        <img id="expandImg" src="/api/shop/image/<%= locals.shopItem._id %>"/>
+        <img id="expandImg" src="/api/image/<%= locals.img[0]._id %>"/>
     </div>
 </a>

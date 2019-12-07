@@ -55,6 +55,7 @@ try {
         throw new Error("An error occured while fetching galleries");
     var galleries = result.docs;
     galleries = await fetchMainImg(galleries);
+
     return res.status(200).json(galleries);
 } catch (err) {
     console.log("FETCHING GALLERIES ERROR:", err);
@@ -152,7 +153,7 @@ try {
         if (err)
             throw new Error("An error occured while deleting the item, please try again");
 
-        var [err, images] = await utils.to(Image.deleteMany({_itemId: id}));
+        var [err, images] = await utils.to(Image.deleteMany({_itemId: id, itemType: "Gallery"}));
         if (err)
             throw new Error("An error occured while deleting the images for the gallery item, please try again");
 

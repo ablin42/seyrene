@@ -329,7 +329,12 @@ router.get('/Shop/:id', verifySession, async (req, res) => {
         };
         obj.shopItem = JSON.parse(await request(`http://127.0.0.1:8089/api/shop/single/${id}`));
         if (obj.shopItem.error)
-                throw new Error(obj.shopItem.message);
+            throw new Error(obj.shopItem.message);
+
+        obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Shop/${id}`));
+            if (obj.img.error)
+                throw new Error(obj.img.error);
+
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
@@ -522,6 +527,11 @@ router.get('/Admin/Shop/Patch/:shopId', verifySession, async (req, res) => {
             var [err, result] = await utils.to(Shop.findOne({_id: req.params.shopId}));
             if (err)
                 throw new Error("An error occured while fetching the gallery item");
+
+            obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Shop/${req.params.shopId}`));
+            if (obj.img.error)
+                throw new Error(obj.img.error);
+
             if (req.user) {
                 obj.userId = req.user._id;
                 obj.name = req.user.name;
@@ -572,6 +582,7 @@ router.get('/Admin/Blog/Patch/:blogId', verifySession, async (req, res) => {
                 throw new Error("An error occured while loading the blog, please try again");
             if (blog === null)
                 throw new Error("No blog exists with this ID");
+
             obj.blogContent = blog;
             obj._id = req.params.blogId;
             if (req.user) {
