@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const verifySession = require('./helpers/verifySession');
 const Image = require('../models/Image');
 const utils = require('./helpers/utils');
 
@@ -19,7 +20,50 @@ try {
     console.log("IMAGE FETCH ERROR", err);
     return res.status(400).json(err.message);
 }})
+
+router.get('/select/:itemType/:itemId/:id', verifySession, async (req, res) => {
+try {
+    if (req.user.level >= 3) {
+        let id = req.params.id;
+        let itemType = req.params.itemType;
+        let itemId = req.params.itemId;
     
+        //set old main to false, set new one to true
+        var [err, result] = await utils.to(Image.updateMany({_itemId: itemId, itemType: itemType, isMain: true}, {$set: {isMain: false}}));
+        if (err) 
+            throw new Error("An error occured while updating the main image");
+    
+        var [err, result] = await utils.to(Image.findOneAndUpdate({_id: id}, {$set: {isMain: true}}));
+        if (err) 
+            throw new Error("An error occured while updating the main image");
+
+        return res.status(200).json({err: false, msg: "New main image successfully selected!"});
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+} catch (err) {
+    console.log("IMAGE SELECT MAIN ERROR", err);
+    return res.status(400).json({err: true, msg: err.message});
+}})
+
+router.get('/delete/:id', verifySession, async (req, res) => {
+try {
+    if (req.user.level >= 3) {
+        let id = req.params.id;
+    
+        var [err, result] = await utils.to(Image.deleteOne({_id: id, isMain: false}));
+        if (err) 
+            throw new Error("An error occured while deleting the image");
+        if (result.n === 0)
+            throw new Error("You cannot delete the main image, delete the whole item or add a new image to replace the main image");
+
+        return res.status(200).json({err: false, msg: "Image was successfully deleted!"});
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+} catch (err) {
+    console.log("IMAGE DELETE ERROR", err);
+    return res.status(400).json({err: true, msg: err.message});
+}})
+
 router.get('/:itemType/:itemId', async (req, res) => {
 try {
     let itemId = req.params.itemId,

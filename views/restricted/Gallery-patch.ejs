@@ -16,14 +16,18 @@
             <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
 
             <div class="form-group">
+                <input type="file" name="img" id="img" multiple required>
+                <label for="img">5 images maximum</label>
                 <% if (locals.img) { %>
                     <% locals.img.forEach(function (item) { %>
-                        <img src="http://localhost:8089/api/image/<%= item._id %>">
+                        <img id="<%= item._id %>" src="http://localhost:8089/api/image/<%= item._id %>">
+                        <% if (item.isMain === false) { %>
+                            <a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="http://localhost:8089/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
+                            <a id="sel<%= item._id %>" onclick="setMain(event, this);" href="http://localhost:8089/api/image/select/Gallery/<%= locals.gallery._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
+                        <% } %>
                     <% }) %>
                   <% } %>
-                <input type="file" name="img" id="img">
             </div>
-        
             <div class="form-group">
                 <input v-bind="selectedTags" type="text" value="" data-role="tagsinput" id="tagInput" class="form-control">
                 <span data-placeholder="Tags"></span>
@@ -38,6 +42,54 @@
 </div>
 
 <script>
+    function setMain(e, item) {
+        e.preventDefault();
+        fetch(item.href, {
+            method: 'get',
+            mode: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+        let type = "success"
+        if (data.err === true) 
+            type = "warning";
+            var alertErr = `
+            <div id="alert" class="alert alert-${type}" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                ${data.msg}
+            </div>`;
+            addAlert(alertErr, "#header")
+       })
+    }
+
+    function deleteImage(e, item) {
+        e.preventDefault();
+        fetch(item.href, {
+            method: 'get',
+            mode: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+        if (data.err === true) {
+            var alertErr = `
+            <div id="alert" class="alert alert-warning" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                ${data.msg}
+            </div>`;
+            addAlert(alertErr, "#header")
+        } else {
+            $(`#${item.id.substr(3)}`).remove();
+            $(`#sel${item.id.substr(3)}`).remove();
+            item.remove();
+            var alertSuccess = `
+            <div id="alert" class="alert alert-success" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                ${data.msg}
+            </div>`;
+            addAlert(alertSuccess, "#header")      
+        }})
+    }
+
     let tagInput = $("#tagInput");
     let tags = "<%= locals.gallery.tags %>";
     tags = tags.split(',')
@@ -60,7 +112,9 @@
         for (i = 0; i < tagInput.length; i++)
             tags.push(tagInput[i].textContent);
     
-        formData.append('img', img.files[0]);
+        for (i = 0; i < img.files.length; i++) 
+            formData.append('img', img.files[i]);
+
         formData.append('title', title);
         formData.append('content', content);
         formData.append('tags', JSON.stringify(tags));

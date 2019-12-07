@@ -86,7 +86,6 @@ try {
         const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
 
         obj.tags = gHelpers.parseTags(req.body.tags);   
-        //obj.img = await gHelpers.imgEncode(req.file);
     
         const gallery = new Gallery(obj);
         var [err, result] = await utils.to(gallery.save());
@@ -94,7 +93,7 @@ try {
             throw new Error("Something went wrong while uploading your file");
         for (let i = 0; i < req.files.length; i++) {
             let isMain = false;
-            if (i + 1 === req.files.length)
+            if (i === 0)
                 isMain = true;
             let image = new Image({
                 _itemId: result._id,
@@ -130,8 +129,18 @@ try {
         const obj = {title: req.body.title, content: req.body.content};// need to sanitize data
 
         obj.tags = gHelpers.parseTags(req.body.tags); 
-        if (req.file)
-            obj.img = await gHelpers.imgEncode(req.file);
+
+        for (let i = 0; i < req.files.length; i++) {
+            let image = new Image({
+                _itemId: id,
+                itemType: "Gallery",
+                isMain: false,
+                img: await gHelpers.imgEncode(req.files[i])
+            });
+            var [err, savedImage] = await utils.to(image.save());
+            if (err)
+                throw new Error("Something went wrong while uploading your image");
+        }
     
         //const gallery = new Gallery(obj);
         var [err, result] = await utils.to(Gallery.updateOne({_id: id}, {$set: obj}));
