@@ -303,7 +303,7 @@ router.get('/Galerie/:id', verifySession, async (req, res) => {
         };
         obj.galleries = JSON.parse(await request(`http://127.0.0.1:8089/api/gallery/single/${id}`));
         if (obj.galleries.error)
-                throw new Error(obj.galleries.message);
+            throw new Error(obj.galleries.message);
         obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Gallery/${id}`));
         if (obj.img.error)
             throw new Error(obj.img.error);

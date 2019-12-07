@@ -17,14 +17,13 @@
 
             <div class="form-group">
                 <input type="file" name="img" id="img" multiple required>
-                <label for="img">5 images maximum</label>
                 <% if (locals.img) { %>
                     <% locals.img.forEach(function (item) { %>
                         <img id="<%= item._id %>" src="http://localhost:8089/api/image/<%= item._id %>">
-                        <% if (item.isMain === false) { %>
-                            <a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="http://localhost:8089/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
-                            <a id="sel<%= item._id %>" onclick="setMain(event, this);" href="http://localhost:8089/api/image/select/Gallery/<%= locals.gallery._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
-                        <% } %>
+                            <div id="actDiv<%= item._id %>" class="action-div" <% if (item.isMain === true) { %>style="display:none"<% } %>>
+                                <a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="http://localhost:8089/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
+                                <a id="sel<%= item._id %>" onclick="setMain(event, this);" href="http://localhost:8089/api/image/select/Gallery/<%= locals.gallery._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
+                            </div>
                     <% }) %>
                   <% } %>
             </div>
@@ -53,12 +52,20 @@
         let type = "success"
         if (data.err === true) 
             type = "warning";
-            var alertErr = `
+        else {
+            let divs = $(`.action-div`);
+            console.log(divs)
+            for (let i = 0; i < divs.length; i++) {
+                divs[i].setAttribute("style", "display: block");
+            }
+            $(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
+        }
+        var alertErr = `
             <div id="alert" class="alert alert-${type}" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${data.msg}
             </div>`;
-            addAlert(alertErr, "#header")
+        addAlert(alertErr, "#header")
        })
     }
 

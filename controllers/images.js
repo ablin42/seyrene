@@ -75,10 +75,6 @@ try {
     if (result == null || result.length < 1)
         throw new Error("No results were found");
 
-    let arr = [];
-    result.forEach(item => {
-        console.log(item._id, item.isMain)
-    })
     return res.status(200).json(result);
 } catch (err) {
     console.log("IMAGES FETCH ERROR", err);
