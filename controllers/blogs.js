@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
 try {
     const options = {
         page: parseInt(req.query.page, 10) || 1,
-        limit: 5,
+        limit: 6,
         sort: { date: -1 }
     }
     const result = await bHelpers.getBlogs(options);

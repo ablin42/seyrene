@@ -1,7 +1,7 @@
 async function infiniteShopItems(tab) {
     lastId = $(`#${tab} > .card:last`).attr("id");
     nbItem = $(`#${tab} > .card`).length;
-    page = 1 + Math.floor(nbItem / 1);
+    page = 1 + Math.floor(nbItem / 6);
     url = `http://127.0.0.1:8089/api/shop?page=${page}&tab=${tab}`;
         //show/hide loader
         await fetch(url)
@@ -9,7 +9,6 @@ async function infiniteShopItems(tab) {
             response.json().then(function(data) {
             data.forEach(shop => {
                 let id = shop._id;
-                console.log(id)
                 if ($(`#${id}`).length === 0) {
                     let div = document.createElement('div');
                     div.setAttribute("id", id);

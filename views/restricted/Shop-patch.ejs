@@ -2,7 +2,7 @@
 
 <div class="container">
     <div class="form-container gallery-form">
-        <form id="shop" method="POST" action="/api/shop/patch/<%= locals.shop._id %>" enctype="multipart/form-data" onsubmit="patchShop(event);"> 
+        <form id="shop" method="POST" action="/api/shop/patch/<%= locals.shop._id %>" enctype="multipart/form-data" onsubmit="patchShop(event, '<%= locals.shop._id %>');"> 
             <h1 class="form-title">Editer un item de la boutique</h1>
             <div class="txtb">
                 <input type="text" name="title" id="title" value="<%= locals.shop.title %>" onkeyup="Validate.String(this, 1, 256);" required>
@@ -14,7 +14,7 @@
             <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
 
             <div class="form-group">
-                <input type="file" name="img" id="img" multiple required>
+                <input type="file" name="img" id="img" multiple>
                 <% if (locals.img) { %>
                     <% locals.img.forEach(function (item) { %>
                         <img id="<%= item._id %>" src="http://localhost:8089/api/image/<%= item._id %>">
@@ -43,100 +43,7 @@
     </form>
 </div>
 
-<script>
-    function setMain(e, item) {
-        e.preventDefault();
-        fetch(item.href, {
-            method: 'get',
-            mode: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-        let type = "success"
-        if (data.err === true) 
-            type = "warning";
-        else {
-            let divs = $(`.action-div`);
-            console.log(divs)
-            for (let i = 0; i < divs.length; i++) {
-                divs[i].setAttribute("style", "display: block");
-            }
-            $(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
-        }
-        var alertErr = `
-            <div id="alert" class="alert alert-${type}" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-        addAlert(alertErr, "#header")
-       })
-    }
-
-    function deleteImage(e, item) {
-        e.preventDefault();
-        fetch(item.href, {
-            method: 'get',
-            mode: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-        if (data.err === true) {
-            var alertErr = `
-            <div id="alert" class="alert alert-warning" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-            addAlert(alertErr, "#header")
-        } else {
-            $(`#${item.id.substr(3)}`).remove();
-            $(`#sel${item.id.substr(3)}`).remove();
-            item.remove();
-            var alertSuccess = `
-            <div id="alert" class="alert alert-success" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-            addAlert(alertSuccess, "#header")      
-        }})
-    }
-
-    async function patchShop(e) {
-        e.preventDefault();
-        let title = $("#title").val(),
-            content = $("#content").val(),
-            price = $("#price").val(),
-            isUnique = $("#isUnique").is(":checked"),
-            img = document.querySelector('#img'),
-            formData = new FormData();
-            
-       
-        for (i = 0; i < img.files.length; i++) 
-            formData.append('img', img.files[i]);
-
-        formData.append('title', title);
-        formData.append('content', content);
-        formData.append('price', price);
-        formData.append('isUnique', isUnique);
-            
-        fetch('/api/shop/patch/<%= locals.shop._id %>', {
-            method: 'post',
-            mode: 'same-origin',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-        if (data.err) {
-            let alert = `
-            <div id="alert" class="alert alert-warning" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-            addAlert(alert, "#header")
-        } else 
-            window.location.href = data.url                
-        })
-    }
-</script>
+    <script src="/scripts/shop/shopScripts.js"></script>
     <script src="/scripts/frontValidation.js"></script>
     <script src="/scripts/formFocus.js"></script>
 </div>

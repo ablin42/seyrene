@@ -4,7 +4,7 @@
 
 <div class="container">
     <div class="form-container gallery-form">
-        <form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event);"> 
+        <form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event, '<%= locals.gallery._id %>');"> 
             <h1 class="form-title">Editer un item de la galerie</h1>
             <div class="txtb">
                 <input type="text" name="title" id="title" value="<%= locals.gallery.title %>" onkeyup="Validate.String(this, 1, 256);" required>
@@ -16,7 +16,7 @@
             <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
 
             <div class="form-group">
-                <input type="file" name="img" id="img" multiple required>
+                <input type="file" name="img" id="img" multiple>
                 <% if (locals.img) { %>
                     <% locals.img.forEach(function (item) { %>
                         <img id="<%= item._id %>" src="http://localhost:8089/api/image/<%= item._id %>">
@@ -40,111 +40,16 @@
     </form>
 </div>
 
-<script>
-    function setMain(e, item) {
-        e.preventDefault();
-        fetch(item.href, {
-            method: 'get',
-            mode: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-        let type = "success"
-        if (data.err === true) 
-            type = "warning";
-        else {
-            let divs = $(`.action-div`);
-            console.log(divs)
-            for (let i = 0; i < divs.length; i++) {
-                divs[i].setAttribute("style", "display: block");
-            }
-            $(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
-        }
-        var alertErr = `
-            <div id="alert" class="alert alert-${type}" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-        addAlert(alertErr, "#header")
-       })
-    }
+    <script>
+        let tagInput = $("#tagInput");
+        let tags = "<%= locals.gallery.tags %>";
+        tags = tags.split(',')
 
-    function deleteImage(e, item) {
-        e.preventDefault();
-        fetch(item.href, {
-            method: 'get',
-            mode: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-        if (data.err === true) {
-            var alertErr = `
-            <div id="alert" class="alert alert-warning" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-            addAlert(alertErr, "#header")
-        } else {
-            $(`#${item.id.substr(3)}`).remove();
-            $(`#sel${item.id.substr(3)}`).remove();
-            item.remove();
-            var alertSuccess = `
-            <div id="alert" class="alert alert-success" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-            addAlert(alertSuccess, "#header")      
-        }})
-    }
-
-    let tagInput = $("#tagInput");
-    let tags = "<%= locals.gallery.tags %>";
-    tags = tags.split(',')
-
-    tagInput.tagsinput('add', "");
-
-    // Load tags from db and put them in the input field
-    for (i = 0; i < tags.length; i++)
-        tagInput.tagsinput('add', tags[i]);
-       
-    async function patchGallery(e) {
-        e.preventDefault();
-        let tagInput = document.getElementsByClassName("label-info"),
-            title = $("#title").val(),
-            content = $("#content").val(),
-            img = document.querySelector('#img'),
-            formData = new FormData(),
-            tags = [];
-            
-        for (i = 0; i < tagInput.length; i++)
-            tags.push(tagInput[i].textContent);
-    
-        for (i = 0; i < img.files.length; i++) 
-            formData.append('img', img.files[i]);
-
-        formData.append('title', title);
-        formData.append('content', content);
-        formData.append('tags', JSON.stringify(tags));
-            
-        fetch('/api/gallery/patch/<%= locals.gallery._id %>', {
-            method: 'post',
-            mode: 'same-origin',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-        if (data.err) {
-            let alert = `
-            <div id="alert" class="alert alert-warning" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
-            addAlert(alert, "#header")
-        } else 
-            window.location.href = data.url                
-        })
-    }
-</script>
+        tagInput.tagsinput('add', "");
+        for (i = 0; i < tags.length; i++)
+            tagInput.tagsinput('add', tags[i]);
+    </script>
+    <script src="/scripts/gallery/galleryScripts.js"></script>
     <script src="/scripts/frontValidation.js"></script>
     <script src="/scripts/formFocus.js"></script>
 </div>

@@ -38,7 +38,7 @@ async function parsePrice(shopItems) {
         };
         var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
         if (err || img == null) 
-            throw new Error(`An error occured while fetching the shop images ${i}`);
+            throw new Error(`An error occured while fetching the shop images ${shopItems[i]._id}`);
         obj.mainImgId = img._id;
         arr.push(obj);
     }
@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
 try {
     const options = {
         page: parseInt(req.query.page, 10) || 1,
-        limit: 1,///////////////////////6
+        limit: 6,
         sort: { date: -1 }
     }
     let query = {isUnique: true, soldOut: false};

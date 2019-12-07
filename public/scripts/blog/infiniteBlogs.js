@@ -1,7 +1,7 @@
 async function infiniteBlogs() {
         lastId = $(".blog-row:last").attr("id");
         nbItem = $(".blog-row").length;
-        page = 1 + Math.floor(nbItem / 5);
+        page = 1 + Math.floor(nbItem / 6);
             //show/hide loader
             await fetch(`http://127.0.0.1:8089/api/blog?page=${page}`)
             .then(function(response) {

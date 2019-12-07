@@ -88,8 +88,7 @@ app.use((err, req, res, next) => {//////
       return next();
     }
     console.error(err.stack);
-    // error as json
-    if (req.originalUrl.indexOf("/api/gallery/") != -1) 
+    if (req.originalUrl.indexOf("/api/gallery/") != -1 || req.originalUrl.indexOf("/api/shop/") != -1) ///////////multer error
         return res.status(500).json({url: "/", msg: err.message, err: true});
     req.flash("warning", err.message);
     return res.status(500).redirect("back");
