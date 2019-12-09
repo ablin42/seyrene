@@ -28,10 +28,6 @@ async function infiniteBlogs() {
             })
 }
 
-/*    <% if (locals.blogs[index].mainImgId) { %>
-            <img src="/api/image/<%= locals.blogs[index].mainImgId %>">
-          <% } %> */
-
 $(window).scroll(function() {
     val1 = Math.ceil($(window).scrollTop() + $(window).height());
     val2 = $(document).height();

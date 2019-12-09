@@ -132,10 +132,11 @@ try {
 }})
 
 // patch a blog
-router.post('/patch/:blogId', verifySession, vBlog, async (req, res) => {
+router.post('/patch/:blogId', upload, verifySession, vBlog, async (req, res) => {
 try {
     if (req.user.level > 1) {
         // Check form inputs validity
+        let id = req.params.blogId;
         const vResult = validationResult(req);
         if (!vResult.isEmpty()) {
             vResult.errors.forEach((item) => {
@@ -144,12 +145,32 @@ try {
             throw new Error("Incorrect form input");
         }
 
-        var [err, patchedBlog] = await utils.to(Blog.updateOne({_id: req.params.blogId}, {$set: {
+        var [err, patchedBlog] = await utils.to(Blog.updateOne({_id: id}, {$set: {
             title: req.body.title,
             content: req.body.content
         }}));
         if (err)
             throw new Error("An error occured while updating the blog, please try again");
+        
+        if (req.files.length > 0) {
+            var [err, result] = await utils.to(Image.updateMany({_itemId: id, itemType: "Blog", isMain: true}, {$set: {isMain: false}}));
+            if (err) 
+                throw new Error("An error occured while updating the main image");
+            for (let i = 0; i < req.files.length; i++) {
+                let isMain = false;
+                if (i === 0)
+                    isMain = true;
+                let image = new Image({
+                    _itemId: id,
+                    itemType: "Blog",
+                    isMain: isMain,
+                    img: await gHelpers.imgEncode(req.files[i])
+                });
+                var [err, savedImage] = await utils.to(image.save());
+                if (err)
+                    throw new Error("Something went wrong while uploading your image");
+            }
+        }
 
         req.flash('success', "Post corrigé avec succès");
         res.status(200).redirect('/Blog');

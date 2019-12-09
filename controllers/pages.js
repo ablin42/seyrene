@@ -589,6 +589,7 @@ router.get('/Admin/Blog/Patch/:blogId', verifySession, async (req, res) => {
             obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Blog/${req.params.blogId}`));
             if (obj.img.error)
                 throw new Error(obj.img.error);
+            console.log(obj.img)
 
             obj.blogContent = blog;
             obj._id = req.params.blogId;
