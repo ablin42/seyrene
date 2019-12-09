@@ -2,7 +2,7 @@
 
 <div class="container"> 
     <div class="form-container blog-form">
-        <form id="blog" method="POST" action="/api/blog/">
+        <form id="blog" method="POST" action="/api/blog/" enctype="multipart/form-data">
             <h1 class="form-title">Rédiger un post de blog</h1>
                 
             <div class="txtb">
@@ -14,10 +14,14 @@
             <textarea id="content" class="blog-textarea" name="content" placeholder="Your blog content here" onkeyup="Validate.String(this, 128, 4096);" required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
             <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
 
+            <div class="form-group">
+                <input type="file" name="img" id="img">
+            </div>
+
             <input type="submit" class="logbtn" value="Save" id="submit-blog">
-        
         </form>
     </div>
+    <!--<script src="/scripts/blog/blogScripts.js"></script>-->
     <script src="/scripts/frontValidation.js"></script>
     <script src="/scripts/formFocus.js"></script>
 </div>

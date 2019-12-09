@@ -7,6 +7,9 @@
       <div class="row blog-row" id="<%= locals.blogs[index]._id %>">
         <div class="col-8 offset-2">
           <h3 class="blog-title"><a href="Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].title %></a></h3> 
+          <% if (locals.blogs[index].mainImgId) { %>
+            <img src="/api/image/<%= locals.blogs[index].mainImgId %>">
+          <% } %>
           <p class="blog-info">posté par 
             <b class="blog-author"><%= locals.blogs[index].author %></b>, <i class="blog-date"><%= locals.blogs[index].date %></i>
           </p>

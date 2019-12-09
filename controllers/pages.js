@@ -354,6 +354,9 @@ router.get('/Blog/:id', verifySession, async (req, res) => {
         obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
         if (obj.blogs.error)
             throw new Error(obj.blogs.message);
+        obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Blog/${id}`));
+        if (obj.img.error)
+            throw new Error(obj.img.error);
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
@@ -582,6 +585,10 @@ router.get('/Admin/Blog/Patch/:blogId', verifySession, async (req, res) => {
                 throw new Error("An error occured while loading the blog, please try again");
             if (blog === null)
                 throw new Error("No blog exists with this ID");
+
+            obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Blog/${req.params.blogId}`));
+            if (obj.img.error)
+                throw new Error(obj.img.error);
 
             obj.blogContent = blog;
             obj._id = req.params.blogId;

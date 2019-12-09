@@ -2,11 +2,48 @@ const express = require('express');
 const router = express.Router();
 const {validationResult} = require('express-validator');
 const {vBlog} = require('./validators/vBlog');
+const multer = require('multer');
 
 const Blog = require('../models/Blog');
+const Image = require('../models/Image');
 const verifySession = require('./helpers/verifySession');
 const bHelpers = require('./helpers/blogHelpers');
+const gHelpers = require('./helpers/galleryHelpers');
 const utils = require('./helpers/utils');
+
+upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 1000000 //too low probably
+    },
+    fileFilter: function (req, file, cb) {
+        gHelpers.sanitizeFile(req, file, cb);
+    }
+}).array('img');
+
+
+async function fetchMainImg(blogs) {
+    let arr = [];
+    for (let i = 0; i < blogs.length; i++) {
+        let obj = {
+            _id: blogs[i]._id,
+            title: blogs[i].title,
+            content: blogs[i].content,
+            date: blogs[i].date,
+            createdAt: blogs[i].createdAt,
+            updatedAt: blogs[i].updatedAt,
+            author: blogs[i].author,
+            __v: blogs[i].__v
+        }
+        var [err, img] = await utils.to(Image.findOne({_itemId: blogs[i]._id, itemType: "Blog", isMain: true}));
+        if (err) 
+            throw new Error("An error occured while fetching the blogs images");
+        if (img !== null)
+            obj.mainImgId = img._id;
+        arr.push(obj);
+    }
+    return arr;
+}
 
 //blog pagination
 router.get('/', async (req, res) => {
@@ -16,7 +53,8 @@ try {
         limit: 6,
         sort: { date: -1 }
     }
-    const result = await bHelpers.getBlogs(options);
+    let result = await bHelpers.getBlogs(options);
+    result = await fetchMainImg(result);
     res.status(200).json(result);
 } catch (err) {
     console.log("BLOG FETCH ERROR", err)
@@ -39,7 +77,7 @@ try {
 }})
 
 // post a blog
-router.post('/', verifySession, vBlog, async (req, res) => {
+router.post('/', upload, verifySession, vBlog, async (req, res) => {
 try {
     if (req.user.level > 1) {
         const obj = { //sanitize
@@ -66,6 +104,21 @@ try {
         var [err, savedBlog] = await utils.to(blog.save());
         if (err)
             throw new Error("An error occured while posting your blog, please try again");
+
+        for (let i = 0; i < req.files.length; i++) {
+            let isMain = false;
+            if (i === 0)
+                isMain = true;
+            let image = new Image({
+                _itemId: savedBlog._id,
+                itemType: "Blog",
+                isMain: isMain,
+                img: await gHelpers.imgEncode(req.files[i])
+            });
+            var [err, savedImage] = await utils.to(image.save());
+            if (err)
+                throw new Error("Something went wrong while uploading your image");
+        }
 
         req.flash('success', "Post successfully uploaded");
         res.status(200).redirect('/Blog');
