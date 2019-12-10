@@ -62,6 +62,28 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
+router.get('/Tags', async (req, res) => {
+try {
+    const options = {
+        page: parseInt(req.query.page, 10) || 1,
+        limit: 6,
+        sort: { date: -1 }
+    }
+    let tagsArr = req.query.t.split(","); //sanitize
+    var [err, result] = await utils.to(Gallery.paginate({tags: { $all : tagsArr}}, options));
+    if (err)
+        throw new Error("An error occured while fetching galleries item by tags");
+    var galleries = result.docs;
+    if (galleries.length == 0)
+        throw new Error("No result found for the selected tags");
+    galleries = await fetchMainImg(galleries);
+    console.log(galleries)
+    return res.status(200).json(galleries);
+} catch (err) {
+    console.log("FETCHING GALLERIES BY TAGS ERROR:", err);
+    return res.status(200).json({error: true, message: err.message})
+}})
+
 //sanitize input
 router.post('/post', upload, verifySession, vGallery, async (req, res) => {
 try {

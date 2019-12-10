@@ -57,6 +57,30 @@ try {
     res.status(400).redirect("/");
 }})
 
+router.get('/Galerie/Tags', verifySession, async (req, res) => {
+try {
+    let obj = {
+        active: "Tags search",
+        root: path.join(__dirname, '/pages/')
+    };
+    console.log(req.query.t)
+    let url = `http://127.0.0.1:8089/api/gallery/`;
+    if (req.query.t) 
+        url = `http://127.0.0.1:8089/api/gallery/tags?t=${req.query.t}`;
+    obj.galleries = JSON.parse(await request(url)); /* query for gallery items with tags mentionned in url, sent by url */
+    if (obj.galleries.error)
+        throw new Error(obj.galleries.message);
+    if (req.user) {
+        obj.userId = req.user._id;
+        obj.name = req.user.name;
+        obj.level = req.user.level;
+    }
+    res.status(200).render('tags', obj);
+} catch (err) {
+    console.log("GALLERY TAGS ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/Galerie/");
+}})
 
 router.get('/shopping-cart', verifySession, async (req, res) => {
 try {
