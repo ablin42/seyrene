@@ -65,9 +65,13 @@ try {
     };
     console.log(req.query.t)
     let url = `http://127.0.0.1:8089/api/gallery/`;
-    if (req.query.t) 
+    if (req.query.t === undefined)
+        return res.status(200).render('tags', obj);
+    if (req.query.t) {
         url = `http://127.0.0.1:8089/api/gallery/tags?t=${req.query.t}`;
-    obj.galleries = JSON.parse(await request(url)); /* query for gallery items with tags mentionned in url, sent by url */
+        obj.tags = req.query.t;
+    }
+    obj.galleries = JSON.parse(await request(url));
     if (obj.galleries.error)
         throw new Error(obj.galleries.message);
     if (req.user) {
@@ -78,8 +82,10 @@ try {
     res.status(200).render('tags', obj);
 } catch (err) {
     console.log("GALLERY TAGS ROUTE ERROR", err);
+    if (req.query.t) 
+        var obj = {tags: req.query.t};
     req.flash("warning", err.message);
-    res.status(400).redirect("/Galerie/");
+    res.status(400).render("tags", obj);
 }})
 
 router.get('/shopping-cart', verifySession, async (req, res) => {
