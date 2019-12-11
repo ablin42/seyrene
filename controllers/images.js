@@ -21,6 +21,24 @@ try {
     return res.status(400).json(err.message);
 }})
 
+router.get('/main/:itemType/:itemId', async (req, res) => {
+try {
+    let id = req.params.itemId,
+        itemType = req.params.itemType;
+
+    var [err, result] = await utils.to(Image.findOne({itemType: itemType, _itemId: id, isMain: true}));
+    if (err) 
+        throw new Error("An error occured while fetching the image");
+    if (result == null)
+        throw new Error("No results were found");
+            
+    res.set('Content-Type', result.img.contentType)
+    return res.status(200).send(result.img.data);
+} catch (err) {
+    console.log("IMAGE FETCH ERROR", err);
+    return res.status(400).json(err.message);
+}})
+ 
 router.get('/select/:itemType/:itemId/:id', verifySession, async (req, res) => {
 try {
     if (req.user.level >= 3) {

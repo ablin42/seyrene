@@ -29,7 +29,6 @@ async function cartAdd(itemId, caller) {
             rowId.childNodes[5].childNodes[3].childNodes[0].innerText = currQty + 1;
             document.getElementById("total-price").innerText = response.totalPrice + "€";
             document.getElementById("total-qty").innerText = parseInt(document.getElementById("total-qty").innerText) + 1;
-            document.getElementById("total-price-input").setAttribute("value", response.totalPrice);
           }
         }
       }
@@ -80,7 +79,6 @@ async function cartDel(itemId, caller) {
             let currQty = parseInt(rowId.childNodes[5].childNodes[3].childNodes[0].innerText);
             document.getElementById("total-price").innerText = response.totalPrice + "€";
             document.getElementById("total-qty").innerText = parseInt(document.getElementById("total-qty").innerText) - 1;
-            document.getElementById("total-price-input").setAttribute("value", response.totalPrice);
             if (currQty <= 1)
               rowId.remove();
             else 

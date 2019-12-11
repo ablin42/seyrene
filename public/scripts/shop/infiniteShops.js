@@ -21,7 +21,6 @@ async function infiniteShopItems(tab) {
                             <p class="card-text gallery-description">${shop.content}</p>
                             <p class="card-text">
                                 <b>${shop.price}€</b><br />
-                                ${shop.isUnique}
                             </p>
                             <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('${id}', this)">
                         </div>`;

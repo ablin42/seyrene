@@ -14,6 +14,8 @@ const PwToken = require('../models/PasswordToken');
 const Cart = require('../models/Cart');
 require('dotenv/config');
 
+
+var formatter = new Intl.NumberFormat();
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
 
@@ -107,8 +109,18 @@ try {
     }
     if (req.session.cart)  {
         let cart = new Cart(req.session.cart);
-        obj.products = cart.generateArray();
-        obj.totalPrice = cart.totalPrice;
+        obj.products = [];
+        itemArr = cart.generateArray();
+        
+        itemArr.forEach(item => {
+            let items = {
+                item: item.item,
+                qty: item.qty,
+                price: formatter.format(item.price)
+            };
+            obj.products.push(items)
+        })
+        obj.totalPrice = formatter.format(cart.totalPrice);
         obj.totalQty = cart.totalQty
     }
     res.status(200).render('cart', obj);
@@ -360,6 +372,7 @@ router.get('/Shop/:id', verifySession, async (req, res) => {
         obj.shopItem = JSON.parse(await request(`http://127.0.0.1:8089/api/shop/single/${id}`));
         if (obj.shopItem.error)
             throw new Error(obj.shopItem.message);
+        obj.shopItem.price = formatter.format(obj.shopItem.price);
 
         obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Shop/${id}`));
             if (obj.img.error)
@@ -442,26 +455,26 @@ try {
 
 
 router.get('/Admin/Orders', verifySession, async (req, res) => {
-    try {
-        if (req.user && req.user.level >= 3) {
-            let obj = {active: "Admin Orders"};
-            if (req.user) {
-                obj.userId = req.user._id;
-                obj.name = req.user.name;
-                obj.level = req.user.level;
-            }
-            var [err, orders] = await utils.to(Order.find({}, {}, {sort: { date: -1 }}));
-            if (err)
-                throw new Error("An error occured while looking for your orders informations, please retry");
-            if (orders != null)
-                obj.orders = orders;    
-            return res.status(200).render('restricted/orders', obj);
-        } else 
-            throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
-    } catch (err) {
-        console.log("ADMIN ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        res.status(400).redirect("/");
+try {
+    if (req.user && req.user.level >= 3) {
+        let obj = {active: "Admin Orders"};
+        if (req.user) {
+            obj.userId = req.user._id;
+            obj.name = req.user.name;
+            obj.level = req.user.level;
+        }
+        var [err, orders] = await utils.to(Order.find({}, {}, {sort: { date: -1 }}));
+        if (err)
+            throw new Error("An error occured while looking for your orders informations, please retry");
+        if (orders != null)
+            obj.orders = orders;    
+        return res.status(200).render('restricted/orders', obj);
+    } else 
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
+} catch (err) {
+    console.log("ADMIN ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/");
 }})
 
 router.get('/Admin/Order/:id', verifySession, async (req, res) => {

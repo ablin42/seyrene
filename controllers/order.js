@@ -9,7 +9,9 @@ const Shop = require('../models/Shop');
 const DeliveryInfo = require('../models/DeliveryInfo');
 const verifySession = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
-const mailer = require('./helpers/mailer')
+const mailer = require('./helpers/mailer');
+
+var formatter = new Intl.NumberFormat();
 
 router.post('/create', verifySession, async (req, res) => {
 try {
