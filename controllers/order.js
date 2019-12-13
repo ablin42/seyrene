@@ -13,6 +13,28 @@ const mailer = require('./helpers/mailer');
 
 var formatter = new Intl.NumberFormat();
 
+router.get('/:id', verifySession, async (req, res) => {
+try {
+    let id = req.params.id;
+    var [err, result] = await utils.to(Order.findById(id));
+    if (err)
+        throw new Error("An error occured while fetching your order");
+    if (result == null)
+        throw new Error("No order exist with this ID!");
+    if ((result._userId === req.user._id) || req.user.level >= 3) {
+        result.price = formatter.format(result.price);
+        result.items.forEach((item, index) => {
+            result.items[index].price = formatter.format(item.price);
+        })
+        return res.status(200).json(result);
+    }
+    else 
+        throw new Error("Please make sure you're logged in to check your order");
+} catch (err) {
+    console.log("FETCHING ORDER ERROR:", err);
+    return res.status(200).json({error: true, message: err.message})
+}})
+
 router.post('/create', verifySession, async (req, res) => {
 try {
     if (req.body.user) { //undefined

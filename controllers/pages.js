@@ -313,26 +313,23 @@ try {
 /* SINGLE ITEM ROUTES */
 
 router.get('/Order/:id', verifySession, async (req, res) => {
-    try {
-        let obj = {active: "Order recap"};
-        if (req.user) {
-            obj.userId = req.user._id;
-            obj.name = req.user.name;
-            obj.level = req.user.level;
-        }
-        var [err, order] = await utils.to(Order.findById(req.params.id));
-        if (err || order == null)
-            throw new Error("No order exist with this ID!");
-        if ((order._userId === req.user._id) || req.user.level >= 3) {
-            //seek order with id and check if either admin or if user id correspond to user id in order
-            obj.order = order;
-            res.status(200).render('single/order-recap', obj);
-        } else
-            throw new Error("Please make sure you're logged in to check your order");
-    } catch (err) {
-        console.log("ORDER RECAP ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        res.status(400).redirect("/");
+try {
+    let obj = {active: "Order recap"};
+    if (req.user) {
+        obj.userId = req.user._id;
+        obj.name = req.user.name;
+        obj.level = req.user.level;
+    }
+
+    obj.order = JSON.parse(await request(`http://127.0.0.1:8089/api/order/${req.params.id}`));
+    if (obj.order.error)
+        throw new Error(obj.order.message);
+
+    res.status(200).render('single/order-recap', obj);
+} catch (err) {
+    console.log("ORDER RECAP ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/");
 }})
 
 router.get('/Galerie/:id', verifySession, async (req, res) => {
@@ -485,17 +482,17 @@ try {
             obj.name = req.user.name;
             obj.level = req.user.level;
         }
-        var [err, order] = await utils.to(Order.findById(req.params.id));
-        if (err || order == null)
-            throw new Error("No order exist with this ID!");
-        obj.order = order;
+        obj.order = JSON.parse(await request(`http://127.0.0.1:8089/api/order/${req.params.id}`));
+        if (obj.order.error)
+            throw new Error(obj.order.message);
+
         res.status(200).render('restricted/order-manage', obj);
-        } else
-            throw new Error("Please make sure you're logged in to check your order");
-    } catch (err) {
-        console.log("ORDER RECAP ROUTE ERROR", err);
-        req.flash("warning", err.message);
-        res.status(400).redirect("/");
+    } else
+        throw new Error("Please make sure you're logged in to check your order");
+} catch (err) {
+    console.log("ORDER RECAP ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/");
 }})
 
 router.get('/Admin/Galerie/Post', verifySession, async (req, res) => {
