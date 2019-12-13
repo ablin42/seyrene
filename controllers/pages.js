@@ -14,7 +14,6 @@ const PwToken = require('../models/PasswordToken');
 const Cart = require('../models/Cart');
 require('dotenv/config');
 
-
 var formatter = new Intl.NumberFormat();
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;

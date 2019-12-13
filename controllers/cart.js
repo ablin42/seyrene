@@ -12,6 +12,7 @@ const rp = require('request-promise');
 const verifySession = require('./helpers/verifySession');
 require('dotenv/config');
 
+var formatter = new Intl.NumberFormat();
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
@@ -27,13 +28,18 @@ try {
             let arr = cart.generateArray();
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].item._id == product._id) {
-                    return res.status(200).json({"error": true, "msg": "You can't buy an unique painting more than once!"})
+                    return res.status(200).json({"error": true, "msg": "You can't buy an unique painting more than once!"});
                 } 
             }
         }
+
         cart.add(product, product.id);
         req.session.cart = cart;
-        return res.status(200).json({"error": false, "msg": "Item added to cart", "totalPrice": cart.totalPrice})
+        let cartCpy = JSON.parse(JSON.stringify(cart));
+        cartCpy.totalPrice = formatter.format(cart.totalPrice);
+        cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price);
+
+        return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
     })
 } catch (err) {
     console.log("ADD TO CART ERROR");
@@ -50,7 +56,12 @@ try {
             throw new Error("An error occured while looking for the product");
         cart.delete(product, product.id);
         req.session.cart = cart;
-        return res.status(200).json({"error": false, "msg": "Item removed from cart", "totalPrice": cart.totalPrice})
+        let cartCpy = JSON.parse(JSON.stringify(cart));
+        cartCpy.totalPrice = formatter.format(cart.totalPrice);
+        if (cartCpy.items[productId])
+            cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price);
+
+        return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy});
     })
 } catch (err) {
     console.log("DELETE FROM CART ERROR");

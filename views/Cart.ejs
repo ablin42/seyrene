@@ -98,14 +98,15 @@
         </div>
       </div>
     <% } %>
-    <% if(locals.totalPrice){ %>
-      TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b>
+    <% if (locals.totalPrice != 0){ %>
+    <p id="total-price-span">TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b></p>
     <% } %>
-    <% if(locals.totalQty){ %>
-      NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b><br/>
+    <b id="alertEmpty" <% if (locals.totalPrice != 0) { %> style="display: none;" <% } %>>Your cart is empty!</b>
+    <% if (locals.totalQty != 0){ %>
+      <p id="total-qty-span">NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b></p>
     <% } %>
-    <% if(locals.totalPrice){ %>
-      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button">PURCHASE</button>
+    <% if (locals.totalPrice != 0){ %>
+      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button" id="purchase">PURCHASE</button>
     <% } %>
   </div>
 </div>
