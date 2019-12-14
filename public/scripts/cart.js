@@ -73,6 +73,7 @@ async function cartDel(itemId, caller) {
     })
     .then((res) => {return res.json()})
     .then(function(response) {
+      console.log(response)
       let alertType = "info";
       if (response.error === false) {
         let totalQty = response.cart.totalQty;

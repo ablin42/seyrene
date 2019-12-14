@@ -31,11 +31,87 @@
               
           <div class="cart-quantity cart-column">
             <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
-            <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4><!-- INPUT SELECT QTY HERE //////////////////////////////////////////// with js to check  -->
-            <!--<input class="cart-item-qty" type="number" value="<%= locals.products[index].qty %>" name="cart-item-qty">-->
-            <% if (locals.products[index].item.isUnique !== true) { %>
-              <i class="fas fa-plus fa-2x qty-update qty-increase" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
+            <% if (locals.products[index].item.isUnique === true) { %>
+              <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
+            <% } else { %>
+              <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only"  onchange="checkValue(event, this)">
+              <!-- step="1" min="0" ou 1 max="99" onkeydown="return false; type="number" pattern="[0-9]""-->
+              <i class="fas fa-plus fa-2x qty-update qty-increase" min="0" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
             <% } %>
+            <script>
+              async function checkValue(e, item) {
+                try {
+                  if (item.value) {
+                    let value = parseInt(item.value);
+                    if (Number.isInteger(value) && value >= 0) {
+                      let itemId = item.id.substring(4);
+                      await fetch(`http://localhost:8089/api/cart/update/${itemId}/${value}`, {
+                        method: 'GET',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'Accept': 'application/json'
+                        },
+                        credentials: "include",
+                        mode: "same-origin"
+                      })
+                      .then((res) => {return res.json()})
+                      .then(function(response) {
+                        console.log("response:", response)
+                        let alertType = "info";
+                        if (response.error === false) {
+                          let totalQty = response.cart.totalQty;
+                          let totalPrice = response.cart.totalPrice;
+                          let rowId = document.getElementById(itemId);
+
+                          document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
+                          document.getElementById("total-qty").innerText = totalQty;
+
+                          if (value === 0) 
+                            document.getElementById(itemId).remove();
+                          else {
+                            if (!rowId.classList.contains("card")) {
+                              let itemQty = response.cart.items[itemId].qty;
+                              let itemPrice = response.cart.items[itemId].price;
+
+                              item.value = itemQty;
+                              rowId.childNodes[3].childNodes[1].childNodes[0].innerText = itemPrice + "€";
+                            }
+                          }
+                        }
+                        else {
+                          console.log("API answered with error:", response)
+                          alertType = "warning";
+                        }
+                        let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                        ${response.msg}
+                                      </div>`;
+                        addAlert(alert, "#header");
+                      })  
+                      .catch((err) => {
+                        console.log("An error occured while contacting the API:", err);
+                        let alert = `<div id="alert" class="alert alert-danger" role="alert">
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                      ${err.message}
+                                    </div>`;
+                        addAlert(alert, "#header");
+                      })
+                    }
+                    else 
+                      throw new Error("The <b>quantity</b> has to be a positive integer");
+                  } else 
+                    throw new Error("The <b>quantity</b> you entered is invalid");
+                } catch (err) {
+                  item.value = 1;
+                  let alert = `
+                        <div id="alert" class="alert alert-warning" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            ${err.message}
+                        </div>`;
+                  addAlert(alert, "#header")
+                }
+              }
+            </script>
           </div>
       </div>
       <% }) %>

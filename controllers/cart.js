@@ -16,6 +16,41 @@ var formatter = new Intl.NumberFormat();
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
+router.get('/update/:itemId/:qty', async (req, res) => {
+try {
+    let productId = req.params.itemId;
+    let newQty = parseInt(req.params.qty); //sanitize
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+
+    if (Number.isInteger(newQty) && (newQty >= 0 && newQty <= 99))
+    {
+        Shop.findById(productId, (err, product) => {
+            if (err || !product)
+                return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+                console.log(product.isUnique, newQty)
+            if (product.isUnique === true && newQty > 1)
+                return res.status(400).json({"error": true, "msg": "Quantity can't exceed 1 for unique items!"})
+
+            cart.update(product, product.id, newQty);
+            req.session.cart = cart;
+            let cartCpy = JSON.parse(JSON.stringify(cart));
+            cartCpy.totalPrice = formatter.format(cart.totalPrice);
+            if (cartCpy.items[productId])
+                cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price);
+        
+            let msg = "Item quantity updated";
+            if (newQty == 0)
+                msg = "Item removed from cart";
+            return res.status(200).json({error: false, msg: msg, cart: cartCpy});
+        })
+    }
+    else
+        throw new Error("Quantity for an item must be between 0 and 99");          
+} catch (err) {
+    console.log("UPDATE CART ERROR");
+    return res.status(400).json({"error": true, "msg": err.message})
+}})
+
 router.get('/add/:itemId', async (req, res) => {
 try {
     let productId = req.params.itemId;
@@ -23,7 +58,7 @@ try {
         
     Shop.findById(productId, (err, product) => {
         if (err)
-            throw new Error("An error occured while looking for the product");
+            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
         if (product.isUnique === true) {
             let arr = cart.generateArray();
             for (let i = 0; i < arr.length; i++) {
@@ -53,7 +88,7 @@ try {
             
     Shop.findById(productId, (err, product) => {
         if (err)
-            throw new Error("An error occured while looking for the product");
+            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
         cart.delete(product, product.id);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
