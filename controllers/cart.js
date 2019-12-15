@@ -27,7 +27,6 @@ try {
         Shop.findById(productId, (err, product) => {
             if (err || !product)
                 return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
-                console.log(product.isUnique, newQty)
             if (product.isUnique === true && newQty > 1)
                 return res.status(400).json({"error": true, "msg": "Quantity can't exceed 1 for unique items!"})
 

@@ -10,9 +10,9 @@ module.exports = function Cart(oldCart) {
         itemPrice = parseFloat(storedItem.item.price);
 
         storedItem.qty++;
-        storedItem.price = itemPrice * storedItem.qty;
+        storedItem.price = parseFloat((itemPrice * storedItem.qty).toFixed(2));
         this.totalQty++;
-        this.totalPrice = Math.round((this.totalPrice + itemPrice) * 100) / 100;
+        this.totalPrice = parseFloat((Math.round((this.totalPrice + itemPrice) * 100) / 100).toFixed(2));
     };
 
     this.update = function (item, id, qty) {
@@ -22,7 +22,7 @@ module.exports = function Cart(oldCart) {
              
         let itemPrice = parseFloat(storedItem.item.price);
         let currItemQty = storedItem.qty;
-        let qtyOffset =  qty - currItemQty;
+        let qtyOffset = qty - currItemQty;
         let priceOffset = parseFloat(qtyOffset * itemPrice);
 
         if (qty <= 0) {
@@ -30,30 +30,30 @@ module.exports = function Cart(oldCart) {
             storedItem = undefined;
 
             this.totalQty = this.totalQty - currItemQty;
-            this.totalPrice = Math.round((this.totalPrice - (currItemQty * itemPrice)) * 100) / 100;
+            this.totalPrice = parseFloat((Math.round((this.totalPrice - (currItemQty * itemPrice)) * 100) / 100).toFixed(2));
             return ;
         }
 
         storedItem.qty = qty;
-        storedItem.price = itemPrice * storedItem.qty;
+        storedItem.price = parseFloat((itemPrice * storedItem.qty).toFixed(2));
         this.totalQty = this.totalQty + qtyOffset;
-        this.totalPrice = Math.round((this.totalPrice + priceOffset) * 100) / 100;
+        this.totalPrice = parseFloat((Math.round((this.totalPrice + priceOffset) * 100) / 100).toFixed(2));
     }
     
     this.delete = function (item, id) {
         var storedItem = this.items[id];
         if (storedItem) {
-            let singlePrice = storedItem.price / storedItem.qty;
+            let singlePrice = parseFloat((storedItem.price / storedItem.qty).toFixed(2));
             if (storedItem.qty === 1) {
                 this.items[id] = undefined;
                 storedItem = undefined;
                 this.totalQty--;
-                this.totalPrice = Math.round((this.totalPrice - singlePrice) * 100) / 100;
+                this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
             } else if (storedItem.qty > 1) {
                 storedItem.qty--;
-                storedItem.price = storedItem.qty * singlePrice;
+                storedItem.price = parseFloat((storedItem.qty * singlePrice).toFixed(2));
                 this.totalQty--;
-                this.totalPrice = Math.round((this.totalPrice - singlePrice) * 100) / 100;
+                this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
             }
         }
     }

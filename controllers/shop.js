@@ -73,14 +73,17 @@ try {
 router.post('/post', upload, verifySession, vShop, async (req, res) => {
 try {
     if (req.user.level > 1) {
-        console.log(req.body)
         // Check form inputs validity
         const vResult = validationResult(req);
         if (!vResult.isEmpty()) {
             vResult.errors.forEach((item) => {
                throw new Error(item.msg);
         })}
-        const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: req.body.price};// need to sanitize data
+        let price = parseFloat(req.body.price);
+        if (isNaN(price))
+            throw new Error("Invalid price, please try again");
+        let formattedPrice = price.toFixed(2);
+        const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: formattedPrice};// need to sanitize data
         
         const shop = new Shop(obj);
         var [err, result] = await utils.to(shop.save());
@@ -122,7 +125,11 @@ try {
             throw new Error(item.msg);
         })}
         let id = req.params.id;      
-        const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: req.body.price};// need to sanitize data
+        let price = parseFloat(req.body.price);
+        if (isNaN(price))
+            throw new Error("Invalid price, please try again");
+        let formattedPrice = price.toFixed(2);
+        const obj = {title: req.body.title, content: req.body.content, isUnique: req.body.isUnique, price: formattedPrice};// need to sanitize data
     
         var [err, result] = await utils.to(Shop.updateOne({_id: id}, {$set: obj}));
         if (err)
