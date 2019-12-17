@@ -46,6 +46,8 @@ try {
     obj.galleries = JSON.parse(await request('http://127.0.0.1:8089/api/gallery/'));
     if (obj.galleries.error)
         throw new Error(obj.galleries.message);
+    if (obj.galleries.length === 0)
+        throw new Error("Gallery is under maintenance, please come back later");
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -64,10 +66,7 @@ try {
         active: "Tags search",
         root: path.join(__dirname, '/pages/')
     };
-    console.log(req.query.t)
     let url = `http://127.0.0.1:8089/api/gallery/`;
-    if (req.query.t === undefined)
-        return res.status(200).render('tags', obj);
     if (req.query.t) {
         url = `http://127.0.0.1:8089/api/gallery/tags?t=${req.query.t}`;
         obj.tags = req.query.t;
@@ -216,6 +215,8 @@ try {
     obj.print = JSON.parse(await request('http://127.0.0.1:8089/api/shop?tab=print'));
     if (obj.print.error)
         throw new Error(obj.print.message);
+    if (obj.original.length <= 1 && obj.print.length <= 1)
+        throw new Error("Shop is under maintenance, please try again later")
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -224,7 +225,7 @@ try {
     res.status(200).render('shop', obj);
 } catch (err) {
     console.log("SHOP ROUTE ERROR", err);
-    req.flash("warning", "An error occured, please try again");
+    req.flash("warning", err.message);
     res.status(400).redirect("/");
 }})
 
@@ -395,7 +396,7 @@ router.get('/Blog/:id', verifySession, async (req, res) => {
             throw new Error(obj.blogs.message);
         obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Blog/${id}`));
         if (obj.img.error)
-            throw new Error(obj.img.error);
+            throw new Error(obj.img.message);
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;
@@ -403,7 +404,7 @@ router.get('/Blog/:id', verifySession, async (req, res) => {
         }
         return res.status(200).render('single/blog-single', obj);
     } catch (err) {
-        console.log("BLOG ROUTE ERROR", err);
+        console.log("BLOG ROUTE ERROR");
         req.flash("warning", err.message);
         return res.status(200).redirect('/Blog');
 }})
@@ -627,8 +628,7 @@ router.get('/Admin/Blog/Patch/:blogId', verifySession, async (req, res) => {
 
             obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Blog/${req.params.blogId}`));
             if (obj.img.error)
-                throw new Error(obj.img.error);
-            console.log(obj.img)
+                throw new Error(obj.img.message);
 
             obj.blogContent = blog;
             obj._id = req.params.blogId;

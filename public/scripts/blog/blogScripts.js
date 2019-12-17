@@ -38,12 +38,12 @@ function setMain(e, item) {
     if (data.err === true) 
         type = "warning";
     else {
-        let divs = $(`.action-div`);
+        let divs = $(`.select-main`);
         console.log(divs)
         for (let i = 0; i < divs.length; i++) {
-            divs[i].setAttribute("style", "display: block");
+            divs[i].setAttribute("style", "display: inline-block");
         }
-        $(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
+        $(`#sel${item.id.substr(3)}`).attr("style", "display: none");
     }
     var alertErr = `
         <div id="alert" class="alert alert-${type}" role="alert">

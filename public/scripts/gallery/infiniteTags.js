@@ -1,11 +1,21 @@
-async function infiniteGalleries() {
+async function infiniteTags() {
     lastId = $(".card:last").attr("id");
     nbItem = $(".card").length;
     page = 1 + Math.floor(nbItem / 6);
         //show/hide loader
-        await fetch(`http://127.0.0.1:8089/api/gallery?page=${page}`)
+        let urlToFetch = `http://127.0.0.1:8089/api/gallery/tags?page=${page}`;
+        let parsedURL = new URL(window.location.href);
+        let tagsParam = parsedURL.searchParams.get("t");
+        console.log(tagsParam)
+        if (tagsParam)
+            urlToFetch += `&t=${tagsParam}`;
+        else 
+            urlToFetch = `http://127.0.0.1:8089/api/gallery?page=${page}`;
+        console.log(urlToFetch)
+        await fetch(urlToFetch)
         .then(function(response) {
             response.json().then(function(data) {
+                console.log(data)
             data.forEach(gallery => {
                 let id = gallery._id;
                 if ($(`#${id}`).length === 0) {
@@ -32,9 +42,9 @@ async function infiniteGalleries() {
 }
 
 $(window).scroll(function() {
-val1 = Math.ceil($(window).scrollTop() + $(window).height());
-val2 = $(document).height();
-if (val1 >= val2) {
-    infiniteGalleries();
-}
+    val1 = Math.ceil($(window).scrollTop() + $(window).height());
+    val2 = $(document).height();
+    if (val1 >= val2) {
+        infiniteTags();
+    }
 });

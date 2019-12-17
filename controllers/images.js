@@ -18,7 +18,7 @@ try {
     return res.status(200).send(result.img.data);
 } catch (err) {
     console.log("IMAGE FETCH ERROR", err);
-    return res.status(400).json(err.message);
+    return res.status(400).json({error: true, message: err.message});
 }})
 
 router.get('/main/:itemType/:itemId', async (req, res) => {
@@ -67,13 +67,22 @@ router.get('/delete/:id', verifySession, async (req, res) => {
 try {
     if (req.user.level >= 3) {
         let id = req.params.id;
-    
+
         var [err, result] = await utils.to(Image.deleteOne({_id: id, isMain: false}));
         if (err) 
-            throw new Error("An error occured while deleting the image");
-        if (result.n === 0)
-            throw new Error("You cannot delete the main image, delete the whole item or add a new image to replace the main image");
-
+            throw new Error("An error occured while deleting the image0");
+        if (result.n === 0) {
+            var [err, find] = await utils.to(Image.findOne({_id: id}));
+            if (err) 
+                throw new Error("We could not find your image, please try again");
+            if (find && find.itemType === "Blog") {
+                var [err, deleted] = await utils.to(Image.deleteOne({_id: id}));
+                if (err) 
+                    throw new Error("An error occured while deleting the image2");
+            } else 
+                throw new Error("You cannot delete the main image, delete the whole item or add a new image to replace the main image");
+        }
+           
         return res.status(200).json({err: false, msg: "Image was successfully deleted!"});
     } else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
@@ -90,13 +99,13 @@ try {
     var [err, result] = await utils.to(Image.find({itemType: itemType, _itemId: itemId}).sort({ isMain: -1 }));
     if (err) 
         throw new Error("An error occured while fetching the image");
-    if (result == null || result.length < 1)
-        throw new Error("No results were found");
+    //if (result == null || result.length < 1)
+      //  throw new Error("No results were found");
 
     return res.status(200).json(result);
 } catch (err) {
     console.log("IMAGES FETCH ERROR", err);
-    return res.status(400).json({error: err.message});
+    return res.status(200).json({error: true, message: err.message});
 }})
     
 module.exports = router;

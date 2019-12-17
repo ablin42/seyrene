@@ -14,7 +14,7 @@ const utils = require('./helpers/utils');
 upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 1000000 //too low probably
+        fileSize: 100000000 //too low probably
     },
     fileFilter: function (req, file, cb) {
         gHelpers.sanitizeFile(req, file, cb);

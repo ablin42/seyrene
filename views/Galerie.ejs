@@ -9,7 +9,7 @@
               <div class="card" id="<%= locals.galleries[index]._id %>">
                 <a href="#expand"><img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="card-img-top" alt="<%= locals.galleries[index].title %>"></a>
                 <div class="card-body">
-                  <h5 class="card-title"><i><a href="Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].title %></a></i></h5>
+                  <h5 class="card-title"><i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].title %></a></i></h5>
                   <p class="card-text gallery-description"><%= locals.galleries[index].content %></p>
                   <p class="card-text">
                     <% locals.galleries[index].tags.forEach(function (tag) { %>

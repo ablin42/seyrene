@@ -13,7 +13,7 @@ const utils = require('./helpers/utils');
 upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 1000000 //too low probably
+        fileSize: 10000000 //too low probably
     },
     fileFilter: function (req, file, cb) {
         gHelpers.sanitizeFile(req, file, cb);
@@ -69,7 +69,10 @@ try {
         limit: 6,
         sort: { date: -1 }
     }
-    let tagsArr = req.query.t.split(","); //sanitize
+    console.log("this is to make sure i notice if there is a problem with tags parameter");
+    if (req.query.t) 
+        var tagsArr = req.query.t.split(","); //sanitize
+
     var [err, result] = await utils.to(Gallery.paginate({tags: { $all : tagsArr}}, options));
     if (err)
         throw new Error("An error occured while fetching galleries item by tags");

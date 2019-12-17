@@ -10,7 +10,7 @@
           <h3 class="blog-title"><%= locals.blogs.title %></h3> 
           <p class="blog-info">posté par 
             <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>
-            <% if (locals.img) { %>
+            <% if (locals.img && locals.img[0]) { %>
               <img src="/api/image/<%= locals.img[0]._id %>">
             <% } %>  
             <% if (locals.level && locals.level > 1) { %>

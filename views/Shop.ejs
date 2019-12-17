@@ -14,7 +14,7 @@
                   <div class="card" id="<%= locals.original[index]._id %>">
                     <a href="#expand"><img onclick="expand(this);" src="/api/image/<%= locals.original[index].mainImgId %>" class="card-img-top" alt="<%= locals.original[index].title %>"></a>
                     <div class="card-body">
-                      <h5 class="card-title"><i><a href="Shop/<%= locals.original[index]._id %>"><%= locals.original[index].title %></a></i></h5>
+                      <h5 class="card-title"><i><a href="/Shop/<%= locals.original[index]._id %>"><%= locals.original[index].title %></a></i></h5>
                       <p class="card-text gallery-description"><%= locals.original[index].content %></p>
                       <p class="card-text">
                           <b><%= locals.original[index].price %>€</b><br />
@@ -36,7 +36,7 @@
                   <div class="card" id="<%= locals.print[index]._id %>">
                     <a href="#expand"><img onclick="expand(this);" src="/api/image/<%= locals.print[index].mainImgId %>" class="card-img-top" alt="<%= locals.print[index].title %>"></a>
                     <div class="card-body">
-                      <h5 class="card-title"><i><a href="Shop/<%= locals.print[index]._id %>"><%= locals.print[index].title %></a></i></h5>
+                      <h5 class="card-title"><i><a href="/Shop/<%= locals.print[index]._id %>"><%= locals.print[index].title %></a></i></h5>
                       <p class="card-text gallery-description"><%= locals.print[index].content %></p>
                       <p class="card-text">
                           <b><%= locals.print[index].price %>€</b><br />
@@ -64,6 +64,8 @@
 
 <a class="lightbox-close" href="#close">
   <div class="lightbox-target" id="expand">
-    <img id="expandImg" src="/api/image/<%= locals.print[0].mainImgId %>"/>
+    <% if(locals.original[0]) { %>
+      <img id="expandImg" src="/api/image/<%= locals.original[0].mainImgId %>"/>
+    <% } %>
   </div>
 </a>

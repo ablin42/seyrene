@@ -7,7 +7,7 @@ const session = require('express-session');
 const flash = require('express-flash');
 const expressSanitizer = require('express-sanitizer');
 const filter = require('content-filter');
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo')(session);//
 require('dotenv/config');
 
 const stripeSecret = process.env.STRIPE_SECRET;

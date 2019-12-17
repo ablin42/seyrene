@@ -14,7 +14,7 @@ const utils = require('./helpers/utils');
 upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 1000000 //too low probably
+        fileSize: 10000000 //too low probably
     },
     fileFilter: function (req, file, cb) {
         gHelpers.sanitizeFile(req, file, cb);
@@ -121,7 +121,7 @@ try {
         }
 
         req.flash('success', "Post successfully uploaded");
-        res.status(200).redirect('/Blog');
+        res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);
     }
     else 
         throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");

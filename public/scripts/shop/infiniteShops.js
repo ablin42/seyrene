@@ -17,7 +17,7 @@ async function infiniteShopItems(tab) {
                     let toAppend =  `
                         <a href="#expand"><img onclick="expand(this);" src="/api/image/${shop.mainImgId}" class="card-img-top" alt="${shop.title}"></a>
                         <div class="card-body">
-                            <h5 class="card-title"><i><a href="Shop/${id}">${shop.title}</a></i></h5>
+                            <h5 class="card-title"><i><a href="/Shop/${id}">${shop.title}</a></i></h5>
                             <p class="card-text gallery-description">${shop.content}</p>
                             <p class="card-text">
                                 <b>${shop.price}€</b><br />
