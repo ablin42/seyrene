@@ -14,7 +14,8 @@ const PwToken = require('../models/PasswordToken');
 const Cart = require('../models/Cart');
 require('dotenv/config');
 
-var formatter = new Intl.NumberFormat();
+//var formatter = new Intl.NumberFormat();
+var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
 
@@ -114,11 +115,11 @@ try {
             let items = {
                 item: item.item,
                 qty: item.qty,
-                price: formatter.format(item.price)
+                price: formatter.format(item.price).substr(2)
             };
             obj.products.push(items)
         })
-        obj.totalPrice = formatter.format(cart.totalPrice);
+        obj.totalPrice = formatter.format(cart.totalPrice).substr(2);
         obj.totalQty = cart.totalQty
     }
     res.status(200).render('cart', obj);
@@ -369,7 +370,7 @@ router.get('/Shop/:id', verifySession, async (req, res) => {
         obj.shopItem = JSON.parse(await request(`http://127.0.0.1:8089/api/shop/single/${id}`));
         if (obj.shopItem.error)
             throw new Error(obj.shopItem.message);
-        obj.shopItem.price = formatter.format(obj.shopItem.price);
+        obj.shopItem.price = formatter.format(obj.shopItem.price).substr(2);
 
         obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Shop/${id}`));
             if (obj.img.error)

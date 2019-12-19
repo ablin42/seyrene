@@ -1,11 +1,12 @@
 async function infiniteBlogs() {
-        lastId = $(".blog-row:last").attr("id");
-        nbItem = $(".blog-row").length;
-        page = 1 + Math.floor(nbItem / 6);
-            //show/hide loader
-            await fetch(`http://127.0.0.1:8089/api/blog?page=${page}`)
-            .then(function(response) {
-                response.json().then(function(data) {
+    let nbItem = $(".blog-row").length,
+        page = 1 + Math.floor(nbItem / 6),
+        loader = $("#loader");
+    loader.css("display","block");
+    await fetch(`http://127.0.0.1:8089/api/blog?page=${page}`)
+    .then(function(response) {
+        response.json().then(function(data) {
+            if (!data.error) {
                 data.forEach(blog => {
                     let id = blog._id;
                     if ($(`#${id}`).length === 0) {
@@ -23,9 +24,25 @@ async function infiniteBlogs() {
                                         <hr />`
                         id++;
                         $("#container-blog").append(div);
-                    }});
-                })
-            })
+                    }
+                });
+            } else {
+                let alert = `<div id="alert" class="alert alert-warning" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                ${data.message}
+                            </div>`;
+                addAlert(alert, "#header");
+            }
+        })
+    })
+    .catch((err) => {
+        let alert = `<div id="alert" class="alert alert-warning" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                          ${err.message}
+                      </div>`;
+        addAlert(alert, "#header");
+    })
+    loader.css("display","none");
 }
 
 $(window).scroll(function() {

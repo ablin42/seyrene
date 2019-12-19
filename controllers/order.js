@@ -11,7 +11,8 @@ const verifySession = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 
-var formatter = new Intl.NumberFormat();
+//var formatter = new Intl.NumberFormat();
+var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
 router.get('/:id', verifySession, async (req, res) => {
 try {
@@ -22,9 +23,9 @@ try {
     if (result == null)
         throw new Error("No order exist with this ID!");
     if ((result._userId === req.user._id) || req.user.level >= 3) {
-        result.price = formatter.format(result.price);
+        result.price = formatter.format(result.price).substr(2);
         result.items.forEach((item, index) => {
-            result.items[index].price = formatter.format(item.price);
+            result.items[index].price = formatter.format(item.price).substr(2);
         })
         return res.status(200).json(result);
     }

@@ -1,22 +1,20 @@
 async function infiniteTags() {
-    lastId = $(".card:last").attr("id");
-    nbItem = $(".card").length;
-    page = 1 + Math.floor(nbItem / 6);
-        //show/hide loader
-        let urlToFetch = `http://127.0.0.1:8089/api/gallery/tags?page=${page}`;
-        let parsedURL = new URL(window.location.href);
-        let tagsParam = parsedURL.searchParams.get("t");
-        console.log(tagsParam)
-        if (tagsParam)
-            urlToFetch += `&t=${tagsParam}`;
-        else 
-            urlToFetch = `http://127.0.0.1:8089/api/gallery?page=${page}`;
-        console.log(urlToFetch)
-        await fetch(urlToFetch)
-        .then(function(response) {
-            response.json().then(function(data) {
-                console.log(data)
-            data.forEach(gallery => {
+    let nbItem = $(".card").length;
+        page = 1 + Math.floor(nbItem / 6),
+        loader = $("#loader"),
+        urlToFetch = `http://127.0.0.1:8089/api/gallery/tags?page=${page}`,
+        parsedURL = new URL(window.location.href),
+        tagsParam = parsedURL.searchParams.get("t");
+    loader.css("display","block");
+    if (tagsParam)
+        urlToFetch += `&t=${tagsParam}`;
+    else 
+        urlToFetch = `http://127.0.0.1:8089/api/gallery?page=${page}`;
+    await fetch(urlToFetch)
+    .then(function(response) {
+        response.json().then(function(data) {
+            if (!data.error) {
+                data.forEach(gallery => {
                 let id = gallery._id;
                 if ($(`#${id}`).length === 0) {
                     let div = document.createElement('div');
@@ -37,8 +35,23 @@ async function infiniteTags() {
                     id++;
                     $("#container-gallery").append(div);
                 }});
-            })
+            } else {
+                let alert = `<div id="alert" class="alert alert-warning" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                ${data.message}
+                            </div>`;
+                addAlert(alert, "#header");
+            }
         })
+    })   
+    .catch((err) => {
+        let alert = `<div id="alert" class="alert alert-warning" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            ${err.message}
+                        </div>`;
+        addAlert(alert, "#header");
+    })
+    loader.css("display","none");
 }
 
 $(window).scroll(function() {

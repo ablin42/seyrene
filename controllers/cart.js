@@ -12,7 +12,8 @@ const rp = require('request-promise');
 const verifySession = require('./helpers/verifySession');
 require('dotenv/config');
 
-var formatter = new Intl.NumberFormat();
+//var formatter = new Intl.NumberFormat();
+var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
@@ -33,9 +34,9 @@ try {
             cart.update(product, product.id, newQty);
             req.session.cart = cart;
             let cartCpy = JSON.parse(JSON.stringify(cart));
-            cartCpy.totalPrice = formatter.format(cart.totalPrice);
+            cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
             if (cartCpy.items[productId])
-                cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price);
+                cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
         
             let msg = "Item quantity updated";
             if (newQty == 0)
@@ -70,8 +71,8 @@ try {
         cart.add(product, product.id);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
-        cartCpy.totalPrice = formatter.format(cart.totalPrice);
-        cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price);
+        cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
+        cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
         return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
     })
@@ -91,9 +92,9 @@ try {
         cart.delete(product, product.id);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
-        cartCpy.totalPrice = formatter.format(cart.totalPrice);
+        cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
         if (cartCpy.items[productId])
-            cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price);
+            cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
         return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy});
     })

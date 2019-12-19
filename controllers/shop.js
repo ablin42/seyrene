@@ -21,7 +21,8 @@ upload = multer({
     }
 }).array('img');
 
-var formatter = new Intl.NumberFormat();
+//var formatter = new Intl.NumberFormat();
+var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
 async function parsePrice(shopItems) {
     let arr = [];
@@ -30,7 +31,7 @@ async function parsePrice(shopItems) {
             _id: shopItems[i]._id,
             title: shopItems[i].title,
             content: shopItems[i].content,
-            price: formatter.format(shopItems[i].price),
+            price: formatter.format(shopItems[i].price).substr(2),
             isUnique: shopItems[i].isUnique,
             date: shopItems[i].date,
             createdAt: shopItems[i].createdAt,
