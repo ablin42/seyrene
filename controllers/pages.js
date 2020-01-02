@@ -26,7 +26,9 @@ const router = express.Router();
 router.get('/', verifySession, async (req, res) => {
 try {
     let obj = {active: "Home"};//{root: path.join(__dirname, '/pages/')};
-    obj.front = JSON.parse(await request('http://127.0.0.1:8089/api/front/'));
+    obj.front = JSON.parse(await request('http://127.0.0.1:8089/api/front/')); 
+    if (obj.front.length <= 0)
+        obj.front = undefined;
     if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
@@ -436,6 +438,8 @@ try {
     if (req.user && req.user.level >= 3) {
         let obj = {active: "Update Homepage"};
         obj.front = JSON.parse(await request('http://127.0.0.1:8089/api/front/'));
+        if (obj.front.length <= 0)
+            obj.front = undefined;
         if (req.user) {
             obj.userId = req.user._id;
             obj.name = req.user.name;

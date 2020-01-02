@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const FrontSchema = mongoose.Schema({
     null: {
         type: Boolean,
-        required: true
+        default: false
     },
     referenceId: {
         type: Number,

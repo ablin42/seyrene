@@ -7,7 +7,7 @@ const session = require('express-session');
 const flash = require('express-flash');
 const expressSanitizer = require('express-sanitizer');
 const filter = require('content-filter');
-const MongoStore = require('connect-mongo')(session);//
+//const MongoStore = require('connect-mongo')(session);//
 require('dotenv/config');
 
 const stripeSecret = process.env.STRIPE_SECRET;
@@ -103,7 +103,7 @@ app.get('*', (req, res) => {
         active: "404"
     };
     res.status(404).render('404', obj);
-  });
+});
 
 const port = process.env.PORT || 8089;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

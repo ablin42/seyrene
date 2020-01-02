@@ -23,8 +23,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
     <!-- CUSTOM CSS -->
     <link rel="stylesheet" href="/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat|Pacifico&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Quicksand&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/ba18cbd714.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -33,10 +31,17 @@
 </head>
 
 <body>
-        <nav id="header">
-            <div class="logo">
-                <a href="/"><h1 class="name-header navbar-text">Maral</h1></a>
-            </div>
+    <header id="header">
+        <div class="hamburger">
+            <div class="line line1"></div>
+            <div class="line line2"></div>
+            <div class="line line3"></div>
+        </div>
+    
+        <nav class="navbar-container">
+            <nav class="navbar-custom">
+                    <!--<h3 class="logo">shrt</h3>-->
+                <a href="/"><h1 class="logo name-header navbar-text">Maral</h1></a>
                 <ul class="nav-links">
                     <li><a href="/Bio" class="navbar-text <%= (locals.active && locals.active == 'Biographie') ? 'active' : '' %>">Biographie</a></li>
                     <li><a href="/Contact" class="navbar-text <%= (locals.active && locals.active == 'Contact') ? 'active' : '' %>">Contact</a></li>
@@ -46,7 +51,7 @@
                     <% if (!locals.name) { %>
                         <li><a href="/Register" class="navbar-text <%= (locals.active && locals.active == 'Register') ? 'active' : '' %>">S'inscrire</a></li>
                         <li><a href="/Login" class="navbar-text <%= (locals.active && locals.active == 'Login') ? 'active' : '' %>">Connexion</a></li>
-                    
+                        
                     <% } else { %>
                         <li><a href="/User" class="navbar-text"><%= locals.name %></a></li>
                         <% if (locals.level >= 3) { %>
@@ -54,25 +59,22 @@
                         <% } %>
                         <li><a href="/api/auth/logout" class="navbar-text">Déconnexion</a></li>
                     <% } %>
-                        <li><a href="/shopping-cart" class="navbar-text"><i class="fas fa-shopping-cart fa-2x"></i></a><span id="cartQty" class="badge"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span></li>
+                    <li><a href="/shopping-cart" class="navbar-text"><i class="fas fa-shopping-cart fa-2x"></i></a><span id="cartQty" class="badge"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span></li>
                 </ul>
-                <div class="burger">
-                    <div class="line1"></div>
-                    <div class="line2"></div>
-                    <div class="line3"></div>
-                </div>
+            </nav>
         </nav>
-        <script src="/scripts/navbar.js"></script>
+    </header>
+    <script src="/scripts/navbar.js"></script>
         
-            <% if(messages){ %>
-                <% Object.keys(messages).forEach(function (type) { %>
-                <% messages[type].forEach(function (message) { %>
-                    <div id="alert" class="alert alert-<%= type %>" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <%= message %>
-                    </div>
-                <% }) %>
-                <% }) %>
-            <% } %>
+    <% if (messages){ %>
+        <% Object.keys(messages).forEach(function (type) { %>
+            <% messages[type].forEach(function (message) { %>
+                <div id="alert" class="alert alert-<%= type %>" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <%= message %>
+                </div>
+            <% }) %>
+        <% }) %>
+    <% } %>
 
  

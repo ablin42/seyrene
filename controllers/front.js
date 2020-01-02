@@ -37,19 +37,20 @@ try {
             front.img = await gHelpers.imgEncode(req.file);
 
             var [err, result] = await utils.to(Front.findOne({referenceId: front.referenceId}));
-            if (err || result == null)
+            if (err)
                 throw new Error("Something went wrong while finding reference for your image");
             
-           /* if (result == null) {
+            if (result == null) {
                 newFront = new Front(front);
                 var [err, result] = await utils.to(newFront.save());
+                console.log(err, result)
                 if (err)
                     throw new Error("Something went wrong while uploading your image");
-            } else {*/
+            } else {
                 var [err, result] = await utils.to(Front.findOneAndUpdate({referenceId: front.referenceId}, {$set: {null: false, img: front.img}}));
                 if (err)
                     throw new Error("Something went wrong while updating your image");
-           // }
+            }
             
             return res.status(200).json({msg: "Image successfully uploaded!"});
         } else
