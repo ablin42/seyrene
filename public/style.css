@@ -665,12 +665,6 @@ a.lightbox-close {
 .qty-increase {}
 .qty-decrease {}
 .cart-item-title {border-bottom: 1px solid var(--black-shade-1);}
-
-.cart-total {
-  text-align: end;
-  margin-top: 10px;
-  margin-right: 10px;
-}
 /* END CART */
 
 /* Extra small devices (portrait phones, less than 576px)
@@ -685,26 +679,26 @@ a.lightbox-close {
 @media (max-width: 768px) {
   header {background-color: var(--white-shade-1);}
   .navbar-container {
-      background-color: var(--white-shade-1);
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      flex-direction: column;
+    background-color: var(--white-shade-1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
 
-      clip-path: circle(100px at 90% -15%);
-      -webkit-clip-path: circle(100px at 90% -15%);
-      transition: all 1s ease-out;
-      pointer-events: none;
-      z-index: 50;
- }
+    clip-path: circle(100px at 90% -15%);
+    -webkit-clip-path: circle(100px at 90% -15%);
+    transition: all 1s ease-out;
+    pointer-events: none;
+    z-index: 50;
+  }
 
  .navbar-container.open {
-      clip-path: circle(1200px at 90% -10%);
-      -webkit-clip-path: circle(1200px at 90% -10%);
-      pointer-events: all;
- }
+    clip-path: circle(1200px at 90% -10%);
+    -webkit-clip-path: circle(1200px at 90% -10%);
+    pointer-events: all;
+  }
 
  .nav-links {flex-direction: column;}
  .nav-links li {
@@ -773,8 +767,6 @@ a.lightbox-close {
   min-height: unset;
 }
 
-.row-user {height: 100%;}
-
 .user-menu {
   background-color: #4b60ae;
   border-radius: 10px 0 0 10px;
@@ -785,26 +777,17 @@ a.lightbox-close {
   font-size: 30px;
   margin: 20px 10px;
 }
-
-.user-menu a {
-  color: var(--white-shade-1);
-}
-
+.user-menu a {color: var(--white-shade-1);}
 .user-menu a:hover {
   text-decoration: none;
   color: var(--color-shade-1);
 }
+.fa-chevron-right.active {color: var(--color-shade-2);}
 
-.user-section {
-  padding: 20px!important;
-}
 
-.user-section.col-8 {
-  box-shadow: -1px 0 2px 0 rgb(75, 96, 174, 0.75);
-}
-.user-section.col-4 {
-  box-shadow: -1px 0 2px 0 rgb(75, 96, 174, 0.75);
-}
+.user-section {padding: 20px!important;}
+.user-section.col-8 {box-shadow: -1px 0 2px 0 rgb(75, 96, 174, 0.75);}
+.user-section.col-4 {box-shadow: -1px 0 2px 0 rgb(75, 96, 174, 0.75);}
 
 .user-heading {
   text-align: center;
@@ -822,43 +805,41 @@ a.lightbox-close {
   font-style: italic;
 }
 
-.control-label {
+.control-label { /* form */
   color: var(--color-shade-3);
   font-weight: bold;
   font-size: 18px;
   margin: 10px 0 2px 3px;
 }
 
-.form-control {
+.form-control { /* form */
   color: var(--color-shade-2)!important;
   background-color: #e6e6e6!important;
   border: none!important;
   box-shadow: 1px 1px 5px -2px rgba(42, 67, 111, 0.67), -1px -1px 5px -2px rgba(155, 183, 232, 0.23)!important;
 }
 
-.form-control:focus {
-  box-shadow: 0 0 4px 1px rgb(73, 161, 220)!important;
-}
+.form-control:focus {box-shadow: 0 0 4px 1px rgb(73, 161, 220)!important;}/* form */
 
-.form-info {
+.form-info { /* form */
   font-size: 10px;
   text-align: center;
   width: 100%;
   color: var(--dark-shade-4)
 }
 
-#nameform, #emailform {
+#nameform, #emailform { /* careful form */
   margin: 5px 0;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--color-shade-2);
 }
 
-#submit-deliveryform {
+#submit-deliveryform { /* careful form */
   min-height: 100px;
   padding: 0 15px
 }
 
-.instructions-textarea {
+.instructions-textarea { /* careful form */
   width: 100%;
   min-height: 100px;
   padding: 15px;
@@ -867,10 +848,6 @@ a.lightbox-close {
   background-color: #e6e6e6!important;
   border: none!important;
   box-shadow: 1px 1px 5px -2px rgba(42, 67, 111, 0.67), -1px -1px 5px -2px rgba(155, 183, 232, 0.23)!important;
-}
-
-.fa-chevron-right.active {
-  color: var(--color-shade-2);
 }
 
 .purchase-section {
@@ -885,11 +862,9 @@ a.lightbox-close {
   font-style: italic;
   color: var(--color-shade-2)
 }
-
-.price-grid {
-  font-weight: bold;
-}
-
+.status-grid {}
+.price-grid {font-weight: bold;}
+.name-grid {}
 .id-grid {
   max-width: 125px;
   white-space: nowrap;
@@ -902,5 +877,4 @@ td a {
   text-decoration: underline;
   font-size: 15px;
 }
-
 /* END NEW USER PAGE*/

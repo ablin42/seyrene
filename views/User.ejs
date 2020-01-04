@@ -3,7 +3,7 @@
 <script src="/scripts/order.js"></script>
 
 <div class="container-user container">
-  <div class="row m-0 p-0 row-user">
+  <div class="row">
     <div class="user-menu col-3">
       <ul>
         <li><a href="#" onclick="openTab(event, 'user-parameters')"><i class="fas fa-cog mr-2"></i> Paramètres <i class="fas fa-chevron-right active disabled" style="margin-top: 10px;float: right;"></i></a></li>
@@ -31,9 +31,10 @@
                 <span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
               </div>
             </div>
-          <div>
+  
             <label class="control-label">Adresse</label>        
             <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" class="form-control" value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>" required>
+            
             <div id="address">
               <div class="row">
                 <div class="col-md-12">
@@ -66,11 +67,11 @@
                   <textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..."><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
                 </div>
                 <div class="col-6">
-                <input type="submit" class="logbtn info-update-btn" value="Enregistrer" id="submit-deliveryform">
+                <input type="submit" class="logbtn" value="Enregistrer" id="submit-deliveryform">
               </div>
               </div>
             </div>
-          </div>
+            
           </form>
       </section>
 
@@ -80,42 +81,34 @@
           <h6>Gardez ces informations pour vous!</h6>
         </div>
 
-        <div class="account-wrapper">
-        
-          <form id="nameform" method="POST" action="/api/user/patch/name">
-            <label class="control-label">Nom de compte</label>
-            <input class="form-control" type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
-            <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
-            <input type="submit" class="logbtn info-update-btn mt-2" value="Update" id="submit-nameform">
-          </form>
+        <form id="nameform" method="POST" action="/api/user/patch/name">
+          <label class="control-label">Nom de compte</label>
+          <input class="form-control" type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
+          <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
+          <input type="submit" class="logbtn mt-2" value="Update" id="submit-nameform">
+        </form>
        
-
-       
-          <form id="emailform" method="POST" action="/api/user/patch/email">
-            <label class="control-label">Email</label>
-            <input class="form-control" type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
-            <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
-            <input type="submit" class="logbtn info-update-btn mt-2" value="Update" id="submit-emailform">
-          </form>
+        <form id="emailform" method="POST" action="/api/user/patch/email">
+          <label class="control-label">Email</label>
+          <input class="form-control" type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
+          <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
+          <input type="submit" class="logbtn mt-2" value="Update" id="submit-emailform">
+        </form>
      
+        <form id="passwordform" method="POST" action="/api/user/patch/password">
+          <label class="control-label">Mot de passe <i>(actuel)</i></label>
+          <input class="form-control" type="password" name="cpassword" placeholder="*********" required>
+          <span data-placeholder="Current Password"></span>
 
-     
-          <form id="passwordform" method="POST" action="/api/user/patch/password">
-            <label class="control-label">Mot de passe <i>(actuel)</i></label>
-            <input class="form-control" type="password" name="cpassword" placeholder="*********" required>
-            <span data-placeholder="Current Password"></span>
+          <label class="control-label mt-3">Mot de passe <i>(nouveau)</i></label>
+          <input class="form-control" type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required>
+          <span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
 
-            <label class="control-label mt-3">Mot de passe <i>(nouveau)</i></label>
-            <input class="form-control" type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required>
-            <span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
-
-            <label class="control-label">Mot de passe <i>(confirmation)</i></label>
-            <input class="form-control" type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required>
-            <span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
-            <input type="submit" class="logbtn info-update-btn mt-2" value="Update" id="submit-passwordform">
-          </form>
-       
-      </div>
+          <label class="control-label">Mot de passe <i>(confirmation)</i></label>
+          <input class="form-control" type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required>
+          <span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
+          <input type="submit" class="logbtn mt-2" value="Update" id="submit-passwordform">
+        </form>
       </section>
     </div>
 
@@ -138,12 +131,10 @@
               <% Object.keys(locals.orders).forEach(function (index) { %>
                 <tr>
                   <th scope="row" class="date-grid"><%= locals.orders[index].date_f %></th>
-                  <td class="status-grid"><%= locals.orders[index].status %></td class="status-grid">
+                  <td class="status-grid"><%= locals.orders[index].status %></td>
                   <td class="price-grid"><%= locals.orders[index].price %>€</td>
-                  <td class="name-grid"><%= locals.orders[index].firstname[0] %>. <%= locals.orders[index].lastname %></td class="name-grid">
-                  <td class="id-grid"  style=" width: 50px;white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;"><a href="/Order/<%= locals.orders[index]._id %>">#<%= locals.orders[index]._id %></a></td class="id-grid">
+                  <td class="name-grid"><%= locals.orders[index].firstname[0] %>. <%= locals.orders[index].lastname %></td>
+                  <td class="id-grid"><a href="/Order/<%= locals.orders[index]._id %>">#<%= locals.orders[index]._id %></a></td>
                 </tr>
               <% }) %>
             <% } %>

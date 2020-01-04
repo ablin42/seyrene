@@ -19,7 +19,7 @@
                 </select>
               </div>
               <input type="hidden" name="orderId" value="<%= locals.order._id %>">
-              <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-statusform">
+              <input type="submit" class="logbtn" value="Update" id="submit-statusform">
             </form>
             <% if (locals.order.status === "Validated") { %> <!-- need better condition here -->
               <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">CANCEL ORDER</i><br />
