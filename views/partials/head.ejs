@@ -45,7 +45,7 @@
                         <li><a href="/api/auth/logout" class="navbar-text">Déconnexion</a></li>
                     <% } %>
                     <li><a href="/shopping-cart" class="navbar-text <%= (locals.active && locals.active == 'Cart') ? 'active' : '' %>"><i class="fas fa-shopping-cart fa-2x"></i></a>
-                    </li><span id="cartQty" class="badge"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span>
+                    </li><span id="cartQty"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span>
                 </ul>
             </nav>
         </nav>

@@ -155,6 +155,16 @@ header:hover .navbar-container .navbar-custom .logo, header:hover .navbar-contai
   color: var(--white-shade-1);
 }
 
+#cartQty {
+  margin-left: -15px;
+  font-weight: bold;
+  color: var(--color-shade-2);
+  background-color: var(--white-shade-1);
+  padding: 2px 9px;
+  border-radius: 50%;
+  box-shadow: 2px 2px 3px 0 rgba(86, 86, 86, 0.75), -2px -2px 3px 0 rgba(222, 222, 222, 0.43);
+}
+
 .hamburger div {transition: all 0.3s ease;}
 .toggle .line1 {transform: rotate(-45deg) translate(-5px, 6px);}
 .toggle .line2 {opacity: 0;}
@@ -168,6 +178,7 @@ header:hover .navbar-container .navbar-custom .logo, header:hover .navbar-contai
 
 /* FOOTER */
 footer {
+  min-height: 95px;
   height: 10%;
   width: 100%;
   background-color: var(--white-shade-2);
