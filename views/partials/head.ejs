@@ -53,13 +53,14 @@
                         <li><a href="/Login" class="navbar-text <%= (locals.active && locals.active == 'Login') ? 'active' : '' %>">Connexion</a></li>
                         
                     <% } else { %>
-                        <li><a href="/User" class="navbar-text"><%= locals.name %></a></li>
+                        <li><a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>"><%= locals.name %></a></li>
                         <% if (locals.level >= 3) { %>
-                            <li><a href="/Admin" class="navbar-text">ADMIN PANNEL</a></li>
+                            <li><a href="/Admin" class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>">ADMIN PANNEL</a></li>
                         <% } %>
                         <li><a href="/api/auth/logout" class="navbar-text">Déconnexion</a></li>
                     <% } %>
-                    <li><a href="/shopping-cart" class="navbar-text"><i class="fas fa-shopping-cart fa-2x"></i></a><span id="cartQty" class="badge"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span></li>
+                    <li><a href="/shopping-cart" class="navbar-text <%= (locals.active && locals.active == 'Cart') ? 'active' : '' %>"><i class="fas fa-shopping-cart fa-2x"></i></a>
+                    </li><span id="cartQty" class="badge"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span>
                 </ul>
             </nav>
         </nav>

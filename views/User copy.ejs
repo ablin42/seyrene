@@ -1,0 +1,132 @@
+<% include partials/head %>
+
+<script src="/scripts/order.js"></script>
+<div class="container">
+  <div class="orders">
+      <h1>Orders</h1>
+      <% if (locals.orders) { %>
+        <% Object.keys(locals.orders).forEach(function (index) { %>
+          <a href="/Order/<%= locals.orders[index]._id %>"><%= locals.orders[index]._id %></a> - STATUS: <%= locals.orders[index].status %> 
+          <!-- show cancel order and let order be cancellable only if shipping hasnt started -->
+          <% if (locals.orders[index].status === "Validated") { %> <!-- need better condition here -->
+            <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.orders[index]._id %>')" class="far fa-times-circle">CANCEL ORDER</i>
+          <% } %>
+          <br/>
+        <% }) %>
+      <% } %>
+  </div>
+  <hr />
+  
+  <div class="panel-heading">
+    <h2 class="panel-title">Delivery Informations</h2>
+    <h6>*Make sure the informations you enter are correct, we will be using them for delivery</h6>
+  </div>
+  <div class="panel panel-primary">
+    <form id="deliveryform" method="POST" action="/api/user/patch/delivery-info">
+      <div class="row">
+        <div class="col-md-6">
+          <label class="control-label">Last Name</label>
+          <input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>" onkeyup="Validate.String(this, 2, 128);" required>
+          <span id="i_lastname" class="form-info">Last Name must contain between 2 and 128 characters</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label">First Name</label>
+          <input class="form-control" id="firstname" name="firstname" placeholder="John" value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>" onkeyup="Validate.String(this, 2, 128);" required>
+          <span id="i_firstname" class="form-info">First Name must contain between 2 and 128 characters</span>
+        </div>
+      </div>
+    <div class="panel-body">
+      <label class="control-label">Address</label>        
+      <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" class="form-control" value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>" required>
+      <div id="address">
+        <div class="row">
+            <!--<div class="col-md-6">
+            <label class="control-label">Street number</label>
+            <input class="form-control" id="street_number" name="street_number" required>
+          </div>-->
+          <div class="col-md-12">
+            <label class="control-label">Route</label>
+            <input class="form-control" id="route" name="street_name" value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label class="control-label">City</label>
+            <input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" required>
+          </div>
+          <div class="col-md-6"> 
+            <label class="control-label">State</label>
+            <input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label class="control-label">Zip code</label>
+            <input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" required>
+          </div>
+          <div class="col-md-6">
+            <label class="control-label">Country</label>
+            <input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 offset-3">
+            <textarea id="instructions" class="blog-textarea mt-2" name="instructions" placeholder="Door code or other useful informations..."><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-deliveryform">
+    </form>
+  </div>
+</div>
+
+<div class="container">
+  <div class="form-container info-update"><!--change class form id etc api url-->
+    <h1 class="form-title">Paramètres</h1>
+
+    <form id="nameform" method="POST" action="/api/user/patch/name">
+      <div class="txtb">
+        <input type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
+        <span data-placeholder="Username"></span>
+        <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
+      </div>
+      <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-nameform">
+    </form>
+
+    <form id="emailform" method="POST" action="/api/user/patch/email">
+      <div class="txtb">
+        <input type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
+        <span data-placeholder="Email"></span>
+        <span id="i_email" class="form-info">E-mail has to be valid</span>
+        </div>
+        <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-emailform">
+    </form>
+        
+    <form id="passwordform" method="POST" action="/api/user/patch/password">
+      <div class="txtb">
+        <input type="password" name="cpassword" required>
+        <span data-placeholder="Current Password"></span>
+      </div>
+      <div class="txtb">
+        <input type="password" id="password" name="password" onkeyup="Validate.Password(this);" required>
+        <span data-placeholder="Password"></span>
+        <span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
+      </div>
+      <div class="txtb">
+        <input type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required>
+        <span data-placeholder="Confirm password"></span>
+        <span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
+      </div>
+      <input type="submit" class="logbtn info-update-btn" value="Update" id="submit-passwordform">
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI&libraries=places&callback=initAutocomplete" async defer></script>
+<script src="scripts/auto-complete.js"></script>
+<script src="/scripts/formFocus.js"></script>
+<script src="/scripts/frontValidation.js"></script>
+  
+<% include partials/footer %>

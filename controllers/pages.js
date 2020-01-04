@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const request = require('request-promise');
+const format = require('date-format');
 
 const verifySession = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
@@ -183,8 +184,13 @@ try {
         var [err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, {sort: { date: -1 }}));
         if (err)
             throw new Error("An error occured while looking for your orders informations, please retry");
-        if (orders != null)
+        if (orders != null) {
+            orders.forEach((order, index) => {
+                orders[index].price = formatter.format(order.price).substr(2);
+                orders[index].date_f = format.asString("dd/MM/yyyy", new Date(order.date));
+            })
             obj.orders = orders;    
+        }
         res.status(200).render('user', obj);
     } else 
         throw new Error("You need to be logged in");
