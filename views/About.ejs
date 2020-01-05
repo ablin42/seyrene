@@ -4,9 +4,9 @@
     <div class="row row-height">
       <div class="menu col-3">
         <ul>
-          <li><a href="#" onclick="openTab(event, 'blog')"><i class="fas fa-scroll mr-2"></i> Blog <i class="fas fa-chevron-right chev active disabled"></i></a></li>
-          <li><a href="#" onclick="openTab(event, 'bio')"><i class="fas fa-address-card mr-2"></i> Biographie <i class="fas fa-chevron-right chev"></i></a></li>
-          <li><a href="#" onclick="openTab(event, 'contact')"><i class="fas fa-envelope mr-2"></i> Contact <i class="fas fa-chevron-right chev"></i></a></li>
+          <li><a href="#" onclick="openTab(event, this, 'blog')" class="menu-link active disabled"><i class="fas fa-scroll mr-2"></i> Blog <i class="fas fa-chevron-right chev"></i></a></li>
+          <li><a href="#" onclick="openTab(event, this, 'bio')" class="menu-link"><i class="fas fa-address-card mr-2"></i> Biographie <i class="fas fa-chevron-right chev"></i></a></li>
+          <li><a href="#" onclick="openTab(event, this, 'contact')" class="menu-link"><i class="fas fa-envelope mr-2"></i> Contact <i class="fas fa-chevron-right chev"></i></a></li>
         </ul>
       </div>
   
@@ -44,7 +44,7 @@
         </section>
       </div>
   
-      <div id="bio" class="tab col-9">
+      <div id="bio" class="tab col-9" style="display: none;">
         <section class="bio-section">
             <!--<div class="section-heading mt-3">
                 <h2>Maral Abkarian</h2>
@@ -107,17 +107,46 @@
         </section>
       </div>
 
-      <div id="blog" class="tab col-9" style="display: none;">
+      <div id="blog" class="tab col-9">
         <section class="blog-section">
-            <h1>this is blog</h1>
+            <script src="/scripts/blog/infiniteBlogs.js"></script>
+            <div class="container container-blogx" id="container-blog">
+              <% if(locals.blogs){ %>
+                <% Object.keys(locals.blogs).forEach(function (index) { %>
+                    <!--<div class="row blog-row" id="<%= locals.blogs[index]._id %>">--> 
+                    <div class="blog-row" id="<%= locals.blogs[index]._id %>">
+                      <h3 class="blog-titlex"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].title %></a></h3> 
+                      <% if (locals.blogs[index].mainImgId) { %>
+                        <img src="/api/image/<%= locals.blogs[index].mainImgId %>">
+                      <% } %>
+                      <p class="blog-info">posté par 
+                        <b class="blog-author"><%= locals.blogs[index].author %></b>, <i class="blog-date"><%= locals.blogs[index].date %></i>
+                      </p>
+                      <p class="blog-content"><%= locals.blogs[index].content %></p>
+                    </div>
+                    <!-- </div> -->
+                <% }) %>
+              <% } %>
+            </div>
+            <div class="col-6 offset-3 mb-3 mt-3">
+              <img id="loader" src="/img/loader.gif" style="width: 50px; height: 50px; margin: 5px auto 5px auto; display: none">
+              <input type="submit" class="logbtn" value="Load more" onclick="infiniteBlogs();">
+            </div>
         </section>
       </div>
     </div>
 </div>
 
 <script>
-    function openTab(e, tabName) {
+    function openTab(e, item, tabName) {
       e.preventDefault();
+      let menuItems = document.getElementsByClassName("menu-link");
+      for (let i = 0; i < menuItems.length; i++) {
+            menuItems[i].classList.remove("active");
+            menuItems[i].classList.remove("disabled");
+      }
+      item.classList.add("active");
+      item.classList.add("disabled");
       let tab = document.getElementsByClassName("tab");
       for (let i = 0; i < tab.length; i++) {
         tab[i].style.display = "none";  
@@ -125,45 +154,6 @@
       document.getElementById(tabName).style.display = "flex";
     }
 </script>
-
-<!--
-<div class="container"> 
-    <div class="form-container contact-form">
-        <form id="contact" method="POST" action="/api/contact/" >
-            <h1 class="form-title">Nous contacter</h1>
-            <div class="bottom-text">
-                Nous avons besoin de votre email pour pouvoir vous répondre, et le nom d'utilisateur est à titre indicatif
-            </div>
-            <div class="txtb">
-                <input type="text" name="name" id="name" onkeyup="Validate.Username(this);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required>
-                <span data-placeholder="Username"></span>
-                <span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
-            </div>
-            
-            <div class="txtb">
-                <input type="email" name="email" id="email" onkeyup="Validate.Email(this);" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required>
-                <span data-placeholder="Email"></span>
-                <span id="i_email" class="form-info">E-mail has to be valid</span>
-            </div>
-            
-            <div class="txtb">
-                <input type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);" value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>" required>
-                <span data-placeholder="Mail Title"></span>
-                <span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
-            </div>
-
-            <textarea id="content" onkeyup="Validate.String(this, 64, 2048);" class="blog-textarea" name="content" placeholder="Whatever you wish to tell us..." required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
-            <span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
-            
-            <input type="submit" class="logbtn" value="Envoyer" id="submit-contact">
-        </form>
-        <hr />
-        <div class="bottom-text mt-4">
-            Sinon, vous pouvez nous envoyer un mail directement à l'adresse <b>Maral.canvas@gmail.com</b>
-        </div>
-    </div>
-   
-</div>-->
 <script src="/scripts/formFocus.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 <% include partials/footer %>

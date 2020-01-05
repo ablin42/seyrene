@@ -200,6 +200,29 @@ try {
     res.status(400).redirect("/Login");
 }})
 
+
+router.get('/About', verifySession, async (req, res) => {
+try {
+    let obj = {active: "About"};
+    obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
+    if (obj.blogs.error)
+        throw new Error(obj.blogs.message);
+    if (req.session.formData) {
+        obj.formData = req.session.formData;
+        req.session.formData = undefined;
+    }
+    if (req.user) {
+        obj.userId = req.user._id;
+        obj.name = req.user.name;
+        obj.level = req.user.level;
+    }
+    res.status(200).render('about', obj);
+    } catch (err) {
+    console.log("ABOUT ROUTE ERROR", err);
+    req.flash("warning", "An error occured, please try again");
+    res.status(400).redirect("/");
+}})
+
 router.get('/Bio', verifySession, (req, res) => {
 try {
     let obj = {active: "Biographie"};

@@ -2,19 +2,19 @@
 
 <script src="/scripts/order.js"></script>
 
-<div class="container-user container">
-  <div class="row">
-    <div class="user-menu col-3">
+<div class="container-with-menu container">
+  <div class="row row-height">
+    <div class="menu col-3">
       <ul>
-        <li><a href="#" onclick="openTab(event, 'user-parameters')"><i class="fas fa-cog mr-2"></i> Paramètres <i class="fas fa-chevron-right active disabled" style="margin-top: 10px;float: right;"></i></a></li>
-        <li><a href="#" onclick="openTab(event, 'user-purchases')"><i class="fas fa-truck mr-2"></i> Achats  <i class="fas fa-chevron-right" style="margin-top: 10px;float: right;"></i></a></li>
+        <li><a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link active disabled"><i class="fas fa-cog mr-2"></i> Paramètres <i class="fas fa-chevron-right chev"></i></a></li>
+        <li><a href="#" onclick="openTab(event, this, 'purchases')" class="menu-link"><i class="fas fa-truck mr-2"></i> Achats  <i class="fas fa-chevron-right chev"></i></a></li>
         <li><a href="/shopping-cart"><i class="fas fa-shopping-cart mr-2"></i> Panier</a></li>
       </ul>
     </div>
 
-    <div id="user-parameters" class="tab col-9 row">
+    <div id="parameters" class="tab col-9 row">
       <section class="user-section col-8">
-        <div class="user-heading">
+        <div class="section-heading">
           <h2>Livraison</h2>
           <h6>Nous utiliserons ces informations pour livrer vos commandes</h6>
         </div>
@@ -76,7 +76,7 @@
       </section>
 
       <section class="user-section col-4">
-        <div class="user-heading">
+        <div class="section-heading">
           <h2>Compte</h2>
           <h6>Gardez ces informations pour vous!</h6>
         </div>
@@ -112,7 +112,7 @@
       </section>
     </div>
 
-    <div id="user-purchases" class="tab col-9" style="display: none;">
+    <div id="purchases" class="tab col-9" style="display: none;">
       <section class="purchase-section">
         <table class="table table-striped table-hover">
           <thead>
@@ -210,16 +210,21 @@
 </div>
 
 <script>
-
-function openTab(e, tabName) {
-  e.preventDefault();
-  let tab = document.getElementsByClassName("tab");
-  for (let i = 0; i < tab.length; i++) {
-    tab[i].style.display = "none";  
+  function openTab(e, item, tabName) {
+    e.preventDefault();
+    let menuItems = document.getElementsByClassName("menu-link");
+    for (let i = 0; i < menuItems.length; i++) {
+          menuItems[i].classList.remove("active");
+          menuItems[i].classList.remove("disabled");
+    }
+    item.classList.add("active");
+    item.classList.add("disabled");
+    let tab = document.getElementsByClassName("tab");
+    for (let i = 0; i < tab.length; i++) {
+      tab[i].style.display = "none";  
+    }
+    document.getElementById(tabName).style.display = "flex";
   }
-  document.getElementById(tabName).style.display = "flex";
-}
-
 </script>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI&libraries=places&callback=initAutocomplete" async defer></script>
