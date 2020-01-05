@@ -298,12 +298,37 @@ footer {
 }
 .register-form h1{margin-bottom: 20px!important;}
 
-.err404 {
-  text-align: center;
-  font-size: 10em;
+@import url('https://fonts.googleapis.com/css?family=Anton&display=swap');
+
+
+.wrapper-404 {text-align: center;}
+.wrapper-404 h1 {
+  font-family: 'Anton', sans-serif;
+  opacity: 0.8;
+  font-size: 20em;
   color: var(--white-shade-1);
-  text-shadow: 1px 2px var(--black-shade-1);
-  transform: translate(0%, 50%);
+  text-shadow: 8px 8px var(--color-shade-3);
+}
+.wrapper-404 h5 {
+  font-family: 'Anton', sans-serif;
+  color: var(--white-shade-2);
+  margin-top: -3em;
+}
+
+.btn-404 {
+  margin-top: 1em;
+  padding: 15px;
+  width: 200px;
+  color: white;
+  background-color: #6ebccd;
+  border: 0;
+  box-shadow: 4px 4px 5px 0 #23244652, -2px -2px 5px 0 #67a5b36b;
+  transition: ease-in 0.2s;
+}
+.btn-404:hover {
+  color: #6ebccd;
+  background-color: white;
+  box-shadow: 4px 4px 5px 0 #67a5b36b, -2px -2px 5px 0 #23244652;
 }
 /* END GLOBAL */
 
