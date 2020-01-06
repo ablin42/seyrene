@@ -207,6 +207,9 @@ try {
     obj.blogs = JSON.parse(await request('http://127.0.0.1:8089/api/blog/'));
     if (obj.blogs.error)
         throw new Error(obj.blogs.message);
+    obj.blogs.forEach((blog, index) => {
+        obj.blogs[index].shortcontent = blog.content.substr(0, 210);
+    })
     if (req.session.formData) {
         obj.formData = req.session.formData;
         req.session.formData = undefined;

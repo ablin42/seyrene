@@ -52,7 +52,7 @@
             <div class="biography">
                 <div class="bio-square">
                     <img class="square-img" src="https://i.imgur.com/4rBbPSy.png" style="float: left"/>
-                    <h1 class="square-title">Lorem ipsum dolor sit</h1>
+                    <h1 class="square-title" style="font-size: 40px;">Maral Abkarian</h1>
                     <p class="square-txt">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum a enim ac iaculis.
                         Aenean pellentesque lorem sollicitudin lobortis elementum. Donec malesuada purus magna, quis cursus erat consectetur et.
@@ -120,16 +120,25 @@
                         <img src="/api/image/<%= locals.blogs[index].mainImgId %>">
                       <% } %>
                       <p class="blog-info">posté par 
-                        <b class="blog-author"><%= locals.blogs[index].author %></b>, <i class="blog-date"><%= locals.blogs[index].date %></i>
+                        <b class="blog-author"><%= locals.blogs[index].author %></b>,
+                        <i class="blog-date"><%= locals.blogs[index].date %></i>
                       </p>
-                      <p class="blog-content"><%= locals.blogs[index].content %></p>
+                      <hr />
+
+                      <div class="blog-overlay-wrapper">
+                        <img class="blog-img" src="https://images-na.ssl-images-amazon.com/images/I/61fjVsjuuVL._SL1500_.jpg">
+                        <div class="blog-overlay">
+                          <p class="blog-content"><%= locals.blogs[index].shortcontent %>...</p>
+                          <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+                        </div>
+                      </div>
                     </div>
                     <!-- </div> -->
                 <% }) %>
               <% } %>
             </div>
             <div class="col-6 offset-3 mb-3 mt-3">
-              <img id="loader" src="/img/loader.gif" style="width: 50px; height: 50px; margin: 5px auto 5px auto; display: none">
+              <img id="loader" src="/img/loader.gif">
               <input type="submit" class="logbtn" value="Load more" onclick="infiniteBlogs();">
             </div>
         </section>

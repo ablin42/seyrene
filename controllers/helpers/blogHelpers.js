@@ -17,7 +17,7 @@ module.exports = {
             author: "",
             title: item.title,
             content: item.content,
-            date: format.asString("Le dd/MM/yy à hh:mm:ss", new Date(item.date)),
+            date: format.asString("le dd/MM/yy à hh:mm:ss", new Date(item.date)),
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
             __v: 0

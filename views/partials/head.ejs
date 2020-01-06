@@ -28,17 +28,20 @@
             <nav class="navbar-custom">
                 <a href="/"><h1 class="logo name-header navbar-text">Maral</h1></a>
                 <ul class="nav-links">
-                    <li><a href="/Bio" class="navbar-text <%= (locals.active && locals.active == 'Biographie') ? 'active' : '' %>">Biographie</a></li>
+                    <li><a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>">About</a></li>
+                    <!-- <li><a href="/Bio" class="navbar-text <%= (locals.active && locals.active == 'Biographie') ? 'active' : '' %>">Biographie</a></li>
                     <li><a href="/Contact" class="navbar-text <%= (locals.active && locals.active == 'Contact') ? 'active' : '' %>">Contact</a></li>
+                    -->
                     <li><a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>">Galerie</a></li>
                     <li><a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>">Boutique</a></li>
-                    <li><a href="/Blog" class="navbar-text <%= (locals.active && locals.active == 'Blog') ? 'active' : '' %>">Blog</a></li>
+                     <!--<li><a href="/Blog" class="navbar-text <%= (locals.active && locals.active == 'Blog') ? 'active' : '' %>">Blog</a></li>
+                    -->
                     <% if (!locals.name) { %>
                         <li><a href="/Register" class="navbar-text <%= (locals.active && locals.active == 'Register') ? 'active' : '' %>">S'inscrire</a></li>
                         <li><a href="/Login" class="navbar-text <%= (locals.active && locals.active == 'Login') ? 'active' : '' %>">Connexion</a></li>
                         
                     <% } else { %>
-                        <li><a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>"><%= locals.name %></a></li>
+                        <li><a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>">Compte</a></li>
                         <% if (locals.level >= 3) { %>
                             <li><a href="/Admin" class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>">ADMIN PANNEL</a></li>
                         <% } %>
