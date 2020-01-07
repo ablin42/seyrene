@@ -37,9 +37,7 @@
                      <!--<li><a href="/Blog" class="navbar-text <%= (locals.active && locals.active == 'Blog') ? 'active' : '' %>">Blog</a></li>
                     -->
                     <% if (!locals.name) { %>
-                        <li><a href="/Register" class="navbar-text <%= (locals.active && locals.active == 'Register') ? 'active' : '' %>">S'inscrire</a></li>
-                        <li><a href="/Login" class="navbar-text <%= (locals.active && locals.active == 'Login') ? 'active' : '' %>">Connexion</a></li>
-                        
+                        <li><a href="/Account" class="navbar-text <%= (locals.active && locals.active == 'Account') ? 'active' : '' %>">Connexion</a></li>
                     <% } else { %>
                         <li><a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>">Compte</a></li>
                         <% if (locals.level >= 3) { %>

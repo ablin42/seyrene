@@ -462,6 +462,7 @@ footer {
 .thumbnail-wrapper {
   height: 15%;
   display: block;
+  border-radius: 5px;
 }
 
 .carousel-indicators {
@@ -471,20 +472,21 @@ footer {
 }
 
 .carousel-indicators li {
+  border-radius: 5px;
   margin-top: 10px!important;
-  border: 2px solid var(--white-shade-1)!important;
   width: 17%!important;
   height: 100%!important;
-  max-height: 100px;
+  min-height: 100px;
 }
 
-.carousel-indicators li img {height: 100px;}
+.carousel-indicators li img {
+  height: 100px;
+  box-shadow: 0px 0px 5px 0px rgba(165, 165, 165, 0.75);
+}
+
 .carousel {
   border: 5px solid var(--white-shade-2);
-  border-radius: 5px;
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 1px 1px 3px 0px rgba(165, 165, 165, 0.75), -1px -1px 3px 0px rgba(255, 255, 255, 0.79);
 }
 
 .carousel-container {height: 85%;}
@@ -912,7 +914,6 @@ td a {
   padding: 10px;
   margin: 20px 10px;
   box-shadow: 3px 3px 5px 0px rgba(165, 165, 165, 0.75), -3px -3px 5px 0px rgba(255, 255, 255, 0.79);
-
 }
 
 .bio-square {
@@ -1237,7 +1238,6 @@ button:focus {outline: none;}
 }
 
 
-
 .form-control-test {
   background-color: #e6e6e6!important;
   border: none;
@@ -1246,9 +1246,37 @@ button:focus {outline: none;}
   width: 100%;
 }
 
-.lostpw-section {
-  color: white;
-  margin: 30% 0 0 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 3px 3px 5px 0px rgba(165, 165, 165, 0.75), -3px -3px 5px 0px rgba(255, 255, 255, 0.79);
+#lostpw-container {
+  position: sticky;
+  background-color: rgb(75, 96, 174);
+  border-left: 1px solid rgb(13, 31, 68);
+}
+
+/*
+.lostpw-section .box {
+  position: relative;
+  background-color: rgb(75, 96, 174);
+}
+
+.lostpw-section .box:before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(135deg, rgba(19, 176, 223, 0.26) 0%, rgba(19, 176, 223, 0.26) 23%,rgba(16, 160, 197, 0.26) 23%, rgba(16, 160, 197, 0.26) 65%,rgba(13, 144, 172, 0.26) 65%, rgba(13, 144, 172, 0.26) 70%,rgba(9, 129, 146, 0.26) 70%, rgba(9, 129, 146, 0.26) 74%,rgba(6, 113, 121, 0.26) 74%, rgba(6, 113, 121, 0.26) 90%,rgba(3, 97, 95, 0.26) 90%, rgba(3, 97, 95, 0.26) 100%),linear-gradient(45deg, rgba(65, 234, 230, 0.26) 0%, rgba(65, 234, 230, 0.26) 28%,rgba(88, 192, 215, 0.26) 28%, rgba(88, 192, 215, 0.26) 55%,rgba(110, 150, 201, 0.26) 55%, rgba(110, 150, 201, 0.26) 66%,rgba(133, 107, 186, 0.26) 66%, rgba(133, 107, 186, 0.26) 80%,rgba(155, 65, 172, 0.26) 80%, rgba(155, 65, 172, 0.26) 85%,rgba(178, 23, 157, 0.26) 85%, rgba(178, 23, 157, 0.26) 100%),linear-gradient(90deg, rgb(27, 194, 246) 0%, rgb(27, 194, 246) 6%,rgb(39, 174, 237) 6%, rgb(39, 174, 237) 32%,rgb(50, 155, 229) 32%, rgb(50, 155, 229) 40%,rgb(62, 135, 220) 40%, rgb(62, 135, 220) 66%,rgb(74, 116, 211) 66%, rgb(74, 116, 211) 72%,rgb(86, 96, 202) 72%, rgb(86, 96, 202) 86%,rgb(97, 77, 194) 86%, rgb(97, 77, 194) 96%,rgb(109, 57, 185) 96%, rgb(109, 57, 185) 100%);
+  transform: skew(1deg, 1deg);
+  z-index: -1;
+}*/
+
+.lostpw-section {margin-top: 10%;}
+.lostpw-section .section-heading h2 {color: var(--white-shade-1);}
+.lostpw-section .section-heading h6 {color: var(--white-shade-1);}
+.lostpw-section .section-heading {border: 0}
+
+
+#resetpw {
+  height: 75%;
+  box-shadow: 1px 1px 5px 0px rgba(165, 165, 165, 0.75), -1px -1px 5px 0px rgba(255, 255, 255, 0.79);
 }
