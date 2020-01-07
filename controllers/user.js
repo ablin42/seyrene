@@ -89,8 +89,8 @@ try {
 
     // check if token is valid
     var [err, pwToken] = await utils.to(PwToken.findOne({_id: req.body.tokenId, token: req.body.token}));
-    if (err)
-        throw new Error("Invalid token, please try to request another one here");
+    if (err || pwToken === null)
+        throw new Error("Invalid token, please try to request another one");
 
     // update password and delete token
     var [err, user] = await utils.to(User.updateOne({_id: pwToken._userId}, {$set: {password: hashPw}}));

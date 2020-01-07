@@ -200,7 +200,6 @@ try {
     res.status(400).redirect("/Login");
 }})
 
-
 router.get('/About', verifySession, async (req, res) => {
 try {
     let obj = {active: "About"};
@@ -220,8 +219,26 @@ try {
         obj.level = req.user.level;
     }
     res.status(200).render('about', obj);
-    } catch (err) {
+} catch (err) {
     console.log("ABOUT ROUTE ERROR", err);
+    req.flash("warning", "An error occured, please try again");
+    res.status(400).redirect("/");
+}})
+
+router.get('/Account', verifySession, async (req, res) => {
+try {
+    let obj = {active: "Account"};
+    if (req.session.formData) {
+        obj.formData = req.session.formData;
+        req.session.formData = undefined;
+    }
+    if (req.user) {
+        req.flash("info", "You're already logged in");
+        return res.status(200).redirect('/');
+    }
+    res.status(200).render('account', obj);
+} catch (err) {
+    console.log("ACCOUNT ROUTE ERROR", err);
     req.flash("warning", "An error occured, please try again");
     res.status(400).redirect("/");
 }})
