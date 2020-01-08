@@ -2,28 +2,33 @@
 
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 
-<div class="container">
-  <div class="single-blog" id="container-gallery">
+<div class="container container-single">
     <% if(locals.blogs){ %>
       <div class="row blog-row" id="<%= locals.blogs._id %>">
-        <div class="col-8 offset-2">
-          <h3 class="blog-title"><%= locals.blogs.title %></h3> 
-          <p class="blog-info">posté par 
+        <div class="col-10 offset-1">
+          <h3 class="blog-title col-10 offset-1"><%= locals.blogs.title %></h3>  
+          <% if (locals.level && locals.level > 1) { %>
+            <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
+          <% } %> 
+          <a href="#expand"><img class="single-blog-img col-12 mt-3 p-0" src="https://i.imgur.com/5ylZG2o.jpg"></a>
+          <p class="blog-info pb-2 ml-4">par 
             <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>
-            <% if (locals.img && locals.img[0]) { %>
+            <!--<% if (locals.img && locals.img[0]) { %>
               <img src="/api/image/<%= locals.img[0]._id %>">
-            <% } %>  
-            <% if (locals.level && locals.level > 1) { %>
-              <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
-            <% } %>  
+            <% } %>  -->
           </p>
-          <p class="blog-content"><%= locals.blogs.content %></p>
+          <p class="blog-content col-10 offset-1 mt-2"><%= locals.blogs.content %></p>
         </div>
       </div>
     <% } %>
-  </div>
-  <script src="/scripts/frontValidation.js"></script>
-  <script src="/scripts/formFocus.js"></script>
 </div>
   
+<script src="/scripts/frontValidation.js"></script>
+<script src="/scripts/formFocus.js"></script>
 <% include ../partials/footer %>
+
+<a class="lightbox-close" href="#close">
+  <div class="lightbox-target" id="expand">
+    <img id="expandImg" class="single-blog-img col-12 mt-3 p-0" src="https://i.imgur.com/5ylZG2o.jpg"> 
+  </div>
+</a>

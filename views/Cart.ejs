@@ -4,21 +4,23 @@
 <script>const stripePublicKey = '<%= locals.stripePublicKey %>';</script>
 <script src="/scripts/cart.js"></script>
 
-<div class="container"> 
-  <div class="container-cart">
-    <div class="cart-row">
-      <span class="cart-item cart-header cart-column">ITEM</span>
-      <span class="cart-price cart-header cart-column">PRICE</span>
-      <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-    </div>
+<div class="container container-single"> 
+  <div class="blog-row">
+    <b id="alertEmpty" <% if (locals.totalPrice != 0) { %> style="display: none;" <% } %>>Your cart is empty!</b>
     <% if(locals.products){ %>
+      <div class="cart-row">
+        <span class="cart-item cart-header cart-column">ITEM</span>
+        <span class="cart-price cart-header cart-column">PRICE</span>
+        <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+      </div>
+     
       <% Object.keys(locals.products).forEach(function (index) { %>
         <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %>">
           <div class="cart-item cart-column">
             <img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
             <div class="cart-title-description">
-              <h4 class="cart-item-title"><b><%= locals.products[index].item.title %></b></h4>
-              <p class="cart-item-description"><%= locals.products[index].item.content %></p>
+              <h4 class="cart-item-title"><b><%= locals.products[index].shorttitle %>...</b></h4>
+              <p class="cart-item-description"><%= locals.products[index].shortcontent %>...</p>
             </div>
           </div>
               
@@ -43,7 +45,7 @@
     <% if(locals.isDelivery){ %>
       <div class="panel-heading">
         <h2 class="panel-title">Delivery Informations</h2>
-        <h6>*Make sure the informations you enter are correct, we will be using them for delivery</h6>
+        <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
       </div>
       <div class="panel panel-primary">
           <div class="row">
@@ -88,25 +90,30 @@
                 <input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" readonly>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6 offset-3">
-                <textarea id="instructions" class="blog-textarea mt-2" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
+              </div>
+
+              <div class="col-md-6">
+                <div class="payment-div p-3">
+                  <% if (locals.totalPrice != 0){ %>
+                    <span id="total-price-span">TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b></span>
+                  <% } %>
+                  <% if (locals.totalQty != 0){ %>
+                    <span id="total-qty-span">NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b></span>
+                  <% } %>
+                  <% if (locals.totalPrice != 0){ %>
+                    <button class="btn-purchase" onclick="submitCheckout();" type="button" id="purchase">PURCHASE</button>
+                  <% } %>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    <% } %>
-    <% if (locals.totalPrice != 0){ %>
-    <p id="total-price-span">TOTAL PRICE: <b id="total-price"><%= locals.totalPrice %>€</b></p>
-    <% } %>
-    <b id="alertEmpty" <% if (locals.totalPrice != 0) { %> style="display: none;" <% } %>>Your cart is empty!</b>
-    <% if (locals.totalQty != 0){ %>
-      <p id="total-qty-span">NUMBER OF ITEMS: <b id="total-qty"><%= locals.totalQty %></b></p>
-    <% } %>
-    <% if (locals.totalPrice != 0){ %>
-      <button class="btn btn-primary btn-purchase" onclick="submitCheckout();" type="button" id="purchase">PURCHASE</button>
-    <% } %>
+      <% } %>
+   
   </div>
 </div>
 

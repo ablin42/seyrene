@@ -118,7 +118,9 @@ try {
             let items = {
                 item: item.item,
                 qty: item.qty,
-                price: formatter.format(item.price).substr(2)
+                price: formatter.format(item.price).substr(2),
+                shortcontent: item.item.content.substr(0, 128),
+                shorttitle: item.item.title.substr(0, 64)
             };
             obj.products.push(items)
         })

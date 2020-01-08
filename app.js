@@ -7,8 +7,11 @@ const session = require('express-session');
 const flash = require('express-flash');
 const expressSanitizer = require('express-sanitizer');
 const filter = require('content-filter');
-//const MongoStore = require('connect-mongo')(session);//
 require('dotenv/config');
+
+const verifySession = require('./controllers/helpers/verifySession');
+//const MongoStore = require('connect-mongo')(session);//
+
 
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
@@ -98,10 +101,13 @@ app.use((err, req, res, next) => {//////
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
-app.get('*', (req, res) => {
-    let obj = {
-        active: "404"
-    };
+app.get('*', verifySession, (req, res) => {
+    let obj = {active: "404"};
+    if (req.user) {
+        obj.userId = req.user._id;
+        obj.name = req.user.name;
+        obj.level = req.user.level;
+    }
     res.status(404).render('404', obj);
 });
 
