@@ -543,6 +543,7 @@ try {
         if (obj.order.error)
             throw new Error(obj.order.message);
 
+        console.log(obj.order.items)
         res.status(200).render('restricted/order-manage', obj);
     } else
         throw new Error("Please make sure you're logged in to check your order");

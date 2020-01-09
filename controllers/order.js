@@ -26,6 +26,8 @@ try {
         result.price = formatter.format(result.price).substr(2);
         result.items.forEach((item, index) => {
             result.items[index].price = formatter.format(item.price).substr(2);
+            result.items[index].item.content = item.item.content.substr(0, 128);
+            result.items[index].item.title = item.item.title.substr(0, 64);
         })
         return res.status(200).json(result);
     }

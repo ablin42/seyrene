@@ -741,9 +741,8 @@ a.lightbox-close {
   margin: 0 10px 0 10px;
 }
 
-.qty-increase {}
-.qty-decrease {}
 .cart-item-title {border-bottom: 1px solid var(--black-shade-1);}
+.cart-item-description {opacity: 0.8}
 .cart-item-qty {width: 100%;}
 /* END CART */
 
