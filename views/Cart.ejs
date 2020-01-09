@@ -10,8 +10,8 @@
     <% if(locals.products){ %>
       <div class="cart-row">
         <span class="cart-item cart-header cart-column">ITEM</span>
-        <span class="cart-price cart-header cart-column">PRICE</span>
         <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+        <span class="cart-price cart-header cart-column">PRICE</span>
       </div>
      
       <% Object.keys(locals.products).forEach(function (index) { %>
@@ -24,19 +24,21 @@
             </div>
           </div>
               
-          <div class="cart-price cart-column">
-            <p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
-          </div>
-              
           <div class="cart-quantity cart-column">
             <i class="fas fa-minus fa-2x qty-update qty-decrease" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
             <% if (locals.products[index].item.isUnique === true) { %>
-              <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
+              <!--<h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>-->
+              <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly>
+              <i class="fas fa-plus fa-2x qty-update qty-increase" min="0" style="color: grey; cursor: default;"></i>
             <% } else { %>
-              <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only"  onchange="updateValue(event, this)">
+              <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only"  onchange="updateValue(event, this)">
               <!-- step="1" min="0" ou 1 max="99" onkeydown="return false; type="number" pattern="[0-9]""-->
               <i class="fas fa-plus fa-2x qty-update qty-increase" min="0" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
             <% } %>
+          </div>
+
+          <div class="cart-price cart-column">
+            <p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
           </div>
       </div>
       <% }) %>

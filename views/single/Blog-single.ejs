@@ -6,7 +6,7 @@
     <% if(locals.blogs){ %>
       <div class="row blog-row" id="<%= locals.blogs._id %>">
         <div class="col-10 offset-1">
-          <h3 class="blog-title col-10 offset-1"><%= locals.blogs.title %></h3>  
+          <h3 class="blog-title col-12"><%= locals.blogs.title %></h3>  
           <% if (locals.level && locals.level > 1) { %>
             <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
           <% } %> 
