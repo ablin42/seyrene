@@ -31,6 +31,8 @@ async function parsePrice(shopItems) {
             _id: shopItems[i]._id,
             title: shopItems[i].title,
             content: shopItems[i].content,
+            shortcontent: shopItems[i].content.substr(0, 256),
+            shorttitle: shopItems[i].title.substr(0, 100),
             price: formatter.format(shopItems[i].price).substr(2),
             isUnique: shopItems[i].isUnique,
             date: shopItems[i].date,
@@ -39,10 +41,10 @@ async function parsePrice(shopItems) {
             mainImgId: "",
             __v: shopItems[i].__v
         };
-        var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
+       /* var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
         if (err || img == null) 
             throw new Error(`An error occured while fetching the shop images ${shopItems[i]._id}`);
-        obj.mainImgId = img._id;
+        obj.mainImgId = img._id;*/
         arr.push(obj);
     }
     return arr;

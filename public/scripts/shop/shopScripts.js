@@ -132,8 +132,15 @@ function expand(image){
     expand.attr("src", image.src);
 }
   
-function openTab(tabName) {
+function openTab(btn, tabName) {
     let tab = document.getElementsByClassName("tab");
+    let buttons = document.getElementsByClassName("tab-btn");
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+    }
+    btn.classList.add("active");
+
     for (let i = 0; i < tab.length; i++) {
       tab[i].style.display = "none";  
     }
