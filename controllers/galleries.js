@@ -27,6 +27,8 @@ async function fetchMainImg (galleries) {
             _id: galleries[i]._id,
             title: galleries[i].title,
             content: galleries[i].content,
+            shortcontent: galleries[i].content.substr(0, 128),
+            shorttitle: galleries[i].title.substr(0, 64),
             date: galleries[i].date,
             createdAt: galleries[i].createdAt,
             updatedAt: galleries[i].updatedAt,

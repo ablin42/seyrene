@@ -21,94 +21,94 @@
         </div>
       </form>
       <% if (locals.order.status === "Validated") { %> <!-- need better condition here -->
-        <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">CANCEL ORDER</i><br />
-      <% } %>
-      <hr />
-
-      <% if(locals.order.items){ %>
-        <div class="cart-row">
-          <span class="cart-item cart-header cart-column">ITEM</span>
-          <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-          <span class="cart-price cart-header cart-column">PRICE</span>
-        </div>
-        <% Object.keys(locals.order.items).forEach(function (index) { %>
-          <div class="cart-row cart-row-item" id="<%= locals.order.items[index].item._id %>">
-            <div class="cart-item cart-column">
-              <a href="/Shop/<%= locals.order.items[index].item._id %>"><img class="cart-img" src="/api/image/main/Shop/<%= locals.order.items[index].item._id %>" alt="<%= locals.order.items[index].title %>"></a>
-              <div class="cart-title-description">
-                <h4 class="cart-item-title"><b><%= locals.order.items[index].item.title %>...</b></h4>
-                <p class="cart-item-description"><%= locals.order.items[index].item.content %>...</p>
-              </div>
-            </div>
-                            
-            <div class="cart-quantity cart-column">
-              <h4 class="cart-item-qty"><b><%= locals.order.items[index].qty %></b></h4>
-            </div>
-
-            <div class="cart-price cart-column">
-              <p class="cart-item-price"><b><%= locals.order.items[index].price %>€</b></p>
-            </div>
-          </div>
-        <% }) %>
-      <% } %>
-
-      <div class="panel-heading">
-        <h2 class="panel-title">Delivery Informations</h2>
-        <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
-      </div>
-      <div class="panel panel-primary">
-        <div class="row">
-          <div class="col-md-6">
-            <label class="control-label">Last Name</label>
-            <input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.order.lastname) { %><%= locals.order.lastname %><% } %>" readonly>
-            <span id="i_lastname" class="form-info">Last Name must contain between 2 and 128 characters</span>
-          </div>
-          <div class="col-md-6">
-            <label class="control-label">First Name</label>
-            <input class="form-control" id="firstname" name="firstname" placeholder="John" value="<% if (locals.order.firstname) { %><%= locals.order.firstname %><% } %>" readonly>
-            <span id="i_firstname" class="form-info">First Name must contain between 2 and 128 characters</span>
-          </div>
-        </div>
-        <div class="panel-body">
-          <label class="control-label">Address</label>        
-          <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" class="form-control" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly>
-          <div id="address">
-            <div class="row">
-              <div class="col-md-12">
-                <label class="control-label">Route</label>
-                <input class="form-control" id="route" name="street_name" value="<% if (locals.order.full_street) { %><%= locals.order.full_street %><% } %>" readonly>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <label class="control-label">City</label>
-                <input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.order.city) { %><%= locals.order.city %><% } %>" readonly>
-              </div>
-              <div class="col-md-6"> 
-                <label class="control-label">State</label>
-                <input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.order.state) { %><%= locals.order.state %><% } %>" readonly>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <label class="control-label">Zip code</label>
-                <input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.order.zipcode) { %><%= locals.order.zipcode %><% } %>" readonly>
-              </div>
-              <div class="col-md-6">
-                <label class="control-label">Country</label>
-                <input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.order.country) { %><%= locals.order.country %><% } %>" readonly>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col-md-6 offset-3">
-                <textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.order.instructions) { %><%= locals.order.instructions %><% } %></textarea>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
+        <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
     <% } %>
+    <hr />
+
+    <% if(locals.order.items){ %>
+      <div class="cart-row">
+        <span class="cart-item cart-header cart-column">ITEM</span>
+        <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+        <span class="cart-price cart-header cart-column">PRICE</span>
+      </div>
+      <% Object.keys(locals.order.items).forEach(function (index) { %>
+        <div class="cart-row cart-row-item" id="<%= locals.order.items[index].item._id %>">
+          <div class="cart-item cart-column">
+            <a href="/Shop/<%= locals.order.items[index].item._id %>"><img class="cart-img" src="/api/image/main/Shop/<%= locals.order.items[index].item._id %>" alt="<%= locals.order.items[index].title %>"></a>
+            <div class="cart-title-description">
+              <h4 class="cart-item-title"><b><%= locals.order.items[index].item.title %>...</b></h4>
+              <p class="cart-item-description"><%= locals.order.items[index].item.content %>...</p>
+            </div>
+          </div>
+                            
+          <div class="cart-quantity cart-column">
+            <h4 class="cart-item-qty"><b><%= locals.order.items[index].qty %></b></h4>
+          </div>
+
+          <div class="cart-price cart-column">
+            <p class="cart-item-price"><b><%= locals.order.items[index].price %>€</b></p>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <div class="panel-heading">
+      <h2 class="panel-title">Informations pour la livraison</h2>
+      <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
+    </div>
+    <div class="panel panel-primary">
+      <div class="row">
+        <div class="col-md-6">
+          <label class="control-label">Nom</label>
+          <input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.order.lastname) { %><%= locals.order.lastname %><% } %>" readonly>
+          <span id="i_lastname" class="form-info">Last Name must contain between 2 and 128 characters</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label">Prénom</label>
+          <input class="form-control" id="firstname" name="firstname" placeholder="John" value="<% if (locals.order.firstname) { %><%= locals.order.firstname %><% } %>" readonly>
+          <span id="i_firstname" class="form-info">First Name must contain between 2 and 128 characters</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <label class="control-label">Adresse</label>        
+        <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" class="form-control" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly>
+        <div id="address">
+          <div class="row">
+            <div class="col-md-12">
+              <label class="control-label">Route</label>
+              <input class="form-control" id="route" name="street_name" value="<% if (locals.order.full_street) { %><%= locals.order.full_street %><% } %>" readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label class="control-label">Ville</label>
+              <input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.order.city) { %><%= locals.order.city %><% } %>" readonly>
+            </div>
+            <div class="col-md-6"> 
+              <label class="control-label">Département</label>
+              <input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.order.state) { %><%= locals.order.state %><% } %>" readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label class="control-label">Code Postal</label>
+              <input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.order.zipcode) { %><%= locals.order.zipcode %><% } %>" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="control-label">Pays</label>
+              <input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.order.country) { %><%= locals.order.country %><% } %>" readonly>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-6 offset-3">
+              <textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.order.instructions) { %><%= locals.order.instructions %><% } %></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  <% } %>
   </div>
 </div>
   

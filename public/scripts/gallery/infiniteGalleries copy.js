@@ -1,5 +1,5 @@
 async function infiniteGalleries() {
-    let nbItem = $(".expandable-card").length,
+    let nbItem = $(".card").length,
         page = 1 + Math.floor(nbItem / 6),
         loader = $("#loader");
     loader.css("display","block");
@@ -11,26 +11,21 @@ async function infiniteGalleries() {
                     let id = gallery._id;
                     if ($(`#${id}`).length === 0) {
                         let div = document.createElement('div');
-                        div.setAttribute("class", "expandable-card");
                         div.setAttribute("id", id);
-                        toAppend = `
-                        <div class="face face1">
-                            <a href="#expand">
-                                <img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="card-img-top" alt="${gallery.shorttitle}">
-                            </a>
-                        </div>
-                        <div class="face face2">
-                            <h5 class="card-title"><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h5>
-                            <p class="gallery-description">${gallery.shortcontent}...</p>
-                            <div class="gallery-tags">`;
-
+                        div.setAttribute("class", "card");
+                        div.setAttribute("style", "width: 18rem");
+                        let toAppend =  `
+                            <a href="#expand"><img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="card-img-top" alt="${gallery.title}"></a>
+                            <div class="card-body">
+                                <h5 class="card-title"><i><a href="/Galerie/${id}">${gallery.title}</a></i></h5>
+                                <p class="card-text gallery-description">${gallery.content}</p>
+                                <p class="card-text">`;
                         gallery.tags.forEach(tag => {
                             toAppend += ` <a href="/Galerie/Tags?t=${tag}">#${tag}</a>`;
                         })
-                        toAppend += `   </div>
-                                        <form action="/Galerie/${id}"><button class="blog-btn">Lire plus</button></form>
-                                        </div>`;
+                        toAppend += `</p></div>`;
                         div.innerHTML = toAppend;  
+                        id++;
                         $("#container-gallery").append(div);
                     }
                 });
