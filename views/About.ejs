@@ -115,7 +115,7 @@
                 <% Object.keys(locals.blogs).forEach(function (index) { %>
                     <!--<div class="row blog-row" id="<%= locals.blogs[index]._id %>">--> 
                     <div class="blog-row" id="<%= locals.blogs[index]._id %>">
-                      <h3 class="blog-titlex"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].title %></a></h3> 
+                      <h3 class="blog-titlex"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3> 
                       <% if (locals.blogs[index].mainImgId) { %>
                         <img src="/api/image/<%= locals.blogs[index].mainImgId %>">
                       <% } %>
