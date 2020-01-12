@@ -21,22 +21,22 @@
                 <div class="row">
                     <div class="col-6">
                         <label class="control-label">Nom</label>
-                        <input class="form-control" type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required>
+                        <input class="form-control" placeholder="Jean Dupont" type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required>
                         <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
                     </div>
                     <div class="col-6">
                         <label class="control-label">Email</label>
-                        <input class="form-control" type="email" name="email" id="email" onkeyup="Validate.Email(this);" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required>
+                        <input class="form-control" placeholder="jeandupont@gmail.com" type="email" name="email" id="email" onkeyup="Validate.Email(this);" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required>
                         <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
                     </div>
                 </div>
 
                 <label class="control-label">Objet</label>
-                <input class="form-control" type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);" value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>" required>
+                <input class="form-control" placeholder="À propos de votre tableau..." type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);" value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>" required>
                 <span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
     
                 <label class="control-label">Message</label>
-                <textarea id="content" onkeyup="Validate.String(this, 64, 2048);" class="instructions-textarea" style="min-height: 175px;" name="content" placeholder="Whatever you wish to tell us..." required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
+                <textarea id="content" onkeyup="Validate.String(this, 64, 2048);" class="instructions-textarea" style="min-height: 175px;" name="content" placeholder="Écrivez votre message ici..." required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
                 <span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
 
                 <input type="submit" class="logbtn mt-3" value="Envoyer" id="submit-contact">
@@ -116,7 +116,7 @@
                     <!--<div class="row blog-row" id="<%= locals.blogs[index]._id %>">--> 
                     <div class="blog-row" id="<%= locals.blogs[index]._id %>">
                       <h3 class="blog-titlex"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3> 
-                      <% if (locals.blogs[index].mainImgId) { %>
+                      <% if (locals.blogs[index].mainImgId) { %> <!-- ????? -->
                         <img src="/api/image/<%= locals.blogs[index].mainImgId %>">
                       <% } %>
                       <p class="blog-info">posté par 

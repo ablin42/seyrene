@@ -50,9 +50,9 @@
             <p class="blog-content col-10 offset-1 mt-2"><%= locals.shopItem.content %></p>
 
             <div class="col-10 offset-1">
-                <%= locals.shopItem.price %>€<br />
+                <b class="card-price">%= locals.shopItem.price %>€</b><br />
                 <% if (locals.shopItem.isUnique) { %>
-                    <b>Toile unique</b>
+                    <b class="isUnique">Toile unique</b>
                 <% } %>
                 <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)">
             </div>

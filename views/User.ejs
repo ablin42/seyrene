@@ -85,14 +85,14 @@
           <label class="control-label">Nom de compte</label>
           <input class="form-control" type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
           <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
-          <input type="submit" class="logbtn mt-2" value="Update" id="submit-nameform">
+          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-nameform">
         </form>
        
         <form id="emailform" method="POST" action="/api/user/patch/email">
           <label class="control-label">Email</label>
           <input class="form-control" type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
           <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
-          <input type="submit" class="logbtn mt-2" value="Update" id="submit-emailform">
+          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-emailform">
         </form>
      
         <form id="passwordform" method="POST" action="/api/user/patch/password">
@@ -107,7 +107,7 @@
           <label class="control-label">Mot de passe <i>(confirmation)</i></label>
           <input class="form-control" type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required>
           <span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
-          <input type="submit" class="logbtn mt-2" value="Update" id="submit-passwordform">
+          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-passwordform">
         </form>
       </section>
     </div>
