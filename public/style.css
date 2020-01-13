@@ -590,6 +590,7 @@ footer {
   width: 17% !important;
   height: 100% !important;
   min-height: 100px;
+  background-color: transparent!important;
 }
 
 .carousel-indicators li img {
@@ -598,13 +599,7 @@ footer {
 }
 
 .carousel {
-  border: 5px solid var(--white-shade-2);
-  box-shadow: 1px 1px 3px 0px rgba(165, 165, 165, 0.75),
-    -1px -1px 3px 0px rgba(255, 255, 255, 0.79);
-}
-
-.carousel-container {
-  height: 85%;
+  box-shadow: 0px 0px 5px 1px rgba(165, 165, 165, 0.75);
 }
 
 div.carousel-item.active {
@@ -647,13 +642,19 @@ div.carousel-item.active {
 }
 
 .container .blog-row,
-.container-single .container-shop {
+.container-single .container-shop,
+.container .resetpw,
+.container .carousel-container
+ {
   position: relative;
   box-shadow: none;
 }
 
 .container .blog-row:before,
-.container-single .container-shop:before {
+.container-single .container-shop:before,
+.container .resetpw:before,
+.container .carousel-container:before
+ {
   box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
   content: "";
   position: absolute;
@@ -713,6 +714,8 @@ div.carousel-item.active {
   transform: skew(1deg, 1deg);
   z-index: -1;
 }
+
+.container .carousel-container:before {transform: skew(1deg, 0deg);}
 
 .blog-content {
   background-color: var(--white-shade-1);
@@ -1040,6 +1043,7 @@ a.lightbox-close {
   .carousel-indicators li {
     max-height: 40px !important;
   }
+
   .carousel-indicators li img {
     height: 40px !important;
   }
@@ -1820,3 +1824,4 @@ button:focus {
   left: 0;
   width: 100%;
 }
+

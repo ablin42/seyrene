@@ -1,6 +1,6 @@
 <% include partials/head %>
 
-<div class="container"> 
+<div class="container" style="position: sticky;"> 
   <div class="carousel-container">
   <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
     <!--Slides-->
@@ -77,7 +77,10 @@
     <!--/.Controls-->
   </div>
 
-  <div class="thumbnail-wrapper">
+
+
+  </div>
+  <div class="thumbnail-wrapper mt-2">
     <ol class="carousel-indicators">
         <% if (locals.front) { %>
           <% i = 0; %>
@@ -107,8 +110,6 @@
         <img class="d-block w-100" src="https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="..." class="img-fluid">
       </li>-->
     </ol>
-  </div>
-
   </div>
 </div>
 

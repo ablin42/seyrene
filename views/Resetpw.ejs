@@ -1,7 +1,7 @@
 <% include partials/head %>
 
-<div class="container"> 
-      <form class="form-slider col-4 offset-4 mt-5" id="resetpw" method="POST" action="/api/user/resetpw">
+<div class="container" style="position: sticky;"> 
+      <form class="resetpw form-slider col-4 offset-4 mt-5" id="resetpw" method="POST" action="/api/user/resetpw">
         <h1 class="form-title mb-5">Changement de mot de passe</h1>
 
         <input placeholder="Mot de passe" type="password" id="password" name="password" onkeyup="Validate.Password(this);" required>
