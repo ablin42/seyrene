@@ -74,13 +74,13 @@ async function cartAdd(itemId, caller) {
         let rowId = document.getElementById(itemId);
 
         document.getElementById("cartQty").innerText = totalQty;
-        if (!rowId.classList.contains("card")) {
+        if (rowId.classList.contains("cart-row-item")) {
           let itemQty = response.cart.items[itemId].qty;
           let itemPrice = response.cart.items[itemId].price;
 
           $(`#qty-${itemId}`).val(itemQty);
-          rowId.childNodes[3].childNodes[1].childNodes[0].innerText =
-            itemPrice + "€";
+          console.log(rowId.childNodes[2], rowId.childNodes[2].childNodes)
+          rowId.childNodes[5].innerText = itemPrice + "€";
           document.getElementById("total-price").innerText = totalPrice + "€";
           document.getElementById("total-qty").innerText = totalQty;
         }

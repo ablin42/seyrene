@@ -114,9 +114,10 @@
 </div>
 
 <script>
+  console.log($("body > div.container > div > div.thumbnail-wrapper > ol > li.active") )
 $('#carousel-thumb').on('slide.bs.carousel', function (element) {
-  $("body > div.container > div > div.thumbnail-wrapper > ol > li.active").removeClass("active");
-  $(`body > div.container > div > div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
+  $("body > div.container > div.thumbnail-wrapper > ol > li.active").removeClass("active");
+  $(`body > div.container > div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
 })
 </script>
   
