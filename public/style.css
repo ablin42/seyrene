@@ -3,33 +3,34 @@
 @import url("https://fonts.googleapis.com/css?family=Anton&display=swap"); /* used for 404 */
 
 :root {
+  /* other brand color */
+  /* layout colors */
+
+
   --brand-blue-m2: #ffffff;
   --brand-blue-m1: #ffffff;
   --brand-blue: #ffffff;
   --brand-blue-p1: #ffffff;
   --brand-blue-p2: #ffffff;
 
-  /* other brand color */
-
-  /* layout colors */
-
-  --interactive-color-m1: #ffffff;
+  --interactive-color-m1:#ffffff;
   --interactive-color: #ffffff;
-  --interactive-color-p1: #ffffff;
+  --interactive-color-p1:#ffffff;
 
-  --info-color: #ffffff;
-  --warning-color: #ffffff;
-  --danger-color: #ffffff;
-  --success-color: #ffffff;
+  --info-color: #0CAADC;
+  --warning-color: #FF7729;
+  --danger-color: #FF3348;
+  --success-color: #0CF574;
 
-  --dark-shade-m1: #ffffff;
-  --dark-shade: #ffffff;
-  --dark-shade-p1: #ffffff;
+  --dark-shade-m1: #292929;
+  --dark-shade: #1E1E1E;
+  --dark-shade-p1: #111111;
   
-  --light-shade-m1: #ffffff;
-  --light-shade: #ffffff;
-  --light-shade-p1: #ffffff;
+  --light-shade-m1: #F8F8F8;
+  --light-shade: #EEECEC;
+  --light-shade-p1: #D6D6D6;
 
+          /* OLD */
   --color-shade-1: #93bedf;
   --color-shade-2: #3498db;
   --color-shade-3: #465775;
