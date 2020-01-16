@@ -113,27 +113,32 @@
             <div class="container container-blogx" id="container-blog">
               <% if(locals.blogs){ %>
                 <% Object.keys(locals.blogs).forEach(function (index) { %>
-                    <!--<div class="row blog-row" id="<%= locals.blogs[index]._id %>">--> 
-                    <div class="blog-row" id="<%= locals.blogs[index]._id %>">
+                    <div class="blog-row col-10 offset-1" id="<%= locals.blogs[index]._id %>">
                       <h3 class="blog-titlex"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3> 
-                      <% if (locals.blogs[index].mainImgId) { %> <!-- ????? -->
-                        <img src="/api/image/<%= locals.blogs[index].mainImgId %>">
-                      <% } %>
                       <p class="blog-info">posté par 
                         <b class="blog-author"><%= locals.blogs[index].author %></b>,
                         <i class="blog-date"><%= locals.blogs[index].date %></i>
                       </p>
                       <hr />
 
+                    <% if (locals.blogs[index].mainImgId) { %>
                       <div class="blog-overlay-wrapper">
-                        <img class="blog-img" src="https://images-na.ssl-images-amazon.com/images/I/61fjVsjuuVL._SL1500_.jpg">
+                        <img class="blog-img" src="/api/image/<%= locals.blogs[index].mainImgId %>">
                         <div class="blog-overlay">
                           <p><%= locals.blogs[index].shortcontent %>...</p>
                           <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Lire plus</button></form>
                         </div>
                       </div>
                     </div>
-                    <!-- </div> -->
+                    <% } else { %>
+                      <div class="blog-no-overlay-wrapper">
+                        <div class="blog-no-overlay">
+                          <p><%= locals.blogs[index].shortcontent %>...</p>
+                          <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+                        </div>
+                      </div>
+                    </div>
+                    <% } %>
                 <% }) %>
               <% } %>
             </div>

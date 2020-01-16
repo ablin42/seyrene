@@ -28,19 +28,19 @@ async function fetchMainImg(blogs) {
       _id: blogs[i]._id,
       title: blogs[i].title,
       content: blogs[i].content,
-      shorttitle: blogs[i].title.substr(0, 68),
-      shortcontent: blogs[i].content.substr(0, 210),
+      shorttitle: blogs[i].title.substr(0, 128),
+      shortcontent: blogs[i].content.substr(0, 512),
       date: blogs[i].date,
       createdAt: blogs[i].createdAt,
       updatedAt: blogs[i].updatedAt,
       author: blogs[i].author,
       __v: blogs[i].__v
     };
-    /*var [err, img] = await utils.to(Image.findOne({_itemId: blogs[i]._id, itemType: "Blog", isMain: true}));
+    var [err, img] = await utils.to(Image.findOne({_itemId: blogs[i]._id, itemType: "Blog", isMain: true}));
         if (err) 
             throw new Error("An error occured while fetching the blogs images");
         if (img !== null)
-            obj.mainImgId = img._id;*/
+            obj.mainImgId = img._id;
     arr.push(obj);
   }
   return arr;

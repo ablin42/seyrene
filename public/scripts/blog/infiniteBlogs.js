@@ -11,29 +11,35 @@ async function infiniteBlogs() {
             let id = blog._id;
             if ($(`#${id}`).length === 0) {
               let div = document.createElement("div");
-              div.setAttribute("class", "blog-row");
+              div.setAttribute("class", "blog-row col-10 offset-1");
               div.setAttribute("id", id);
-              let toAppend = `
-                    <h3 class="blog-titlex"><ahref="/Blog/${id}">${blog.shorttitle}...</a></h3> 
-                `;
-
-              if (blog.mainImgId)
-                toAppend += `<img src="/api/image/${blog.mainImgId}">`;
+              let toAppend = `<h3 class="blog-titlex"><a href="/Blog/${id}">${blog.shorttitle}...</a></h3> `;
               toAppend += `
                         <p class="blog-info">posté par 
                         <b class="blog-author">${blog.author}</b>,
                         <i class="blog-date">${blog.date}</i>
                     </p>
-                    <hr />
-
-                    <div class="blog-overlay-wrapper">
-                        <img class="blog-img" src="https://images-na.ssl-images-amazon.com/images/I/61fjVsjuuVL._SL1500_.jpg">
-                        <div class="blog-overlay">
-                        <p>${blog.shortcontent}...</p>
-                        <form action="/Blog/${id}"><button class="blog-btn">Lire plus</button></form>
-                        </div>
+                    <hr />`;
+              if (blog.mainImgId) {
+                toAppend += `
+                <div class="blog-overlay-wrapper">
+                    <img class="blog-img" src="/api/image/${blog.mainImgId}">
+                    <div class="blog-overlay">
+                    <p>${blog.shortcontent}...</p>
+                    <form action="/Blog/${id}"><button class="blog-btn">Lire plus</button></form>
                     </div>
+                </div>
                 `;
+              } else {
+                toAppend += `
+                <div class="blog-no-overlay-wrapper">
+                  <div class="blog-no-overlay">
+                    <p>${blog.shortcontent}...</p>
+                    <form action="/Blog/${id}"><button class="blog-btn">Lire plus</button></form>
+                  </div>
+                </div>
+                `;
+              }
               div.innerHTML = toAppend;
               id++;
               $("#container-blog").append(div);

@@ -11,8 +11,6 @@
 
   /* other brand color */
 
-  /* layout colors */
-
   --interactive-color-m1: #ffffff;
   --interactive-color: #ffffff;
   --interactive-color-p1: #ffffff;
@@ -1337,7 +1335,7 @@ td a {
 
 .container-blogx {
   display: grid;
-  /*grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));*/
+  grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));
   border-radius: 10px;
 }
 
@@ -1346,7 +1344,7 @@ td a {
   display: flex;
   flex-direction: column;
   position: relative;
-  /*margin: 10px;*/
+  margin: 10px;
   padding: 25px;
   box-shadow: 3px 3px 5px 0px rgba(165, 165, 165, 0.75),
     -3px -3px 5px 0px rgba(255, 255, 255, 0.79);
@@ -1401,11 +1399,11 @@ td a {
 }
 
 .blog-no-overlay-wrapper {
-  padding: 20px;
+
 }
 
 .blog-no-overlay {
-  padding: 15px; 
+  
 }
 
 .blog-overlay-wrapper {
