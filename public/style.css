@@ -6,16 +6,15 @@
   /* other brand color */
   /* layout colors */
 
+  --brand-blue-m2: #0070C1;
+  --brand-blue-m1: #0D5A91;
+  --brand-blue: #0A3D62;
+  --brand-blue-p1: #143750;
+  --brand-blue-p2: #142837;
 
-  --brand-blue-m2: #ffffff;
-  --brand-blue-m1: #ffffff;
-  --brand-blue: #ffffff;
-  --brand-blue-p1: #ffffff;
-  --brand-blue-p2: #ffffff;
-
-  --interactive-color-m1:#ffffff;
-  --interactive-color: #ffffff;
-  --interactive-color-p1:#ffffff;
+  --interactive-color-m1:#44A2E6;
+  --interactive-color: #1D84CE;
+  --interactive-color-p1:#356588;
 
   --info-color: #0CAADC;
   --warning-color: #FF7729;
