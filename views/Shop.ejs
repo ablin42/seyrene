@@ -33,13 +33,15 @@
                   </div>
                   <% } %>
                 <% }) %>
+              <% } else { %>
+                <h1 class="alertEmpty">Plus de toiles originales en stock!</h1>
               <% } %>
           </div>
           <div id="print" class="tab container-shop" style="display:none">
               <% if(locals.print){ %>
                 <% Object.keys(locals.print).forEach(function (index) { %>
                   <% if (!locals.print[index].isUnique) { %>
-                  <div class="card" id="<%= locals.print[index]._id %>"><!-- /api/image/<%= locals.original[index].mainImgId %>--> 
+                  <div class="card" id="<%= locals.print[index]._id %>"><!-- /api/image/<%= locals.print[index].mainImgId %>--> 
                     <a href="/Shop/<%= locals.print[index]._id %>"><img src="https://www.numerama.com/content/uploads/2019/05/trou-noir-espace-univers-astronomie.jpg" class="card-img-top" alt="<%= locals.print[index].title %>"></a>
                     <div class="card-body">
                       <h5 class="card-title"><i><a href="/Shop/<%= locals.print[index]._id %>"><%= locals.print[index].shorttitle %></a></i></h5>
@@ -52,7 +54,7 @@
                           <% } %>
                         </div>
                         <div class="col-6">
-                          <input type="submit" class="logbtn cart-btn" value="Ajouter au panier" onclick="cartAdd('<%= locals.original[index]._id %>', this)">
+                          <input type="submit" class="logbtn cart-btn" value="Ajouter au panier" onclick="cartAdd('<%= locals.print[index]._id %>', this)">
                         </div>
                       </div>
                     </div>

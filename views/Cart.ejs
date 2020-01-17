@@ -6,7 +6,7 @@
 
 <div class="container container-single"> 
   <div class="blog-row">
-    <b id="alertEmpty" <% if (locals.totalPrice != 0) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
+    <b class="alertEmpty" id="alertEmpty" <% if (locals.totalPrice != 0) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
     <% if(locals.products){ %>
       <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
         <div class="cart-row" id="cart-row-header">

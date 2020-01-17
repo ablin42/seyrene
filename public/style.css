@@ -884,7 +884,7 @@ a.lightbox-close {
   margin: auto;
 }
 
-#alertEmpty {
+.alertEmpty {
   font-size: 5em;
   text-align: center;
   color: var(--brand-blue-p1);

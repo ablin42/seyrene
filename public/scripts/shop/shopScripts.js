@@ -145,5 +145,7 @@ function openTab(btn, tabName) {
       tab[i].style.display = "none";  
     }
     document.getElementById(tabName).style.display = "grid";
-    document.getElementById("load").setAttribute("onclick", `infiniteShopItems("${tabName}");`);
+    document.getElementById("infinitebtn").setAttribute("onclick", `infiniteShopItems("${tabName}");`);
+    document.getElementById("infinitebtn").setAttribute("value", "Load More");
+    document.getElementById("infinitebtn").removeAttribute("disabled");
 }
