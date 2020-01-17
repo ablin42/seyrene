@@ -153,7 +153,7 @@ header:hover {
 }
 header:hover .navbar-container .navbar-custom .logo,
 header:hover .navbar-container .navbar-custom .nav-links li a {
-  color: var(--brand-blue);
+  color: var(--brand-blue-m1);
 }
 .hamburger {
   display: none;
@@ -193,6 +193,7 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
 }
 
 .nav-links li {
+  padding: 0 15px;
   list-style-type: none;
   display: inline-block;
   margin: 0 20px;
@@ -212,9 +213,15 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
 }
 
 .nav-links li a:hover {
+  color: var(--brand-blue-m2)!important;
   border-bottom: 3px solid var(--brand-blue-p1);
   padding-bottom: 3px;
 }
+
+.nav-links #cart-qty-li:hover {background-color: var(--light-shade-m1)!important;}
+.nav-links #cart-qty-li a:hover {border: none;}
+
+.logo:hover {color: var(--brand-blue-m2)!important;}
 
 .name-header {
   font-family: "Pacifico", cursive;
@@ -283,6 +290,8 @@ footer {
 }
 
 .footer-copyright {
+  font-size: 17px;
+  color: var(--light-shade-p1);
   height: 25%;
   min-height: 17px;
   background-color: var(--brand-blue-m1) !important;
@@ -301,7 +310,7 @@ footer {
   margin: 10px;
   border-radius: 30%;
   box-shadow: 0 5px 30px -3px var(--brand-blue-p1);
-  color: var(--brand-blue-m2);
+  color: var(--brand-blue-m1);
   overflow: hidden;
   position: relative;
   text-align: center;
@@ -589,21 +598,22 @@ footer {
 
 /* HOME */
 .thumbnail-wrapper {
-  height: 15%;
+  background-color: var(--brand-blue-p1);
   display: block;
-  border-radius: 5px;
+  border-radius: 2px;
 }
 
 .carousel-indicators {
   height: 100%;
   position: initial !important;
   margin: 0% !important;
+  padding: 5px;
 }
 
 .carousel-indicators li {
+  border: none;
   border-radius: 5px;
-  margin-top: 10px !important;
-  width: 17% !important;
+  width: unset !important;
   height: 100% !important;
   min-height: 100px;
   background-color: transparent!important;
@@ -611,11 +621,7 @@ footer {
 
 .carousel-indicators li img {
   height: 100px;
-  box-shadow: 0px 0px 5px 0px rgba(165, 165, 165, 0.75);
-}
-
-.carousel {
-  box-shadow: 0px 0px 5px 1px rgba(165, 165, 165, 0.75);
+  /*box-shadow: 0px 0px 5px 0px rgba(165, 165, 165, 0.75);*/
 }
 
 div.carousel-item.active {
