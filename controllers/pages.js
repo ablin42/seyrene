@@ -90,7 +90,7 @@ router.get("/Galerie/Tags", verifySession, async (req, res) => {
     res.status(200).render("tags", obj);
   } catch (err) {
     console.log("GALLERY TAGS ROUTE ERROR", err);
-    if (req.query.t) var obj = { tags: req.query.t };
+    if (req.query.t) var obj = { error: true, tags: req.query.t };
     req.flash("warning", err.message);
     res.status(400).render("tags", obj);
   }

@@ -207,10 +207,9 @@ async function cartDel(itemId, caller) {
         let totalQty = response.cart.totalQty;
         let totalPrice = response.cart.totalPrice;
         if (totalPrice == 0) {
-          $("#purchase").attr("style", "display: none");
-          $("#total-price-span").attr("style", "display: none");
-          $("#total-qty-span").attr("style", "display: none");
+          $(".payment-div").attr("style", "display: none");
           $("#alertEmpty").attr("style", "display: inline-block");
+          $("#cart-row-header").attr("style", "display: none");
         }
 
         let rowId = document.getElementById(itemId);

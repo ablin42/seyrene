@@ -864,17 +864,24 @@ a.lightbox-close {
   padding-top: 15px;
 }
 
-#total-price-span {
+#total-price {
   font-weight: bold;
+  font-size: 26px;
 }
-#total-qty-span {
+
+#total-qty {
   font-weight: bold;
+  font-size: 26px;
 }
+
 .btn-purchase {
+  display: block;
   color: var(--light-shade-m1);
   background: transparent;
   border: 1px solid var(--light-shade-m1);
   font-weight: bold;
+  padding: 10px 30px;
+  margin: auto;
 }
 
 #alertEmpty {
@@ -884,8 +891,9 @@ a.lightbox-close {
 }
 
 .payment-div {
-  background: var(--brand-blue-p1);
+  background: var(--brand-blue-m1);
   color: var(--light-shade-m1);
+  text-align: center;
 }
 
 .container-cart {
@@ -1159,6 +1167,7 @@ a.lightbox-close {
 
 .instructions-textarea {
   /* careful form */
+  height: 100%;
   width: 100%;
   min-height: 100px;
   padding: 15px;
