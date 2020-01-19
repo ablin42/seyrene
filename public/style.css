@@ -786,11 +786,7 @@ button:focus {
   font-size: 13px;
 }
 
-.form-info {
-  font-style: italic;
-  color: var(--dark-shade-p1);
-  display: none;
-}
+
 /* END FORMS  */
 
 /* HOME */
@@ -858,7 +854,7 @@ div.carousel-item.active {
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: 15px 25px;
+  padding: 15px 0px;
 }
 
 .blog-title a {
@@ -903,11 +899,11 @@ div.carousel-item.active {
   text-align: right;
 }
 
-.blog-wrapper {
+.wrapper {
   border-radius: 10px;
   background-color: var(--light-shade);
   box-shadow: 2px 2px 10px 1px rgba(42, 67, 111, 0.67), -2px -2px 10px 1px rgba(10, 25, 49, 0.23);
-  padding: 15px 5px;
+  padding: 15px 30px;
 }
 
 .blog-img {
@@ -1064,12 +1060,7 @@ div.carousel-item.active {
 }
 
 .contact-section {
-  padding: 20px;
-}
-#submit-contact {
-  width: 50%;
-  margin: auto;
-  height: 75px;
+  width: 100%;
 }
 
 .bio-section {
@@ -1151,10 +1142,13 @@ div.carousel-item.active {
   float: right;
 }
 
+#contact-form {
+  border-top: 1px solid var(--brand-blue);
+  padding-top: 10px;
+}
+
 .section-heading {
   text-align: center;
-  border-bottom: 1px solid var(--brand-blue-m2);
-  margin-bottom: 5px;
 }
 .section-heading h2 {
   color: var(--brand-blue-m2);
@@ -1503,11 +1497,12 @@ a.lightbox-close {
 } /* form */
 
 .form-info {
-  /* form */
-  font-size: 10px;
+  font-size: 12px;
   text-align: center;
   width: 100%;
-  color: var(--dark-shade-4);
+  font-style: italic;
+  color: var(--brand-blue-m1);
+  display: none;
 }
 
 #nameform,

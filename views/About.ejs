@@ -10,14 +10,16 @@
         </ul>
       </div>
   
-      <div id="contact" class="tab col-9 row" style="display: none;">
-        <section class="contact-section col-10 offset-1">
+      <div id="contact" class="tab col-9" style="display: none;">
+        <section class="contact-section">
+          <div class="container">
+          <div class="col-10 offset-1 wrapper">
             <div class="section-heading">
                 <h2>Contact</h2>
                 <h5>Nous avons besoin de ces informations pour pouvoir vous répondre...</h5>
                 <h6>Sinon, vous pouvez nous envoyer un mail directement à l'adresse <b>Maral.canvas@gmail.com</b></h6>
             </div>
-            <form class="mt-5" id="contact" method="POST" action="/api/contact/">
+            <form class="col-10 offset-1 mt-4" id="contact-form" method="POST" action="/api/contact/">
                 <div class="row">
                     <div class="col-6">
                         <label class="control-label">Nom</label>
@@ -41,6 +43,8 @@
 
                 <input type="submit" class="logbtn mt-3" value="Envoyer" id="submit-contact">
             </form>
+          </div>
+        </div>
         </section>
       </div>
   
@@ -101,7 +105,7 @@
         <section class="blog-section">
             <script src="/scripts/blog/infiniteBlogs.js"></script>
             <div class="container container-blogx" id="container-blog">
-              <div class="col-10 offset-1 blog-wrapper">
+              <div class="col-10 offset-1 wrapper">
                 <% if(locals.blogs){ %>
                   <% Object.keys(locals.blogs).forEach(function (index) { %>
                       <div class="blog-row" id="<%= locals.blogs[index]._id %>">
