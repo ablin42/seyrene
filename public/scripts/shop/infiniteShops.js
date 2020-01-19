@@ -32,7 +32,7 @@ async function infiniteShopItems(tab) {
                 toAppend += `    
                                 </div>
                                 <div class="col-6">
-                                    <input type="submit" class="logbtn cart-btn" value="Ajouter au panier" onclick="cartAdd('${id}', this)">
+                                    <input type="submit" class="logbtn" value="Ajouter au panier" onclick="cartAdd('${id}', this)">
                                 </div>
                             </div>
                         </div>`;

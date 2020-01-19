@@ -90,7 +90,19 @@ router.get("/Galerie/Tags", verifySession, async (req, res) => {
     res.status(200).render("tags", obj);
   } catch (err) {
     console.log("GALLERY TAGS ROUTE ERROR", err);
-    if (req.query.t) var obj = { error: true, tags: req.query.t };
+    let obj = {
+      active: "Tags search",
+      root: path.join(__dirname, "/pages/")
+    };
+    if (req.user) {
+      obj.userId = req.user._id;
+      obj.name = req.user.name;
+      obj.level = req.user.level;
+    }
+    if (req.query.t) {
+      obj.error = true;
+      obj.tags = req.query.t;
+    }
     req.flash("warning", err.message);
     res.status(400).render("tags", obj);
   }

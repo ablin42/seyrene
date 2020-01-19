@@ -136,12 +136,12 @@ input:-webkit-autofill:focus {
 /* HEADER */
 header {
   display: flex !important;
-  align-items: center;
   background-color: transparent;
   justify-content: space-around;
   align-items: center;
   padding: 0px 5%;
   transition: 0.3s ease;
+  border-bottom: 2px solid transparent;
 }
 
 header:hover {
@@ -456,15 +456,13 @@ footer {
   padding: 15px;
   width: 200px;
   color: var(--light-shade-m1);
-  background-color: #6ebccd;
+  background-color: var(--brand-blue-p2);
   border: 0;
-  box-shadow: 4px 4px 5px 0 #23244652, -2px -2px 5px 0 #67a5b36b;
   transition: ease-in 0.2s;
 }
 .btn-404:hover {
-  color: #6ebccd;
-  background-color: var(--light-shade-m1);
-  box-shadow: 4px 4px 5px 0 #67a5b36b, -2px -2px 5px 0 #23244652;
+  color: var(--dark-shade-p1);
+  background-color: var(--brand-blue-m2);
 }
 /* END 404 */
 
@@ -519,6 +517,12 @@ input[type="submit"]:active {
   text-transform: uppercase;
   transition: transform 80ms ease-in;
 }
+
+.ghost:hover {
+  background-color: var(--brand-blue-p2);
+  box-shadow: 0px 0px 5px 1px #e2e2e24a;
+}
+
 button:focus {
   outline: none;
 }
@@ -573,8 +577,6 @@ button:focus {
 
 #container {
   background-color: var(--light-shade-m1);
-  box-shadow: 3px 3px 5px 0px rgba(165, 165, 165, 0.75),
-    -3px -3px 5px 0px rgba(255, 255, 255, 0.79);
   position: relative;
   overflow: hidden;
   width: 768px;
@@ -612,11 +614,7 @@ button:focus {
 
 .overlay {
   background: var(--brand-blue-m2);
-  background: linear-gradient(
-    to right,
-    var(--brand-blue-m2),
-    var(--brand-blue-p1)
-  );
+  background: linear-gradient( to right, var(--brand-blue-m2), var(--brand-blue) );
   color: var(--light-shade-m1);
   position: relative;
   left: -100%;
@@ -669,7 +667,7 @@ button:focus {
 
 #lostpw-container {
   position: sticky;
-  background-color: rgb(75, 96, 174);
+  background-color: var(--brand-blue-p1)
   border-left: 1px solid rgb(13, 31, 68);
 }
 
@@ -753,7 +751,7 @@ button:focus {
   border: none;
   background: linear-gradient( 160deg, var(--brand-blue-m1), var(--brand-blue-m2) );
   background-size: 200%;
-  color: #fff;
+  color: var(--light-shade);
   outline: none;
   cursor: pointer;
   transition: 0.5s;
@@ -1596,6 +1594,16 @@ td a {
 
 .card-body {
   line-height: normal;
+}
+
+.card-title a {
+  color: var(--brand-blue-m2);
+  text-decoration: none;
+}
+
+.card-title a:hover {
+  color: var(--brand-blue-m1);
+  text-decoration: none;
 }
 
 #original,
