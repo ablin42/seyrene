@@ -12,15 +12,14 @@ async function infiniteBlogs() {
               let id = blog._id;
               if ($(`#${id}`).length === 0) {
                 let div = document.createElement("div");
-                div.setAttribute("class", "blog-row col-10 offset-1");
+                div.setAttribute("class", "blog-row");
                 div.setAttribute("id", id);
-                let toAppend = `<h3 class="blog-titlex"><a href="/Blog/${id}">${blog.shorttitle}...</a></h3> `;
+                let toAppend = `<h3 class="blog-title"><a href="/Blog/${id}">${blog.shorttitle}...</a></h3> `;
                 toAppend += `
                         <p class="blog-info">posté par 
                         <b class="blog-author">${blog.author}</b>,
                         <i class="blog-date">${blog.date}</i>
-                    </p>
-                    <hr />`;
+                    </p>`;
                 if (blog.mainImgId) {
                   toAppend += `
                 <div class="blog-overlay-wrapper">

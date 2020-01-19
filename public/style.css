@@ -751,12 +751,7 @@ button:focus {
   width: 100%;
   height: 50px;
   border: none;
-  background: linear-gradient(
-    160deg,
-    var(--brand-blue-m2),
-    var(--brand-blue),
-    var(--brand-blue-p1)
-  );
+  background: linear-gradient( 160deg, var(--brand-blue-m1), var(--brand-blue-m2) );
   background-size: 200%;
   color: #fff;
   outline: none;
@@ -783,6 +778,7 @@ button:focus {
 
 .logbtn:hover {
   background-position: right;
+  box-shadow: 0px 0px 5px 1px #026cb963;
 }
 
 .bottom-text {
@@ -845,14 +841,6 @@ div.carousel-item.active {
   -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
 }
-
-.blog-title {
-  font-size: 2.5em;
-  font-weight: 600;
-  color: var(--brand-blue-p1);
-  margin: 0;
-}
-
 .blog-form {
   max-width: 800px;
   transform: translate(-50%, 0%);
@@ -866,35 +854,32 @@ div.carousel-item.active {
 }
 
 .blog-row {
-  background: #f1f1f1;
+  background: var(--light-shade);
   display: flex;
   flex-direction: column;
   position: relative;
-  /*margin: 10px;*/
-  padding: 25px;
-  box-shadow: 3px 3px 5px 0px rgba(165, 165, 165, 0.75),
-    -3px -3px 5px 0px rgba(255, 255, 255, 0.79);
+  padding: 15px 25px;
 }
 
-.blog-titlex a {
+.blog-title a {
   font-size: 24px;
   font-weight: 600;
-  color: var(--brand-blue-p1);
+  color: var(--brand-blue-m2);
   text-decoration: none;
 }
 
-.blog-titlex a:hover {
+.blog-title a:hover {
   color: var(--brand-blue-m2);
 }
 
-.blog-titlex {
+.blog-title {
   margin-bottom: 0;
 }
 
 .blog-btn {
   padding: 10px 15px;
   width: 200px;
-  background-color: #4b60ae;
+  background-color: var(--brand-blue-m1);
   color: var(--light-shade-m1);
   border: 0;
 
@@ -913,29 +898,38 @@ div.carousel-item.active {
 }
 .blog-info {
   font-style: italic;
-  color: lightgrey;
+  color: var(--brand-blue-m1);
   margin-bottom: 0;
+  text-align: right;
+}
+
+.blog-wrapper {
+  border-radius: 10px;
+  background-color: var(--light-shade);
+  box-shadow: 2px 2px 10px 1px rgba(42, 67, 111, 0.67), -2px -2px 10px 1px rgba(10, 25, 49, 0.23);
+  padding: 15px 5px;
 }
 
 .blog-img {
   width: 100%;
   height: 100%;
-  border-radius: 10px;
   backface-visibility: hidden;
 }
 
 .blog-no-overlay-wrapper {
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
 }
 
-.blog-no-overlay {
-  padding: 15px; 
+.blog-no-overlay p {
+  border-top: 1px solid var(--brand-blue);
+  padding: 15px 30px 30px 30px;
 }
 
 .blog-overlay-wrapper {
   transition: ease-in-out 0.5s;
   position: relative;
   flex-grow: 1;
+  margin-top: 15px;
 }
 
 .blog-overlay-wrapper:hover .blog-overlay {
@@ -1127,17 +1121,16 @@ div.carousel-item.active {
 
 /* CONTAINER WITH MENU */
 .container-with-menu {
-  background-color: var(--light-shade);
-  border-radius: 10px;
+  background-color: var(--brand-blue-p1);
+  border-radius: 12px;
   padding: 0 !important;
-  box-shadow: 6px 6px 5px -2px rgba(42, 67, 111, 0.67),
-    -6px -6px 5px -2px rgba(155, 183, 232, 0.23);
+  box-shadow: 1px 1px 5px 0px rgba(42, 67, 111, 0.67), -1px -1px 5px 0px rgba(10, 25, 49, 0.23);
   box-sizing: border-box;
   min-height: unset;
 }
 
 .menu {
-  background-color: #4b60ae;
+  background-color: var(--brand-blue-p2);
   border-radius: 10px 0 0 10px;
 }
 
@@ -1147,11 +1140,11 @@ div.carousel-item.active {
   margin: 20px 10px;
 }
 .menu a {
-  color: var(--light-shade-m1);
+  color: var(--light-shade);
 }
 .menu a:hover {
   text-decoration: none;
-  color: var(--brand-blue);
+  color: var(--brand-blue-m2);
 }
 .chev {
   margin-top: 10px;
@@ -1470,14 +1463,14 @@ a.lightbox-close {
 }
 
 .menu-link.active {
-  color: var(--brand-blue-m2);
+  color: var(--brand-blue-m1);
 }
 .menu-link.disabled {
-  color: var(--brand-blue-p1);
+  color: var(--brand-blue-m1);
   cursor: default;
 }
 .menu-link.disabled:hover {
-  color: var(--brand-blue-p1);
+  color: var(--brand-blue);
 }
 
 .user-section {
