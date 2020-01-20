@@ -30,6 +30,27 @@
   --light-shade-p1: #D6D6D6;
 }
 
+.alert-info {
+  color: var(--brand-blue-p2);
+  background-color: var(--brand-blue-m2);
+  border-color: var(--brand-blue-p2);
+}
+.alert-success {
+  color: #155724;
+  background-color: var(--success-color);
+  border-color: var(--success);
+}
+.alert-warning {
+  color: #856404;
+  background-color: var(--warning);
+  border-color: #b18709;
+}
+.alert-danger {
+  color: #721c24;
+  background-color: var(--danger-color);
+  border-color: var(--danger);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -667,7 +688,7 @@ button:focus {
 
 #lostpw-container {
   position: sticky;
-  background-color: var(--brand-blue-p1)
+  background-color: var(--brand-blue-p1);
   border-left: 1px solid rgb(13, 31, 68);
 }
 
@@ -805,6 +826,7 @@ button:focus {
   border: none;
   border-radius: 5px;
   width: unset !important;
+  max-width: 30%;
   height: 100% !important;
   min-height: 100px;
   background-color: transparent!important;
@@ -812,7 +834,15 @@ button:focus {
 
 .carousel-indicators li img {
   height: 100px;
-  /*box-shadow: 0px 0px 5px 0px rgba(165, 165, 165, 0.75);*/
+}
+
+.no-thumb li {
+  min-height: 10px!important;
+}
+
+.no-thumb img {
+  width: 10px!important;
+  height: 10px!important;
 }
 
 div.carousel-item.active {
@@ -949,6 +979,22 @@ div.carousel-item.active {
 }
 
 /* SINGLE BLOG */
+.single-wrapper {
+  background: var(--brand-blue-p1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 15px 0px;
+}
+
+.single-title {
+  text-align: center;
+  color: var(--light-shade);
+  margin-bottom: 0;
+}
+.single-wrapper .blog-info {color: var(--light-shade-p1)}
+.single-wrapper .blog-author {color: var(--brand-blue-m2)}
+
 .container-single {
   position: sticky;
   min-height: unset;
@@ -957,7 +1003,8 @@ div.carousel-item.active {
 .container .blog-row,
 .container-single .container-shop,
 .container .resetpw,
-.container .carousel-container
+.container .carousel-container,
+.container .single-wrapper
  {
   position: relative;
   box-shadow: none;
@@ -966,7 +1013,8 @@ div.carousel-item.active {
 .container .blog-row:before,
 .container-single .container-shop:before,
 .container .resetpw:before,
-.container .carousel-container:before
+.container .carousel-container:before,
+.container .single-wrapper:before
  {
   box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
   content: "";
@@ -1031,14 +1079,13 @@ div.carousel-item.active {
 .container .carousel-container:before {transform: skew(1deg, 0deg);}
 
 .blog-content {
-  background-color: var(--light-shade-m1);
-  box-shadow: 2px 2px 5px 0 #0000006e, -2px -2px 5px 0 #ffffff87;
+  background-color: var(--light-shade);
+  box-shadow: 0px 0px 5px 0 #0000006e, 0px 0px 5px 0 #ffffff87;
   padding: 5% 10%;
 }
 
 .single-blog-img {
-  box-shadow: 3px 3px 5px 0px rgba(165, 165, 165, 0.75),
-    -3px -3px 5px 0px rgba(255, 255, 255, 0.79);
+  box-shadow: 0px 0px 5px 0px rgba(165, 165, 165, 0.25), 0px 0px 4px 0px rgba(20, 55, 80, 0.25);
 }
 /* END SINGLE */
 /* END BLOG */
@@ -1374,7 +1421,7 @@ a.lightbox-close {
 .alertEmpty {
   font-size: 5em;
   text-align: center;
-  color: var(--brand-blue-p1);
+  color: var(--light-shade);
 }
 
 .payment-div {

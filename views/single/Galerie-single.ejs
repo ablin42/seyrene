@@ -4,15 +4,16 @@
 
 
 <div class="container container-single"> 
-  <div class="blog-row">
+  <div class="single-wrapper">
   <% if (locals.galleries){ %>
       <div class="col-10 offset-1" id="<%= locals.galleries._id %>">
-          <h3 class="blog-title col-12"><%= locals.galleries.title %></h3>  
-          <% if (locals.level && locals.level > 1) { %>
-            <a href="/Admin/Blog/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
-          <% } %> 
+          <h3 class="single-title col-12"><%= locals.galleries.title %>
+            <% if (locals.level && locals.level > 1) { %>
+              <a href="/Admin/Blog/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
+            <% } %> 
+          </h3>  
 
-          <div class="carousel-container">
+          <div class="carousel-container mt-3">
               <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
                   <div class="carousel-inner" role="listbox">
                       <% if (locals.img) { %>
@@ -37,12 +38,12 @@
                   <!--/.Controls-->
               </div>
           </div>
-          <div class="thumbnail-wrapper">
-              <ol class="carousel-indicators">
+          <div class="thumbnail-wrapper mb-4 mt-3">
+              <ol class="carousel-indicators no-thumb">
                   <% if (locals.img) { %>
                       <% locals.img.forEach(function (item, index) { %>
                           <li data-target="#carousel-thumb" data-slide-to="<%= index %>" <% if(index == 0) { %>class='active'<% } %>> 
-                              <img class="d-block w-100" src="http://localhost:8089/api/image/<%= item._id %>" alt="..." class="img-fluid">
+                            <img class="d-block w-100" src="/img/white_circle.png" alt="..." class="img-fluid">
                           </li>
                       <% }) %>
                   <% } %>
@@ -55,37 +56,12 @@
 </div>
 </div>
 
-
-<!--
-<div class="container">
-  <div id="single-gallery">
-    <% if (locals.galleries){ %>
-      <div class="card" style="width: 18rem;" id="<%= locals.galleries._id %>">
-        <a href="#expand"><img onclick="expand(this);" src="/api/image/<%= locals.img[0]._id %>" class="card-img-top" alt="<%= locals.galleries.title %>"></a>
-        <div class="card-body">
-          <h5 class="card-title"><i><%= locals.galleries.title %></i></h5>
-          <% if (locals.level && locals.level > 1) { %>
-            <a href="/Admin/Galerie/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
-          <% } %>
-          <p class="card-text gallery-description"><%= locals.galleries.content %></p>
-          <p class="card-text">
-            <% locals.galleries.tags.forEach(function (tag) { %>
-              <a href="#<%= tag %>">#<%= tag %></a>
-            <% }) %>
-          </p>
-        </div>
-      </div>
-      <% if (locals.img) { %>
-        <% locals.img.forEach(function (item) { %>
-          <% if (item.isMain !== true) { %>
-            <a href="#expand"><img onclick="expand(this);" src="http://localhost:8089/api/image/<%= item._id %>"></a>
-          <% } %>
-        <% }) %>
-      <% } %>
-    <% } %>
-  </div>
-</div>
--->
+<script>
+$('#carousel-thumb').on('slide.bs.carousel', function (element) {
+  $("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
+  $(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
+})
+</script>
 <script src="/scripts/gallery/galleryScripts.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 <script src="/scripts/formFocus.js"></script>

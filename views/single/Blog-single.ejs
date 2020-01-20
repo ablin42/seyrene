@@ -4,12 +4,13 @@
 
 <div class="container container-single">
     <% if(locals.blogs){ %>
-      <div class="row blog-row" id="<%= locals.blogs._id %>">
+      <div class="single-wrapper" id="<%= locals.blogs._id %>">
         <div class="col-10 offset-1">
-          <h3 class="blog-title col-12"><%= locals.blogs.title %></h3>  
-          <% if (locals.level && locals.level > 1) { %>
-            <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
-          <% } %> 
+          <h3 class="single-title col-12"><%= locals.blogs.title %>
+            <% if (locals.level && locals.level > 1) { %>
+              <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
+            <% } %> 
+          </h3>  
           <a href="#expand"><img class="single-blog-img col-12 mt-3 p-0" src="https://i.imgur.com/5ylZG2o.jpg"></a>
           <p class="blog-info pb-2 ml-4">par 
             <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>

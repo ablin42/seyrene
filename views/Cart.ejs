@@ -5,7 +5,7 @@
 <script src="/scripts/cart.js"></script>
 
 <div class="container container-single"> 
-  <div class="blog-row">
+  <div class="single-wrapper">
     <b class="alertEmpty" id="alertEmpty" <% if (locals.totalPrice != 0) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
     <% if(locals.products){ %>
       <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>

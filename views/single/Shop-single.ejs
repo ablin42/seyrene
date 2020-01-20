@@ -2,15 +2,16 @@
 
 <script src="/scripts/cart.js"></script>
 <div class="container container-single"> 
-    <div class="blog-row">
+    <div class="single-wrapper">
     <% if (locals.shopItem){ %>
         <div class="col-10 offset-1" id="<%= locals.shopItem._id %>">
-            <h3 class="blog-title col-12"><%= locals.shopItem.title %></h3>  
-            <% if (locals.level && locals.level > 1) { %>
-              <a href="/Admin/Blog/Patch/<%= locals.shopItem._id %>"><i class="fas fa-edit"></i></a>
-            <% } %> 
+            <h3 class="single-title col-12"><%= locals.shopItem.title %>
+                <% if (locals.level && locals.level > 1) { %>
+                <a href="/Admin/Blog/Patch/<%= locals.shopItem._id %>"><i class="fas fa-edit"></i></a>
+                <% } %> 
+            </h3>  
 
-            <div class="carousel-container">
+            <div class="carousel-container mt-3">
                 <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
                     <div class="carousel-inner" role="listbox">
                         <% if (locals.img) { %>
@@ -35,12 +36,12 @@
                     <!--/.Controls-->
                 </div>
             </div>
-            <div class="thumbnail-wrapper">
-                <ol class="carousel-indicators">
+            <div class="thumbnail-wrapper mb-4 mt-3">
+                <ol class="carousel-indicators no-thumb">
                     <% if (locals.img) { %>
                         <% locals.img.forEach(function (item, index) { %>
                             <li data-target="#carousel-thumb" data-slide-to="<%= index %>" <% if(index == 0) { %>class='active'<% } %>> 
-                                <img class="d-block w-100" src="http://localhost:8089/api/image/<%= item._id %>" alt="..." class="img-fluid">
+                              <img class="d-block w-100" src="/img/white_circle.png" alt="..." class="img-fluid">
                             </li>
                         <% }) %>
                     <% } %>
@@ -49,10 +50,10 @@
 
             <p class="blog-content col-10 offset-1 mt-2"><%= locals.shopItem.content %></p>
 
-            <div class="col-10 offset-1">
-                <b class="card-price"><%= locals.shopItem.price %>€</b><br />
+            <div class="col-10 offset-1 text-center">
+                <b class="card-price"><%= locals.shopItem.price %>€</b>
                 <% if (locals.shopItem.isUnique) { %>
-                    <b class="isUnique">Toile unique</b>
+                    <b class="isUnique" style="color: var(--light-shade)">Toile unique</b>
                 <% } %>
                 <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)">
             </div>
@@ -60,6 +61,13 @@
     <% } %>
   </div>
 </div>
+
+<script>
+    $('#carousel-thumb').on('slide.bs.carousel', function (element) {
+      $("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
+      $(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
+    })
+</script>
 <script src="/scripts/frontValidation.js"></script>
 <script src="/scripts/formFocus.js"></script>
 <script src="/scripts/shop/shopScripts.js"></script>
