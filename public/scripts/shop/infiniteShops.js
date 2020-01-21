@@ -76,11 +76,11 @@ $(window).scroll(function() {
   let tab = "original";
   if (
     document
-      .getElementById("load")
+      .getElementById("infinitebtn")
       .getAttribute("onclick")
       .indexOf("original") === -1
   )
-    tab = "print";
+  tab = "print";
   if (val1 >= val2) {
     infiniteShopItems(tab);
   }

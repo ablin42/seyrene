@@ -77,7 +77,6 @@ async function infiniteBlogs() {
 $(window).scroll(function() {
   val1 = Math.ceil($(window).scrollTop() + $(window).height());
   val2 = $(document).height();
-  console.log(val1, val2);
   if (val1 >= val2) {
     infiniteBlogs();
   }

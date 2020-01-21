@@ -36,7 +36,11 @@ async function fetchMainImg(blogs) {
       author: blogs[i].author,
       __v: blogs[i].__v
     };
-  
+    var [err, img] = await utils.to(Image.findOne({_itemId: blogs[i]._id, itemType: "Blog", isMain: true}));
+      if (err) 
+        throw new Error("An error occured while fetching the blogs images");
+      if (img !== null)
+        obj.mainImgId = img._id;
     arr.push(obj);
   }
   return arr;

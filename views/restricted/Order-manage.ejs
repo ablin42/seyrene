@@ -50,6 +50,7 @@
 
           <div class="cart-price cart-column">
             <p class="cart-item-price"><b><%= locals.order.items[index].price %>€</b></p>
+            <p class="cart-item-unitprice"><b><%= locals.order.items[index].item.price %>€/Unité</b></p>
           </div>
         </div>
       <% }) %>

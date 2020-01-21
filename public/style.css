@@ -127,7 +127,7 @@ html {
     ),
     linear-gradient(63deg, rgb(156, 214, 233), rgb(74, 10, 132));*/
     background-color: var(--brand-blue);
-  overflow-x: hidden; /* ERROR FUCKS UP INFINITE LOADING TRIGGERED SCROLLING */
+  /*overflow-x: hidden; ERROR FUCKS UP INFINITE LOADING TRIGGERED SCROLLING */
 }
 .container {
   max-width: 1340px !important;
@@ -1531,8 +1531,21 @@ a.lightbox-close {
   color: var(--light-shade-p1);
 }
 
+.cart-price.cart-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .cart-item-price {
   color: var(--light-shade-m1);
+  margin-bottom: 0;
+  font-size: 20px;
+}
+
+.cart-item-unitprice {
+  color: var(--light-shade-p1);
+  font-size: 16px;
 }
 
 .cart-item-description {
