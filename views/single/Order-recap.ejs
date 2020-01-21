@@ -2,11 +2,12 @@
 
 <script src="/scripts/order.js"></script>
 <div class="container container-single">
-  <div class="blog-row">
-    <h1 class="text-center">Votre commande</h1>
+  <div class="single-wrapper">
+    <div class="col-10 offset-1">
+    <h1 class="text-center" style="color: var(--light-shade-p1);">Votre commande</h1>
     <hr />
     <% if (locals.order) { %> <% if(locals.order.items){ %>
-    <div class="cart-row">
+    <div class="cart-row" id="cart-row-header">
       <span class="cart-item cart-header cart-column">ITEM</span>
       <span class="cart-quantity cart-header cart-column">QUANTITÉ</span>
       <span class="cart-price cart-header cart-column">PRIX</span>
@@ -173,6 +174,7 @@
       </div>
     </div>
     <% } %>
+  </div>
   </div>
 </div>
 

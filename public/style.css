@@ -250,6 +250,10 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
   color: var(--light-shade-m1);
 }
 
+#cart-row-header {
+  background-color: var(--brand-blue-p2);
+}
+
 #cartQty {
   margin-left: -15px;
   font-weight: bold;
@@ -1398,6 +1402,14 @@ a.lightbox-close {
   padding-top: 15px;
 }
 
+.panel-heading h6 {
+  color: var(--light-shade-p1)
+}
+
+.panel-title {
+  color: var(--light-shade)
+}
+
 #total-price {
   font-weight: bold;
   font-size: 26px;
@@ -1418,6 +1430,11 @@ a.lightbox-close {
   margin: auto;
 }
 
+.btn-purchase:hover {
+  color: var(--brand-blue-p2);
+  background-color: var(--light-shade)
+}
+
 .alertEmpty {
   font-size: 5em;
   text-align: center;
@@ -1428,6 +1445,7 @@ a.lightbox-close {
   background: var(--brand-blue-m1);
   color: var(--light-shade-m1);
   text-align: center;
+  box-shadow: 0 0 5px 0 #1a7cc1bf;
 }
 
 .container-cart {
@@ -1443,10 +1461,22 @@ a.lightbox-close {
 .cart-row {
   display: flex;
 }
+
+.cart-row-item {
+  padding: 15px;
+}
+
+.cart-row-item:nth-child(even) {
+  background-color: var(--brand-blue-m1);
+}
+
+.cart-row-item:nth-child(odd) {
+  background-color: var(--brand-blue);
+}
+
 .cart-column {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--dark-shade-p1);
   margin-right: 1.5em;
   padding-bottom: 10px;
   margin-top: 10px;
@@ -1455,7 +1485,8 @@ a.lightbox-close {
 .cart-header {
   font-weight: bold;
   font-size: 1.25em;
-  color: var(--dark-shade-p1);
+  color: var(--light-shade-p1);
+  padding-left: 15px;
 }
 
 .cart-item {
@@ -1464,7 +1495,6 @@ a.lightbox-close {
 .cart-price {
   width: 25%;
   font-size: 1.2em;
-  color: var(--dark-shade-p1);
 }
 
 .cart-quantity {
@@ -1475,6 +1505,7 @@ a.lightbox-close {
 }
 .cart-title-description {
   margin-left: 10px;
+  color: var(--light-shade-p1);
 }
 
 .qty-update {
@@ -1484,14 +1515,25 @@ a.lightbox-close {
   margin: 0 10px 0 10px;
 }
 
-.cart-item-title {
-  border-bottom: 1px solid var(--dark-shade-p1);
+.qty-update:hover {
+  color: var(--light-shade-p1);
 }
+
+.cart-item-price {
+  color: var(--light-shade-m1);
+}
+
 .cart-item-description {
+  color: var(--dark-shade-p1);
   opacity: 0.8;
 }
 .cart-item-qty {
   width: 100%;
+  color: var(--light-shade);
+}
+
+.manage-order {
+  color: var(--light-shade-p1)
 }
 /* END CART */
 
