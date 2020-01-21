@@ -13,7 +13,42 @@
     </div>
 
     <div id="parameters" class="tab col-9 row">
-      <section class="user-section col-8">
+      <section class="user-section col-5">
+        <div class="section-heading">
+          <h2>Compte</h2>
+          <h6>Gardez ces informations pour vous!</h6>
+        </div>
+
+        <form id="nameform" method="POST" action="/api/user/patch/name">
+          <label class="control-label">Nom de compte</label>
+          <input class="form-control" type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
+          <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
+          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-nameform">
+        </form>
+       
+        <form id="emailform" method="POST" action="/api/user/patch/email">
+          <label class="control-label">Email</label>
+          <input class="form-control" type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
+          <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
+          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-emailform">
+        </form>
+     
+        <form id="passwordform" method="POST" action="/api/user/patch/password">
+          <label class="control-label">Mot de passe <i>(actuel)</i></label>
+          <input class="form-control" type="password" name="cpassword" placeholder="*********" required>
+          <span data-placeholder="Current Password"></span>
+
+          <label class="control-label mt-3">Mot de passe <i>(nouveau)</i></label>
+          <input class="form-control" type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required>
+          <span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
+
+          <label class="control-label">Mot de passe <i>(confirmation)</i></label>
+          <input class="form-control" type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required>
+          <span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
+          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-passwordform">
+        </form>
+      </section>
+      <section class="user-section col-7">
         <div class="section-heading">
           <h2>Livraison</h2>
           <h6>Nous utiliserons ces informations pour livrer vos commandes</h6>
@@ -74,42 +109,6 @@
             
           </form>
       </section>
-
-      <section class="user-section col-4">
-        <div class="section-heading">
-          <h2>Compte</h2>
-          <h6>Gardez ces informations pour vous!</h6>
-        </div>
-
-        <form id="nameform" method="POST" action="/api/user/patch/name">
-          <label class="control-label">Nom de compte</label>
-          <input class="form-control" type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required>
-          <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
-          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-nameform">
-        </form>
-       
-        <form id="emailform" method="POST" action="/api/user/patch/email">
-          <label class="control-label">Email</label>
-          <input class="form-control" type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required>
-          <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
-          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-emailform">
-        </form>
-     
-        <form id="passwordform" method="POST" action="/api/user/patch/password">
-          <label class="control-label">Mot de passe <i>(actuel)</i></label>
-          <input class="form-control" type="password" name="cpassword" placeholder="*********" required>
-          <span data-placeholder="Current Password"></span>
-
-          <label class="control-label mt-3">Mot de passe <i>(nouveau)</i></label>
-          <input class="form-control" type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required>
-          <span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
-
-          <label class="control-label">Mot de passe <i>(confirmation)</i></label>
-          <input class="form-control" type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required>
-          <span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
-          <input type="submit" class="logbtn mt-2" value="Modifier" id="submit-passwordform">
-        </form>
-      </section>
     </div>
 
     <div id="purchases" class="tab col-9" style="display: none;">
@@ -138,70 +137,6 @@
                 </tr>
               <% }) %>
             <% } %>
-
-            <tr>
-              <th scope="row" class="date-grid">12/03/2019</th>
-              <td class="status-grid">En cours de livraison</td class="status-grid">
-              <td class="price-grid">45.00€</td>
-              <td class="name-grid">S. Hagakian</td class="name-grid">
-              <td class="id-grid"><a href="#">#524853216544</a></td class="id-grid">
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">01/01/2020</th>
-              <td class="status-grid">Livré</td class="status-grid">
-              <td class="price-grid">750.00€</td class="price-grid">
-              <td class="name-grid">A. Blin</td class="name-grid">
-              <td class="id-grid">#5784365621</td class="id-grid">
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">05/12/2017</th>
-              <td class="status-grid">Validé</td>
-              <td class="price-grid">19.95€</td class="price-grid">
-              <td class="name-grid">J. Dupont</td>
-              <td class="id-grid">#876453135</td>
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">12/03/2019</th>
-              <td class="status-grid">En cours de livraison</td class="status-grid">
-              <td class="price-grid">45.00€</td>
-              <td class="name-grid">S. Hagakian</td class="name-grid">
-              <td class="id-grid">#524853216544</td class="id-grid">
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">01/01/2020</th>
-              <td class="status-grid">Livré</td class="status-grid">
-              <td class="price-grid">750.00€</td class="price-grid">
-              <td class="name-grid">A. Blin</td class="name-grid">
-              <td class="id-grid">#5784365621</td class="id-grid">
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">05/12/2017</th>
-              <td class="status-grid">Validé</td>
-              <td class="price-grid">19.95€</td class="price-grid">
-              <td class="name-grid">J. Dupont</td>
-              <td class="id-grid">#876453135</td>
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">12/03/2019</th>
-              <td class="status-grid">En cours de livraison</td class="status-grid">
-              <td class="price-grid">45.00€</td>
-              <td class="name-grid">S. Hagakian</td class="name-grid">
-              <td class="id-grid">#524853216544</td class="id-grid">
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">01/01/2020</th>
-              <td class="status-grid">Livré</td class="status-grid">
-              <td class="price-grid">750.00€</td class="price-grid">
-              <td class="name-grid">A. Blin</td class="name-grid">
-              <td class="id-grid">#5784365621</td class="id-grid">
-            </tr>
-            <tr>
-              <th scope="row" class="date-grid">05/12/2017</th>
-              <td class="status-grid">Validé</td>
-              <td class="price-grid">19.95€</td class="price-grid">
-              <td class="name-grid">J. Dupont</td>
-              <td class="id-grid">#876453135</td>
-            </tr>
           </tbody>
         </table>
       </section>

@@ -30,6 +30,18 @@
   --light-shade-p1: #D6D6D6;
 }
 
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--brand-blue);
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: var(--brand-blue-m1);
+}
+
+.table {
+  color: var(--light-shade)
+}
+
 .alert-info {
   color: var(--brand-blue-p2);
   background-color: var(--brand-blue-m2);
@@ -1559,14 +1571,18 @@ a.lightbox-close {
 .user-section {
   padding: 20px !important;
 }
-.user-section.col-8 {
-  box-shadow: -1px 0 2px 0 rgb(75, 96, 174, 0.75);
+
+.user-section .section-heading {
+  border-bottom: 1px solid var(--brand-blue-p2);
 }
-/*.user-section.col-4 {box-shadow: -1px 0 2px 0 rgb(75, 96, 174, 0.75);}*/
+
+.user-section .section-heading h6 {
+  color: var(--light-shade);
+}
 
 .control-label {
   /* form */
-  color: var(--brand-blue-p1);
+  color: var(--light-shade-p1);
   font-weight: bold;
   font-size: 18px;
   margin: 10px 0 2px 3px;
@@ -1602,6 +1618,10 @@ a.lightbox-close {
   border-bottom: 1px solid var(--brand-blue-m2);
 }
 
+#nameform {
+  margin-top: 0;
+}
+
 #submit-deliveryform {
   /* careful form */
   min-height: 100px;
@@ -1627,16 +1647,22 @@ a.lightbox-close {
   width: 100%;
   padding: 25px;
   margin: 25px 0 25px 0;
-  box-shadow: 3px 3px 5px 0px rgba(165, 165, 165, 0.75),
-    -3px -3px 5px 0px rgba(255, 255, 255, 0.79);
+  font-size: 20px;
+}
+
+thead {
+  background-color: var(--brand-blue-p2);
 }
 
 .date-grid {
   font-style: italic;
   color: var(--brand-blue-m2);
+  font-size: 18px;
 }
 .price-grid {
   font-weight: bold;
+  color: var(--light-shade-p1);
+  font-size: 20px;
 }
 .id-grid {
   max-width: 125px;
@@ -1644,15 +1670,27 @@ a.lightbox-close {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .status-grid {
+  color: var(--info-color);
 }
 .name-grid {
+  font-style: italic;
+  color: var(--light-shade-p1);
 }
 
 td a {
-  color: var(--brand-blue) !important;
+  color: var(--light-shade);
   text-decoration: underline;
   font-size: 15px;
+}
+
+td a:hover {
+  color: var(--interactive-color);
+}
+
+tr:hover {
+  background-color: var(--interactive-color-p1)!important;
 }
 /* END NEW USER PAGE*/
 
