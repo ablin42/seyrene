@@ -3,6 +3,9 @@ const router = express.Router();
 const { validationResult } = require("express-validator");
 const { vBlog } = require("./validators/vBlog");
 const multer = require("multer");
+const path = require('path');
+const fs = require('fs');
+const rp = require("request-promise");
 
 const Blog = require("../models/Blog");
 const Image = require("../models/Image");
@@ -11,8 +14,18 @@ const bHelpers = require("./helpers/blogHelpers");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/img/upload/')
+  },
+  filename: function (req, file, cb) {
+    console.log(file)
+    cb(null, Date.now() + path.extname(file.originalname))
+  }
+})
+
 upload = multer({
-  storage: multer.memoryStorage(),
+  storage: storage,
   limits: {
     fileSize: 10000000 //too low probably
   },
@@ -108,9 +121,7 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
       const blog = new Blog(obj);
       var [err, savedBlog] = await utils.to(blog.save());
       if (err)
-        throw new Error(
-          "An error occured while posting your blog, please try again"
-        );
+        throw new Error("An error occured while posting your blog, please try again");
 
       for (let i = 0; i < req.files.length; i++) {
         let isMain = false;
@@ -119,8 +130,16 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
           _itemId: savedBlog._id,
           itemType: "Blog",
           isMain: isMain,
-          img: await gHelpers.imgEncode(req.files[i])
+          mimetype: req.files[0].mimetype
+          //img: await gHelpers.imgEncode(req.files[i])
         });
+        let oldpath = req.files[0].destination + req.files[0].filename;
+        let newpath = req.files[0].destination + image._id + path.extname(req.files[0].originalname);
+        fs.rename(oldpath, newpath, (err) => {
+          if (err)
+            throw new Error(err)
+        })
+        image.path = newpath;
         var [err, savedImage] = await utils.to(image.save());
         if (err)
           throw new Error("Something went wrong while uploading your image");
@@ -183,6 +202,7 @@ router.post(
           );
           if (err)
             throw new Error("An error occured while updating the main image");
+          
           for (let i = 0; i < req.files.length; i++) {
             let isMain = false;
             if (i === 0) isMain = true;
@@ -190,8 +210,17 @@ router.post(
               _itemId: id,
               itemType: "Blog",
               isMain: isMain,
-              img: await gHelpers.imgEncode(req.files[i])
+              mimetype: req.files[0].mimetype, //oldbinary
             });
+
+            let oldpath = req.files[0].destination + req.files[0].filename;
+            let newpath = req.files[0].destination + image._id + path.extname(req.files[0].originalname);
+            fs.rename(oldpath, newpath, (err) => {
+              if (err)
+                throw new Error(err)
+            })
+            image.path = newpath;
+
             var [err, savedImage] = await utils.to(image.save());
             if (err)
               throw new Error(
@@ -201,7 +230,7 @@ router.post(
         }
 
         req.flash("success", "Post corrigé avec succès");
-        res.status(200).redirect("/Blog");
+        res.status(200).redirect(`/Blog/${req.params.blogId}`);
       } else
         throw new Error(
           "Unauthorized. Contact your administrator if you think this is a mistake"
@@ -218,13 +247,26 @@ router.post(
 router.get("/delete/:blogId", verifySession, async (req, res) => {
   try {
     if (req.user.level > 1) {
+      let blogId = req.params.blogId
       var [err, removedBlog] = await utils.to(
-        Blog.deleteOne({ _id: req.params.blogId })
+        Blog.deleteOne({ _id: blogId })
       );
       if (err)
-        throw new Error(
-          "An error occured while deleting the blog, please try again"
-        );
+        throw new Error("An error occured while deleting the blog, please try again");
+      
+      rp(`http://localhost:8089/api/image/Blog/${blogId}`)
+        .then(async (response) => {
+          parsed = JSON.parse(response);
+          for (let i = 0; i < parsed.length; i++) {
+            fs.unlink(parsed[i].path, (err) => {
+              if (err) throw new Error("An error occured while deleting your image");
+            })
+            await Image.deleteOne({ _id: parsed[i]._id });
+          }
+      })
+      .catch((err) => {
+        throw new Error("An error occured while fetching the images");
+      });
 
       req.flash("success", "Post supprimé avec succès");
       res.status(200).redirect("/Blog");
@@ -235,7 +277,7 @@ router.get("/delete/:blogId", verifySession, async (req, res) => {
   } catch (err) {
     console.log("DELETE BLOG ERROR", err);
     req.flash("warning", err.message);
-    res.status(400).redirect("/Blog");
+    res.status(400).redirect("/About");
   }
 });
 

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+const fs = require('fs');
 
 const verifySession = require('./helpers/verifySession');
 const Image = require('../models/Image');
@@ -13,9 +15,14 @@ try {
         throw new Error("An error occured while fetching the image");
     if (result == null)
         throw new Error("No results were found");
-        
-    res.set('Content-Type', result.img.contentType)
-    return res.status(200).send(result.img.data);
+
+    fs.readFile(result.path, function(err, data) {
+        if (err)
+            throw new Error("File couldn't be read"); 
+        let contentType = { 'Content-Type': result.mimetype };
+        res.writeHead(200, contentType);
+        res.status(200).end(data);
+    });
 } catch (err) {
     console.log("IMAGE FETCH ERROR", err);
     return res.status(400).json({error: true, message: err.message});
@@ -68,15 +75,27 @@ try {
     if (req.user.level >= 3) {
         let id = req.params.id;
 
-        var [err, result] = await utils.to(Image.deleteOne({_id: id, isMain: false}));
+        var [err, find] = await utils.to(Image.findOne({_id: id}));
+        if (err) 
+            throw new Error("We could not find your image, please try again");
+        
+        var [err, result] = await utils.to(Image.deleteOne({ _id: id, isMain: false }));
+        if (result.n === 1) {
+            fs.unlink(find.path, (err) => {
+                if (err) throw new Error("An error occured while deleting your image");
+            })
+        }
+
         if (err) 
             throw new Error("An error occured while deleting the image0");
         if (result.n === 0) {
-            var [err, find] = await utils.to(Image.findOne({_id: id}));
-            if (err) 
-                throw new Error("We could not find your image, please try again");
             if (find && find.itemType === "Blog") {
-                var [err, deleted] = await utils.to(Image.deleteOne({_id: id}));
+                var [err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
+                if (deleted.n === 1) {
+                    fs.unlink(find.path, (err) => {
+                        if (err) throw new Error("An error occured while deleting your image");
+                    })
+                }
                 if (err) 
                     throw new Error("An error occured while deleting the image2");
             } else 

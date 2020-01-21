@@ -13,7 +13,15 @@ const ImageSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
-    img: {
+    path: {
+        type: String,
+        required: true
+    },
+    mimetype: {
+        type: String,
+        required: true
+    },
+    img: {//
         data: Buffer,
         contentType: String
     },
