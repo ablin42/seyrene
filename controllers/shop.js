@@ -3,6 +3,9 @@ const router = express.Router();
 const multer = require("multer");
 const { validationResult } = require("express-validator");
 const { vShop } = require("./validators/vShop");
+const path = require('path');
+const fs = require('fs');
+const rp = require("request-promise");
 
 const Shop = require("../models/Shop");
 const Image = require("../models/Image");
@@ -11,15 +14,25 @@ const gHelpers = require("./helpers/galleryHelpers"); //////////
 //const sHelpers = require('./helpers/shopHelpers');
 const utils = require("./helpers/utils");
 
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/img/upload/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname))
+  }
+})
+
 upload = multer({
-  storage: multer.memoryStorage(),
+  storage: storage,
   limits: {
-    fileSize: 100000000 //too low probably
+    fileSize: 10000000 //too low probably
   },
   fileFilter: function(req, file, cb) {
     gHelpers.sanitizeFile(req, file, cb);
   }
 }).array("img");
+
 
 //var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat("de-DE", {
@@ -107,8 +120,15 @@ router.post("/post", upload, verifySession, vShop, async (req, res) => {
           _itemId: result._id,
           itemType: "Shop",
           isMain: isMain,
-          img: await gHelpers.imgEncode(req.files[i])
+          mimetype: req.files[i].mimetype
         });
+        let oldpath = req.files[i].destination + req.files[i].filename;
+        let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+        fs.rename(oldpath, newpath, (err) => {
+          if (err)
+            throw new Error(err)
+        })
+        image.path = newpath;
         var [err, savedImage] = await utils.to(image.save());
         if (err)
           throw new Error("Something went wrong while uploading your image");
@@ -161,8 +181,15 @@ router.post("/patch/:id", upload, verifySession, vShop, async (req, res) => {
           _itemId: id,
           itemType: "Shop",
           isMain: false,
-          img: await gHelpers.imgEncode(req.files[i])
+          mimetype: req.files[i].mimetype
         });
+        let oldpath = req.files[i].destination + req.files[i].filename;
+        let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+        fs.rename(oldpath, newpath, (err) => {
+          if (err)
+            throw new Error(err)
+        })
+        image.path = newpath;
         var [err, savedImage] = await utils.to(image.save());
         if (err)
           throw new Error("Something went wrong while uploading your image");
@@ -194,13 +221,19 @@ router.get("/delete/:id", verifySession, async (req, res) => {
           "An error occured while deleting the item, please try again"
         );
 
-      var [err, images] = await utils.to(
-        Image.deleteMany({ _itemId: id, itemType: "Shop" })
-      );
-      if (err)
-        throw new Error(
-          "An error occured while deleting the images for the shop item, please try again"
-        );
+      rp(`http://localhost:8089/api/image/Shop/${id}`)
+      .then(async (response) => {
+        parsed = JSON.parse(response);
+        for (let i = 0; i < parsed.length; i++) {
+          fs.unlink(parsed[i].path, (err) => {
+            if (err) throw new Error("An error occured while deleting your image");
+          })
+          await Image.deleteOne({ _id: parsed[i]._id });
+        }
+      })
+      .catch((err) => {
+        throw new Error("An error occured while fetching the images");
+      });
 
       req.flash("success", "Item successfully deleted!");
       return res.status(200).redirect("/Shop");

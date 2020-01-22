@@ -3,6 +3,9 @@ const router = express.Router();
 const multer = require("multer");
 const { validationResult } = require("express-validator");
 const { vGallery } = require("./validators/vGallery");
+const path = require('path');
+const fs = require('fs');
+const rp = require("request-promise");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
@@ -10,8 +13,17 @@ const verifySession = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/img/upload/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname))
+  }
+})
+
 upload = multer({
-  storage: multer.memoryStorage(),
+  storage: storage,
   limits: {
     fileSize: 10000000 //too low probably
   },
@@ -118,6 +130,7 @@ router.post("/post", upload, verifySession, vGallery, async (req, res) => {
       var [err, result] = await utils.to(gallery.save());
       if (err)
         throw new Error("Something went wrong while uploading your file");
+      
       for (let i = 0; i < req.files.length; i++) {
         let isMain = false;
         if (i === 0) isMain = true;
@@ -125,8 +138,15 @@ router.post("/post", upload, verifySession, vGallery, async (req, res) => {
           _itemId: result._id,
           itemType: "Gallery",
           isMain: isMain,
-          img: await gHelpers.imgEncode(req.files[i])
+          mimetype: req.files[i].mimetype
         });
+        let oldpath = req.files[i].destination + req.files[i].filename;
+        let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+        fs.rename(oldpath, newpath, (err) => {
+          if (err)
+            throw new Error(err)
+        })
+        image.path = newpath;
         var [err, savedImage] = await utils.to(image.save());
         if (err)
           throw new Error("Something went wrong while uploading your image");
@@ -174,11 +194,20 @@ router.post("/patch/:id", upload, verifySession, vGallery, async (req, res) => {
           _itemId: id,
           itemType: "Gallery",
           isMain: false,
-          img: await gHelpers.imgEncode(req.files[i])
+          mimetype: req.files[i].mimetype, 
         });
+        let oldpath = req.files[i].destination + req.files[i].filename;
+        let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+        image.path = newpath;
+        fs.rename(oldpath, newpath, (err) => {
+          if (err)
+            throw new Error(err)
+        })
         var [err, savedImage] = await utils.to(image.save());
-        if (err)
+        if (err) {
+          console.log(err)
           throw new Error("Something went wrong while uploading your image");
+        }
       }
 
       var [err, result] = await utils.to(
@@ -207,17 +236,21 @@ router.get("/delete/:id", verifySession, async (req, res) => {
       let id = req.params.id; //sanitize
       var [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
       if (err)
-        throw new Error(
-          "An error occured while deleting the item, please try again"
-        );
+        throw new Error("An error occured while deleting the item, please try again");
 
-      var [err, images] = await utils.to(
-        Image.deleteMany({ _itemId: id, itemType: "Gallery" })
-      );
-      if (err)
-        throw new Error(
-          "An error occured while deleting the images for the gallery item, please try again"
-        );
+      rp(`http://localhost:8089/api/image/Gallery/${id}`)
+      .then(async (response) => {
+        parsed = JSON.parse(response);
+        for (let i = 0; i < parsed.length; i++) {
+          fs.unlink(parsed[i].path, (err) => {
+            if (err) throw new Error("An error occured while deleting your image");
+          })
+          await Image.deleteOne({ _id: parsed[i]._id });
+        }
+      })
+      .catch((err) => {
+        throw new Error("An error occured while fetching the images");
+      });
 
       req.flash("success", "Item successfully deleted!");
       return res.status(200).redirect("/Galerie");

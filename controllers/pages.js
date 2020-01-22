@@ -569,7 +569,7 @@ router.get(
         var [err, result] = await utils.to(
           Gallery.findOne({ _id: req.params.galleryId })
         );
-        if (err)
+        if (err || !result)
           throw new Error("An error occured while fetching the gallery item");
         obj.gallery = result;
 
@@ -622,8 +622,8 @@ router.get("/Admin/Shop/Patch/:shopId", verifySession, async (req, res) => {
       var [err, result] = await utils.to(
         Shop.findOne({ _id: req.params.shopId })
       );
-      if (err)
-        throw new Error("An error occured while fetching the gallery item");
+      if (err || !result)
+        throw new Error("An error occured while fetching the shop item");
 
       obj.img = JSON.parse(
         await request(

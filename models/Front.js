@@ -9,6 +9,14 @@ const FrontSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    path: {
+        type: String,
+        required: true
+    },
+    mimetype: {
+        type: String,
+        required: true
+    },
     img: {
         data: Buffer,
         contentType: String

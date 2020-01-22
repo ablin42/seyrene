@@ -19,7 +19,6 @@ var storage = multer.diskStorage({
     cb(null, './public/img/upload/')
   },
   filename: function (req, file, cb) {
-    console.log(file)
     cb(null, Date.now() + path.extname(file.originalname))
   }
 })
@@ -130,11 +129,11 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
           _itemId: savedBlog._id,
           itemType: "Blog",
           isMain: isMain,
-          mimetype: req.files[0].mimetype
+          mimetype: req.files[i].mimetype
           //img: await gHelpers.imgEncode(req.files[i])
         });
-        let oldpath = req.files[0].destination + req.files[0].filename;
-        let newpath = req.files[0].destination + image._id + path.extname(req.files[0].originalname);
+        let oldpath = req.files[i].destination + req.files[i].filename;
+        let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
         fs.rename(oldpath, newpath, (err) => {
           if (err)
             throw new Error(err)
@@ -210,22 +209,22 @@ router.post(
               _itemId: id,
               itemType: "Blog",
               isMain: isMain,
-              mimetype: req.files[0].mimetype, //oldbinary
-            });
+              mimetype: req.files[i].mimetype, //oldbinary
+          });
 
-            let oldpath = req.files[0].destination + req.files[0].filename;
-            let newpath = req.files[0].destination + image._id + path.extname(req.files[0].originalname);
-            fs.rename(oldpath, newpath, (err) => {
-              if (err)
-                throw new Error(err)
-            })
-            image.path = newpath;
-
-            var [err, savedImage] = await utils.to(image.save());
+          let oldpath = req.files[i].destination + req.files[i].filename;
+          let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+          fs.rename(oldpath, newpath, (err) => {
             if (err)
-              throw new Error(
-                "Something went wrong while uploading your image"
-              );
+              throw new Error(err)
+          })
+          image.path = newpath;
+
+          var [err, savedImage] = await utils.to(image.save());
+          if (err)
+            throw new Error(
+              "Something went wrong while uploading your image"
+            );
           }
         }
 
@@ -254,26 +253,24 @@ router.get("/delete/:blogId", verifySession, async (req, res) => {
       if (err)
         throw new Error("An error occured while deleting the blog, please try again");
       
-      rp(`http://localhost:8089/api/image/Blog/${blogId}`)
+        rp(`http://localhost:8089/api/image/Blog/${id}`)
         .then(async (response) => {
-          parsed = JSON.parse(response);
-          for (let i = 0; i < parsed.length; i++) {
-            fs.unlink(parsed[i].path, (err) => {
-              if (err) throw new Error("An error occured while deleting your image");
-            })
-            await Image.deleteOne({ _id: parsed[i]._id });
-          }
-      })
-      .catch((err) => {
-        throw new Error("An error occured while fetching the images");
-      });
-
-      req.flash("success", "Post supprimé avec succès");
-      res.status(200).redirect("/Blog");
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
+        parsed = JSON.parse(response);
+        for (let i = 0; i < parsed.length; i++) {
+          fs.unlink(parsed[i].path, (err) => {
+            if (err) throw new Error("An error occured while deleting your image");
+          })
+          await Image.deleteOne({ _id: parsed[i]._id });
+         }
+        })
+        .catch((err) => {
+          throw new Error("An error occured while fetching the images");
+        });
+  
+        req.flash("success", "Item successfully deleted!");
+        return res.status(200).redirect("/About");
+      } else
+        throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
   } catch (err) {
     console.log("DELETE BLOG ERROR", err);
     req.flash("warning", err.message);
