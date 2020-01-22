@@ -103,8 +103,8 @@
       <div id="blog" class="tab col-9">
         <section class="blog-section">
             <script src="/scripts/blog/infiniteBlogs.js"></script>
-            <div class="container container-blogx" id="container-blog">
-              <div class="col-10 offset-1 wrapper">
+            <div class="container container-blogx">
+              <div class="col-10 offset-1 wrapper" id="container-blog">
                 <% if(locals.blogs){ %>
                   <% Object.keys(locals.blogs).forEach(function (index) { %>
                       <div class="blog-row" id="<%= locals.blogs[index]._id %>">

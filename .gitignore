@@ -1,4 +1,5 @@
 /node_modules
 /.vscode
+/public/img/upload
 .env
 eslint_output.txt

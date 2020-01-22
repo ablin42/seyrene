@@ -66,8 +66,7 @@ try {
                 var [err, result] = await utils.to(newFront.save());
                 if (err)
                     throw new Error("Something went wrong while uploading your image");
-            } else {
-               
+            } else {   
                 let oldpath = req.file.destination + req.file.filename;
                 let newpath = req.file.destination + result._id + path.extname(req.file.originalname);
                 fs.rename(oldpath, newpath, (err) => {

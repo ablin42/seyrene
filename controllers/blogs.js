@@ -49,10 +49,10 @@ async function fetchMainImg(blogs) {
       __v: blogs[i].__v
     };
     var [err, img] = await utils.to(Image.findOne({_itemId: blogs[i]._id, itemType: "Blog", isMain: true}));
-      if (err) 
-        throw new Error("An error occured while fetching the blogs images");
-      if (img !== null)
-        obj.mainImgId = img._id;
+    if (err) 
+      throw new Error("An error occured while fetching the blogs images");
+    if (img !== null)
+      obj.mainImgId = img._id;
     arr.push(obj);
   }
   return arr;
@@ -130,7 +130,6 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
           itemType: "Blog",
           isMain: isMain,
           mimetype: req.files[i].mimetype
-          //img: await gHelpers.imgEncode(req.files[i])
         });
         let oldpath = req.files[i].destination + req.files[i].filename;
         let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
@@ -253,7 +252,7 @@ router.get("/delete/:blogId", verifySession, async (req, res) => {
       if (err)
         throw new Error("An error occured while deleting the blog, please try again");
       
-        rp(`http://localhost:8089/api/image/Blog/${id}`)
+        rp(`http://localhost:8089/api/image/Blog/${blogId}`)
         .then(async (response) => {
         parsed = JSON.parse(response);
         for (let i = 0; i < parsed.length; i++) {

@@ -57,10 +57,10 @@ async function parsePrice(shopItems) {
       mainImgId: "",
       __v: shopItems[i].__v
     };
-    /* var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
-        if (err || img == null) 
-            throw new Error(`An error occured while fetching the shop images ${shopItems[i]._id}`);
-        obj.mainImgId = img._id;*/
+    var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
+    if (err || img == null) 
+      throw new Error(`An error occured while fetching the shop images ${shopItems[i]._id}`);
+    obj.mainImgId = img._id;
     arr.push(obj);
   }
   return arr;
