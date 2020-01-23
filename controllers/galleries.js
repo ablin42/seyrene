@@ -65,6 +65,14 @@ async function fetchMainImg(galleries) {
 
 router.get("/", async (req, res) => {
   try {
+
+    var [err, find] = await utils.to(Image.find({ itemType: "Gallery" }))
+
+    for (let i = 0; i < 21; i++) {
+      let newpath = `./public/img/upload/${find[i]._id}.jpg`;
+      var [err, test] = await utils.to(Image.updateOne({ _id: find[i]._id }, { $set: {path: newpath} }))
+    }
+
     const options = {
       page: parseInt(req.query.page, 10) || 1,
       limit: 6,

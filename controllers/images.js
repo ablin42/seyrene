@@ -17,7 +17,7 @@ try {
 
     fs.readFile(result.path, function(err, data) {
         if (err)
-            throw new Error("File couldn't be read"); 
+            return res.status(400).json({error: true, message: "File couldn't be read"});
         let contentType = { 'Content-Type': result.mimetype };
         res.writeHead(200, contentType);
         res.status(200).end(data);
