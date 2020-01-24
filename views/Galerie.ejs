@@ -7,21 +7,27 @@
     <% if(locals.galleries){ %>
       <% Object.keys(locals.galleries).forEach(function (index) { %>
         <div class="expandable-card" id="<%= locals.galleries[index]._id %>">
-          <div class="face face1">
+          <div class="face face1 blog-overlay-wrapper mt-0">
             <a href="#expand">
               <img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="card-img-top" alt="<%= locals.galleries[index].title %>">
             </a>
-          </div>
-          <div class="face face2">
-            <h5 class="card-title"><i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i></h5>
-            <p class="gallery-description"><%= locals.galleries[index].shortcontent %>...</p>
-            <div class="gallery-tags">
-              <% locals.galleries[index].tags.forEach(function (tag) { %>
-                <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
-              <% }) %>
+            <div class="blog-overlay">
+              <h4 class="card-title"><i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i></h4>
+              <div class="gallery-tags">
+                <% locals.galleries[index].tags.forEach(function (tag) { %>
+                  <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
+                <% }) %>
+              </div>
+              <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
             </div>
-            <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
           </div>
+         
+          <!--<div class="face face2">
+         
+            <p class="gallery-description"><%= locals.galleries[index].shortcontent %>...</p>
+           
+            <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+          </div>-->
         </div>
       <% }) %>
     <% } %>

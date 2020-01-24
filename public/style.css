@@ -976,7 +976,6 @@ div.carousel-item.active {
   opacity: 1;
 }
 .blog-overlay {
-  border-radius: 10px;
   overflow: hidden;
   position: absolute;
   padding: 50px;
@@ -1356,6 +1355,7 @@ a.lightbox-close {
 .expandable-card {
   position: relative;
 }
+
 .expandable-card .face {
   transition: ease-in 0.5s;
 }
@@ -1369,9 +1369,9 @@ a.lightbox-close {
 }
 
 .expandable-card .face.face2 {
-  position: absolute; /*relative*/
+  /*position: absolute; relative*/
   background: var(--light-shade);
-  display: block;
+  display: none; /*block*/
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -1380,6 +1380,9 @@ a.lightbox-close {
   transition: ease-in-out 0.35s;
   opacity: 0;
   line-height: normal;
+}
+.expandable-card:hover .face.face2 { /**/
+  display: block;
 }
 .expandable-card:hover .face2 {
   opacity: 1;
