@@ -18,16 +18,9 @@
                   <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
                 <% }) %>
               </div>
-              <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn" style="line-height: normal;">Lire plus</button></form>
+              <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
             </div>
           </div>
-         
-          <!--<div class="face face2">
-         
-            <p class="gallery-description"><%= locals.galleries[index].shortcontent %>...</p>
-           
-            <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
-          </div>-->
         </div>
       <% }) %>
     <% } %>

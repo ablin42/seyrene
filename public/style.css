@@ -922,6 +922,7 @@ div.carousel-item.active {
   background-color: var(--brand-blue-m1);
   color: var(--light-shade-m1);
   border: 0;
+  line-height: normal;
 
   bottom: 5%;
   left: 50%;
@@ -1397,6 +1398,13 @@ a.lightbox-close {
   line-height: initial;
 }
 
+.gallery-tags a {
+ color: var(--interactive-color-m1);
+}
+.gallery-tags a:hover {
+  color: var(--light-shade-m1);
+ }
+
 .gallery-form {
   max-width: 800px;
   transform: translate(-50%, 0%);
@@ -1745,12 +1753,12 @@ tr:hover {
 }
 
 .card-title a {
-  color: var(--brand-blue-m2);
+  color: var(--light-shade);
   text-decoration: none;
 }
 
 .card-title a:hover {
-  color: var(--brand-blue-m1);
+  color: var(--light-shade-m1);
   text-decoration: none;
 }
 

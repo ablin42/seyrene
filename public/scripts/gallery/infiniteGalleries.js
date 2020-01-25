@@ -14,23 +14,23 @@ async function infiniteGalleries() {
                             let div = document.createElement('div');
                             div.setAttribute("class", "expandable-card");
                             div.setAttribute("id", id);
+
                             toAppend = `
-                        <div class="face face1">
+                        <div class="face face1 blog-overlay-wrapper mt-0">
                             <a href="#expand">
                                 <img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="card-img-top" alt="${gallery.shorttitle}">
                             </a>
-                        </div>
-                        <div class="face face2">
-                            <h5 class="card-title"><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h5>
-                            <p class="gallery-description">${gallery.shortcontent}...</p>
-                            <div class="gallery-tags">`;
+                        
+                        <div class="blog-overlay">
+                            <h4 class="card-title"><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h4>
+                            <div class="gallery-tags mt-5">`;
 
                             gallery.tags.forEach(tag => {
                                 toAppend += ` <a href="/Galerie/Tags?t=${tag}">#${tag}</a>`;
                             })
                             toAppend += `   </div>
                                         <form action="/Galerie/${id}"><button class="blog-btn">Lire plus</button></form>
-                                        </div>`;
+                                        </div></div>`;
                             div.innerHTML = toAppend;
                             $("#container-gallery").append(div);
                         } else {
