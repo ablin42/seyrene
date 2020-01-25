@@ -1852,6 +1852,14 @@ tr:hover {
 
 .card-img-top {
   border-radius: 0;
+  height: 400px;
+  width: unset;
+  background-color: var(--brand-blue-p2);
+}
+
+.card-img-expand {
+  text-align: center;
+  background-color: var(--brand-blue-p1);
 }
 
 .card-price {

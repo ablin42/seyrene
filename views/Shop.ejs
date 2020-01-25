@@ -12,8 +12,8 @@
               <% if (locals.original){ %>
                 <% Object.keys(locals.original).forEach(function (index) { %>
                   <% if (locals.original[index].isUnique) { %>
-                  <div class="card" id="<%= locals.original[index]._id %>"><!-- /api/image/<%= locals.original[index].mainImgId %>--> 
-                    <a href="/Shop/<%= locals.original[index]._id %>"><img src="https://images.unsplash.com/photo-1499084732479-de2c02d45fcc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" class="card-img-top" alt="<%= locals.original[index].title %>"></a>
+                  <div class="card" id="<%= locals.original[index]._id %>">
+                    <a class="card-img-expand" href="/Shop/<%= locals.original[index]._id %>"><img src="/api/image/<%= locals.original[index].mainImgId %>" class="card-img-top" alt="<%= locals.original[index].title %>"></a class="card-img-expand">
                     <div class="card-body">
                       <h5 class="card-title"><i><a href="/Shop/<%= locals.original[index]._id %>"><%= locals.original[index].shorttitle %>...</a></i></h5>
                       <p class="card-text gallery-description mb-5"><%= locals.original[index].shortcontent %>...</p>
@@ -41,8 +41,8 @@
               <% if(locals.print){ %>
                 <% Object.keys(locals.print).forEach(function (index) { %>
                   <% if (!locals.print[index].isUnique) { %>
-                  <div class="card" id="<%= locals.print[index]._id %>"><!-- /api/image/<%= locals.print[index].mainImgId %>--> 
-                    <a href="/Shop/<%= locals.print[index]._id %>"><img src="https://www.numerama.com/content/uploads/2019/05/trou-noir-espace-univers-astronomie.jpg" class="card-img-top" alt="<%= locals.print[index].title %>"></a>
+                  <div class="card" id="<%= locals.print[index]._id %>">
+                    <a class="card-img-expand" href="/Shop/<%= locals.print[index]._id %>"><img src="/api/image/<%= locals.print[index].mainImgId %>" class="card-img-top" alt="<%= locals.print[index].title %>"></a>
                     <div class="card-body">
                       <h5 class="card-title"><i><a href="/Shop/<%= locals.print[index]._id %>"><%= locals.print[index].shorttitle %></a></i></h5>
                       <p class="card-text gallery-description mb-5"><%= locals.print[index].shortcontent %></p>

@@ -16,9 +16,8 @@ async function infiniteShopItems(tab) {
                 div.setAttribute("class", "card");
                 div.setAttribute("id", id);
 
-                //shop.mainImg
                 let toAppend = `
-                        <a href="/Shop/${id}"><img src="https://www.numerama.com/content/uploads/2019/05/trou-noir-espace-univers-astronomie.jpg" class="card-img-top" alt="${shop.title}"></a>
+                        <a class="card-img-expand" href="/Shop/${id}"><img src="/api/image/${shop.mainImgId}" class="card-img-top" alt="${shop.title}"></a>
                         <div class="card-body">
                             <h5 class="card-title"><i><a href="/Shop/${id}">${shop.shorttitle}</a></i></h5>
                             <p class="card-text gallery-description mb-5">${shop.shortcontent}</p>
