@@ -10,60 +10,13 @@
           <% for (var index = 0; index < 5; index++) { %>
               <% if (locals.front[index] && locals.front[index].null != true) { %>
                 <div class="carousel-item <% if(index == 0) { %>active<% } %>">
-                    <img class="d-block w-100" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" alt="<%= i %>slide">
-                    <div class="carousel-caption d-none d-md-block">
-                        <!--<% if (locals.front[index].title) { %>
-                        <h5>First slide label</h5>
-                      <% } %>
-                      <% if (locals.front[index].content) { %>
-                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                      <% } %>-->
-                    </div>
+                  <a href="#expand"><img onclick="expand(this);" src="/api/front/image/<%= locals.front[index]._id %>" alt="<%= i %>slide"></a>
                   </div>
                   <% i = i + 1; %>
               <% } %>
           <% } %>
         <% } %>
     </div>
-
-      <!--
-      <div class="carousel-item active">
-        <img class="d-block w-100" src="https://cdn.eventfinda.co.nz/uploads/events/transformed/1180171-527593-34.jpg?v=2" alt="First slide">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>First slide label</h5>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100" src="https://cdn.shopify.com/s/files/1/0073/8148/3605/articles/Claude-Monet-San-Giorgio-Maggiore-at-Dusk_2048x.jpg?v=1556745106" alt="Second slide">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Second slide label</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100" src="https://cdn.eventfinda.co.nz/uploads/events/transformed/1235054-550386-34.jpg?v=2" alt="Third slide">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Third slide label</h5>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100" src="https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="First slide">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Fourth slide label</h5>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100" src="https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="First slide">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Fifth slide label</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-      </div>
-      -->
-    
     <!--/.Slides-->
     <!--Controls-->
     <a class="carousel-control-prev" href="#carousel-thumb" role="button" data-slide="prev">
@@ -87,38 +40,32 @@
           <% for (var index = 0; index < 5; index++) { %>
               <% if (locals.front[index] && locals.front[index].null != true) { %>
                 <li data-target="#carousel-thumb" data-slide-to="<%= i %>" <% if(index == 0) { %>class='active'<% } %>> 
-                    <img class="d-block w-100" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" alt="..." class="img-fluid">
+                    <img class="d-block w-100" src="/api/front/image/<%= locals.front[index]._id %>" alt="..." class="img-fluid">
                 </li>
                 <% i = i + 1; %>
               <%  } %>
           <% } %>
         <% } %>
-        <!--
-      <li data-target="#carousel-thumb" data-slide-to="0" class="active"> 
-        <img class="d-block w-100" src="https://cdn.eventfinda.co.nz/uploads/events/transformed/1180171-527593-34.jpg?v=2" alt="..." class="img-fluid">
-      </li>
-      <li data-target="#carousel-thumb" data-slide-to="1">
-        <img class="d-block w-100" src="https://cdn.shopify.com/s/files/1/0073/8148/3605/articles/Claude-Monet-San-Giorgio-Maggiore-at-Dusk_2048x.jpg?v=1556745106" alt="..." class="img-fluid">
-        </li>
-      <li data-target="#carousel-thumb" data-slide-to="2">
-        <img class="d-block w-100" src="https://cdn.eventfinda.co.nz/uploads/events/transformed/1235054-550386-34.jpg?v=2" alt="..." class="img-fluid">
-      </li>
-      <li data-target="#carousel-thumb" data-slide-to="3"> 
-        <img class="d-block w-100" src="https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="..." class="img-fluid">
-      </li>
-      <li data-target="#carousel-thumb" data-slide-to="4"> 
-        <img class="d-block w-100" src="https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="..." class="img-fluid">
-      </li>-->
     </ol>
   </div>
 </div>
 
 <script>
-  console.log($("body > div.container > div > div.thumbnail-wrapper > ol > li.active") )
+function expand(image) {
+  let expand = $("#expandImg");
+  expand.src = image.src;
+  expand.attr("src", image.src);
+}
+
 $('#carousel-thumb').on('slide.bs.carousel', function (element) {
   $("body > div.container > div.thumbnail-wrapper > ol > li.active").removeClass("active");
   $(`body > div.container > div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
 })
 </script>
-  
+<a class="lightbox-close" href="#close">
+  <div class="lightbox-target" id="expand">
+    <img id="expandImg" src="/api/front/image/<%= locals.front[0]._id %>"/>
+  </div>
+</a>
+
 <% include partials/footer %>

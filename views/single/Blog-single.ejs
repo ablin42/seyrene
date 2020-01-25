@@ -11,12 +11,44 @@
               <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
             <% } %> 
           </h3>  
-          <a href="#expand"><img class="single-blog-img col-12 mt-3 p-0" src="https://i.imgur.com/5ylZG2o.jpg"></a>
-          <p class="blog-info pb-2 ml-4">par 
+          <div class="carousel-container mt-3">
+            <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    <% if (locals.img) { %>
+                        <% locals.img.forEach(function (item, index) { %>
+                            <div class="carousel-item img-fluid <% if(index == 0) { %>active<% } %>">
+                                <a href="#expand"><img onclick="expand(this);" src="http://localhost:8089/api/image/<%= item._id %>" alt="<%= index %>slide"></a>
+                                <div class="carousel-caption d-none d-md-block">
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
+              </div>       
+                <!--Controls-->
+                <a class="carousel-control-prev" href="#carousel-thumb" role="button" data-slide="prev">
+                    <span><i class="fas fa-chevron-left fa-4x"></i></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel-thumb" role="button" data-slide="next">
+                    <span><i class="fas fa-chevron-right fa-4x"></i></span>
+                    <span class="sr-only">Next</span>
+                </a>
+                <!--/.Controls-->
+            </div>
+        </div>
+        <div class="thumbnail-wrapper mt-3">
+            <ol class="carousel-indicators no-thumb">
+                <% if (locals.img) { %>
+                    <% locals.img.forEach(function (item, index) { %>
+                        <li data-target="#carousel-thumb" data-slide-to="<%= index %>" <% if(index == 0) { %>class='active'<% } %>> 
+                          <img class="d-block w-100" src="/img/white_circle.png" alt="..." class="img-fluid">
+                        </li>
+                    <% }) %>
+                <% } %>
+            </ol>
+        </div>
+          <p class="blog-info pb-2">par 
             <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>
-            <!--<% if (locals.img && locals.img[0]) { %>
-              <img src="/api/image/<%= locals.img[0]._id %>">
-            <% } %>  -->
           </p>
           <p class="blog-content col-10 offset-1 mt-2"><%= locals.blogs.content %></p>
         </div>
@@ -24,12 +56,13 @@
     <% } %>
 </div>
   
+<script src="/scripts/blog/blogScripts.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 <script src="/scripts/formFocus.js"></script>
 <% include ../partials/footer %>
 
 <a class="lightbox-close" href="#close">
   <div class="lightbox-target" id="expand">
-    <img id="expandImg" class="single-blog-img col-12 mt-3 p-0" src="https://i.imgur.com/5ylZG2o.jpg"> 
+    <img id="expandImg" src="/api/image/<%= locals.img[0]._id %>"> 
   </div>
 </a>

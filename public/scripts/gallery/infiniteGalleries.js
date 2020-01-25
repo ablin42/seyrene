@@ -22,7 +22,7 @@ async function infiniteGalleries() {
                             </a>
                         
                         <div class="blog-overlay">
-                            <h4 class="card-title"><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h4>
+                            <h4><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h4>
                             <div class="gallery-tags mt-5">`;
 
                             gallery.tags.forEach(tag => {

@@ -12,7 +12,7 @@
               <img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="card-img-top" alt="<%= locals.galleries[index].title %>">
             </a>
             <div class="blog-overlay">
-              <h4 class="card-title"><i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i></h4>
+              <h4><i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i></h4>
               <div class="gallery-tags mt-5">
                 <% locals.galleries[index].tags.forEach(function (tag) { %>
                   <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>

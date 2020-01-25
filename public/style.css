@@ -865,8 +865,17 @@ div.carousel-item.active {
   border: 0px !important;
 }
 
+.carousel-item {
+  text-align: center;
+  background-color: var(--brand-blue-p2);
+}
+
 .carousel-item img {
-  height: 57vh; /*this needs to be changed to responsive */
+ /* height: 57vh; /*this needs to be changed to responsive */
+
+  max-height: 768px;
+  min-width: auto;
+
 }
 /* END HOME */
 
@@ -1234,6 +1243,16 @@ div.carousel-item.active {
 /* END CONTACT */
 
 /* GALLERY */
+.blog-overlay h4 i a{
+  color: var(--light-shade);
+  text-decoration: none;
+}
+
+.blog-overlay h4 i a:hover{
+  color: var(--light-shade-m1);
+  text-decoration: none;
+}
+
 .card {
   margin: 10px;
 }
@@ -1724,11 +1743,6 @@ tr:hover {
 /* END NEW USER PAGE*/
 
 /* SINGLE SHOP */
-.carousel-img {
-  height: 100% !important;
-  max-height: 75vh;
-}
-
 .tab-btn {
   padding: 10px 15px;
   width: 200px;
@@ -1753,12 +1767,12 @@ tr:hover {
 }
 
 .card-title a {
-  color: var(--light-shade);
+  color: var(--brand-blue-m2);
   text-decoration: none;
 }
 
 .card-title a:hover {
-  color: var(--light-shade-m1);
+  color: var(--brand-blue-m1);
   text-decoration: none;
 }
 
