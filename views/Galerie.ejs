@@ -13,12 +13,12 @@
             </a>
             <div class="blog-overlay">
               <h4 class="card-title"><i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i></h4>
-              <div class="gallery-tags">
+              <div class="gallery-tags mt-5">
                 <% locals.galleries[index].tags.forEach(function (tag) { %>
                   <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
                 <% }) %>
               </div>
-              <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+              <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn" style="line-height: normal;">Lire plus</button></form>
             </div>
           </div>
          

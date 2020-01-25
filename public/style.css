@@ -1392,6 +1392,11 @@ a.lightbox-close {
 .gallery-description {
   opacity: 0.8;
 }
+
+.gallery-tags {
+  line-height: initial;
+}
+
 .gallery-form {
   max-width: 800px;
   transform: translate(-50%, 0%);
