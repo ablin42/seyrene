@@ -1,18 +1,38 @@
 <% include ../partials/head %>
 
 <script src="/scripts/order.js"></script>
-<div class="container container-blog">
-    <div class="orders">
-        <h1>Orders</h1>
-        <% if (locals.orders) { %>
-            <% Object.keys(locals.orders).forEach(function (index) { %>
-                <a href="/Admin/Order/<%= locals.orders[index]._id %>"><%= locals.orders[index]._id %></a> - STATUS: <%= locals.orders[index].status %> - LASTNAME: <%= locals.orders[index].lastname %>
-                <% if (locals.orders[index].status === "Validated") { %> <!-- need better condition here -->
-                    <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.orders[index]._id %>')" class="far fa-times-circle">CANCEL ORDER</i>
-                <% } %>
-                <br/>
-            <% }) %>
-        <% } %>
+<div class="container container-single">
+    <div class="single-wrapper">
+        <h1 class="single-title">Commandes</h1>
+        <div id="purchases" class="tab col-10 offset-1">
+            <section class="purchase-section">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col">Acheteur</th>
+                    <th scope="col">#ID</th>
+                  </tr>
+                </thead>
+      
+                <tbody>
+                  <% if (locals.orders) { %>
+                    <% Object.keys(locals.orders).forEach(function (index) { %>
+                      <tr>
+                        <th scope="row" class="date-grid"><%= locals.orders[index].date_f %></th>
+                        <td class="status-grid"><%= locals.orders[index].status %></td>
+                        <td class="price-grid"><%= locals.orders[index].price %>€</td>
+                        <td class="name-grid"><%= locals.orders[index].firstname[0] %>. <%= locals.orders[index].lastname %></td>
+                        <td class="id-grid"><a href="/Admin/Order/<%= locals.orders[index]._id %>">#<%= locals.orders[index]._id %></a></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </section>
+          </div>
     </div>
 </div>
   

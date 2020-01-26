@@ -1,56 +1,56 @@
 <% include ../partials/head %>
 
-<div class="container"> 
-    <div class="form-container gallery-form">
+<div class="container container-single"> 
+    <div class="single-wrapper col-8 offset-2">
         <h1 class="form-title">Modifier les images de l'accueil</h1>
-        <h6 class="text-center">*Pensez à utiliser des images au format paysage...</h5>
+        <h5 class="text-center" style="color: var(--light-shade-p1)">*Pensez à utiliser des images au format paysage...</h5>
         <% if (locals.front) { %>
             <% for (var index = 0; index < 5; index++) { %>
                 <% if (locals.front[index] && locals.front[index].null != true) { %>
-                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);" class="text-center front-form">
+                    <form class="col-10 offset-1 text-center front-form" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);">
                         <div class="form-group" id="uploadGroup<%= index %>">
-                            <label for="upload<%= index %>" class="btn btn-outline-warning">Select an image</label>
+                            <label for="upload<%= index %>" class="logbtn img-btn">Choisir une image</label>
                             <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
                         </div>
-                        <img id="image<%= index %>" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" style="width: 100%; height: auto;" alt="uploadedImg" data-uploaded="true">
+                        <img class="w-100" id="image<%= index %>" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" alt="uploadedImg" data-uploaded="true">
                         <div class="form-group text-center">
-                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning">Delete</button>
+                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="delbtn">SUPPRIMER</button>
                         </div>
                         <input type="hidden" name="referenceId" value="<%= index %>">
                         <div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
-                            <button type="submit" name="submit" class="btn btn-outline-warning">Upload</button>
+                            <button type="submit" name="submit" class="logbtn">Valider</button>
                         </div>
                     </form>
                 <%  } else { %>
-                    <form name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);" class="text-center front-form">
+                    <form class="col-10 offset-1 text-center front-form" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);">
                         <div class="form-group" id="uploadGroup<%= index %>">
-                            <label for="upload<%= index %>" class="btn btn-outline-warning">Select an image</label>
+                            <label for="upload<%= index %>" class="logbtn img-btn">Choisir une image</label>
                             <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
                         </div>
-                        <img id="image<%= index %>" src="" style="width: 100%; height: auto; display: none;" alt="uploadedImg" data-uploaded="false">
+                        <img class="w-100" id="image<%= index %>" src="" style="display: none;" alt="uploadedImg" data-uploaded="false">
                         <div class="form-group text-center">
-                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="btn btn-outline-warning" style="display: none;">Delete</button>
+                            <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="delbtn" style="display: none;">SUPPRIMER</button>
                         </div>
                         <input type="hidden" name="referenceId" value="<%= index %>">
                         <div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
-                            <button type="submit" name="submit" class="btn btn-outline-warning">Upload</button>
+                            <button type="submit" name="submit" class="logbtn">Valider</button>
                         </div>
                     </form>
                 <%  } %>
             <% } %>
         <% } else { %>
-            <form name="upload0" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);" class="text-center front-form">
+            <form class="col-10 offset-1  text-center front-form" name="upload0" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);">
                 <div class="form-group" id="uploadGroup0">
-                    <label for="upload0" class="btn btn-outline-warning">Select an image</label>
+                    <label for="upload0" class="logbtn img-btn">Choisir une image</label>
                     <input type="file" name="img" id="upload0" class="inputfile" onchange="readURL(this);">
                 </div>
-                <img id="image0" src="" style="width: 100%; height: auto; display: none;" alt="uploadedImg" data-uploaded="false">
+                <img class="w-100" id="image0" src="" style="display: none;" alt="uploadedImg" data-uploaded="false">
                 <div class="form-group text-center">
-                    <button id="delete0" onclick="deleteImage(this, event);" class="btn btn-outline-warning" style="display: none;">Delete</button>
+                    <button id="delete0" onclick="deleteImage(this, event);" class="delbtn" style="display: none;">Delete</button>
                 </div>
                 <input type="hidden" name="referenceId" value="0">
                 <div id="uploadbtn0" class="form-group" style="display: none;">
-                    <button type="submit" name="submit" class="btn btn-outline-warning">Upload</button>
+                    <button type="submit" name="submit" class="logbtn">Valider</button>
                 </div>
             </form>
         <% } %>

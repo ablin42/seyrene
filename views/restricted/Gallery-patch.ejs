@@ -2,24 +2,28 @@
 
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 
-<div class="container">
-    <div class="form-container gallery-form">
-        <form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event, '<%= locals.gallery._id %>');"> 
-            <h1 class="form-title">Editer un item de la galerie</h1>
-            <div class="txtb">
-                <input type="text" name="title" id="title" value="<%= locals.gallery.title %>" onkeyup="Validate.String(this, 1, 256);" required>
-                <span data-placeholder="Title"></span>
+<div class="container container-single"> 
+    <div class="single-wrapper single-form-wrapper col-8 offset-2">
+        <h1 class="form-title">Modifier un item de la galerie</h1>
+        <form class="col-8 offset-2" id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event, '<%= locals.gallery._id %>');"> 
+            <hr />
+            <div class="form-group">
+                <label class="control-label">Titre</label>
+                <input class="form-control" type="text" name="title" id="title" placeholder="Titre" value="<%= locals.gallery.title %>" onkeyup="Validate.String(this, 1, 256);" required>
                 <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
             </div>
-            
-            <textarea id="content" name="content" class="blog-textarea" placeholder="Your item description here" onkeyup="Validate.String(this, 1, 2048);" required><%= locals.gallery.content %></textarea>
-            <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
+
+            <div class="form-group">
+                <label class="control-label">Description</label>
+                <textarea class="instructions-textarea" id="content" name="content" placeholder="Description de l'oeuvre.." onkeyup="Validate.String(this, 1, 2048);" required><%= locals.gallery.content %></textarea>
+                <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>  
+            </div>
 
             <div class="form-group">
                 <input type="file" name="img" id="img" multiple>
                 <% if (locals.img) { %>
                     <% locals.img.forEach(function (item) { %>
-                        <img id="<%= item._id %>" src="http://localhost:8089/api/image/<%= item._id %>">
+                        <img class="w-100" id="<%= item._id %>" src="http://localhost:8089/api/image/<%= item._id %>">
                             <div id="actDiv<%= item._id %>" class="action-div" <% if (item.isMain === true) { %>style="display:none"<% } %>>
                                 <a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="http://localhost:8089/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
                                 <a id="sel<%= item._id %>" onclick="setMain(event, this);" href="http://localhost:8089/api/image/select/Gallery/<%= locals.gallery._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
@@ -27,17 +31,18 @@
                     <% }) %>
                 <% } %>
             </div>
+            
             <div class="form-group">
+                <label class="control-label">Tags</label>
                 <input v-bind="selectedTags" type="text" value="" data-role="tagsinput" id="tagInput" class="form-control">
                 <span data-placeholder="Tags"></span>
             </div>
 
-            <input type="submit" class="logbtn" value="Update" id="submit-gallery">
+            <input type="submit" class="logbtn" value="Mettre à jour" id="submit-gallery">
         </form>
-    <hr />
-    <form method="GET" action="/api/gallery/delete/<%= locals.gallery._id %>">
-        <input type="submit" class="delbtn" value="DELETE" id="delete-blog">
-    </form>
+        <form class="col-8 offset-2 mt-4" method="GET" action="/api/gallery/delete/<%= locals.gallery._id %>">
+            <input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-blog">
+        </form>
 </div>
 
     <script>

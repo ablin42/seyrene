@@ -18,7 +18,7 @@ async function infiniteGalleries() {
                             toAppend = `
                         <div class="face face1 blog-overlay-wrapper mt-0">
                             <a href="#expand">
-                                <img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="card-img-top" alt="${gallery.shorttitle}">
+                                <img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="w-100" alt="${gallery.shorttitle}">
                             </a>
                         
                         <div class="blog-overlay">

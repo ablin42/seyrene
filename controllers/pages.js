@@ -494,7 +494,16 @@ router.get("/Admin/Orders", verifySession, async (req, res) => {
         throw new Error(
           "An error occured while looking for your orders informations, please retry"
         );
-      if (orders != null) obj.orders = orders;
+      if (orders != null) {
+        orders.forEach((order, index) => {
+          orders[index].price = formatter.format(order.price).substr(2);
+          orders[index].date_f = format.asString(
+            "dd/MM/yyyy",
+            new Date(order.date)
+          );
+        });
+        obj.orders = orders;
+      }
       return res.status(200).render("restricted/orders", obj);
     } else
       throw new Error(
