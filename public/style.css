@@ -1925,6 +1925,42 @@ tr:hover {
   font-weight: bold;
 }
 
+.filebtn {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background: linear-gradient( 160deg, var(--brand-blue-m1), var(--brand-blue-m2) );
+  background-size: 200%;
+  color: var(--light-shade);
+  outline: none;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.imguploaded {
+  background: var(--success-color)!important;
+  color: var(--dark-shade-p1);
+}
+
+.filebtn:hover {
+  background-position: right;
+  box-shadow: 0px 0px 5px 1px #026cb963;
+}
+
+.action-div {
+  text-align: center;
+}
+
+.action-div a {
+  font-size: 24px;
+  margin: 0 20px;
+}
+
+.action-div a:hover {
+  color: var(--light-shade-m1);
+}
+
 /* END ADMIN */
 
 

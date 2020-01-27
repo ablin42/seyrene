@@ -9,7 +9,7 @@
                 <% if (locals.front[index] && locals.front[index].null != true) { %>
                     <form class="col-10 offset-1 text-center front-form" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);">
                         <div class="form-group" id="uploadGroup<%= index %>">
-                            <label for="upload<%= index %>" class="logbtn img-btn">Choisir une image</label>
+                            <label for="upload<%= index %>" class="filebtn">Choisir une image</label>
                             <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
                         </div>
                         <img class="w-100" id="image<%= index %>" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" alt="uploadedImg" data-uploaded="true">
@@ -24,7 +24,7 @@
                 <%  } else { %>
                     <form class="col-10 offset-1 text-center front-form" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);">
                         <div class="form-group" id="uploadGroup<%= index %>">
-                            <label for="upload<%= index %>" class="logbtn img-btn">Choisir une image</label>
+                            <label for="upload<%= index %>" class="filebtn">Choisir une image</label>
                             <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
                         </div>
                         <img class="w-100" id="image<%= index %>" src="" style="display: none;" alt="uploadedImg" data-uploaded="false">
@@ -41,7 +41,7 @@
         <% } else { %>
             <form class="col-10 offset-1  text-center front-form" name="upload0" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);">
                 <div class="form-group" id="uploadGroup0">
-                    <label for="upload0" class="logbtn img-btn">Choisir une image</label>
+                    <label for="upload0" class="filebtn">Choisir une image</label>
                     <input type="file" name="img" id="upload0" class="inputfile" onchange="readURL(this);">
                 </div>
                 <img class="w-100" id="image0" src="" style="display: none;" alt="uploadedImg" data-uploaded="false">
@@ -135,7 +135,7 @@ function readURL(input) {
             $(targetBtnId).attr('style', "display: none");
         }
         reader.readAsDataURL(input.files[0]);
-    }
+    } 
 }
 
 async function postFront(e, form) {
