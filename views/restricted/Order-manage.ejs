@@ -60,7 +60,6 @@
       <h2 class="panel-title">Informations pour la livraison</h2>
       <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
     </div>
-    <div class="panel panel-primary">
       <div class="row">
         <div class="col-md-6">
           <label class="control-label">Nom</label>
@@ -73,7 +72,7 @@
           <span id="i_firstname" class="form-info">First Name must contain between 2 and 128 characters</span>
         </div>
       </div>
-      <div class="panel-body">
+      <div>
         <label class="control-label">Adresse</label>        
         <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" class="form-control" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly>
         <div id="address">
@@ -108,10 +107,8 @@
               <textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.order.instructions) { %><%= locals.order.instructions %><% } %></textarea>
             </div>
           </div>
-
         </div>
       </div>
-    </div>
   <% } %>
 </div>
   </div>

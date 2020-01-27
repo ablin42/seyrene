@@ -34,6 +34,7 @@ try {
     var [err, result] = await utils.to(Front.find());
     if (err)
         throw new Error("An error occured while fetching fronts");
+    console.log(result)
     return res.status(200).json(result);
 } catch (err) {
     console.log("FETCHING FRONT ERROR:", err);
@@ -45,7 +46,7 @@ router.post('/post', upload, verifySession, async (req, res) => { //vgallery
 try {
     if (req.user.level >= 3) {
         if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
-            let front = {referenceId: req.body.referenceId};
+            let front = {null: false, referenceId: req.body.referenceId};
 
             var [err, result] = await utils.to(Front.findOne({ referenceId: front.referenceId }));
             if (err)
@@ -113,10 +114,9 @@ try {
     var [err, result] = await utils.to(Front.findOne({'_id': id }));
     if (err) 
         throw new Error("An error occured while fetching the image");
-    
     fs.readFile(result.path, function(err, data) {
         if (err)
-            throw new Error("File couldn't be read"); 
+            throw new Error("File couldn't be read");
         let contentType = { 'Content-Type': result.mimetype };
         res.writeHead(200, contentType);
         res.status(200).end(data);

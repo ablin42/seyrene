@@ -32,7 +32,6 @@
           <div class="cart-quantity cart-column">
             <i class="fas fa-minus fa-2x qty-update" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
             <% if (locals.products[index].item.isUnique === true) { %>
-              <!--<h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>-->
               <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly>
               <i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
             <% } else { %>
@@ -55,7 +54,6 @@
         <h2 class="panel-title">Informations pour la livraison</h2>
         <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
       </div>
-      <div class="panel panel-primary">
         <div class="row">
           <div class="col-md-6">
             <label class="control-label">Nom</label>
@@ -119,20 +117,7 @@
             </div>
           </div>
         </div>
-      </div>
       <% } %>
-      <!-- <div class="col-md-6">duplicate from above !isDelivery 
-        <div class="payment-div p-3">
-          <% if (locals.totalPrice != 0){ %>
-            <span id="total-price-span">PRIX TOTAL: <b id="total-price"><%= locals.totalPrice %>€</b></span>
-          <% } %>
-          <% if (locals.totalQty != 0){ %>
-            <span id="total-qty-span">QUANTITÉ TOTALE: <b id="total-qty"><%= locals.totalQty %></b></span>
-          <% } %>
-          <% if (locals.totalPrice != 0){ %>
-            <button class="btn-purchase" onclick="submitCheckout();" type="button" id="purchase">Continuer</button>
-          <% } %>
-        </div>-->
       </div>
     </div>
   </div>
