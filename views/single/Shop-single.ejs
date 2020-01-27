@@ -62,18 +62,6 @@
   </div>
 </div>
 
-<script>
-    $('#carousel-thumb').on('slide.bs.carousel', function (element) {
-      $("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
-      $(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
-    })
-</script>
-<script src="/scripts/frontValidation.js"></script>
-<script src="/scripts/formFocus.js"></script>
-<script src="/scripts/shop/shopScripts.js"></script>
-  
-<% include ../partials/footer %>
-
 <a class="lightbox-close" href="#close">
     <div class="lightbox-target" id="expand">
         <img id="expandImg" src="/api/image/<%= locals.img[0]._id %>"/>
@@ -82,7 +70,11 @@
 
 <script>
     $('#carousel-thumb').on('slide.bs.carousel', function (element) {
-      $("body > div.container > div > div.thumbnail-wrapper > ol > li.active").removeClass("active");
-      $(`body > div.container > div > div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
+      $("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
+      $(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
     })
 </script>
+<script src="/scripts/frontValidation.js"></script>
+<script src="/scripts/shop/shopScripts.js"></script>
+  
+<% include ../partials/footer %>

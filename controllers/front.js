@@ -3,7 +3,6 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const rp = require("request-promise");
 
 const Front = require('../models/Front');
 const verifySession = require('./helpers/verifySession');
@@ -34,7 +33,6 @@ try {
     var [err, result] = await utils.to(Front.find());
     if (err)
         throw new Error("An error occured while fetching fronts");
-    console.log(result)
     return res.status(200).json(result);
 } catch (err) {
     console.log("FETCHING FRONT ERROR:", err);

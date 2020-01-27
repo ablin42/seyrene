@@ -48,22 +48,16 @@
   </div>
 </div>
 
-<script>
-function expand(image) {
-  let expand = $("#expandImg");
-  expand.src = image.src;
-  expand.attr("src", image.src);
-}
-
-$('#carousel-thumb').on('slide.bs.carousel', function (element) {
-  $("body > div.container > div.thumbnail-wrapper > ol > li.active").removeClass("active");
-  $(`body > div.container > div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
-})
-</script>
 <a class="lightbox-close" href="#close">
   <div class="lightbox-target" id="expand">
     <img id="expandImg" src="/api/front/image/<%= locals.front[0]._id %>"/>
   </div>
 </a>
 
+<script>
+$('#carousel-thumb').on('slide.bs.carousel', function (element) {
+  $("body > div.container > div.thumbnail-wrapper > ol > li.active").removeClass("active");
+  $(`body > div.container > div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
+})
+</script>
 <% include partials/footer %>

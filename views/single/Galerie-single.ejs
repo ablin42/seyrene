@@ -49,12 +49,17 @@
                   <% } %>
               </ol>
           </div>
-
           <p class="blog-content col-10 offset-1 mt-2"><%= locals.galleries.content %></p>
       </div>
   <% } %>
 </div>
 </div>
+
+<a class="lightbox-close" href="#close">
+  <div class="lightbox-target" id="expand">
+    <img id="expandImg" src="/api/image/<%= locals.img[0]._id %>"/>
+  </div>
+</a>
 
 <script>
 $('#carousel-thumb').on('slide.bs.carousel', function (element) {
@@ -64,11 +69,5 @@ $('#carousel-thumb').on('slide.bs.carousel', function (element) {
 </script>
 <script src="/scripts/gallery/galleryScripts.js"></script>
 <script src="/scripts/frontValidation.js"></script>
-<script src="/scripts/formFocus.js"></script>
-<a class="lightbox-close" href="#close">
-  <div class="lightbox-target" id="expand">
-    <img id="expandImg" src="/api/image/<%= locals.img[0]._id %>"/>
-  </div>
-</a>
   
 <% include ../partials/footer %>

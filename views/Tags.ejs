@@ -41,6 +41,14 @@
   <% } %>
 </div>
 
+<a class="lightbox-close" href="#close">
+  <div class="lightbox-target" id="expand">
+      <% if(locals.galleries){ %>
+          <img id="expandImg" src="/api/image/<%= locals.galleries[0].mainImgId %>"/>
+      <% } %>
+  </div>
+</a>
+
 <script>
     function preventEnter(e, item) {
       var keyCode = e.keyCode || e.which;
@@ -58,14 +66,5 @@
     for (i = 0; i < tags.length; i++)
       tagInput.tagsinput('add', tags[i]);
 </script>
-
 <script src="/scripts/gallery/galleryScripts.js"></script>
-<a class="lightbox-close" href="#close">
-    <div class="lightbox-target" id="expand">
-        <% if(locals.galleries){ %>
-            <img id="expandImg" src="/api/image/<%= locals.galleries[0].mainImgId %>"/>
-        <% } %>
-    </div>
-</a>
-
 <% include partials/footer %>

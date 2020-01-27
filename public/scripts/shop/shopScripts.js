@@ -126,12 +126,6 @@ function deleteImage(e, item) {
     }})
 }
 
-function expand(image){
-    let expand = $("#expandImg");
-    expand.src = image.src;
-    expand.attr("src", image.src);
-}
-  
 function openTab(btn, tabName) {
     let tab = document.getElementsByClassName("tab");
     let buttons = document.getElementsByClassName("tab-btn");

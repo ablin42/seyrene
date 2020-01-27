@@ -149,9 +149,3 @@ function deleteImage(e, item) {
         addAlert(alertSuccess, "#header")      
     }})
 }
-
-function expand(image){
-    let expand = $("#expandImg");
-    expand.src = image.src;
-    expand.attr("src", image.src);
-}

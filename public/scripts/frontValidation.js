@@ -104,3 +104,11 @@ let Validate = {
         getInvalid(formId);
     }
 }
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        $("#imglabel").addClass("imguploaded");
+    } else {
+        $("#imglabel").removeClass("imguploaded");
+    }
+}

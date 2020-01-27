@@ -143,27 +143,7 @@
   </div>
 </div>
 
-<script>
-  function openTab(e, item, tabName) {
-    e.preventDefault();
-    let menuItems = document.getElementsByClassName("menu-link");
-    for (let i = 0; i < menuItems.length; i++) {
-          menuItems[i].classList.remove("active");
-          menuItems[i].classList.remove("disabled");
-    }
-    item.classList.add("active");
-    item.classList.add("disabled");
-    let tab = document.getElementsByClassName("tab");
-    for (let i = 0; i < tab.length; i++) {
-      tab[i].style.display = "none";  
-    }
-    document.getElementById(tabName).style.display = "flex";
-  }
-</script>
-
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="scripts/auto-complete.js"></script>
-<!--<script src="/scripts/formFocus.js"></script>-->
 <script src="/scripts/frontValidation.js"></script>
-  
 <% include partials/footer %>

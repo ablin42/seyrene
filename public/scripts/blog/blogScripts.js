@@ -53,9 +53,3 @@ function setMain(e, item) {
     addAlert(alertErr, "#header")
    })
 }
-
-function expand(image){
-    let expand = $("#expandImg");
-    expand.src = image.src;
-    expand.attr("src", image.src);
-}
