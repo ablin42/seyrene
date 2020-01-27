@@ -68,19 +68,18 @@ async function cartAdd(itemId, caller) {
     .then(function(response) {
       let alertType = "info";
       if (response.error === false) {
-        console.log(response);
         let totalQty = response.cart.totalQty;
         let totalPrice = response.cart.totalPrice;
         let rowId = document.getElementById(itemId);
-
         document.getElementById("cartQty").innerText = totalQty;
         if (rowId.classList.contains("cart-row-item")) {
+      
+
           let itemQty = response.cart.items[itemId].qty;
           let itemPrice = response.cart.items[itemId].price;
 
           $(`#qty-${itemId}`).val(itemQty);
-          console.log(rowId.childNodes[2], rowId.childNodes[2].childNodes)
-          rowId.childNodes[5].innerText = itemPrice + "€";
+          rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           document.getElementById("total-price").innerText = totalPrice + "€";
           document.getElementById("total-qty").innerText = totalQty;
         }
@@ -145,8 +144,7 @@ async function updateValue(e, item) {
                   let itemPrice = response.cart.items[itemId].price;
 
                   item.value = itemQty;
-                  rowId.childNodes[3].childNodes[1].childNodes[0].innerText =
-                    itemPrice + "€";
+                  rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
                 }
               }
             } else {
@@ -221,8 +219,7 @@ async function cartDel(itemId, caller) {
             let itemPrice = response.cart.items[itemId].price;
 
             $(`#qty-${itemId}`).val(itemQty);
-            rowId.childNodes[3].childNodes[1].childNodes[0].innerText =
-              itemPrice + "€";
+            rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           } else rowId.remove();
 
           document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api

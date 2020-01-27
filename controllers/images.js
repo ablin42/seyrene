@@ -38,8 +38,13 @@ try {
     if (result == null)
         throw new Error("No results were found");
             
-    res.set('Content-Type', result.img.contentType)
-    return res.status(200).send(result.img.data);
+    fs.readFile(result.path, function(err, data) {
+        if (err)
+            return res.status(400).json({error: true, message: "File couldn't be read"});
+        let contentType = { 'Content-Type': result.mimetype };
+        res.writeHead(200, contentType);
+        res.status(200).end(data);
+    });
 } catch (err) {
     console.log("IMAGE FETCH ERROR", err);
     return res.status(400).json(err.message);
