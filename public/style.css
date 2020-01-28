@@ -1594,7 +1594,7 @@ a.lightbox-close {
   text-align: center;
   width: 100%;
   font-style: italic;
-  color: var(--brand-blue-m1);
+  color: var(--warning-color);
   display: none;
 }
 
