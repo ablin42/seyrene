@@ -164,4 +164,60 @@ try {
     return res.status(400).json({ message: err.message });
 }});
 
+router.get("/orders/:id/status", async (req, res) => {
+try {
+    let id = req.params.id;
+    let options = {
+        method: 'GET',
+        uri : `${API_URL}/v3.0/Orders/${id}/SubmissionStatus`,
+        headers: {
+            'X-Pwinty-MerchantId': MERCHANTID,
+            'X-Pwinty-REST-API-Key': APIKEY
+        },
+        json: true
+    }
+
+    rp(options)
+    .then((response) => {
+        console.log(response)
+        return res.status(200).json(response);
+    })
+    .catch((err) => {
+        console.log(err.error)
+        return res.status(400).json({ error: true, errordata: err.error });
+    })
+} catch (err) {
+    return res.status(400).json({ message: err.message });
+}});
+
+router.get("/orders/:id/submit", async (req, res) => {
+try {
+    let id = req.params.id;
+    let options = {
+        method: 'POST',
+        uri : `${API_URL}/v3.0/Orders/${id}/status`,
+        headers: {
+            'X-Pwinty-MerchantId': MERCHANTID,
+            'X-Pwinty-REST-API-Key': APIKEY
+        },
+        body: {
+            status: "Cancelled"// Cancelled, AwaitingPayment or Submitted.
+        },
+        json: true
+    }
+
+    rp(options)
+    .then((response) => {
+        console.log(response)
+        return res.status(200).json(response);
+    })
+    .catch((err) => {
+        console.log(err.error)
+        return res.status(400).json({ error: true, errordata: err.error });
+    })
+} catch (err) {
+    return res.status(400).json({ message: err.message });
+}});
+
+
 module.exports = router;
