@@ -80,7 +80,7 @@ try {
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err, "x")
+        console.log(err)
         return res.status(400).json({ error: true, errordata: err.error });
     })
 } catch (err) {
@@ -99,7 +99,7 @@ try {
         },
         body: {
             merchantOrderId: "123test", //optional	Your identifier for this order.
-            recipientName: "recipiENT", //	Recipient name.
+            recipientName: "njrkgez", //	Recipient name.
             address1: "addreeeeeeeee", //optional * First line of recipient address.
             address2: "", //optional	Second line of recipient address.
             addressTownOrCity: "Paris", // optional *	Town or city of the recipient.
@@ -195,7 +195,7 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         body: {
-            status: "Submitted"// Cancelled, AwaitingPayment or Submitted.
+            status: "Submitted"// Cancelled, AwaitingPayment or Submitted. //variable
         },
         json: true
     }
@@ -227,7 +227,6 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
        /* body: {
-            orderId: "",//	The ID of the order (in URL).
             sku: "",//	An identification code of the product for this image.
             url: "",//	The image's URL.
             copies: "",//	Number of copies of the image to include in the order.
@@ -387,6 +386,7 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         body: {
+            /* variable */
             "skus": ["T-PHO-GP2-CS-M","F-SPA-200X300-FLO-HGE"]
         },
         json: true
