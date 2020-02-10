@@ -3,7 +3,6 @@ const router = express.Router();
 const {validationResult} = require('express-validator');
 const {vOrder} = require('./validators/vShop');//vOrder
 const rp = require("request-promise");
-const { getCode, getName } = require('country-list');
 
 const Order = require('../models/Order');
 const User = require('../models/User');
@@ -76,60 +75,78 @@ try {
             instructions: infos.instructions
         });
 
-        let options = {
-            method: 'POST',
-            uri : `${API_URL}/v3.0/Orders`,
-            headers: {
-                'X-Pwinty-MerchantId': MERCHANTID,
-                'X-Pwinty-REST-API-Key': APIKEY
-            },
-            body: {
-                merchantOrderId: order._id,
-                recipientName: order.firstname + " " + order.lastname,
-                address1: order.full_address, //has city + country, might need to use only full_street
-                addressTownOrCity: order.city,
-                stateOrCounty: order.state,
-                postalOrZipCode: order.zipcode,
-                countryCode: getCode(order.country),
-                preferredShippingMethod: "standard", // Possible values are Budget, Standard, Express, and Overnight.
-            },
-            json: true
-        }
-        await rp(options)
-        .then(async(response) => {
-            if (response.statusCode !== 200) {
-                // add image + product 
-                // `http://localhost:8089/api/image/main/Shop/${5df6fa032a483422a4b6f56b}`
-                // rp in rp? prob bad, find cleaner alternative
-
-
-             
-                console.log("created order");
-                return res.status(200).json({err: false, orderId: order._id});
-            } else
-                throw new Error("Something went wrong with the order API!");
-        })
-        .catch((err) => {
-            console.log("PWINTY RP CATCH")
-            return res.status(400).json({ error: true, errordata: err.error });
-        })
-
-           /* var [err, result] = await utils.to(order.save());
-                if (err || result == null) 
-                    throw new Error("An error occured while creating your order");
+        // SOMEWHERE AROUND HERE CREATE ORDER PWINTY
+            let options = {
+                method: 'POST',
+                uri : `${API_URL}/v3.0/Orders`,
+                headers: {
+                    'X-Pwinty-MerchantId': MERCHANTID,
+                    'X-Pwinty-REST-API-Key': APIKEY
+                },
+                body: {
+                    merchantOrderId: order._id,
+                    recipientName: order.firstname + " " + order.lastname,
+                    address1: order.full_address, //has city + country, might need to use only full_street
+                    addressTownOrCity: order.city,
+                    stateOrCounty: order.state,
+                    postalOrZipCode: order.zipcode,
+                    countryCode: "FR",
+                    preferredShippingMethod: "standard",
+                },
+                json: true
+            }
+        
+            await rp(options)
+            .then(async(response) => {
+                if (response.statusCode !== 200) {
+                    /*var [err, result] = await utils.to(order.save());
+                    if (err || result == null) 
+                        throw new Error("An error occured while creating your order");
             
-                // Send mails
-                let subject = `New Order #${order._id}`;
-                let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
-                if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-                    throw new Error("An error occured while trying to send the mail, please retry");
+                    // Send mails
+                    let subject = `New Order #${order._id}`;
+                    let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+                    if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+                        throw new Error("An error occured while trying to send the mail, please retry");
                 
-                var [err, user] = await utils.to(User.findById(req.body.user._id));
-                if (err || user == null)
-                    throw new Error("An error occured while finding your user account, please try again");
-                content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-                if (await mailer(user.email, subject, content))
-                    throw new Error("An error occured while trying to send the mail, please retry"); */
+                    var [err, user] = await utils.to(User.findById(req.body.user._id));
+                    if (err || user == null)
+                        throw new Error("An error occured while finding your user account, please try again");
+                    content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+                    if (await mailer(user.email, subject, content))
+                        throw new Error("An error occured while trying to send the mail, please retry");
+                    */
+                    console.log("created order");
+                    return res.status(200).json({err: false, orderId: order._id});
+                } else {
+                    throw new Error("Something went wrong with the order API!");
+                }
+            })
+            .catch((err) => {
+                console.log(err.message)
+                return res.status(400).json({ error: true, errordata: err.error });
+            })
+
+       /*    
+        var [err, result] = await utils.to(order.save());
+        if (err || result == null) 
+            throw new Error("An error occured while creating your order");
+
+        // Send mails
+        let subject = `New Order #${order._id}`;
+        let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+        if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+            throw new Error("An error occured while trying to send the mail, please retry");
+    
+        var [err, user] = await utils.to(User.findById(req.body.user._id));
+        if (err || user == null)
+            throw new Error("An error occured while finding your user account, please try again");
+        content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+        if (await mailer(user.email, subject, content))
+            throw new Error("An error occured while trying to send the mail, please retry");
+    
+        console.log("created order");
+        return res.status(200).json({err: false, orderId: order._id});*/
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {
