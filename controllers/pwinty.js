@@ -262,8 +262,11 @@ try {
     return res.status(400).json({ message: err.message });
 }});
 
-router.get("/orders/:id/images/batch", async (req, res) => {
+router.post("/orders/:id/images/batch", async (req, res) => { //POST
 try {
+    console.log(req.body);
+    return res.status(200).json({ok: "ok"});
+
     let id = req.params.id;
     let options = {
         method: 'POST',
@@ -272,25 +275,16 @@ try {
             'X-Pwinty-MerchantId': MERCHANTID,
             'X-Pwinty-REST-API-Key': APIKEY
         },
-       /* body: { The body of the HTTP request should contain an array of objects with the following structure.
-            sku: "",//	An identification code of the product for this image.
-            url: "",//	The image's URL.
-            copies: "",//	Number of copies of the image to include in the order.
-            sizing: "",//	How the image should be resized when printing.
-            priceToUser: "",// optional	If payment is set to InvoiceRecipient then the price (in cents/pence) you want to charge for each copy. Only available if your payment option is InvoiceRecipient.
-            md5Hash: "",// optional	An MD5 hash of the image file.
-            attributes: "",// optional	An object with properties representing the attributes for the image.
-        },*/
         body: [
             {
               "sku" : "F-BOX-200X200-FLO-EMA",
               "url" : "http://www.example.com/image.jpg",
               "sizing" : "crop",
-              "copies" : 2,
+              "copies" : 1, //nombre d'exemplaires
               "attributes" : 
                 {
                   "FrameColour":"brown",
-                  "glaze":"floaTGLass"
+                  "glaze":"floaTGLass" //An object with properties representing the attributes for the image.????????????
                 }
             },
             {
@@ -307,7 +301,6 @@ try {
           ],
         json: true
     }
-
     rp(options)
     .then((response) => {
         console.log(response)

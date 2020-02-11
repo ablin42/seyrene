@@ -97,20 +97,40 @@ try {
         }
         await rp(options)
         .then(async(response) => {
-            if (response.statusCode !== 200) {
+            if (response.statusCode === 200) {
                 // add image + product 
                 // `http://localhost:8089/api/image/main/Shop/${5df6fa032a483422a4b6f56b}`
                 // rp in rp? prob bad, find cleaner alternative
 
-
-             
                 console.log("created order");
-                return res.status(200).json({err: false, orderId: order._id});
+                let body = [];
+                req.body.items.forEach((index, item) => {
+                    let obj = {
+                        "sku" : "F-BOX-200X200-FLO-EMA",
+                        "url" : "http://www.example.com/image.jpg",
+                        "sizing" : "crop",
+                        "copies" : 3, //nombre d'exemplaires
+                        "attributes" : 
+                        {
+                            "FrameColour":"brown",
+                            "glaze":"floaTGLass" //An object with properties representing the attributes for the image.????????????
+                        }
+                    }
+                    body.push(obj);
+                })
+
+                options.body = body;
+                options.uri = `http://localhost:8089/api/pwinty/orders/${response.data.id}/images/batch`;
+                return rp(options);
             } else
                 throw new Error("Something went wrong with the order API!");
         })
+        .then((response) => {
+            console.log(response);
+            return res.status(200).json({err: false, orderId: order._id});
+        })
         .catch((err) => {
-            console.log("PWINTY RP CATCH")
+            console.log("PWINTY RP CATCH", err.message)
             return res.status(400).json({ error: true, errordata: err.error });
         })
 
