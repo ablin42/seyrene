@@ -264,50 +264,24 @@ try {
 
 router.post("/orders/:id/images/batch", async (req, res) => { //POST
 try {
-    console.log(req.body);
-    return res.status(200).json({ok: "ok"});
-
     let id = req.params.id;
     let options = {
         method: 'POST',
-        uri : `${API_URL}/v3.0/orders/${id}/images`,
+        uri : `${API_URL}/v3.0/orders/${id}/images/batch`,
         headers: {
             'X-Pwinty-MerchantId': MERCHANTID,
             'X-Pwinty-REST-API-Key': APIKEY
         },
-        body: [
-            {
-              "sku" : "F-BOX-200X200-FLO-EMA",
-              "url" : "http://www.example.com/image.jpg",
-              "sizing" : "crop",
-              "copies" : 1, //nombre d'exemplaires
-              "attributes" : 
-                {
-                  "FrameColour":"brown",
-                  "glaze":"floaTGLass" //An object with properties representing the attributes for the image.????????????
-                }
-            },
-            {
-              "sku" : "F-BOX-200X200-FLO-EMA",
-              "url" : "http://www.example.com/image.jpg",
-              "sizing" : "crop",
-              "copies" : 2,
-              "attributes" : 
-                {
-                  "FrameColour":"brown",
-                  "glaze":"floaTGLass"
-                }
-            }
-          ],
+        body: req.body,
         json: true
     }
+
     rp(options)
     .then((response) => {
-        console.log(response)
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err)
+        console.log("IMAGE BATCH ERROR");
         return res.status(400).json({ error: true, errordata: err.error });
     })
 } catch (err) {

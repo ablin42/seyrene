@@ -106,14 +106,12 @@ try {
                 let body = [];
                 req.body.items.forEach((index, item) => {
                     let obj = {
-                        "sku" : "F-BOX-200X200-FLO-EMA",
+                        "sku" : "CAN-19MM-HMC-10X10",
                         "url" : "http://www.example.com/image.jpg",
                         "sizing" : "crop",
                         "copies" : 3, //nombre d'exemplaires
-                        "attributes" : 
-                        {
-                            "FrameColour":"brown",
-                            "glaze":"floaTGLass" //An object with properties representing the attributes for the image.????????????
+                        "attributes" : {
+                            "wrap":"white", //An object with properties representing the attributes for the image.????????????
                         }
                     }
                     body.push(obj);
@@ -126,8 +124,12 @@ try {
                 throw new Error("Something went wrong with the order API!");
         })
         .then((response) => {
-            console.log(response);
-            return res.status(200).json({err: false, orderId: order._id});
+            if (response.statusCode === 200) {
+                console.log("products and images added to order");
+                console.log(response.data.items);
+                return res.status(200).json({err: false, orderId: order._id});
+            } else
+                throw new Error("Something went wrong with the order API!");
         })
         .catch((err) => {
             console.log("PWINTY RP CATCH", err.message)
