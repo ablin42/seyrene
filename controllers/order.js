@@ -95,42 +95,63 @@ try {
             },
             json: true
         }
+        
+        let pwintyOrderId = "";
         await rp(options)
         .then(async(response) => {
             if (response.statusCode === 200) {
-                // add image + product 
-                // `http://localhost:8089/api/image/main/Shop/${5df6fa032a483422a4b6f56b}`
-                // rp in rp? prob bad, find cleaner alternative
-
                 console.log("created order");
+                pwintyOrderId = response.data.id;
                 let body = [];
-                req.body.items.forEach((index, item) => {
+                req.body.items.forEach((item, index) => {
+                    //console.log(item)
                     let obj = {
-                        "sku" : "CAN-19MM-HMC-10X10",
-                        "url" : "http://www.example.com/image.jpg",
-                        "sizing" : "crop",
-                        "copies" : 3, //nombre d'exemplaires
+                        "sku" : "CAN-19MM-HMC-10X10", //fetch from item db
+                        "url" : `http://localhost:8089/api/image/main/Shop/${item.item._id}`, 
+                        "sizing" : "crop", // idk yet
+                        "copies" : item.qty,
                         "attributes" : {
-                            "wrap":"white", //An object with properties representing the attributes for the image.????????????
+                            "wrap":"white", //An object with properties representing the attributes for the image.???????????? //fetch from item db
                         }
                     }
                     body.push(obj);
                 })
-
                 options.body = body;
-                options.uri = `http://localhost:8089/api/pwinty/orders/${response.data.id}/images/batch`;
+                options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/images/batch`;
                 return rp(options);
             } else
-                throw new Error("Something went wrong with the order API!");
+                throw new Error("Something went wrong with the order API! (creating)");
         })
         .then((response) => {
             if (response.statusCode === 200) {
                 console.log("products and images added to order");
-                console.log(response.data.items);
+                options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/status`;
+                options.method = "GET";
+                return rp(options);
+            } else
+                throw new Error("Something went wrong with the order API! (adding products)");
+        })
+       .then((response) => {
+            if (response.statusCode === 200) {
+                if (response.data.isValid === true) {
+                    console.log("order is valid");
+                    options.uri = ``;
+                    
+                    return res.status(200).json({err: false, orderId: order._id});
+                    return rp(options);
+                }
+            } else
+                throw new Error("Something went wrong with the order API! (checking validity)");
+        })/*
+        .then((response) => {
+            if (response.statusCode === 200) {
+                console.log("submitted order");
+                
+                // create order in db
                 return res.status(200).json({err: false, orderId: order._id});
             } else
-                throw new Error("Something went wrong with the order API!");
-        })
+                throw new Error("Something went wrong with the order API! (submitting)");
+        })*/
         .catch((err) => {
             console.log("PWINTY RP CATCH", err.message)
             return res.status(400).json({ error: true, errordata: err.error });
