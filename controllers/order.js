@@ -100,16 +100,18 @@ try {
             pwintyOrderId = response.data.id;
             let body = [];
             req.body.items.forEach((item, index) => {
-                let obj = {
-                    "sku" : "CAN-19MM-HMC-10X10", //fetch from item db
-                    "url" : `http://localhost:8089/api/image/main/Shop/${item.item._id}`, 
-                    "sizing" : "crop", // idk yet
-                    "copies" : item.qty,
-                    "attributes" : {
-                        "wrap":"white", //An object with properties representing the attributes for the image.???????????? //fetch from item db
+                if (item.item.isUnique === false) {
+                    let obj = {
+                        "sku" : "CAN-19MM-HMC-10X10", //fetch from item db
+                        "url" : `http://localhost:8089/api/image/main/Shop/${item.item._id}`, 
+                        "sizing" : "crop", // idk yet
+                        "copies" : item.qty,
+                        "attributes" : {
+                            "wrap":"white", //An object with properties representing the attributes for the image.???????????? //fetch from item db
+                        }
                     }
+                    body.push(obj);
                 }
-                body.push(obj);
             })
             options.body = body;
             options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/images/batch`;
@@ -162,8 +164,7 @@ try {
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {
-    console.log("CREATING ORDER ERROR:");
-    console.log(err.error, err.message)
+    console.log("CREATING ORDER ERROR:", err);
     return res.status(200).json({err: true, message: err.message})
 }})
 
