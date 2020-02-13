@@ -37,13 +37,13 @@ try {
     })
     .catch((err) => {
         console.log(err)
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 
-router.get("/orders/create", async (req, res) => { //router.post?
+router.post("/orders/create", async (req, res) => { //router.post?
 try {
     let options = {
         method: 'POST',
@@ -52,25 +52,7 @@ try {
             'X-Pwinty-MerchantId': MERCHANTID,
             'X-Pwinty-REST-API-Key': APIKEY
         },
-        body: {
-            merchantOrderId: "123test", //optional	Your identifier for this order.
-            recipientName: "ohwow", //	Recipient name.
-            address1: "addreeeeeeeee", //optional * First line of recipient address.
-            address2: "", //optional	Second line of recipient address.
-            addressTownOrCity: "Paris", // optional *	Town or city of the recipient.
-            stateOrCounty: "Paris", //optional	State, county or region of the recipient.
-            postalOrZipCode: "75012", // optional *	Postal or zip code of the recipient.
-            countryCode: "FR", //	Two-letter country code of the recipient.
-            preferredShippingMethod: "standard", // Possible values are Budget, Standard, Express, and Overnight.
-            payment: "", //optional	Payment option for order, either InvoiceMe or InvoiceRecipient. Default InvoiceMe
-            packingSlipUrl: "", //optional †	URL to a packing slip file. PNG format, A4 size recommended.
-            mobileTelephone: "", //optional	Customer's mobile number for shipping updates and courier contact.
-            telephone: "", //optional	Customer's non-mobile phone number for shipping updates and courier contact.
-            email: "", //optional	Customer's email address.
-            invoiceAmountNet: "", //optional	Used for orders where an invoice amount must be supplied (e.g. to Middle East).
-            invoiceTax: "", //optional	Used for orders where an invoice amount must be supplied (e.g. to Middle East).
-            invoiceCurrency: "", //optional	Used for orders where an invoice amount must be supplied (e.g. to Middle East).
-        },
+        body: req.body,
         json: true
     }
 
@@ -80,11 +62,11 @@ try {
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err)
-        return res.status(400).json({ error: true, errordata: err.error });
+        //console.log(err)
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 
 router.get("/orders/update/:id", async (req, res) => { //router.post?
@@ -126,10 +108,10 @@ try {
     })
     .catch((err) => {
         console.log(err, "x")
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 
 router.get("/orders/:id", async (req, res) => {
@@ -152,10 +134,10 @@ try {
     })
     .catch((err) => {
         console.log(err.error)
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 
 router.get("/orders/:id/status", async (req, res) => {
@@ -177,10 +159,10 @@ try {
     })
     .catch((err) => {
         console.log(err.error)
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 
 router.post("/orders/:id/submit", async (req, res) => {
@@ -205,10 +187,10 @@ try {
     })
     .catch((err) => {
         console.log(err.error)
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 /* END ORDERS */
 
@@ -254,10 +236,10 @@ try {
     })
     .catch((err) => {
         console.log(err)
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 
 router.post("/orders/:id/images/batch", async (req, res) => { //POST
@@ -280,10 +262,10 @@ try {
     })
     .catch((err) => {
         console.log("IMAGE BATCH ERROR");
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 
 /* 
@@ -331,10 +313,10 @@ try {
     })
     .catch((err) => {
         console.log(err)
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 /* END COUNTRIES */
 
@@ -364,10 +346,10 @@ try {
     })
     .catch((err) => {
         console.log(err)
-        return res.status(400).json({ error: true, errordata: err.error });
+        return res.status(200).json({ error: true, errordata: err.error });
     })
 } catch (err) {
-    return res.status(400).json({ message: err.message });
+    return res.status(200).json({ message: err.message });
 }});
 /* END CATALOGUE */
 module.exports = router;

@@ -78,11 +78,7 @@ try {
 
         let options = {
             method: 'POST',
-            uri : `${API_URL}/v3.0/Orders`,
-            headers: {
-                'X-Pwinty-MerchantId': MERCHANTID,
-                'X-Pwinty-REST-API-Key': APIKEY
-            },
+            uri : `http://localhost:8089/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders
             body: {
                 merchantOrderId: order._id,
                 recipientName: order.firstname + " " + order.lastname,
@@ -97,88 +93,77 @@ try {
         }
         
         let pwintyOrderId = "";
-        await rp(options)
-        .then(async(response) => {
-            if (response.statusCode === 200) {
-                console.log("created order");
-                pwintyOrderId = response.data.id;
-                let body = [];
-                req.body.items.forEach((item, index) => {
-                    //console.log(item)
-                    let obj = {
-                        "sku" : "CAN-19MM-HMC-10X10", //fetch from item db
-                        "url" : `http://localhost:8089/api/image/main/Shop/${item.item._id}`, 
-                        "sizing" : "crop", // idk yet
-                        "copies" : item.qty,
-                        "attributes" : {
-                            "wrap":"white", //An object with properties representing the attributes for the image.???????????? //fetch from item db
-                        }
+        let reponse;
+        response = await rp(options);
+        if (response.statusCode === 200) {
+            console.log("created order");
+            pwintyOrderId = response.data.id;
+            let body = [];
+            req.body.items.forEach((item, index) => {
+                let obj = {
+                    "sku" : "CAN-19MM-HMC-10X10", //fetch from item db
+                    "url" : `http://localhost:8089/api/image/main/Shop/${item.item._id}`, 
+                    "sizing" : "crop", // idk yet
+                    "copies" : item.qty,
+                    "attributes" : {
+                        "wrap":"white", //An object with properties representing the attributes for the image.???????????? //fetch from item db
                     }
-                    body.push(obj);
-                })
-                options.body = body;
-                options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/images/batch`;
-                return rp(options);
-            } else
-                throw new Error("Something went wrong with the order API! (creating)");
-        })
-        .then((response) => {
+                }
+                body.push(obj);
+            })
+            options.body = body;
+            options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/images/batch`;
+            
+            response = await rp(options);
             if (response.statusCode === 200) {
                 console.log("products and images added to order");
                 options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/status`;
                 options.method = "GET";
                 
-                return rp(options);
-            } else
-                throw new Error("Something went wrong with the order API! (adding products)");
-        })
-       .then((response) => {
-            if (response.statusCode === 200) {
-                if (response.data.isValid === true) {
-                    console.log("order is valid");
-                    options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
-                    options.method = "POST";
-                    options.body = { status: "Submitted" };// Cancelled, AwaitingPayment or Submitted.
-                    
-                    return rp(options);
-                } else 
-                    throw new Error("Order is not valid");
-            } else
-                throw new Error("Something went wrong with the order API! (checking validity)");
-        })
-        .then((response) => {
-            if (response.statusCode === 200) {
-                console.log("submitted order");
-                
-                /* var [err, result] = await utils.to(order.save());
-                if (err || result == null) 
-                    throw new Error("An error occured while creating your order");
-            
-                // Send mails
-                let subject = `New Order #${order._id}`;
-                let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
-                if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-                    throw new Error("An error occured while trying to send the mail, please retry");
-                
-                var [err, user] = await utils.to(User.findById(req.body.user._id));
-                if (err || user == null)
-                    throw new Error("An error occured while finding your user account, please try again");
-                content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-                if (await mailer(user.email, subject, content))
-                    throw new Error("An error occured while trying to send the mail, please retry"); */
+                response = await rp(options);
+                if (response.statusCode === 200) {
+                    if (response.data.isValid === true) {
+                        console.log("order is valid");
+                        options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
+                        options.method = "POST";
+                        options.body = { status: "Submitted" };// Cancelled, AwaitingPayment or Submitted.
+                        
+                        response = await rp(options);
+                        if (response.statusCode === 200) {
+                            console.log("submitted order");
+                             /* var [err, result] = await utils.to(order.save()); //need pwinty order id in db
+                                if (err || result == null) 
+                                    throw new Error("An error occured while creating your order");
+                            
+                                // Send mails
+                                let subject = `New Order #${order._id}`;
+                                let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+                                if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+                                    throw new Error("An error occured while trying to send the mail, please retry");
+                                
+                                var [err, user] = await utils.to(User.findById(req.body.user._id));
+                                if (err || user == null)
+                                    throw new Error("An error occured while finding your user account, please try again");
+                                content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+                                if (await mailer(user.email, subject, content))
+                                    throw new Error("An error occured while trying to send the mail, please retry"); */
 
-                return res.status(200).json({err: false, orderId: order._id});
-            } else
-                throw new Error("Something went wrong with the order API! (submitting)");
-        })
-        .catch((err) => {
-            console.log("PWINTY RP CATCH", err.message)
-            return res.status(400).json(err.error);
-        })
+                            return res.status(200).json({err: false, orderId: order._id});
+                        } else
+                            throw new Error(`Something went wrong while submitting the order: ${response.errordata.statusTxt}`);
+                    } else 
+                        throw new Error(`Order is not valid: ${response.data.generalErrors[0]}`);
+                } else 
+                    throw new Error(`Something went wrong while checking the order's validity: ${response.errordata.statusTxt}`);
+            } else 
+                throw new Error(`Something went wrong while adding products: ${response.errordata.statusTxt}`);
+        } else 
+            throw new Error(`Something went wrong while creating the order: ${response.errordata.statusTxt}`);
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {
-    console.log("CREATING ORDER ERROR:", err);
+    console.log("CREATING ORDER ERROR:");
+    console.log(err.error, err.message)
     return res.status(200).json({err: true, message: err.message})
 }})
 
