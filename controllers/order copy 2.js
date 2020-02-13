@@ -150,7 +150,17 @@ try {
             if (response.statusCode === 200) {
                 console.log("submitted order");
                 
-                /* var [err, result] = await utils.to(order.save());
+                // create order in db
+                return res.status(200).json({err: false, orderId: order._id});
+            } else
+                throw new Error("Something went wrong with the order API! (submitting)");
+        })
+        .catch((err) => {
+            console.log("PWINTY RP CATCH", err.message)
+            return res.status(400).json(err.error);
+        })
+
+           /* var [err, result] = await utils.to(order.save());
                 if (err || result == null) 
                     throw new Error("An error occured while creating your order");
             
@@ -166,15 +176,6 @@ try {
                 content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
                 if (await mailer(user.email, subject, content))
                     throw new Error("An error occured while trying to send the mail, please retry"); */
-
-                return res.status(200).json({err: false, orderId: order._id});
-            } else
-                throw new Error("Something went wrong with the order API! (submitting)");
-        })
-        .catch((err) => {
-            console.log("PWINTY RP CATCH", err.message)
-            return res.status(400).json(err.error);
-        })
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {

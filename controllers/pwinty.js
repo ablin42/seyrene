@@ -183,7 +183,7 @@ try {
     return res.status(400).json({ message: err.message });
 }});
 
-router.get("/orders/:id/submit", async (req, res) => {
+router.post("/orders/:id/submit", async (req, res) => {
 try {
     let id = req.params.id;
     let options = {
@@ -194,14 +194,13 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         body: {
-            status: "Submitted"// Cancelled, AwaitingPayment or Submitted. //variable
+            status: req.body.status,// Cancelled, AwaitingPayment or Submitted. //variable
         },
         json: true
     }
 
     rp(options)
     .then((response) => {
-        console.log(response)
         return res.status(200).json(response);
     })
     .catch((err) => {
