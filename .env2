@@ -1,8 +1,0 @@
-DB_CONNECTION=mongodb+srv://harbinger42:HmTnsKg4JZNJKZq7@cluster0-9yq2z.mongodb.net/test?retryWrites=true&w=majority
-TOKEN_SECRET=wa5616po6li5ne2198kfvs^kzadp77azrkfnlqSDQ21D5AZ654ZFQ3Q2
-EMAIL=abkarianpatricia@gmail.com
-EMAILPW=Erzerum144%
-SERVER_EMAIL=maral.noreply@gmail.com
-SERVER_EMAILPW=A3cr420mga
-STRIPE_SECRET=sk_test_52HhMBaVOLRzC2iN3zljiCcP00Zb6YvQ3W
-STRIPE_PUBLIC=pk_test_tFWKfxLQuvpYUl0fasc0GWjd00uwLqE3Xl
