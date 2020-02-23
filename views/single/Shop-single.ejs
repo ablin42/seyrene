@@ -1,6 +1,7 @@
 <% include ../partials/head %>
 
 <script src="/scripts/cart.js"></script>
+<script src="/scripts/pwinty-products.js"></script>
 <div class="container container-single"> 
     <div class="single-wrapper">
     <% if (locals.shopItem){ %>
@@ -51,15 +52,37 @@
             <p class="blog-content col-10 offset-1 mt-2"><%= locals.shopItem.content %></p>
 
             <div class="col-10 offset-1 text-center">
-                <b class="card-price"><%= locals.shopItem.price %>€</b>
+                <div class="pwinty-products">
+                    <div class="form-group text-center" id="categories">
+
+                        <label for="framed">
+                            <div class="sku-item unselectable">
+                                <p>Framed Print</p>
+                                <input name="framed" id="framed" value="framed" type="checkbox" onclick="loadCategory(this)">
+                            </div>
+                        </label>
+    
+                        <label for="mounted">
+                            <div class="sku-item unselectable">
+                                <p>Mounted Print</p>
+                                <input name="mounted" id="mounted" value="mounted" type="checkbox" onclick="loadCategory(this)">
+                            </div>
+                        </label>
+
+                    </div>
+                    <div id="subcategories">
+
+                    </div>
+                    <!--<b class="card-price"><%= locals.shopItem.price %>€</b>-->
                 <% if (locals.shopItem.isUnique) { %>
                     <b class="isUnique" style="color: var(--light-shade)">Toile unique</b>
                 <% } %>
-                <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)">
+                <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)" disabled><!-- hide if sku and attributes not selected -->
             </div>
         </div>
     <% } %>
   </div>
+</div>
 </div>
 
 <a class="lightbox-close" href="#close">

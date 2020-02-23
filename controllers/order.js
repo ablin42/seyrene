@@ -102,12 +102,13 @@ try {
             req.body.items.forEach((item, index) => {
                 if (item.item.isUnique === false) {
                     let obj = {
-                        "sku" : "CAN-19MM-HMC-10X10", //fetch from item db
+                        "sku" : "FRA-BOX-BAP-MOUNT1-ACRY-20X20", //fetch from item db
                         "url" : `http://localhost:8089/api/image/main/Shop/${item.item._id}`, 
                         "sizing" : "crop", // idk yet
                         "copies" : item.qty,
                         "attributes" : {
-                            "wrap":"white", //An object with properties representing the attributes for the image.???????????? //fetch from item db
+                            "frameColour":"brown", //An object with properties representing the attributes for the image.???????????? //fetch from item db
+                            "mountColour": "Snow White",
                         }
                     }
                     body.push(obj);

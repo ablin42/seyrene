@@ -47,6 +47,7 @@ function checkoutCaller(isLogged, isDelivery) {
 }
 
 async function cartAdd(itemId, caller) {
+  console.log("xd")
   caller.disabled = true;
   caller.style.pointerEvents = "none";
   setTimeout(() => {

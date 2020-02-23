@@ -6,6 +6,10 @@ const ShopSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    pwintyData: {
+        type: Array,
+        required: false,
+    },
     soldOut: {
         type: Boolean,
         default: false

@@ -4,11 +4,11 @@
 <script src="/scripts/cart.js"></script>
     <div class="container">
       <div class="text-center mb-4">
-        <button class="tab-btn active" onclick="openTab(this, 'original')">Toiles originales</button>
-        <button class="tab-btn" onclick="openTab(this, 'print')">Produits dérivés</button>
+        <button class="tab-btn" onclick="openTab(this, 'original')">Toiles originales</button>
+        <button class="tab-btn active" onclick="openTab(this, 'print')">Produits dérivés</button>
       </div>
         <div class="container-single" id="container-shop">
-            <div id="original" class="tab container-shop">
+            <div id="original" class="tab container-shop" style="display:none">
               <% if (locals.original){ %>
                 <% Object.keys(locals.original).forEach(function (index) { %>
                   <% if (locals.original[index].isUnique) { %>
@@ -37,7 +37,7 @@
                 <h1 class="alertEmpty">Plus de toiles originales en stock!</h1>
               <% } %>
           </div>
-          <div id="print" class="tab container-shop" style="display:none">
+          <div id="print" class="tab container-shop">
               <% if(locals.print){ %>
                 <% Object.keys(locals.print).forEach(function (index) { %>
                   <% if (!locals.print[index].isUnique) { %>
