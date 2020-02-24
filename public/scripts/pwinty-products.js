@@ -39,63 +39,100 @@ const PWINTY_ITEMS = {
     "mounted": [],
 }
 
+class PwintyObject {
+    constructor(item) {
+        this.SKU = "";
+        this.category = item.value;
+        this.subcategory = ""
+
+        let selection = `<div class="row">`;
+        Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
+            let subcategoryRadio = `<label for="${subcategory}">
+                                    <div class="sku-item unselectable">
+                                        <p>${subcategory}</p>
+                                        <input data-category="${this.category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="loadsSubCategory(this)">
+                                    </div>
+                                </label>`;
+            selection += subcategoryRadio;
+        });
+        document.getElementById("subcategories").innerHTML = selection + "</div>";
+    }
+
+    printInfo() {
+        console.log(this)
+    }
+
+    loadsSubCategory(subcategory) {
+        this.subcategory = subcategory.value;
+        this.attributes = {};
+
+        let selection = `<div class="row">`;
+        Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory]).forEach(attribute => {
+            this.attributes[attribute] = "";
+    
+            let attributeSelect = `<label for="${attribute}">
+                                    <div class="sku-item unselectable">
+                                        <p>${attribute}</p>
+                                        <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="updateAttribute(this)">
+                                            <option value="" disabled selected>Pick one</option>`;//'${subcategory.dataset.category}', '${this.subcategory}'
+            
+            PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
+                attributeSelect += `<option value="${selectOption}">${selectOption}</option>`;
+            });
+    
+            attributeSelect +=              `</select>
+                                    </div>
+                                </label>`;
+            selection += attributeSelect;
+        });
+        document.getElementById("attributes").innerHTML = selection + "</div>";
+    }
+
+    updateAttribute(attribute, value) {
+        this.attributes[attribute] = value;
+        this.checkAttributes();
+    }
+
+    checkAttributes() {
+        let nbAttributes = Object.keys(this.attributes).length;
+        let selectedAttributes = 0;
+    
+        //save attribute in object
+        Object.keys(this.attributes).forEach(attribute => {
+            if (this.attributes[attribute] !== "")
+                selectedAttributes++; 
+        })
+        if (selectedAttributes === nbAttributes)
+            this.generateSku();
+    }
+
+    generateSku() {
+        console.log("generating SKU")
+    }
+}
+
+let Pwinty;
+
 function loadCategory(item) {
-    let selection = `<div class="row">`;
-    let category = item.value;
-
-    Object.keys(PWINTY_ITEMS[category]).forEach(subcategory => {
-        //forge subcategories selection div checkboxes
-
-        let subcategoryRadio = `<label for="${subcategory}">
-                                <div class="sku-item unselectable">
-                                    <p>${subcategory}</p>
-                                    <input data-category="${category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="loadsSubCategory(this)">
-                                </div>
-                            </label>`;
-        selection += subcategoryRadio;
-    });
-    document.getElementById("subcategories").innerHTML = selection + "</div>";
+    Pwinty = new PwintyObject(item);
+    Pwinty.printInfo();
+    return ;
 }
 
 function loadsSubCategory(subcategory) {
-    //console.log(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]);
-    let selection = `<div class="row">`;
-    Object.keys(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]).forEach(attribute => {
-        //forge subcategories selection div checkboxes
-
-        let attributeSelect = `<label for="${attribute}">
-                                <div class="sku-item unselectable">
-                                    <p>${attribute}</p>
-                                    <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="checkAttributes('${subcategory.dataset.category}', '${subcategory.value}')">
-                                        <option value="" disabled selected>Pick one</option>`;
-        
-        PWINTY_ITEMS[subcategory.dataset.category][subcategory.value][attribute].forEach(selectOption => {
-            attributeSelect += `<option value="${selectOption}">${selectOption}</option>`;
-        });
-
-        attributeSelect +=              `</select>
-                                </div>
-                            </label>`;
-        selection += attributeSelect;
-    });
-    document.getElementById("attributes").innerHTML = selection + "</div>";
+    Pwinty.loadsSubCategory(subcategory);
+    Pwinty.printInfo();
+    return ;
 }
 
-//check if all attributes have been selected, if yes, generate sku and calculate price, else do nothing/wait
-function checkAttributes(category, subcategory) {
-    //console.log(category, subcategory)
-    let attributes = document.querySelectorAll('[data-attribute]');
-    let nbAttributes = attributes.length;
-    let selectedAttributes = 0;
-
-    attributes.forEach(attribute => {
-        if (attribute.options[attribute.selectedIndex].value !== "")
-            selectedAttributes++; 
-    })
-    if (selectedAttributes === nbAttributes)
-        generateSku("data");
+function updateAttribute(attribute) {
+    Pwinty.updateAttribute(attribute.name, attribute.options[attribute.selectedIndex].value);
+    Pwinty.printInfo();
+    return ;
 }
 
 function generateSku(data) {
-    console.log("OK!")
+    Pwinty.generateSku();
+    Pwinty.printInfo();
+    return ;
 }
