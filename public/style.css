@@ -85,7 +85,7 @@
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 
-input[type=checkbox]
+input[type=checkbox], input[type=radio]
 {
   /* Double-sized Checkboxes */
   -ms-transform: scale(2); /* IE */

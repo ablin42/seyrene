@@ -40,23 +40,49 @@ const PWINTY_ITEMS = {
 }
 
 function loadCategory(item) {
-    let selection = ``;
-    Object.keys(PWINTY_ITEMS[item.value]).forEach(element => {
+    let selection = `<div class="row">`;
+    let category = item.value;
+
+    Object.keys(PWINTY_ITEMS[category]).forEach(subcategory => {
         //forge subcategories selection div checkboxes
 
-        //change checkboxes to radio
-        let subcategory = `<label for="${element}">
+        let subcategoryRadio = `<label for="${subcategory}">
                                 <div class="sku-item unselectable">
-                                    <p>${element}</p>
-                                    <input data-category="${item.value}" name="${element}" id="${element}" value="${element}" type="checkbox" onclick="loadsSubCategory(this)">
+                                    <p>${subcategory}</p>
+                                    <input data-category="${category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="loadsSubCategory(this)">
                                 </div>
                             </label>`;
-        selection += subcategory;
+        selection += subcategoryRadio;
     });
-    document.getElementById("subcategories").innerHTML = selection;
-    //fetchAvailableOptions(item.value)
+    document.getElementById("subcategories").innerHTML = selection + "</div>";
 }
 
-function loadsSubCategory(item) {
-    console.log(PWINTY_ITEMS[item.dataset.category][item.value]);
+function loadsSubCategory(subcategory) {
+    console.log(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]);
+    let selection = `<div class="row">`;
+    Object.keys(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]).forEach(element => {
+        //forge subcategories selection div checkboxes
+
+        let attributeSelect = `<label for="${element}">
+                                <div class="sku-item unselectable">
+                                    <p>${element}</p>
+                                    <select name="${element}" id="${element}" onchange="checkAttributes('${subcategory.dataset.category}', '${subcategory.value}')">
+                                        <option value="" disabled selected>Pick one</option>`;
+        
+        PWINTY_ITEMS[subcategory.dataset.category][subcategory.value][element].forEach(selectOption => {
+            attributeSelect += `<option value="${selectOption}">${selectOption}</option>`;
+        });
+
+        attributeSelect +=              `</select>
+                                </div>
+                            </label>`;
+        selection += attributeSelect;
+    });
+    document.getElementById("attributes").innerHTML = selection + "</div>";
+}
+
+function checkAttributes(category, subcategory) {
+    console.log(category, subcategory)
+
+    //check if all attributes have been selected, if yes, generate sku and calculate price, else do nothing/wait
 }
