@@ -58,18 +58,18 @@ function loadCategory(item) {
 }
 
 function loadsSubCategory(subcategory) {
-    console.log(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]);
+    //console.log(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]);
     let selection = `<div class="row">`;
-    Object.keys(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]).forEach(element => {
+    Object.keys(PWINTY_ITEMS[subcategory.dataset.category][subcategory.value]).forEach(attribute => {
         //forge subcategories selection div checkboxes
 
-        let attributeSelect = `<label for="${element}">
+        let attributeSelect = `<label for="${attribute}">
                                 <div class="sku-item unselectable">
-                                    <p>${element}</p>
-                                    <select name="${element}" id="${element}" onchange="checkAttributes('${subcategory.dataset.category}', '${subcategory.value}')">
+                                    <p>${attribute}</p>
+                                    <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="checkAttributes('${subcategory.dataset.category}', '${subcategory.value}')">
                                         <option value="" disabled selected>Pick one</option>`;
         
-        PWINTY_ITEMS[subcategory.dataset.category][subcategory.value][element].forEach(selectOption => {
+        PWINTY_ITEMS[subcategory.dataset.category][subcategory.value][attribute].forEach(selectOption => {
             attributeSelect += `<option value="${selectOption}">${selectOption}</option>`;
         });
 
@@ -81,8 +81,21 @@ function loadsSubCategory(subcategory) {
     document.getElementById("attributes").innerHTML = selection + "</div>";
 }
 
+//check if all attributes have been selected, if yes, generate sku and calculate price, else do nothing/wait
 function checkAttributes(category, subcategory) {
-    console.log(category, subcategory)
+    //console.log(category, subcategory)
+    let attributes = document.querySelectorAll('[data-attribute]');
+    let nbAttributes = attributes.length;
+    let selectedAttributes = 0;
 
-    //check if all attributes have been selected, if yes, generate sku and calculate price, else do nothing/wait
+    attributes.forEach(attribute => {
+        if (attribute.options[attribute.selectedIndex].value !== "")
+            selectedAttributes++; 
+    })
+    if (selectedAttributes === nbAttributes)
+        generateSku("data");
+}
+
+function generateSku(data) {
+    console.log("OK!")
 }
