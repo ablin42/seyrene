@@ -1,13 +1,15 @@
 const PWINTY_ITEMS = {
     "framed": {
             "Box": {
-                "substrateType": ["BAP", "BPP", "CPP", "CPWP", "EMA", "HFAP", "HGE", "HPG", "HPL", "HPR", "LPP", "MFA", "MG", "SAP", "SPR"],
-                "substrateWeight": ["180gsm", "170gsm", "200gsm", "240gsm", "260gsm", "280gsm", "285gsm", "308gsm", "310gsm", "315gsm"], //maybe useless param // does not modifiy sku
-                "mountType": ["1.4mm", "2.0mm", "NM"],
-                "glaze": ["Acrylic / Perspex", "Float Glass", "Tru View Museum Glass"],
-                "size": ["8x8", "8x12", "8.3x11.7", "12x12"],
-                "colour": ['Black', 'Brown', 'White', 'Natural'],//does not modifiy sku
-                "mountColour": ["Snow White", "Off-White", "Black"],//does not modifiy sku
+                "substrateType": [{"BAP" : "BAP"}, {"BPP" : "BPP"}, {"CPP" : "CPP"}, {"CPWP" : "CPWP"}, {"EMA" : "EMA"}, {"HFAP" : "HFAP"},
+                 {"HGE" : "HGE"}, {"HPG" : "HPG"}, {"HPL" : "HPL"}, {"HPR" : "HPR"}, {"LPP" : "LPP"}, {"MFA" : "MFA"}, {"MG" : "MG"}, {"SAP" : "SAP"}, {"SPR" : "SPR"}],
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                 {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}], //maybe useless param // does not modifiy sku
+                "mountType": [{"1.4mm" : "1.4mm"}, {"2.0mm" : "2.0mm"}, {"NM" : "NO MOUNT"}],
+                "glaze": [{"Acrylic / Perspex" : "Acrylic / Perspex"}, {"Float Glass" : "Float Glass"}, {"Tru View Museum Glass" : "Tru View Museum Glass"}],
+                "size": [{"8x8" : "8x8"}, {"8x12" : "8x12"}, {"8.3x11.7" : "8.3x11.7"}, {"12x12" : "12x12"}],
+                "colour": [{'Black' : 'Black'}, {'Brown' : 'Brown'}, {'White' : 'White'}, {'Natural' : 'Natural'}],//does not modifiy sku
+                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}],//does not modifiy sku
             }, "Classic": {
                 "colour": ['zz', 'zxwn', 'Wfze', 'Nagaral'],
                 "mountType": ["1.azeazefm", "2.afzzaf0mm", "NM"],
@@ -82,7 +84,8 @@ class PwintyObject {
                                             <option value="" disabled selected>Pick one</option>`;//'${subcategory.dataset.category}', '${this.subcategory}'
             
             PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
-                attributeSelect += `<option value="${selectOption}">${selectOption}</option>`;
+                console.log(selectOption)
+                attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)}</option>`;
             });
     
             attributeSelect +=              `</select>
@@ -95,6 +98,9 @@ class PwintyObject {
     }
 
     updateAttribute(attribute) {
+        /*  let value = attribute.options[attribute.selectedIndex].value;
+        let name = attribute.name;
+        this.attributes[attribute.name] = { [value] : name }; */
         this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
         this.checkAttributes();
         this.printInfo();
