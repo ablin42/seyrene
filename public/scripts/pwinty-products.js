@@ -44,13 +44,17 @@ class PwintyObject {
         this.SKU = "";
         this.category = item.value;
         this.subcategory = ""
+        this.attributes = {};
+
+        document.getElementById("subcategories").innerHTML = "";
+        document.getElementById("attributes").innerHTML = "";
 
         let selection = `<div class="row">`;
         Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
             let subcategoryRadio = `<label for="${subcategory}">
                                     <div class="sku-item unselectable">
                                         <p>${subcategory}</p>
-                                        <input data-category="${this.category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="loadsSubCategory(this)">
+                                        <input data-category="${this.category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="Pwinty.loadSubCategory(this)">
                                     </div>
                                 </label>`;
             selection += subcategoryRadio;
@@ -62,7 +66,8 @@ class PwintyObject {
         console.log(this)
     }
 
-    loadsSubCategory(subcategory) {
+    loadSubCategory(subcategory) {
+        console.log("loading sub")
         this.subcategory = subcategory.value;
         this.attributes = {};
 
@@ -73,7 +78,7 @@ class PwintyObject {
             let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable">
                                         <p>${attribute}</p>
-                                        <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="updateAttribute(this)">
+                                        <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
                                             <option value="" disabled selected>Pick one</option>`;//'${subcategory.dataset.category}', '${this.subcategory}'
             
             PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
@@ -86,11 +91,13 @@ class PwintyObject {
             selection += attributeSelect;
         });
         document.getElementById("attributes").innerHTML = selection + "</div>";
+        this.printInfo();
     }
 
-    updateAttribute(attribute, value) {
-        this.attributes[attribute] = value;
+    updateAttribute(attribute) {
+        this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
         this.checkAttributes();
+        this.printInfo();
     }
 
     checkAttributes() {
@@ -108,31 +115,19 @@ class PwintyObject {
 
     generateSku() {
         console.log("generating SKU")
+
+        this.generatePricing();
+    }
+
+    generatePricing() {
+        console.log("generating pricing");
+        //contact API + add our pricing
     }
 }
 
 let Pwinty;
-
 function loadCategory(item) {
     Pwinty = new PwintyObject(item);
-    Pwinty.printInfo();
-    return ;
-}
-
-function loadsSubCategory(subcategory) {
-    Pwinty.loadsSubCategory(subcategory);
-    Pwinty.printInfo();
-    return ;
-}
-
-function updateAttribute(attribute) {
-    Pwinty.updateAttribute(attribute.name, attribute.options[attribute.selectedIndex].value);
-    Pwinty.printInfo();
-    return ;
-}
-
-function generateSku(data) {
-    Pwinty.generateSku();
     Pwinty.printInfo();
     return ;
 }
