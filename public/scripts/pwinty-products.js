@@ -1,16 +1,18 @@
 const PWINTY_ITEMS = {
-    "framed": {
-            "Box": {
-                "substrateType": [{"BAP" : "BAP"}, {"BPP" : "BPP"}, {"CPP" : "CPP"}, {"CPWP" : "CPWP"}, {"EMA" : "EMA"}, {"HFAP" : "HFAP"},
-                 {"HGE" : "HGE"}, {"HPG" : "HPG"}, {"HPL" : "HPL"}, {"HPR" : "HPR"}, {"LPP" : "LPP"}, {"MFA" : "MFA"}, {"MG" : "MG"}, {"SAP" : "SAP"}, {"SPR" : "SPR"}],
+    "FRA": {
+            "BOX": {
+                "substrateType": [{"BAP" : "Budget Art Paper"}, {"BPP" : "Budget Photo Paper"}, {"CPP" : "Box Poster Paper"}, {"CPWP" : "Cold Press Watercolour Paper"}, {"EMA" : "Enhanced Matte Art Paper"},
+                    {"HFAP" : "Hahnemühle Fine Art Paper"}, {"HGE" : "Hahnemühle German Etching"}, {"HPG" : "Hahnemühle Photo Glossy"}, {"HPL" : "Hahnemühle Photo Lustre"},
+                    {"HPR" : "Hahnemühle Photo Rag"}, {"LPP" : "Lustre Photo Paper"}, {"MFA" : "Museum Fine Art Paper"}, {"MG" : "Metallic Gloss"}, {"SAP" : "Smooth Art Paper"}, {"SPR" : "Smooth Photo Rag"}],
                 "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
                  {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}], //maybe useless param // does not modifiy sku
-                "mountType": [{"1.4mm" : "1.4mm"}, {"2.0mm" : "2.0mm"}, {"NM" : "NO MOUNT"}],
-                "glaze": [{"Acrylic / Perspex" : "Acrylic / Perspex"}, {"Float Glass" : "Float Glass"}, {"Tru View Museum Glass" : "Tru View Museum Glass"}],
-                "size": [{"8x8" : "8x8"}, {"8x12" : "8x12"}, {"8.3x11.7" : "8.3x11.7"}, {"12x12" : "12x12"}],
-                "colour": [{'Black' : 'Black'}, {'Brown' : 'Brown'}, {'White' : 'White'}, {'Natural' : 'Natural'}],//does not modifiy sku
+                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
+                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
+                "size": [{"20x20" : "20x20cm"}, {"20x30" : "20x30cm"}, {"A4" : "21x29.7cm"}, {"25x50" : "25x50cm"}],
+                "colour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}],//does not modifiy sku
                 "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}],//does not modifiy sku
-            }, "Classic": {
+            }, 
+            "CLA": {
                 "colour": ['zz', 'zxwn', 'Wfze', 'Nagaral'],
                 "mountType": ["1.azeazefm", "2.afzzaf0mm", "NM"],
                 "mountColour": ["Snoafze", "Oazfite", "Blafzk"],
