@@ -333,7 +333,7 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         body: {
-            "skus": req.body.skus,//["T-PHO-GP2-CS-M","F-SPA-200X300-FLO-HGE"]
+            "skus": req.body.skus,
         },
         json: true
     }

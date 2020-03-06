@@ -45,7 +45,6 @@ const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
 const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
 
 async function createOrder(order, req) {
-
   let options = {
       method: 'POST',
       uri : `http://localhost:8089/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders

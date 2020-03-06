@@ -4,31 +4,62 @@ const PWINTY_ITEMS = {
                 "substrateType": [{"BAP" : "Budget Art Paper"}, {"BPP" : "Budget Photo Paper"}, {"CPP" : "Box Poster Paper"}, {"CPWP" : "Cold Press Watercolour Paper"}, {"EMA" : "Enhanced Matte Art Paper"},
                     {"HFAP" : "Hahnemühle Fine Art Paper"}, {"HGE" : "Hahnemühle German Etching"}, {"HPG" : "Hahnemühle Photo Glossy"}, {"HPL" : "Hahnemühle Photo Lustre"},
                     {"HPR" : "Hahnemühle Photo Rag"}, {"LPP" : "Lustre Photo Paper"}, {"MFA" : "Museum Fine Art Paper"}, {"MG" : "Metallic Gloss"}, {"SAP" : "Smooth Art Paper"}, {"SPR" : "Smooth Photo Rag"}],
-                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
-                 {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}], //maybe useless param // does not modifiy sku
                 "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
                 "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
                 "size": [{"20x20" : "20x20cm"}, {"20x30" : "20x30cm"}, {"A4" : "21x29.7cm"}, {"25x50" : "25x50cm"}],
                 "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}],//does not modifiy sku
                 "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}],//does not modifiy sku
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                    {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}], //maybe useless param // does not modifiy sku
             }, 
             "CLA": {
-                "colour": ['zz', 'zxwn', 'Wfze', 'Nagaral'],
-                "mountType": ["1.azeazefm", "2.afzzaf0mm", "NM"],
-                "mountColour": ["Snoafze", "Oazfite", "Blafzk"],
-                "glaze": ["Acryliaferspex", "Flazfss", "Tru azfuseum Glass"],
-                "size": ["8azf2", "8.aaaa.7", "12wwwwx12"],
-                "substrate": ["xzaafdzf"]
-            }, "Gloss": {
-                
-            }, "Spacer": {
-                
-            }, "Surface (30mm)": {
-                
-            }, "Surface (50mm)": {
-                
-            }, "Swoop": {
-                
+                "substrateType": [{"BAP" : "Budget Art Paper"}, {"BPP" : "Budget Photo Paper"}, {"CPP" : "Box Poster Paper"}, {"CPWP" : "Cold Press Watercolour Paper"}, {"EMA" : "Enhanced Matte Art Paper"},
+                    {"HFAP" : "Hahnemühle Fine Art Paper"}, {"HGE" : "Hahnemühle German Etching"}, {"HPG" : "Hahnemühle Photo Glossy"}, {"HPL" : "Hahnemühle Photo Lustre"},
+                    {"HPR" : "Hahnemühle Photo Rag"}, {"LPP" : "Lustre Photo Paper"}, {"MFA" : "Museum Fine Art Paper"}, {"MG" : "Metallic Gloss"}, {"SAP" : "Smooth Art Paper"}, {"SPR" : "Smooth Photo Rag"}],
+                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
+                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
+                "size": [{"20x20" : "20x20cm"}, {"20x30" : "20x30cm"}, {"A4" : "21x29.7cm"}, {"25x50" : "25x50cm"}],
+                "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}, {"Silver" : "Silver"}, {"Gold" : "Gold"}],//does not modifiy sku
+                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}],//does not modifiy sku
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                    {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}],//does not modifiy sku
+            }, 
+            "Gloss": {
+                "substrateType": [{"BAP" : "Budget Art Paper"}, {"BPP" : "Budget Photo Paper"}, {"CPP" : "Box Poster Paper"}, {"CPWP" : "Cold Press Watercolour Paper"}, {"EMA" : "Enhanced Matte Art Paper"},
+                    {"HFAP" : "Hahnemühle Fine Art Paper"}, {"HGE" : "Hahnemühle German Etching"}, {"HPG" : "Hahnemühle Photo Glossy"}, {"HPL" : "Hahnemühle Photo Lustre"},
+                    {"HPR" : "Hahnemühle Photo Rag"}, {"LPP" : "Lustre Photo Paper"}, {"MFA" : "Museum Fine Art Paper"}, {"MG" : "Metallic Gloss"}, {"SAP" : "Smooth Art Paper"}, {"SPR" : "Smooth Photo Rag"}],
+                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
+                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
+                "size": [{"20x20" : "20x20cm"}, {"20x30" : "20x30cm"}, {"A4" : "21x29.7cm"}, {"25x50" : "25x50cm"}],
+                "frameColour": [{"Black" : "Black"}, {"White" : "White"}],//does not modifiy sku
+                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}],//does not modifiy sku
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                    {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}],//does not modifiy sku
+            }, 
+            "Spacer": {
+                "mountType": [{"NM" : "NO MOUNT"}],
+                "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}, {"Silver" : "Silver"}, {"Gold" : "Gold"}],
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                    {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}],
+            }, 
+            "Surface (30mm)": {
+                "mountType": [{"NM" : "NO MOUNT"}],
+                "frameColour": [{"Black" : "Black"}, {"White" : "White"}],
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                    {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}],
+            }, 
+            "Surface (50mm)": {
+                "mountType": [{"NM" : "NO MOUNT"}],
+                "frameColour": [{"Black" : "Black"}, {"White" : "White"}],
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                    {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}],
+            }, 
+            "Swoop": {
+                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
+                "frameColour": [{"Black" : "Black"}, {"White" : "White"}],
+                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}],
+                "substrateWeight": [{"180gsm" : "180gsm"}, {"170gsm" : "170gsm"}, {"200gsm" : "200gsm"}, {"240gsm" : "240gsm"},
+                    {"260gsm" : "260gsm"}, {"280gsm" : "280gsm"}, {"285gsm" : "285gsm"}, {"308gsm" : "308gsm"}, {"310gsm" : "310gsm"}, {"315gsm" : "315gsm"}],
             },
     },
     "mounted": [],
@@ -56,10 +87,6 @@ class PwintyObject {
             selection += subcategoryRadio;
         });
         document.getElementById("subcategories").innerHTML = selection + "</div>";
-    }
-
-    printInfo() {
-        console.log(this)
     }
 
     loadSubCategory(subcategory) {
@@ -92,16 +119,25 @@ class PwintyObject {
     }
 
     updateAttribute(attribute) {
-        /*  let value = attribute.options[attribute.selectedIndex].value;
-        let name = attribute.name;
-        this.attributes[attribute.name] = { [value] : name }; */
         this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
+
         this.checkAttributes();
         //this.printInfo();
     }
 
+    hideAttribute(attributeName) {
+        let attributeItem = document.getElementById(attributeName);
+        attributeItem.parentNode.parentNode.setAttribute("style", "display: none")
+        this.attributes[attributeName] = "";
+    }
+
+    displayAttribute(attributeName) {
+        let attributeItem = document.getElementById(attributeName);
+        attributeItem.parentNode.parentNode.setAttribute("style", "display: block")
+    }
+
     checkAttributes() {
-        let nbAttributes = Object.keys(this.attributes).length;
+        let nbAttributes = this.checkDisabledAttributes();
         let selectedAttributes = 0;
     
         Object.keys(this.attributes).forEach(attribute => {
@@ -110,6 +146,18 @@ class PwintyObject {
         })
         if (selectedAttributes === nbAttributes)
             this.generateSku();
+    }
+
+    checkDisabledAttributes() {
+        let nbAttributes = Object.keys(this.attributes).length;
+        if (this.attributes["mountType"] === "NM") { //loop for all elements that could cancel eachother
+            this.hideAttribute("mountColour");
+            nbAttributes--;
+        }
+        else 
+            this.displayAttribute("mountColour");
+        
+        return nbAttributes;
     }
 
     generateSku() {
@@ -153,17 +201,12 @@ class PwintyObject {
     }
 
     displayPricing() {
-        //this.price;
-        //display price and purchase button
         document.getElementById("price").innerHTML = this.price + "€";
         document.getElementById("purchasebox").setAttribute("style", "display: block");
     }
 
-    hidePricing() {
-        document.getElementById("purchasebox").setAttribute("style", "display: none");
-    }
-
-    //function to hide purchase box when changing category/sub etc
+    hidePricing() {document.getElementById("purchasebox").setAttribute("style", "display: none");}
+    printInfo() {console.log(this)}
 }
 
 let Pwinty;
