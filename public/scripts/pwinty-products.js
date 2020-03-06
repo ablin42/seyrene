@@ -9,7 +9,7 @@ const PWINTY_ITEMS = {
                 "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
                 "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
                 "size": [{"20x20" : "20x20cm"}, {"20x30" : "20x30cm"}, {"A4" : "21x29.7cm"}, {"25x50" : "25x50cm"}],
-                "colour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}],//does not modifiy sku
+                "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}],//does not modifiy sku
                 "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}],//does not modifiy sku
             }, 
             "CLA": {
@@ -30,15 +30,6 @@ const PWINTY_ITEMS = {
             }, "Swoop": {
                 
             },
-        /*"colour": ['Black', 'Brown', 'White', 'Natural'],
-        "mountType": ["1.4mm", "2.0mm", "NM"],
-        "mountColour": ["Snow White", "Off-White", "Black"],
-        "glaze": ["Acrylic / Perspex", "Float Glass", "Tru View Museum Glass"],
-        "size": ["8x8", "8x12", "8.3x11.7", "12x12"],
-        //"frame": ["Box", "Classic", "Gloss", "Spacer", "Surface (30mm)", "Surface (50mm)", "Swoop"],
-        "substrate": []
-        //substratetype/substrateweight
-        //resolution/optimum dimensions*/
     },
     "mounted": [],
 }
@@ -52,6 +43,7 @@ class PwintyObject {
 
         document.getElementById("subcategories").innerHTML = "";
         document.getElementById("attributes").innerHTML = "";
+        this.hidePricing()
 
         let selection = `<div class="row">`;
         Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
@@ -72,6 +64,7 @@ class PwintyObject {
 
     loadSubCategory(subcategory) {
         console.log("loading sub")
+        this.hidePricing();
         this.subcategory = subcategory.value;
         this.attributes = {};
 
@@ -86,7 +79,6 @@ class PwintyObject {
                                             <option value="" disabled selected>Pick one</option>`;//'${subcategory.dataset.category}', '${this.subcategory}'
             
             PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
-                console.log(selectOption)
                 attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)}</option>`;
             });
     
@@ -105,14 +97,13 @@ class PwintyObject {
         this.attributes[attribute.name] = { [value] : name }; */
         this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
         this.checkAttributes();
-        this.printInfo();
+        //this.printInfo();
     }
 
     checkAttributes() {
         let nbAttributes = Object.keys(this.attributes).length;
         let selectedAttributes = 0;
     
-        //save attribute in object
         Object.keys(this.attributes).forEach(attribute => {
             if (this.attributes[attribute] !== "")
                 selectedAttributes++; 
@@ -122,15 +113,57 @@ class PwintyObject {
     }
 
     generateSku() {
-        console.log("generating SKU")
-
+        this.SKU = "";
+        this.SKU += this.category + "-" + this.subcategory + "-";
+        this.SKU += this.attributes["substrateType"] + "-" + this.attributes["mountType"] + "-" + this.attributes["glaze"] + "-" + this.attributes["size"];
+        console.log(this.SKU);
+        
         this.generatePricing();
     }
 
     generatePricing() {
         console.log("generating pricing");
-        //contact API + add our pricing
+        //contact API to get item price + add our pricing
+        fetch('/api/pwinty/countries/FR', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({skus: [this.SKU]})
+          })
+          .then((res) => {return res.json()})
+          .then((data) => {
+            if (data.prices[0].price){
+                if (data.prices[0].price === 0)
+                    throw new Error("Something went wrong while searching this item in our catalog");
+                this.price = data.prices[0].price / 100; //+ convert to eur
+                this.displayPricing();
+            }
+            else 
+                throw new Error("Something went wrong while searching this item in our catalog");
+          })
+          .catch((err) => {
+            let alert = `<div id="alert" class="alert alert-info" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                              ${err.message}
+                          </div>`;
+            addAlert(alert, "#header");
+          })
     }
+
+    displayPricing() {
+        //this.price;
+        //display price and purchase button
+        document.getElementById("price").innerHTML = this.price + "€";
+        document.getElementById("purchasebox").setAttribute("style", "display: block");
+    }
+
+    hidePricing() {
+        document.getElementById("purchasebox").setAttribute("style", "display: none");
+    }
+
+    //function to hide purchase box when changing category/sub etc
 }
 
 let Pwinty;

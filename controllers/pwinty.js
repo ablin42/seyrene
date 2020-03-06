@@ -322,7 +322,7 @@ try {
 
 
 /* CATALOGUE */
-router.get("/countries/:countryCode", async (req, res) => {
+router.post("/countries/:countryCode", async (req, res) => {
 try {
     let countryCode = req.params.countryCode;
     let options = {
@@ -333,8 +333,7 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         body: {
-            /* variable */
-            "skus": ["T-PHO-GP2-CS-M","F-SPA-200X300-FLO-HGE"]
+            "skus": req.body.skus,//["T-PHO-GP2-CS-M","F-SPA-200X300-FLO-HGE"]
         },
         json: true
     }
