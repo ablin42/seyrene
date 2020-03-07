@@ -204,7 +204,8 @@ class PwintyObject {
                 throw new Error("Something went wrong while searching this item in our catalog");
           })
           .catch((err) => {
-            let alert = `<div id="alert" class="alert alert-info" role="alert">
+            this.hidePricing();
+            let alert = `<div id="alert" class="alert alert-warning" role="alert" style="position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                               ${err.message}
                           </div>`;
