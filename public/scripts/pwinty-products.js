@@ -1,4 +1,4 @@
-const PWINTY_ITEMS = {
+let PWINTY_ITEMS = {
     "FRA": {
             "sharedAttributes": {
                 "substrateType": [{"BAP" : "Budget Art Paper"}, {"BPP" : "Budget Photo Paper"}, {"CPP" : "Box Poster Paper"}, {"CPWP" : "Cold Press Watercolour Paper"}, {"EMA" : "Enhanced Matte Art Paper"},
@@ -23,26 +23,23 @@ const PWINTY_ITEMS = {
             }, 
             "GLO": {
                 "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
-                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}],
+                "glaze": [{"ACRY" : "Acrylic / Perspex"}], //, {"GLA" : "Float Glass"}
                 "frameColour": [{"Black" : "Black"}, {"White" : "White"}],
                 "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}]
             }, 
-            "SPACE": { //no mount
-                //"mountType": [{"NM" : "NO MOUNT"}],
+            "SPACE": {
                 "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
                 "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}, {"Silver" : "Silver"}, {"Gold" : "Gold"}]
             }, 
-            "SUR1": { //no mount; no glaze
-                //"mountType": [{"NM" : "NO MOUNT"}],
+            "SUR1": {
                 "frameColour": [{"Black" : "Black"}, {"White" : "White"}]
             }, 
-            "SUR2": { //no mount; no glaze
-                //"mountType": [{"NM" : "NO MOUNT"}],
+            "SUR2": {
                 "frameColour": [{"Black" : "Black"}, {"White" : "White"}]
             }, 
             "SWO": {
                 "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
-                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}],
+                "glaze": [{"ACRY" : "Acrylic / Perspex"}], //, {"GLA" : "Float Glass"}
                 "frameColour": [{"Black" : "Black"}, {"White" : "White"}],
                 "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}]
             },
@@ -76,7 +73,6 @@ class PwintyObject {
     }
 
     loadSubCategory(subcategory) {
-        console.log("loading sub")
         this.hidePricing();
         this.subcategory = subcategory.value;
         this.attributes = {};
@@ -89,7 +85,7 @@ class PwintyObject {
                                     <div class="sku-item unselectable">
                                         <p>${attribute}</p>
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
-                                            <option value="" disabled selected>Pick one</option>`;//'${subcategory.dataset.category}', '${this.subcategory}'
+                                            <option value="" disabled selected>Pick one</option>`;
             
             PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].forEach(selectOption => {
                 attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)}</option>`;
@@ -107,7 +103,7 @@ class PwintyObject {
                                     <div class="sku-item unselectable">
                                         <p>${attribute}</p>
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
-                                            <option value="" disabled selected>Pick one</option>`;//'${subcategory.dataset.category}', '${this.subcategory}'
+                                            <option value="" disabled selected>Pick one</option>`;
             
             PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
                 attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)}</option>`;
@@ -132,12 +128,12 @@ class PwintyObject {
     hideAttribute(attributeName) {
         let attributeItem = document.getElementById(attributeName);
         attributeItem.parentNode.parentNode.setAttribute("style", "display: none")
-        this.attributes[attributeName] = "";
+        //this.attributes[attributeName] = ""; enable this doesnt refresh price when selecting mount from no mount option
     }
 
     displayAttribute(attributeName) {
         let attributeItem = document.getElementById(attributeName);
-        attributeItem.parentNode.parentNode.setAttribute("style", "display: block")
+        attributeItem.parentNode.parentNode.setAttribute("style", "display: block");
     }
 
     checkAttributes() {
@@ -148,7 +144,7 @@ class PwintyObject {
             if (this.attributes[attribute] !== "")
                 selectedAttributes++; 
         })
-        if (selectedAttributes === nbAttributes)
+        if (selectedAttributes >= nbAttributes)
             this.generateSku();
     }
 
@@ -182,7 +178,6 @@ class PwintyObject {
     }
 
     generatePricing() {
-        console.log("generating pricing");
         //contact API to get item price + add our pricing
         fetch('/api/pwinty/countries/FR', {
             method: 'POST',
