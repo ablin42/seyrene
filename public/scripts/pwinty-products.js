@@ -224,7 +224,7 @@ class PwintyObject {
           caller.disabled = false;
           caller.style.pointerEvents = "auto";
         }, 1500);
-        await fetch(`http://localhost:8089/api/cart/add/${itemId}`, {
+        await fetch(`http://localhost:8089/api/cart/add/pwinty/${itemId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

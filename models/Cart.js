@@ -7,7 +7,6 @@ module.exports = function Cart(oldCart) {
         var storedItem = this.items[id];
         if (!storedItem) 
             storedItem = this.items[id] = {item: item, qty: 0, price: 0};
-        console.log(storedItem)
         itemPrice = parseFloat(storedItem.item.price);
 
         storedItem.qty++;
@@ -15,6 +14,31 @@ module.exports = function Cart(oldCart) {
         this.totalQty++;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + itemPrice) * 100) / 100).toFixed(2));
     };
+
+    this.pwintyAdd = function (data) {
+        storedItem = this.items[data.SKU];
+        let attributes = data.attributes
+        if (!storedItem) 
+            storedItem = this.items[data.SKU] = {elements: [{attributes : attributes, qty: 1}], qty: 1, price: data.price, unitPrice: data.price};
+        else {
+            let found = 0;
+            this.items[data.SKU].qty++; 
+            this.items[data.SKU].price = parseFloat((Math.round(this.items[data.SKU].unitPrice * this.items[data.SKU].qty * 100) / 100).toFixed(2));
+
+            storedItem.elements.forEach((element, index) => {
+                if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
+                    found++;
+                    this.items[data.SKU].elements[index].qty++;
+                }
+            });
+            if (found === 0) 
+                storedItem.elements.push({attributes : attributes, qty: 1});
+        }
+        console.log(this.items, this.items[data.SKU].elements)
+
+        this.totalQty++;
+        this.totalPrice = parseFloat((Math.round((this.totalPrice + data.price) * 100) / 100).toFixed(2));
+    }
 
     this.update = function (item, id, qty) {
         var storedItem = this.items[id];

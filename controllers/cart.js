@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
+const Image = require('../models/Image');
 const Shop = require('../models/Shop');
 const Order = require('../models/Order');
 const User = require('../models/User');
@@ -51,13 +52,11 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.post('/add/:itemId', async (req, res) => {
+router.get('/add/:itemId', async (req, res) => {
 try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
 
-    console.log(req.body)
-        
     Shop.findById(productId, (err, product) => {
         if (err)
             return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
@@ -70,13 +69,46 @@ try {
             }
         }
 
-        //send product and product info fetched from shop.findbyid
-
         cart.add(product, product.id);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
         cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
+
+        return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
+    })
+} catch (err) {
+    console.log("ADD TO CART ERROR");
+    return res.status(400).json({"error": true, "msg": err.message})
+}})
+
+router.post('/add/pwinty/:itemId', async (req, res) => {
+try {
+    let productId = req.params.itemId; //for now is shop id, but will make it later image id
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+    let data = {
+        SKU: req.body.SKU,
+        price: req.body.price,
+        attributes: req.body.attributes,
+        imageUrl: ""
+    }
+
+    Shop.findById(productId, async (err, product) => {
+        if (err)
+            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+        //send product and product info fetched from shop.findbyid
+
+        //let imageId = await rp(`/api/images/main/Shop/${product._id}`);
+        var [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
+        if (err) 
+            throw new Error("An error occured while fetching the image");
+
+        data.imageUrl = image._id;
+        cart.pwintyAdd(data);// define data
+        req.session.cart = cart;
+        let cartCpy = JSON.parse(JSON.stringify(cart));
+        cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
+        //cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
         return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
     })

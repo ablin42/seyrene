@@ -139,7 +139,9 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       let cart = new Cart(req.session.cart);
       obj.products = [];
       itemArr = cart.generateArray();
-
+     
+      console.log(itemArr)
+      return ;
       itemArr.forEach(item => {
         let items = {
           item: item.item,
