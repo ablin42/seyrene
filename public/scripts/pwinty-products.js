@@ -213,8 +213,50 @@ class PwintyObject {
         document.getElementById("purchasebox").setAttribute("style", "display: block");
     }
 
-    cartAdd() {
-        console.log("adding to cart...");
+    async cartAdd(itemId, caller) {
+        let SKU = this.SKU;
+        let attributes = this.attributes;
+        let price = this.price;
+
+        caller.disabled = true;
+        caller.style.pointerEvents = "none";
+        setTimeout(() => {
+          caller.disabled = false;
+          caller.style.pointerEvents = "auto";
+        }, 1500);
+        await fetch(`http://localhost:8089/api/cart/add/${itemId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({SKU, price, attributes}),
+          credentials: "include",
+          mode: "same-origin"
+        })
+        .then(res => {return res.json();})
+        .then(function(response) {
+            let alertType = "success";
+            if (response.error === false) {
+              let totalQty = response.cart.totalQty;
+              document.getElementById("cartQty").innerText = totalQty;
+            } else 
+                alertType = "warning";
+
+            let alert = `<div id="alert" class="alert alert-${alertType}" role="alert" style="position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            ${response.msg}
+                          </div>`;
+            addAlert(alert, "#header");
+        })
+        .catch(err => {
+            let alert = `<div id="alert" class="alert alert-danger" role="alert" style="position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                          ${err.message}
+                        </div>`;
+            addAlert(alert, "#header");
+        });
+        return;
     }
 
     hidePricing() {document.getElementById("purchasebox").setAttribute("style", "display: none");}

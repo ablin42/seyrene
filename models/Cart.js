@@ -7,6 +7,7 @@ module.exports = function Cart(oldCart) {
         var storedItem = this.items[id];
         if (!storedItem) 
             storedItem = this.items[id] = {item: item, qty: 0, price: 0};
+        console.log(storedItem)
         itemPrice = parseFloat(storedItem.item.price);
 
         storedItem.qty++;

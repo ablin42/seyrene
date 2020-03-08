@@ -51,10 +51,12 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.get('/add/:itemId', async (req, res) => {
+router.post('/add/:itemId', async (req, res) => {
 try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
+
+    console.log(req.body)
         
     Shop.findById(productId, (err, product) => {
         if (err)
@@ -67,6 +69,8 @@ try {
                 } 
             }
         }
+
+        //send product and product info fetched from shop.findbyid
 
         cart.add(product, product.id);
         req.session.cart = cart;
