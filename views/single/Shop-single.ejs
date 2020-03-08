@@ -56,7 +56,7 @@
                 <% if (locals.shopItem.isUnique) { %>
                     <b class="card-price"><%= locals.shopItem.price %>€</b>
                     <b class="isUnique" style="color: var(--light-shade)">Toile unique</b>
-                    <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)" disabled>
+                    <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)"><!--disabled -->
                 <% } else { %>
                     <div class="pwinty-products">
                         <div class="form-group text-center" id="categories">
@@ -83,7 +83,7 @@
                     </div>
                     <div id="purchasebox" style="display: none;">
                         <span id="price" style="color: white;"></span>
-                        <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shopItem._id %>', this)" disabled><!-- hide if sku and attributes not selected -->
+                        <input type="submit" class="logbtn" value="Add to cart" onclick="Pwinty.cartAdd()"><!--disabled -->
                     </div>
                 <% } %>
         </div>

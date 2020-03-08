@@ -213,6 +213,10 @@ class PwintyObject {
         document.getElementById("purchasebox").setAttribute("style", "display: block");
     }
 
+    cartAdd() {
+        console.log("adding to cart...");
+    }
+
     hidePricing() {document.getElementById("purchasebox").setAttribute("style", "display: none");}
     printInfo() {console.log(this)}
 }
