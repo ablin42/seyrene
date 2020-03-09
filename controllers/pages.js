@@ -140,15 +140,13 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       obj.products = [];
       itemArr = cart.generateArray();
      
-      console.log(itemArr)
-      return ;
       itemArr.forEach(item => {
         let items = {
-          item: item.item,
+          item: item.attributes, //elements: [{attributes : attributes}]
           qty: item.qty,
           price: formatter.format(item.price).substr(2),
-          shortcontent: item.item.content.substr(0, 128),
-          shorttitle: item.item.title.substr(0, 64),
+          shortcontent: item.attributes.content.substr(0, 128), //elements: [{attributes : attributes}]
+          shorttitle: item.attributes.title.substr(0, 64), //elements: [{attributes : attributes}]
         };
         obj.products.push(items);
       });

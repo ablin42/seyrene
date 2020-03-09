@@ -63,7 +63,7 @@ try {
         if (product.isUnique === true) {
             let arr = cart.generateArray();
             for (let i = 0; i < arr.length; i++) {
-                if (arr[i].item._id == product._id) {
+                if (arr[i].attributes._id == product._id) {//elements: [{attributes : attributes}]
                     return res.status(200).json({"error": true, "msg": "You can't buy an unique painting more than once!"});
                 } 
             }
