@@ -141,14 +141,30 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       itemArr = cart.generateArray();
      
       itemArr.forEach(item => {
-        let items = {
-          item: item.attributes, //elements: [{attributes : attributes}]
-          qty: item.qty,
-          price: formatter.format(item.price).substr(2),
-          shortcontent: item.attributes.content.substr(0, 128), //elements: [{attributes : attributes}]
-          shorttitle: item.attributes.title.substr(0, 64), //elements: [{attributes : attributes}]
-        };
-        obj.products.push(items);
+        if (item.attributes.isUnique) {
+          var items = {
+            item: item.attributes, //elements: [{attributes : attributes}]
+            qty: item.qty,
+            price: formatter.format(item.price).substr(2),
+            shortcontent: item.attributes.content.substr(0, 128), //elements: [{attributes : attributes}]
+            shorttitle: item.attributes.title.substr(0, 64), //elements: [{attributes : attributes}]
+            details: "Unique painting"
+          };
+          obj.products.push(items);
+        } else {
+          item.elements.forEach(element => {
+            var items = {
+              item: item.attributes, 
+              qty: element.qty,
+              price: formatter.format(item.price).substr(2),
+              shortcontent: item.attributes.content.substr(0, 128), 
+              shorttitle: item.attributes.title.substr(0, 64), 
+              details: element.attributes.SKU + " / " + element.attributes.frameColour // find a way to render dynamically each attribute in a string
+            };
+            obj.products.push(items);
+          })
+        }
+        //obj.products.push(items);
       });
       obj.totalPrice = formatter.format(cart.totalPrice).substr(2);
       obj.totalQty = cart.totalQty;

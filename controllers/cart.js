@@ -104,7 +104,7 @@ try {
             throw new Error("An error occured while fetching the image");
 
         data.imageUrl = image._id;
-        cart.pwintyAdd(data);// define data
+        cart.pwintyAdd(product, data);// define data
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);

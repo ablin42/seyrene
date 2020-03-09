@@ -15,11 +15,13 @@ module.exports = function Cart(oldCart) {
         this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[id].unitPrice) * 100) / 100).toFixed(2));
     };
 
-    this.pwintyAdd = function (data) {
+    this.pwintyAdd = function (item, data) {
         storedItem = this.items[data.SKU];
         let attributes = data.attributes
+        attributes.SKU = data.SKU;
+        
         if (!storedItem) 
-            storedItem = this.items[data.SKU] = {elements: [{attributes : attributes, qty: 1}], qty: 1, price: data.price, unitPrice: data.price}; 
+            storedItem = this.items[data.SKU] = {attributes: item, elements: [{attributes : attributes, qty: 1}], qty: 1, price: data.price, unitPrice: data.price}; 
         else {
             let found = 0;
             this.items[data.SKU].qty++; 
