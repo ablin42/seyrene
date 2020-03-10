@@ -37,7 +37,7 @@
               <i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
             <% } else { %>
               <i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
-              <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="updateValue(event, this)">
+              <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="pwintyUpdateValue(event, this, '<%= index %>')">
               <i class="fas fa-plus fa-2x qty-update" min="0" onclick="pwintyCartAdd('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
             <% } %>
           </div>
@@ -257,6 +257,8 @@ async function pwintyCartDel(itemId, referenceId, caller) {
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
         let totalPrice = response.cart.totalPrice;
+        document.getElementById("cartQty").innerText = totalQty;
+
         if (totalPrice === 0) {
           $(".payment-div").attr("style", "display: none");
           $("#alertEmpty").attr("style", "display: inline-block");
@@ -264,8 +266,6 @@ async function pwintyCartDel(itemId, referenceId, caller) {
         }
 
         let rowId = document.getElementById(itemId);
-
-        document.getElementById("cartQty").innerText = totalQty;
         if (!rowId.classList.contains("card")) {
           if (response.cart.items[SKU]) {
             let itemQty = response.cart.items[SKU].qty;
@@ -297,6 +297,87 @@ async function pwintyCartDel(itemId, referenceId, caller) {
                   </div>`;
       addAlert(alert, "#header");
     });
+}
+
+async function pwintyUpdateValue(e, item, referenceId) {
+  try {
+    if (item.value) {
+      let value = parseInt(item.value);
+      let SKU = PWINTY_DATA[referenceId].SKU;
+      let attributes = PWINTY_DATA[referenceId].attributes;
+      PWINTY_DATA[referenceId].attributes.SKU = undefined;
+      let price = PWINTY_DATA[referenceId].price;
+      if (Number.isInteger(value) && value >= 0) {
+        let itemId = item.id.substring(4);
+        await fetch(
+          `http://localhost:8089/api/cart/update/pwinty/${itemId}/${value}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: JSON.stringify({SKU, price, attributes}),
+            credentials: "include",
+            mode: "same-origin"
+          }
+        )
+          .then(res => {
+            return res.json();
+          })
+          .then(function(response) {
+            console.log("response:", response);
+            let alertType = "info";
+            if (response.error === false) {
+              let totalQty = response.cart.totalQty;
+              let totalPrice = response.cart.totalPrice;
+              document.getElementById("cartQty").innerText = totalQty;
+              let rowId = document.getElementById(itemId);
+
+              document.getElementById("total-price").innerText =
+                totalPrice + "€"; //format here or in api
+              document.getElementById("total-qty").innerText = totalQty;
+
+              if (value === 0) document.getElementById(itemId).remove();
+              else {
+                if (!rowId.classList.contains("card")) {
+                  let itemQty = response.cart.items[SKU].qty;
+                  let itemPrice = response.cart.items[SKU].price;
+
+                  item.value = itemQty;
+                  rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
+                }
+              }
+            } else {
+              console.log("API answered with error:", response);
+              alertType = "warning";
+            }
+            let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                          ${response.msg}
+                        </div>`;
+            addAlert(alert, "#header");
+          })
+          .catch(err => {
+            console.log("An error occured while contacting the API:", err);
+            let alert = `<div id="alert" class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        ${err.message}
+                      </div>`;
+            addAlert(alert, "#header");
+          });
+      } else
+        throw new Error("The <b>quantity</b> has to be a positive integer");
+    } else throw new Error("The <b>quantity</b> you entered is invalid");
+  } catch (err) {
+    item.value = 1;
+    let alert = `
+          <div id="alert" class="alert alert-warning" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+              ${err.message}
+          </div>`;
+    addAlert(alert, "#header");
+  }
 }
 </script>
 <% if(locals.products){ %>

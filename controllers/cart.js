@@ -52,6 +52,47 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
+router.post('/update/pwinty/:itemId/:qty', async (req, res) => {
+try {
+    let productId = req.params.itemId;
+    let newQty = parseInt(req.params.qty); //sanitize
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+    let data = {
+        SKU: req.body.SKU,
+        price: req.body.price,
+        attributes: req.body.attributes,
+        imageUrl: ""
+    }
+
+    if (Number.isInteger(newQty) && (newQty >= 0 && newQty <= 99))
+    {
+        Shop.findById(productId, (err, product) => {
+            if (err || !product)
+                return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+            if (product.isUnique === true && newQty > 1)
+                return res.status(400).json({"error": true, "msg": "Quantity can't exceed 1 for unique items!"})
+
+            cart.pwintyUpdate(product, data, newQty);
+            req.session.cart = cart;
+            let cartCpy = JSON.parse(JSON.stringify(cart));
+            cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
+            if (cartCpy.items[productId])
+                cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
+        
+            let msg = "Item quantity updated";
+            if (newQty == 0)
+                msg = "Item removed from cart";
+            return res.status(200).json({error: false, msg: msg, cart: cartCpy});
+        })
+    }
+    else
+        throw new Error("Quantity for an item must be between 0 and 99");          
+} catch (err) {
+    console.log("UPDATE CART ERROR");
+    return res.status(400).json({"error": true, "msg": err.message})
+}})
+
+
 router.get('/add/:itemId', async (req, res) => {
 try {
     let productId = req.params.itemId;
