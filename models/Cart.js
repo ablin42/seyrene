@@ -19,7 +19,7 @@ module.exports = function Cart(oldCart) {
         storedItem = this.items[data.SKU];
         let attributes = data.attributes
         attributes.SKU = data.SKU;
-        
+
         if (!storedItem) 
             storedItem = this.items[data.SKU] = {attributes: item, elements: [{attributes : attributes, qty: 1}], qty: 1, price: data.price, unitPrice: data.price}; 
         else {
@@ -36,7 +36,6 @@ module.exports = function Cart(oldCart) {
             if (found === 0) 
                 storedItem.elements.push({attributes : attributes, qty: 1});
         }
-        console.log(this.items)
 
         this.totalQty++;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + data.price) * 100) / 100).toFixed(2));

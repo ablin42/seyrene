@@ -96,19 +96,17 @@ try {
     Shop.findById(productId, async (err, product) => {
         if (err)
             return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
-        //send product and product info fetched from shop.findbyid
 
-        //let imageId = await rp(`/api/images/main/Shop/${product._id}`);
         var [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
         if (err) 
             throw new Error("An error occured while fetching the image");
 
         data.imageUrl = image._id;
-        cart.pwintyAdd(product, data);// define data
+        cart.pwintyAdd(product, data);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
-        //cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
+        cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
         return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
     })
