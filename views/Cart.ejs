@@ -20,7 +20,7 @@
       <% } %>
 
       <% Object.keys(locals.products).forEach(function (index) { %>
-        <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %>">
+        <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].item.isUnique) { %>-<%= index %><% } %>">
           <div class="cart-item cart-column">
             <img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
             <div class="cart-title-description">
@@ -37,7 +37,7 @@
               <i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
             <% } else { %>
               <i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
-              <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="pwintyUpdateValue(event, this, '<%= index %>')">
+              <input id="qty-<%= locals.products[index].item._id %>-<%= index %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="pwintyUpdateValue(event, this, '<%= index %>')">
               <i class="fas fa-plus fa-2x qty-update" min="0" onclick="pwintyCartAdd('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
             <% } %>
           </div>
@@ -195,14 +195,16 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
   .then(function(response) {
       let alertType = "success";
       if (response.error === false) {
+        console.log(response)
         let totalQty = response.cart.totalQty;
         let totalPrice = response.cart.totalPrice;
-        let rowId = document.getElementById(itemId);
+        let rowId = document.getElementById(`${itemId}-${referenceId}`);
+
         if (rowId.classList.contains("cart-row-item")) {
           let itemQty = response.cart.items[SKU].qty;
           let itemPrice = response.cart.items[SKU].price;
 
-          $(`#qty-${itemId}`).val(itemQty);
+          $(`#qty-${itemId}-${referenceId}`).val(itemQty);
           rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           document.getElementById("total-price").innerText = totalPrice + "€";
           document.getElementById("total-qty").innerText = totalQty;

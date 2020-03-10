@@ -159,7 +159,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
               stringifiedAttributes: JSON.stringify(element.attributes),
               qty: element.qty,
               unitPrice: item.unitPrice,
-              price: formatter.format(item.price).substr(2),
+              price: formatter.format(item.unitPrice * element.qty).substr(2),
               shortcontent: item.attributes.content.substr(0, 128), 
               shorttitle: item.attributes.title.substr(0, 64), 
               details: ""
