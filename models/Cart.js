@@ -36,9 +36,33 @@ module.exports = function Cart(oldCart) {
             if (found === 0) 
                 storedItem.elements.push({attributes : attributes, qty: 1});
         }
-
         this.totalQty++;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + data.price) * 100) / 100).toFixed(2));
+    }
+
+    this.pwintyDelete = function (item, data) {
+        var storedItem = this.items[data.SKU];
+        let attributes = data.attributes
+        attributes.SKU = data.SKU;
+
+        if (storedItem) {
+            let singlePrice = this.items[data.SKU].unitPrice;
+            if (storedItem.qty === 1) {
+                this.items[data.SKU] = undefined;
+                storedItem = undefined;
+                this.totalQty--;
+                this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
+            } else if (storedItem.qty > 1) {
+                storedItem.elements.forEach((element, index) => {
+                    if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) 
+                        this.items[data.SKU].elements[index].qty--;
+                });
+                storedItem.qty--;
+                storedItem.price = parseFloat((storedItem.qty * singlePrice).toFixed(2));
+                this.totalQty--;
+                this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
+            }
+        }
     }
 
     this.update = function (item, id, qty) {

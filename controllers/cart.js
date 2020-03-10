@@ -106,7 +106,8 @@ try {
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
-        cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+        if (cartCpy.items[data.SKU])
+            cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
         return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
     })
@@ -114,6 +115,35 @@ try {
     console.log("ADD TO CART ERROR");
     return res.status(400).json({"error": true, "msg": err.message})
 }})
+
+router.post('/del/pwinty/:itemId', async (req, res) => {
+try {
+    let productId = req.params.itemId;
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+    let data = {
+        SKU: req.body.SKU,
+        price: req.body.price,
+        attributes: req.body.attributes,
+        imageUrl: ""
+    }
+            
+    Shop.findById(productId, (err, product) => {
+        if (err)
+            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+        cart.pwintyDelete(product, data);
+        req.session.cart = cart;
+        let cartCpy = JSON.parse(JSON.stringify(cart));
+        cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
+        if (cartCpy.items[data.SKU])
+            cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+        
+        return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy});
+    })
+} catch (err) {
+    console.log("DELETE FROM CART ERROR");
+    return res.status(400).json({"error": true, "msg": err.message})
+}})
+
 
 router.get('/del/:itemId', async (req, res) => {
 try {

@@ -36,10 +36,9 @@
               <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly>
               <i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
             <% } else { %>
-              <!-- call to specific pwinty function -->
-              <i class="fas fa-minus fa-2x qty-update" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
+              <i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
               <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="updateValue(event, this)">
-              <i class="fas fa-plus fa-2x qty-update" min="0" onclick="cartAdd('<%= locals.products[index].item._id %>', this)"></i>
+              <i class="fas fa-plus fa-2x qty-update" min="0" onclick="pwintyCartAdd('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
             <% } %>
           </div>
 
@@ -51,7 +50,7 @@
           </div>
       </div>
       <% }) %>
-    <% } %>
+    <% } %>*
 
     <% if(locals.isDelivery){ %>
       <div class="panel-heading">
@@ -168,5 +167,149 @@ function submitCheckout () {
 
   checkoutCaller(isLogged, isDelivery);
 }
+
+var PWINTY_DATA = [];
+async function pwintyCartAdd(itemId, referenceId, caller) {
+  let SKU = PWINTY_DATA[referenceId].SKU;
+  let attributes = PWINTY_DATA[referenceId].attributes;
+  PWINTY_DATA[referenceId].attributes.SKU = undefined;
+  let price = PWINTY_DATA[referenceId].price;
+
+  caller.disabled = true;
+  caller.style.pointerEvents = "none";
+  setTimeout(() => {
+    caller.disabled = false;
+    caller.style.pointerEvents = "auto";
+  }, 1500);
+  await fetch(`api/cart/add/pwinty/${itemId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    body: JSON.stringify({SKU, price, attributes}),
+    credentials: "include",
+    mode: "same-origin"
+  })
+  .then(res => {return res.json();})
+  .then(function(response) {
+      let alertType = "success";
+      if (response.error === false) {
+        let totalQty = response.cart.totalQty;
+        let totalPrice = response.cart.totalPrice;
+        let rowId = document.getElementById(itemId);
+        if (rowId.classList.contains("cart-row-item")) {
+          let itemQty = response.cart.items[SKU].qty;
+          let itemPrice = response.cart.items[SKU].price;
+
+          $(`#qty-${itemId}`).val(itemQty);
+          rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
+          document.getElementById("total-price").innerText = totalPrice + "€";
+          document.getElementById("total-qty").innerText = totalQty;
+          document.getElementById("cartQty").innerText = totalQty;
+        }
+      } else 
+          alertType = "warning";
+
+      let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      ${response.msg}
+                    </div>`;
+      addAlert(alert, "#header");
+  })
+  .catch(err => {
+      let alert = `<div id="alert" class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    ${err.message}
+                  </div>`;
+      addAlert(alert, "#header");
+  });
+  return;
+}
+
+async function pwintyCartDel(itemId, referenceId, caller) {
+  let SKU = PWINTY_DATA[referenceId].SKU;
+  let attributes = PWINTY_DATA[referenceId].attributes;
+  PWINTY_DATA[referenceId].attributes.SKU = undefined;
+  let price = PWINTY_DATA[referenceId].price;
+
+  caller.disabled = true;
+  caller.style.pointerEvents = "none";
+  setTimeout(() => {
+    caller.disabled = false;
+    caller.style.pointerEvents = "auto";
+  }, 1500);
+  await fetch(`http://localhost:8089/api/cart/del/pwinty/${itemId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    body: JSON.stringify({SKU, price, attributes}),
+    credentials: "include",
+    mode: "same-origin"
+  })
+    .then(res => {
+      return res.json();
+    })
+    .then(function(response) {
+      let alertType = "warning";
+      if (response.error === false) {
+        let totalQty = response.cart.totalQty;
+        let totalPrice = response.cart.totalPrice;
+        if (totalPrice === 0) {
+          $(".payment-div").attr("style", "display: none");
+          $("#alertEmpty").attr("style", "display: inline-block");
+          $("#cart-row-header").attr("style", "display: none");
+        }
+
+        let rowId = document.getElementById(itemId);
+
+        document.getElementById("cartQty").innerText = totalQty;
+        if (!rowId.classList.contains("card")) {
+          if (response.cart.items[SKU]) {
+            let itemQty = response.cart.items[SKU].qty;
+            let itemPrice = response.cart.items[SKU].price;
+
+            $(`#qty-${itemId}`).val(itemQty);
+            rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
+          } else 
+            rowId.remove();
+
+          document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
+          document.getElementById("total-qty").innerText = totalQty;
+        }
+      } else {
+        console.log("error:", response);
+        alertType = "warning";
+      }
+      let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                      ${response.msg}
+                    </div>`;
+      addAlert(alert, "#header");
+    })
+    .catch(err => {
+      console.log(err);
+      let alert = `<div id="alert" class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    ${err.message}
+                  </div>`;
+      addAlert(alert, "#header");
+    });
+}
 </script>
+<% if(locals.products){ %>
+  <% Object.keys(locals.products).forEach(function (index) { %>
+    <% if (locals.products[index].item.isUnique !== true) { %>
+       <script>
+        PWINTY_DATA["<%= index %>"] = {
+            SKU: "<%= locals.products[index].attributes.SKU %>",
+            price: parseFloat("<%= locals.products[index].unitPrice %>"),
+            attributes: JSON.parse(`<%= locals.products[index].stringifiedAttributes %>`.replace(/&#34;/gi, "\""))
+        }
+      </script>
+    <% } %>
+  <% }) %>
+<% } %>
 <% include partials/footer %>
