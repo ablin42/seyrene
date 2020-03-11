@@ -155,7 +155,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
           item.elements.forEach(element => {
             var items = {
               item: item.attributes, 
-              attributes: element.attributes,
+              attributes: element.attributes, //cannot read att of null
               stringifiedAttributes: JSON.stringify(element.attributes),
               qty: element.qty,
               unitPrice: item.unitPrice,

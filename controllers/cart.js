@@ -69,10 +69,8 @@ try {
         Shop.findById(productId, (err, product) => {
             if (err || !product)
                 return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
-            if (product.isUnique === true && newQty > 1)
-                return res.status(400).json({"error": true, "msg": "Quantity can't exceed 1 for unique items!"})
 
-            cart.pwintyUpdate(product, data, newQty);
+            let item = cart.pwintyUpdate(product, data, newQty);
             req.session.cart = cart;
             let cartCpy = JSON.parse(JSON.stringify(cart));
             cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
@@ -82,7 +80,7 @@ try {
             let msg = "Item quantity updated";
             if (newQty == 0)
                 msg = "Item removed from cart";
-            return res.status(200).json({error: false, msg: msg, cart: cartCpy});
+            return res.status(200).json({error: false, msg: msg, cart: cartCpy, item: item});
         })
     }
     else
@@ -143,14 +141,14 @@ try {
             throw new Error("An error occured while fetching the image");
 
         data.imageUrl = image._id;
-        cart.pwintyAdd(product, data);
+        let item = cart.pwintyAdd(product, data);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
         if (cartCpy.items[data.SKU])
             cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
-        return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
+        return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy, item: item}); //send curr item qty/price?
     })
 } catch (err) {
     console.log("ADD TO CART ERROR");
@@ -171,14 +169,14 @@ try {
     Shop.findById(productId, (err, product) => {
         if (err)
             return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
-        cart.pwintyDelete(product, data);
+        let item = cart.pwintyDelete(product, data);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
         if (cartCpy.items[data.SKU])
             cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
         
-        return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy});
+        return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy, item: item});
     })
 } catch (err) {
     console.log("DELETE FROM CART ERROR");

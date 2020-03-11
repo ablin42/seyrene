@@ -37,7 +37,7 @@
               <i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
             <% } else { %>
               <i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
-              <input id="qty-<%= locals.products[index].item._id %>-<%= index %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="pwintyUpdateValue(event, this, '<%= index %>')">
+              <input id="qty-<%= locals.products[index].item._id %>-<%= index %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="pwintyUpdateValue(event, this, '<%= locals.products[index].item._id %>', '<%= index %>')">
               <i class="fas fa-plus fa-2x qty-update" min="0" onclick="pwintyCartAdd('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
             <% } %>
           </div>
@@ -201,8 +201,8 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
         let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
         if (rowId.classList.contains("cart-row-item")) {
-          let itemQty = response.cart.items[SKU].qty;
-          let itemPrice = response.cart.items[SKU].price;
+          let itemQty = response.item.qty;
+          let itemPrice = response.item.price;
 
           $(`#qty-${itemId}-${referenceId}`).val(itemQty);
           rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
@@ -267,13 +267,16 @@ async function pwintyCartDel(itemId, referenceId, caller) {
           $("#cart-row-header").attr("style", "display: none");
         }
 
-        let rowId = document.getElementById(itemId);
+        let rowId = document.getElementById(`${itemId}-${referenceId}`);
         if (!rowId.classList.contains("card")) {
           if (response.cart.items[SKU]) {
-            let itemQty = response.cart.items[SKU].qty;
-            let itemPrice = response.cart.items[SKU].price;
+            let itemQty = response.item.qty;
+            let itemPrice = response.item.price;
 
-            $(`#qty-${itemId}`).val(itemQty);
+            if (itemQty === 0)
+              rowId.remove();
+
+            $(`#qty-${itemId}-${referenceId}`).val(itemQty);
             rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           } else 
             rowId.remove();
@@ -301,7 +304,7 @@ async function pwintyCartDel(itemId, referenceId, caller) {
     });
 }
 
-async function pwintyUpdateValue(e, item, referenceId) {
+async function pwintyUpdateValue(e, item, itemId, referenceId) {
   try {
     if (item.value) {
       let value = parseInt(item.value);
@@ -310,10 +313,7 @@ async function pwintyUpdateValue(e, item, referenceId) {
       PWINTY_DATA[referenceId].attributes.SKU = undefined;
       let price = PWINTY_DATA[referenceId].price;
       if (Number.isInteger(value) && value >= 0) {
-        let itemId = item.id.substring(4);
-        await fetch(
-          `http://localhost:8089/api/cart/update/pwinty/${itemId}/${value}`,
-          {
+        await fetch(`http://localhost:8089/api/cart/update/pwinty/${itemId}/${value}`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -324,9 +324,7 @@ async function pwintyUpdateValue(e, item, referenceId) {
             mode: "same-origin"
           }
         )
-          .then(res => {
-            return res.json();
-          })
+          .then(res => {return res.json();})
           .then(function(response) {
             console.log("response:", response);
             let alertType = "info";
@@ -334,17 +332,17 @@ async function pwintyUpdateValue(e, item, referenceId) {
               let totalQty = response.cart.totalQty;
               let totalPrice = response.cart.totalPrice;
               document.getElementById("cartQty").innerText = totalQty;
-              let rowId = document.getElementById(itemId);
+              let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
-              document.getElementById("total-price").innerText =
-                totalPrice + "€"; //format here or in api
+              document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
               document.getElementById("total-qty").innerText = totalQty;
 
-              if (value === 0) document.getElementById(itemId).remove();
+              if (value === 0) 
+                document.getElementById(`${itemId}-${referenceId}`).remove();
               else {
                 if (!rowId.classList.contains("card")) {
-                  let itemQty = response.cart.items[SKU].qty;
-                  let itemPrice = response.cart.items[SKU].price;
+                  let itemQty = response.item.qty;
+                  let itemPrice = response.item.price;
 
                   item.value = itemQty;
                   rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
