@@ -261,7 +261,7 @@ async function pwintyCartDel(itemId, referenceId, caller) {
         let totalPrice = response.cart.totalPrice;
         document.getElementById("cartQty").innerText = totalQty;
 
-        if (totalPrice === 0) {
+        if (totalQty === 0) {
           $(".payment-div").attr("style", "display: none");
           $("#alertEmpty").attr("style", "display: inline-block");
           $("#cart-row-header").attr("style", "display: none");
@@ -333,6 +333,12 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
               let totalPrice = response.cart.totalPrice;
               document.getElementById("cartQty").innerText = totalQty;
               let rowId = document.getElementById(`${itemId}-${referenceId}`);
+
+              if (totalQty === 0) {
+                $(".payment-div").attr("style", "display: none");
+                $("#alertEmpty").attr("style", "display: inline-block");
+                $("#cart-row-header").attr("style", "display: none");
+              }
 
               document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
               document.getElementById("total-qty").innerText = totalQty;

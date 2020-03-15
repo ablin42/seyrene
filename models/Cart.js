@@ -6,8 +6,8 @@ module.exports = function Cart(oldCart) {
     this.add = function (item, id) {
         var storedItem = this.items[id];
         if (!storedItem) 
-            storedItem = this.items[id] = {attributes: item, qty: 0, price: 0, unitPrice: 0}; //elements: [{attributes : attributes}]
-        this.items[id].unitPrice = parseFloat(storedItem.attributes.price);//elements: [{attributes : attributes}]
+            storedItem = this.items[id] = {attributes: item, qty: 0, price: 0, unitPrice: 0};
+        this.items[id].unitPrice = parseFloat(storedItem.attributes.price);
 
         storedItem.qty++;
         storedItem.price = parseFloat((this.items[id].unitPrice * storedItem.qty).toFixed(2));
@@ -58,27 +58,23 @@ module.exports = function Cart(oldCart) {
         
         if (storedItem) {
             let unitPrice = storedItem.unitPrice;
-            if (storedItem.qty === 1) {
+            storedItem.elements.forEach((element, index) => {
+                if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
+                    this.items[data.SKU].elements[index].qty--;
+                    retData.qty = this.items[data.SKU].elements[index].qty;
+                    if (this.items[data.SKU].elements[index].qty === 0)
+                        this.items[data.SKU].elements[index].attributes = undefined;
+                }
+            });
+            storedItem.qty--;
+            storedItem.price = parseFloat((storedItem.qty * unitPrice).toFixed(2));
+            if (storedItem.qty === 0) {
                 this.items[data.SKU] = undefined;
                 storedItem = undefined;
-                retData.qty = 0;
-                this.totalQty--;
-                this.totalPrice = parseFloat((Math.round((this.totalPrice - unitPrice) * 100) / 100).toFixed(2));
-            } else if (storedItem.qty > 1) {
-                storedItem.elements.forEach((element, index) => {
-                    if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
-                        this.items[data.SKU].elements[index].qty--;
-                        retData.qty = this.items[data.SKU].elements[index].qty;
-                        if (this.items[data.SKU].elements[index].qty === 0)
-                            this.items[data.SKU].elements[index] = undefined;
-                    }
-                });
-                storedItem.qty--;
-                storedItem.price = parseFloat((storedItem.qty * unitPrice).toFixed(2));
-                this.totalQty--;
-                this.totalPrice = parseFloat((Math.round((this.totalPrice - unitPrice) * 100) / 100).toFixed(2));
-                retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
             }
+            this.totalQty--;
+            this.totalPrice = parseFloat((Math.round((this.totalPrice - unitPrice) * 100) / 100).toFixed(2));
+            retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
         }
         return (retData);
     }
@@ -92,27 +88,30 @@ module.exports = function Cart(oldCart) {
             price: 0
         }
 
-        if (!storedItem) //shouldnt need
-            storedItem = this.items[data.SKU] = {item: item, qty: 0, price: 0}; //shouldnt need either
-        let unitPrice = storedItem.unitPrice;
-        let currItemQty = storedItem.qty;
-        let qtyOffset = qty - currItemQty;
-        let priceOffset = parseFloat(qtyOffset * unitPrice);
-
-        if (qty <= 0) {
-            this.items[data.SKU] = undefined;
-            storedItem = undefined;
-
-            this.totalQty = this.totalQty - currItemQty;
-            this.totalPrice = parseFloat((Math.round((this.totalPrice - (currItemQty * unitPrice)) * 100) / 100).toFixed(2));
-            return (retData);
+        if (storedItem) {
+            let unitPrice = storedItem.unitPrice;
+            let qtyOffset;
+            let priceOffset;
+            storedItem.elements.forEach((element, index) => {
+                if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
+                    qtyOffset = qty - this.items[data.SKU].elements[index].qty;
+                    priceOffset = parseFloat(qtyOffset * unitPrice);
+                    this.items[data.SKU].elements[index].qty = qty;
+                    retData.qty = this.items[data.SKU].elements[index].qty;
+                    if (this.items[data.SKU].elements[index].qty <= 0)
+                        this.items[data.SKU].elements[index].attributes = undefined;
+                }
+            });
+            if (storedItem.qty === 0) {
+                this.items[data.SKU] = undefined;
+                storedItem = undefined;
+            }
+            storedItem.qty = storedItem.qty + qtyOffset;
+            storedItem.price = parseFloat((unitPrice * storedItem.qty).toFixed(2));
+            this.totalQty = this.totalQty + qtyOffset;
+            this.totalPrice = parseFloat((Math.round((this.totalPrice + priceOffset) * 100) / 100).toFixed(2));
+            retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
         }
-
-        storedItem.qty = qty; //affect to whole (black/white) but should only affect one
-        storedItem.price = parseFloat((unitPrice * storedItem.qty).toFixed(2));
-        this.totalQty = this.totalQty + qtyOffset;
-        this.totalPrice = parseFloat((Math.round((this.totalPrice + priceOffset) * 100) / 100).toFixed(2));
-        retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
         return (retData);
     }
 

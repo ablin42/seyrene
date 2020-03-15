@@ -143,33 +143,35 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       itemArr.forEach(item => {
         if (item.attributes.isUnique) {
           var items = {
-            item: item.attributes, //elements: [{attributes : attributes}]
+            item: item.attributes,
             qty: item.qty,
             price: formatter.format(item.price).substr(2),
-            shortcontent: item.attributes.content.substr(0, 128), //elements: [{attributes : attributes}]
-            shorttitle: item.attributes.title.substr(0, 64), //elements: [{attributes : attributes}]
+            shortcontent: item.attributes.content.substr(0, 128),
+            shorttitle: item.attributes.title.substr(0, 64),
             details: "Toile Unique"
           };
           obj.products.push(items);
         } else {
           item.elements.forEach(element => {
-            var items = {
-              item: item.attributes, 
-              attributes: element.attributes, //cannot read att of null
-              stringifiedAttributes: JSON.stringify(element.attributes),
-              qty: element.qty,
-              unitPrice: item.unitPrice,
-              price: formatter.format(item.unitPrice * element.qty).substr(2),
-              shortcontent: item.attributes.content.substr(0, 128), 
-              shorttitle: item.attributes.title.substr(0, 64), 
-              details: ""
-            };
-            let details = "";
-            Object.keys(element.attributes).forEach((attribute, index) => {
-              details += attribute + ": " + element.attributes[attribute] + " / ";
-            })
-            items.details = details.substr(0, (details.length - 3)).toUpperCase();
-            obj.products.push(items);
+            if (element.attributes !== undefined) {
+              var items = {
+                item: item.attributes, 
+                attributes: element.attributes,
+                stringifiedAttributes: JSON.stringify(element.attributes),
+                qty: element.qty,
+                unitPrice: item.unitPrice,
+                price: formatter.format(item.unitPrice * element.qty).substr(2),
+                shortcontent: item.attributes.content.substr(0, 128), 
+                shorttitle: item.attributes.title.substr(0, 64), 
+                details: ""
+              };
+              let details = "";
+              Object.keys(element.attributes).forEach((attribute, index) => {
+                details += attribute + ": " + element.attributes[attribute] + " / ";
+              })
+              items.details = details.substr(0, (details.length - 3)).toUpperCase();
+              obj.products.push(items);
+            }
           })
         }
       });
