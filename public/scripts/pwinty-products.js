@@ -216,6 +216,9 @@ class PwintyObject {
     async cartAdd(itemId, caller) {
         let SKU = this.SKU;
         let attributes = this.attributes;
+        attributes.category = this.category;
+        attributes.subcategory = this.subcategory;
+        console.log(attributes)
         let price = this.price;
 
         caller.disabled = true;

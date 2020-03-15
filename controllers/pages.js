@@ -167,9 +167,9 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
               };
               let details = "";
               Object.keys(element.attributes).forEach((attribute, index) => {
-                details += attribute + ": " + element.attributes[attribute] + " / ";
+                details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
               })
-              items.details = details.substr(0, (details.length - 3)).toUpperCase();
+              items.details = details.substr(0, (details.length - 3));
               obj.products.push(items);
             }
           })
