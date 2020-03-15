@@ -169,6 +169,10 @@ function submitCheckout () {
 }
 
 var PWINTY_DATA = [];
+var formatter = new Intl.NumberFormat("de-DE", {
+  style: "currency",
+  currency: "EUR"
+});
 async function pwintyCartAdd(itemId, referenceId, caller) {
   let SKU = PWINTY_DATA[referenceId].SKU;
   let attributes = PWINTY_DATA[referenceId].attributes;
@@ -201,12 +205,9 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
         let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
         if (rowId.classList.contains("cart-row-item")) {
-          let itemQty = response.item.qty;
-          let itemPrice = response.item.price;
-
-          $(`#qty-${itemId}-${referenceId}`).val(itemQty);
-          rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
-          document.getElementById("total-price").innerText = totalPrice + "€";
+          $(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
+          rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');
+          document.getElementById("total-price").innerText = formatter.format(totalPrice).replace(',', '.');;
           document.getElementById("total-qty").innerText = totalQty;
           document.getElementById("cartQty").innerText = totalQty;
         }
@@ -271,17 +272,16 @@ async function pwintyCartDel(itemId, referenceId, caller) {
         if (!rowId.classList.contains("card")) {
           if (response.cart.items[SKU]) {
             let itemQty = response.item.qty;
-            let itemPrice = response.item.price;
 
             if (itemQty === 0)
               rowId.remove();
 
             $(`#qty-${itemId}-${referenceId}`).val(itemQty);
-            rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
+            rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');;
           } else 
             rowId.remove();
 
-          document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
+          document.getElementById("total-price").innerText =  formatter.format(totalPrice).replace(',', '.');;
           document.getElementById("total-qty").innerText = totalQty;
         }
       } else {
@@ -340,7 +340,7 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
                 $("#cart-row-header").attr("style", "display: none");
               }
 
-              document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
+              document.getElementById("total-price").innerText = formatter.format(totalPrice).replace(',', '.');; 
               document.getElementById("total-qty").innerText = totalQty;
 
               if (value === 0) 
@@ -348,10 +348,9 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
               else {
                 if (!rowId.classList.contains("card")) {
                   let itemQty = response.item.qty;
-                  let itemPrice = response.item.price;
 
                   item.value = itemQty;
-                  rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
+                  rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');;
                 }
               }
             } else {
