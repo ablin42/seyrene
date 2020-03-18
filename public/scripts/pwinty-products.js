@@ -200,10 +200,7 @@ class PwintyObject {
           })
           .catch((err) => {
             this.hidePricing();
-            let alert = `<div id="alert" class="alert alert-warning" role="alert" style="position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                              ${err.message}
-                          </div>`;
+            let alert = createAlertNode(err.message, "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
             addAlert(alert, "#header");
           })
     }
@@ -218,7 +215,6 @@ class PwintyObject {
         let attributes = this.attributes;
         attributes.category = this.category;
         attributes.subcategory = this.subcategory;
-        console.log(attributes)
         let price = this.price;
 
         caller.disabled = true;
@@ -227,6 +223,7 @@ class PwintyObject {
           caller.disabled = false;
           caller.style.pointerEvents = "auto";
         }, 1500);
+
         await fetch(`http://localhost:8089/api/cart/add/pwinty/${itemId}`, {
           method: "POST",
           headers: {
@@ -246,17 +243,11 @@ class PwintyObject {
             } else 
                 alertType = "warning";
 
-            let alert = `<div id="alert" class="alert alert-${alertType}" role="alert" style="position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            ${response.msg}
-                          </div>`;
+            let alert = createAlertNode(response.msg, alertType, "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
             addAlert(alert, "#header");
         })
         .catch(err => {
-            let alert = `<div id="alert" class="alert alert-danger" role="alert" style="position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);">
-                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                          ${err.message}
-                        </div>`;
+            let alert = createAlertNode(response.msg, alertType, "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
             addAlert(alert, "#header");
         });
         return;

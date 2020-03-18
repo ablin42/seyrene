@@ -22,3 +22,10 @@ function addAlert(alert, where)
     node.innerHTML += alert;
     $(where).after(node);
 }
+
+function createAlertNode(message, alertType = "info", style = "") {
+        return `<div id="alert" class="alert alert-${alertType}" role="alert" style="${style}">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    ${message}
+                </div>`;
+}

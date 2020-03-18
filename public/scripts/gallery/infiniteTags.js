@@ -51,19 +51,13 @@ async function infiniteTags() {
                     $("#infinitebtn").attr("onclick", "");
                 }
             } else {
-                let alert = `<div id="alert" class="alert alert-warning" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                                ${data.message}
-                            </div>`;
+                let alert = createAlertNode(data.message, "warning");
                 addAlert(alert, "#header");
             }
         })
     })   
     .catch((err) => {
-        let alert = `<div id="alert" class="alert alert-warning" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            ${err.message}
-                        </div>`;
+        let alert = createAlertNode(err.message, "warning");
         addAlert(alert, "#header");
     })
     loader.css("display","none");

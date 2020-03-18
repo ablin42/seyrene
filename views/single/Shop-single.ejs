@@ -52,7 +52,6 @@
             <p class="blog-content col-10 offset-1 mt-2"><%= locals.shopItem.content %></p>
 
             <div class="col-10 offset-1 text-center">
-               
                 <% if (locals.shopItem.isUnique) { %>
                     <b class="card-price"><%= locals.shopItem.price %>€</b>
                     <b class="isUnique" style="color: var(--light-shade)">Toile unique</b>
@@ -60,7 +59,6 @@
                 <% } else { %>
                     <div class="pwinty-products">
                         <div class="form-group text-center" id="categories">
-    
                             <label for="framed">
                                 <div class="sku-item unselectable">
                                     <p>Framed Print</p>
@@ -74,12 +72,10 @@
                                     <input name="pwinty-category" id="mounted" value="mounted" type="radio" onclick="loadCategory(this)"><!-- needs change VALUE -->
                                 </div>
                             </label>
-    
                         </div>
-                        <div id="subcategories">
-                        </div>
-                        <div id="attributes">
-                        </div>
+
+                        <div id="subcategories"></div>
+                        <div id="attributes"></div>
                     </div>
                     <div id="purchasebox" style="display: none;">
                         <span id="price" style="color: white;"></span>

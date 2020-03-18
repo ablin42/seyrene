@@ -18,28 +18,16 @@ function deleteImage (item, e) {
         .then(response => response.json())
         .then(data => {
             if (data.err) {
-                let alert = `
-                    <div id="alert" class="alert alert-warning" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        ${data.msg}
-                    </div>`;
+                let alert = createAlertNode(data.msg, "warning");
                 addAlert(alert, "#header");
             } else {
-                let alert = `
-                    <div id="alert" class="alert alert-success" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        ${data.msg}
-                    </div>`;
+                let alert = createAlertNode(data.msg, "success");
                 addAlert(alert, "#header");
             }
         })
     }
     else {
-        let alert = `
-            <div id="alert" class="alert alert-success" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                Image was successfully deleted!
-            </div>`;
+        let alert = createAlertNode(" Image was successfully deleted!", "success");
         addAlert(alert, "#header");
     }
 }
@@ -84,18 +72,10 @@ async function postFront(e, form) {
     .then(response => response.json())
     .then(data => {
         if (data.err) {
-            let alert = `
-            <div id="alert" class="alert alert-warning" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
+            let alert = createAlertNode(data.msg, "warning");
             addAlert(alert, "#header");
         } else {
-            let alert = `
-            <div id="alert" class="alert alert-success" role="alert" style="position: fixed;z-index: 33;margin: 0 50% 0 50%;transform: translate(-50%,0px);">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
+            let alert = createAlertNode(data.msg, "success");
             addAlert(alert, "#header");
         }
     })

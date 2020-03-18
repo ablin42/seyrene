@@ -152,10 +152,7 @@
       }
     })
     .catch((err) => {
-      let alert = `<div id="alert" class="alert alert-info" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        ${err.message}
-                    </div>`;
+      let alert = createAlertNode(err.message);
       addAlert(alert, "#header");
     })
   }
@@ -222,18 +219,11 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
         }
       } else 
           alertType = "warning";
-
-      let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                      ${response.msg}
-                    </div>`;
+      let alert = createAlertNode(response.msg, alertType);
       addAlert(alert, "#header");
   })
   .catch(err => {
-      let alert = `<div id="alert" class="alert alert-danger" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    ${err.message}
-                  </div>`;
+    let alert = createAlertNode(err.message, "danger");
       addAlert(alert, "#header");
   });
   return;
@@ -297,18 +287,11 @@ async function pwintyCartDel(itemId, referenceId, caller) {
         console.log("error:", response);
         alertType = "warning";
       }
-      let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                      ${response.msg}
-                    </div>`;
+      let alert = createAlertNode(response.msg, alertType);
       addAlert(alert, "#header");
     })
     .catch(err => {
-      console.log(err);
-      let alert = `<div id="alert" class="alert alert-danger" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    ${err.message}
-                  </div>`;
+      let alert = createAlertNode(response.msg, alertType);;
       addAlert(alert, "#header");
     });
 }
@@ -366,18 +349,12 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
               console.log("API answered with error:", response);
               alertType = "warning";
             }
-            let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
-                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                          ${response.msg}
-                        </div>`;
+            let alert = createAlertNode(response.msg, alertType);
             addAlert(alert, "#header");
           })
           .catch(err => {
             console.log("An error occured while contacting the API:", err);
-            let alert = `<div id="alert" class="alert alert-danger" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        ${err.message}
-                      </div>`;
+            let alert = createAlertNode(err.message, "danger");
             addAlert(alert, "#header");
           });
       } else
@@ -385,11 +362,7 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
     } else throw new Error("The <b>quantity</b> you entered is invalid");
   } catch (err) {
     item.value = 1;
-    let alert = `
-          <div id="alert" class="alert alert-warning" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-              ${err.message}
-          </div>`;
+    let alert = createAlertNode(err.message, "warning");
     addAlert(alert, "#header");
   }
 }

@@ -18,10 +18,7 @@ async function cancelOrder(orderId) {
       else {
         console.log("error:", response)
       }
-      let alert = `<div id="alert" class="alert alert-info" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                      ${response.msg}
-                    </div>`;
+      let alert = createAlertNode(response.msg);
       addAlert(alert, "#header");
     })  
     .catch((err) => {

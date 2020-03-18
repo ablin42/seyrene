@@ -30,17 +30,11 @@ function checkoutCaller(isLogged, isDelivery) {
           }
         })
         .catch(err => {
-          let alert = `<div id="alert" class="alert alert-info" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        ${err.message}
-                    </div>`;
+          let alert = createAlertNode(err.message);
           addAlert(alert, "#header");
         });
     } else {
-      let alert = `<div id="alert" class="alert alert-info" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        You need to fill your delivery informations <a href="/User">here</a> in order to be able to purchase!
-                    </div>`;
+      let alert = createAlertNode("You need to fill your delivery informations <a href='/User'>here</a> in order to be able to purchase!");
       addAlert(alert, "#header");
     }
   }
@@ -83,22 +77,14 @@ async function cartAdd(itemId, caller) {
           document.getElementById("total-price").innerText = totalPrice + "€";
           document.getElementById("total-qty").innerText = totalQty;
         }
-      } else {
-        console.log("error:", response);
+      } else 
         alertType = "warning";
-      }
-      let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                      ${response.msg}
-                    </div>`;
+      let alert = createAlertNode(response.message, alertType);
       addAlert(alert, "#header");
     })
     .catch(err => {
       console.log(err);
-      let alert = `<div id="alert" class="alert alert-danger" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    ${err.message}
-                  </div>`;
+      let alert = createAlertNode(err.message, "danger");
       addAlert(alert, "#header");
     });
   return;
@@ -151,18 +137,12 @@ async function updateValue(e, item) {
               console.log("API answered with error:", response);
               alertType = "warning";
             }
-            let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
-                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                          ${response.msg}
-                        </div>`;
+            let alert = createAlertNode(response.message, alertType);
             addAlert(alert, "#header");
           })
           .catch(err => {
             console.log("An error occured while contacting the API:", err);
-            let alert = `<div id="alert" class="alert alert-danger" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        ${err.message}
-                      </div>`;
+            let alert = createAlertNode(err.message, "danger");
             addAlert(alert, "#header");
           });
       } else
@@ -170,11 +150,7 @@ async function updateValue(e, item) {
     } else throw new Error("The <b>quantity</b> you entered is invalid");
   } catch (err) {
     item.value = 1;
-    let alert = `
-          <div id="alert" class="alert alert-warning" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-              ${err.message}
-          </div>`;
+    let alert = createAlertNode(err.message, "warning");
     addAlert(alert, "#header");
   }
 }
@@ -229,18 +205,12 @@ async function cartDel(itemId, caller) {
         console.log("error:", response);
         alertType = "warning";
       }
-      let alert = `<div id="alert" class="alert alert-${alertType}" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                      ${response.msg}
-                    </div>`;
+      let alert = createAlertNode(response.message, alertType);
       addAlert(alert, "#header");
     })
     .catch(err => {
       console.log(err);
-      let alert = `<div id="alert" class="alert alert-danger" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    ${err.message}
-                  </div>`;
+      let alert = createAlertNode(err.message, "danger");
       addAlert(alert, "#header");
     });
   return;

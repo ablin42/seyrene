@@ -25,11 +25,7 @@ async function postGallery(e) {
     .then(response => response.json())
     .then(data => {
         if (data.err) {
-            let alert = `
-            <div id="alert" class="alert alert-warning" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
-            </div>`;
+            let alert = createAlertNode(data.msg, "warning");
             addAlert(alert, "#header")
         } else 
             window.location.href = data.url                
@@ -63,11 +59,7 @@ async function patchGallery(e, galleryId) {
     .then(response => response.json())
     .then(data => {
     if (data.err) {
-        let alert = `
-        <div id="alert" class="alert alert-warning" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-            ${data.msg}
-        </div>`;
+        let alert = createAlertNode(data.msg, "warning");
         addAlert(alert, "#header")
     } else 
         window.location.href = data.url                
