@@ -28,8 +28,8 @@ try {
         result.price = formatter.format(result.price).substr(2);
         result.items.forEach((item, index) => {
             result.items[index].price = formatter.format(item.price).substr(2);
-            result.items[index].item.content = item.item.content.substr(0, 128);
-            result.items[index].item.title = item.item.title.substr(0, 64);
+            result.items[index].attributes.content = item.attributes.content.substr(0, 128);
+            result.items[index].attributes.title = item.attributes.title.substr(0, 64);
         })
         return res.status(200).json(result);
     }
@@ -67,18 +67,27 @@ async function createOrder(order, req) {
       pwintyOrderId = response.data.id;
       let body = [];
       req.body.items.forEach((item, index) => {
-          if (item.item.isUnique === false) {
+          if (item.attributes.isUnique === false) {
+              item.elements.forEach((product, i) => {
+                console.log(product, i, item.attributes._id)
                 let obj = {
-                "sku" : "FRA-BOX-BAP-MOUNT1-ACRY-20X20", //fetch from item db
-                "url" : `http://localhost:8089/api/image/main/Shop/${item.item._id}`, 
-                "sizing" : "crop", // idk yet
-                "copies" : item.qty,
-                "attributes" : {
-                    "frameColour":"brown", //An object with properties representing the attributes for the image.???????????? //fetch from item db
-                    "mountColour": "Snow White",
-                }
-              }
-              body.push(obj);
+                    "sku" : product.attributes.SKU, //fetch from item db
+                    "url" : `http://localhost:8089/api/image/main/Shop/${item.attributes._id}`, 
+                    "sizing" : "crop", // idk yet
+                    "copies" : product.qty,
+                    "attributes" : "" //need to remove sku category subcategory
+                  }
+                  let cpy = JSON.parse(JSON.stringify(product.attributes));
+                  cpy.category = undefined;
+                  cpy.subcategory = undefined;
+                  cpy.SKU = undefined;
+                  cpy.size = undefined;
+                  cpy.substrateType = undefined;
+                  cpy.mountType = undefined;
+                  cpy.glaze = undefined;
+                  obj.attributes = cpy;
+                  body.push(obj);
+              })
           }
       })
       options.body = body;
@@ -92,6 +101,7 @@ async function createOrder(order, req) {
 
           response = await rp(options);
           if (response.statusCode === 200) {
+              console.log(response)
               if (response.data.isValid === true) {
                   console.log("order is valid");
                   options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
@@ -100,25 +110,26 @@ async function createOrder(order, req) {
 
                   response = await rp(options);
                   if (response.statusCode === 200) {
-                      console.log("submitted order");
-                       /* var [err, result] = await utils.to(order.save()); //need pwinty order id in db
-                          if (err || result == null)
-                              throw new Error("An error occured while creating your order");
+                        console.log("submitted order");
+                        var [err, result] = await utils.to(order.save()); //need pwinty order id in db
+                        if (err || result == null)
+                            throw new Error("An error occured while creating your order");
 
-                          // Send mails
-                          let subject = `New Order #${order._id}`;
-                          let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
-                          if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-                              throw new Error("An error occured while trying to send the mail, please retry");
+                        // Send mails
+                        let subject = `New Order #${order._id}`;
+                        let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+                        if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+                            throw new Error("An error occured while trying to send the mail, please retry");
 
-                          var [err, user] = await utils.to(User.findById(req.body.user._id));
-                          if (err || user == null)
-                              throw new Error("An error occured while finding your user account, please try again");
-                          content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-                          if (await mailer(user.email, subject, content))
-                              throw new Error("An error occured while trying to send the mail, please retry"); */
+                        var [err, user] = await utils.to(User.findById(req.body.user._id));
+                        if (err || user == null)
+                            throw new Error("An error occured while finding your user account, please try again");
+                        content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+                        if (await mailer(user.email, subject, content))
+                            throw new Error("An error occured while trying to send the mail, please retry");
 
-                      return {err: false, orderId: order._id};
+                        console.log("order saved to db", order._id)
+                        return {err: false, orderId: order._id};
                   } else
                       throw new Error(`Something went wrong while submitting the order: ${response.errordata.statusTxt}`);
               } else
@@ -136,7 +147,7 @@ try {
     if (req.body.user) { //undefined
         // Set sold out to true if an unique item is bought
         for (let index = 0; index < req.body.items.length; index++) {
-            var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].item._id, isUnique: true}, {$set: {soldOut: true}}));
+            var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
             if (err)
                 throw new Error("An error occured while deleting the unique item from the store, please try again");
         }

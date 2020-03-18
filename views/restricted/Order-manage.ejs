@@ -34,13 +34,13 @@
         <span class="cart-quantity cart-header cart-column">QUANTITY</span>
         <span class="cart-price cart-header cart-column">PRICE</span>
       </div>
-      <% Object.keys(locals.order.items).forEach(function (index) { %>
-        <div class="cart-row cart-row-item" id="<%= locals.order.items[index].item._id %>">
+      <!--<% Object.keys(locals.order.items).forEach(function (index) { %>
+        <div class="cart-row cart-row-item" id="<%= locals.order.items[index].attributes._id %>">
           <div class="cart-item cart-column">
-            <a href="/Shop/<%= locals.order.items[index].item._id %>"><img class="cart-img" src="/api/image/main/Shop/<%= locals.order.items[index].item._id %>" alt="<%= locals.order.items[index].title %>"></a>
+            <a href="/Shop/<%= locals.order.items[index].attributes._id %>"><img class="cart-img" src="/api/image/main/Shop/<%= locals.order.items[index].attributes._id %>" alt="<%= locals.order.items[index].title %>"></a>
             <div class="cart-title-description">
-              <h4 class="cart-item-title"><b><%= locals.order.items[index].item.title %>...</b></h4>
-              <p class="cart-item-description"><%= locals.order.items[index].item.content %>...</p>
+              <h4 class="cart-item-title"><b><%= locals.order.items[index].attributes.title %>...</b></h4>
+              <p class="cart-item-description"><%= locals.order.items[index].attributes.content %>...</p>
             </div>
           </div>
                             
@@ -50,9 +50,32 @@
 
           <div class="cart-price cart-column">
             <p class="cart-item-price"><b><%= locals.order.items[index].price %>€</b></p>
-            <p class="cart-item-unitprice"><b><%= locals.order.items[index].item.price %>€/Unité</b></p>
+            <p class="cart-item-unitprice"><b><%= locals.order.items[index].attributes.price %>€/Unité</b></p>
           </div>
         </div>
+      <% }) %>--> 
+      <% Object.keys(locals.products).forEach(function (index) { %>
+        <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].item.isUnique) { %>-<%= index %><% } %>">
+          <div class="cart-item cart-column">
+            <img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
+            <div class="cart-title-description">
+              <h4 class="cart-item-title"><b><%= locals.products[index].shorttitle %>...</b></h4>
+              <p class="cart-item-description"><%= locals.products[index].shortcontent %>...</p>
+              <p><%= locals.products[index].details %></p>
+            </div>
+          </div>
+
+          <div class="cart-quantity cart-column">
+            <h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
+          </div>
+
+          <div class="cart-price cart-column">
+            <p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
+            <% if (locals.products[index].item.isUnique !== true) { %>
+              <p class="cart-item-unitprice"><b><%= locals.products[index].unitPrice %>€/Unité</b></p>
+            <% } %>
+          </div>
+      </div>
       <% }) %>
     <% } %>
 

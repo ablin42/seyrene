@@ -50,7 +50,7 @@
           </div>
       </div>
       <% }) %>
-    <% } %>*
+    <% } %>
 
     <% if(locals.isDelivery){ %>
       <div class="panel-heading">
@@ -162,6 +162,15 @@
 })
 
 function submitCheckout () {
+  fetch('/api/cart/purchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({stripeTokenId: "issou",})
+    })
+    return;
   let isLogged = "<%= locals.name %>";
   let isDelivery = "<%= locals.isDelivery %>";
 

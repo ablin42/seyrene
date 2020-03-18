@@ -235,14 +235,28 @@ try {
 router.post('/purchase', verifySession, async (req, res) => {
 try {
     if (req.user) {
-        let token = req.body.stripeTokenId;
+        let token = "xx"//req.body.stripeTokenId;
         let cart = new Cart(req.session.cart ? req.session.cart : {});
         let total = cart.totalPrice;
         let items = cart.generateArray();
 
+        let options = {
+            uri: `http://localhost:8089/api/order/create`,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: {items: items, price: total, user: req.user},
+            json: true
+        }
+        rp(options)
+        return res.status(200).json("xdd");
+
         for (let i = 0; i < items.length; i++) {
-            items[i].item.img = undefined;
-            var [err, item] = await utils.to(Shop.findById(items[i].item._id));
+            //items[i].item.img = undefined;
+            console.log(items[i])
+            var [err, item] = await utils.to(Shop.findById(items[i].attributes._id));
             if (err || item === null)
                 throw new Error("An error occured while looking for an item you tried to purchase");
         }
