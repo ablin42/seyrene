@@ -343,6 +343,43 @@ router.get("/Order/:id", verifySession, async (req, res) => {
     );
     if (obj.order.error) throw new Error(obj.order.message);
 
+    obj.products = [];
+    obj.order.items.forEach(item => {
+      if (item.attributes.isUnique) {
+        var items = {
+          item: item.attributes,
+          qty: item.qty,
+          price: formatter.format(item.price).substr(2),
+          shortcontent: item.attributes.content.substr(0, 128),
+          shorttitle: item.attributes.title.substr(0, 64),
+          details: "Toile Unique"
+        };
+        obj.products.push(items);
+      } else {
+        item.elements.forEach(element => {
+          if (element.attributes !== undefined) {
+            var items = {
+              item: item.attributes, 
+              attributes: element.attributes,
+              stringifiedAttributes: JSON.stringify(element.attributes),
+              qty: element.qty,
+              unitPrice: item.unitPrice,
+              price: formatter.format(item.unitPrice * element.qty).substr(2),
+              shortcontent: item.attributes.content.substr(0, 128), 
+              shorttitle: item.attributes.title.substr(0, 64), 
+              details: ""
+            };
+            let details = "";
+            Object.keys(element.attributes).forEach((attribute, index) => {
+              details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
+            })
+            items.details = details.substr(0, (details.length - 3));
+            obj.products.push(items);
+          }
+        })
+      }
+    });
+
     res.status(200).render("single/order-recap", obj);
   } catch (err) {
     console.log("ORDER RECAP ROUTE ERROR", err);
