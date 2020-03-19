@@ -37,7 +37,11 @@
       <% Object.keys(locals.products).forEach(function (index) { %>
         <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].item.isUnique) { %>-<%= index %><% } %>">
           <div class="cart-item cart-column">
-            <img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
+            <% if (locals.products[index].item.isUnique === true) { %>
+              <img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
+            <% } else { %>
+              <img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
+            <% } %>
             <div class="cart-title-description">
               <h4 class="cart-item-title"><b><%= locals.products[index].shorttitle %>...</b></h4>
               <p class="cart-item-description"><%= locals.products[index].shortcontent %>...</p>

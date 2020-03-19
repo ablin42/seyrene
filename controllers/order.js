@@ -63,29 +63,29 @@ async function createOrder(order, req) {
 
   response = await rp(options);
   if (response.statusCode === 200) {
-      console.log("created order");
-      pwintyOrderId = response.data.id;
-      let body = [];
-      req.body.items.forEach((item, index) => {
-          if (item.attributes.isUnique === false) {
-              item.elements.forEach((product, i) => {
+    console.log("created order");
+    pwintyOrderId = response.data.id;
+    let body = [];
+    req.body.items.forEach((item, index) => {
+        if (item.attributes.isUnique !== true) {
+            item.elements.forEach((product, i) => {
                 let obj = {
                     "sku" : product.attributes.SKU,
                     "url" : `http://localhost:8089/api/image/main/Shop/${item.attributes._id}`, 
                     "sizing" : "crop", // idk yet
                     "copies" : product.qty,
                     "attributes" : ""
-                  }
-                  let cpy = JSON.parse(JSON.stringify(product.attributes));
-                  cpy.category = undefined;
-                  cpy.subcategory = undefined;
-                  cpy.SKU = undefined;
-                  cpy.size = undefined;
-                  cpy.substrateType = undefined;
-                  cpy.mountType = undefined;
-                  cpy.glaze = undefined;
-                  obj.attributes = cpy;
-                  body.push(obj);
+                }
+                let cpy = JSON.parse(JSON.stringify(product.attributes));
+                cpy.category = undefined;
+                cpy.subcategory = undefined;
+                cpy.SKU = undefined;
+                cpy.size = undefined;
+                cpy.substrateType = undefined;
+                cpy.mountType = undefined;
+                cpy.glaze = undefined;
+                obj.attributes = cpy;
+                body.push(obj);
               })
           }
       })

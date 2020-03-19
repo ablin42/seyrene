@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
 const Image = require('../models/Image');
-const Gallery = require('../models/Gallery');
 const Shop = require('../models/Shop');
 const Order = require('../models/Order');
 const User = require('../models/User');
@@ -115,7 +114,7 @@ try {
         attributes: req.body.attributes,
     }
 
-    Gallery.findById(productId, async (err, product) => {
+    Shop.findById(productId, async (err, product) => {
         if (err)
             return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
 
@@ -149,7 +148,7 @@ try {
     }
 
     if (Number.isInteger(newQty) && (newQty >= 0 && newQty <= 99)) {
-        Gallery.findById(productId, (err, product) => {
+        Shop.findById(productId, (err, product) => {
             if (err || !product)
                 return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
 
@@ -182,7 +181,7 @@ try {
         attributes: req.body.attributes,
     }
             
-    Gallery.findById(productId, (err, product) => {
+    Shop.findById(productId, (err, product) => {
         if (err)
             return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
 
