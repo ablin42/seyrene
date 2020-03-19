@@ -69,13 +69,12 @@ async function createOrder(order, req) {
       req.body.items.forEach((item, index) => {
           if (item.attributes.isUnique === false) {
               item.elements.forEach((product, i) => {
-                console.log(product, i, item.attributes._id)
                 let obj = {
-                    "sku" : product.attributes.SKU, //fetch from item db
+                    "sku" : product.attributes.SKU,
                     "url" : `http://localhost:8089/api/image/main/Shop/${item.attributes._id}`, 
                     "sizing" : "crop", // idk yet
                     "copies" : product.qty,
-                    "attributes" : "" //need to remove sku category subcategory
+                    "attributes" : ""
                   }
                   let cpy = JSON.parse(JSON.stringify(product.attributes));
                   cpy.category = undefined;
@@ -144,7 +143,7 @@ async function createOrder(order, req) {
 
 router.post('/create', verifySession, async (req, res) => {
 try {
-    if (req.body.user) { //undefined
+    if (req.body.user) {
         // Set sold out to true if an unique item is bought
         for (let index = 0; index < req.body.items.length; index++) {
             var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
@@ -175,8 +174,7 @@ try {
         });
 
         let pwintyOrderId = "";
-        let reponse;
-        response = await createOrder(order, req); //catch this
+        let response = await createOrder(order, req);
 
         return res.status(200).json(response);
     } else 

@@ -1,3 +1,23 @@
+var formatter = new Intl.NumberFormat("de-DE", {
+  style: "currency",
+  currency: "EUR"
+});
+
+function cooldownBtn (caller, time) {
+  caller.disabled = true;
+  caller.style.pointerEvents = "none";
+  setTimeout(() => {
+    caller.disabled = false;
+    caller.style.pointerEvents = "auto";
+  }, time);
+}
+
+function handleEmptiness () {
+  $(".payment-div").attr("style", "display: none");
+  $("#alertEmpty").attr("style", "display: inline-block");
+  $("#cart-row-header").attr("style", "display: none");
+}
+
 function checkoutCaller(isLogged, isDelivery) {
   if (isLogged === "") {
     window.location.href = "http://localhost:8089/Account"; //need req message
@@ -41,12 +61,7 @@ function checkoutCaller(isLogged, isDelivery) {
 }
 
 async function cartAdd(itemId, caller) {
-  caller.disabled = true;
-  caller.style.pointerEvents = "none";
-  setTimeout(() => {
-    caller.disabled = false;
-    caller.style.pointerEvents = "auto";
-  }, 1500);
+  cooldownBtn(caller, 1500);
   await fetch(`http://localhost:8089/api/cart/add/${itemId}`, {
     method: "GET",
     headers: {
@@ -65,10 +80,8 @@ async function cartAdd(itemId, caller) {
         let totalQty = response.cart.totalQty;
         let totalPrice = response.cart.totalPrice;
         let rowId = document.getElementById(itemId);
-        document.getElementById("cartQty").innerText = totalQty;
-        if (rowId.classList.contains("cart-row-item")) {
-      
 
+        if (rowId.classList.contains("cart-row-item")) {
           let itemQty = response.cart.items[itemId].qty;
           let itemPrice = response.cart.items[itemId].price;
 
@@ -76,6 +89,7 @@ async function cartAdd(itemId, caller) {
           rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           document.getElementById("total-price").innerText = totalPrice + "€";
           document.getElementById("total-qty").innerText = totalQty;
+          document.getElementById("cartQty").innerText = totalQty;
         }
       } else 
         alertType = "warning";
@@ -108,9 +122,7 @@ async function updateValue(e, item) {
             mode: "same-origin"
           }
         )
-          .then(res => {
-            return res.json();
-          })
+          .then(res => {return res.json();})
           .then(function(response) {
             console.log("response:", response);
             let alertType = "info";
@@ -119,8 +131,10 @@ async function updateValue(e, item) {
               let totalPrice = response.cart.totalPrice;
               let rowId = document.getElementById(itemId);
 
-              document.getElementById("total-price").innerText =
-                totalPrice + "€"; //format here or in api
+              if (totalQty === 0) 
+                handleEmptiness();
+
+              document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
               document.getElementById("total-qty").innerText = totalQty;
 
               if (value === 0) document.getElementById(itemId).remove();
@@ -156,12 +170,7 @@ async function updateValue(e, item) {
 }
 
 async function cartDel(itemId, caller) {
-  caller.disabled = true;
-  caller.style.pointerEvents = "none";
-  setTimeout(() => {
-    caller.disabled = false;
-    caller.style.pointerEvents = "auto";
-  }, 1500);
+  cooldownBtn(caller, 1500);
   await fetch(`http://localhost:8089/api/cart/del/${itemId}`, {
     method: "GET",
     headers: {
@@ -175,20 +184,15 @@ async function cartDel(itemId, caller) {
       return res.json();
     })
     .then(function(response) {
-      console.log(response);
       let alertType = "info";
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
         let totalPrice = response.cart.totalPrice;
-        if (totalPrice == 0) {
-          $(".payment-div").attr("style", "display: none");
-          $("#alertEmpty").attr("style", "display: inline-block");
-          $("#cart-row-header").attr("style", "display: none");
-        }
-
         let rowId = document.getElementById(itemId);
 
-        document.getElementById("cartQty").innerText = totalQty;
+        if (totalQty === 0) 
+          handleEmptiness();
+
         if (!rowId.classList.contains("card")) {
           if (response.cart.items[itemId]) {
             let itemQty = response.cart.items[itemId].qty;
@@ -200,6 +204,7 @@ async function cartDel(itemId, caller) {
 
           document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
           document.getElementById("total-qty").innerText = totalQty;
+          document.getElementById("cartQty").innerText = totalQty;
         }
       } else {
         console.log("error:", response);
@@ -215,3 +220,178 @@ async function cartDel(itemId, caller) {
     });
   return;
 }
+
+async function pwintyCartAdd(itemId, referenceId, caller) {
+try {
+  if (PWINTY_DATA[0] !== undefined) {
+    cooldownBtn(caller, 1500);
+    let SKU = PWINTY_DATA[referenceId].SKU;
+    let attributes = PWINTY_DATA[referenceId].attributes;
+    PWINTY_DATA[referenceId].attributes.SKU = undefined;
+    let price = PWINTY_DATA[referenceId].price;
+
+    await fetch(`api/cart/add/pwinty/${itemId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({SKU, price, attributes}),
+      credentials: "include",
+      mode: "same-origin"
+    })
+    .then(res => {return res.json();})
+    .then(function(response) {
+        let alertType = "success";
+        if (response.error === false) {
+          let totalQty = response.cart.totalQty;
+          let totalPrice = response.cart.totalPrice;
+          let rowId = document.getElementById(`${itemId}-${referenceId}`);
+
+          if (rowId.classList.contains("cart-row-item")) {
+            $(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
+            rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');
+            document.getElementById("total-price").innerText = formatter.format(totalPrice).replace(',', '.');;
+            document.getElementById("total-qty").innerText = totalQty;
+            document.getElementById("cartQty").innerText = totalQty;
+          }
+        } else 
+            alertType = "warning";
+        let alert = createAlertNode(response.msg, alertType);
+        addAlert(alert, "#header");
+    })
+    .catch(err => {
+      let alert = createAlertNode(err.message, "danger");
+        addAlert(alert, "#header");
+    });
+  } else 
+      throw new Error("Invalid item reference, please fresh the page");
+} catch (err) {
+  let alert = createAlertNode(err.message, "warning");
+  addAlert(alert, "#header");
+}}
+
+async function pwintyCartDel(itemId, referenceId, caller) {
+try {
+  if (PWINTY_DATA[0] !== undefined) {
+    cooldownBtn(caller, 1500);
+    let SKU = PWINTY_DATA[referenceId].SKU;
+    let attributes = PWINTY_DATA[referenceId].attributes;
+    PWINTY_DATA[referenceId].attributes.SKU = undefined;
+    let price = PWINTY_DATA[referenceId].price;
+
+    await fetch(`http://localhost:8089/api/cart/del/pwinty/${itemId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({SKU, price, attributes}),
+      credentials: "include",
+      mode: "same-origin"
+    })
+    .then(res => {return res.json();})
+    .then(function(response) {
+      let alertType = "warning";
+      if (response.error === false) {
+        let totalQty = response.cart.totalQty;
+        let totalPrice = response.cart.totalPrice;
+        let rowId = document.getElementById(`${itemId}-${referenceId}`);
+
+        if (totalQty === 0) 
+          handleEmptiness();
+
+        if (response.cart.items[SKU]) {
+          if (response.item.qty === 0)
+            rowId.remove();
+          $(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
+          rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');;
+        } else 
+          rowId.remove();
+
+        document.getElementById("total-price").innerText =  formatter.format(totalPrice).replace(',', '.');;
+        document.getElementById("total-qty").innerText = totalQty;
+        document.getElementById("cartQty").innerText = totalQty;
+      } else {
+        console.log("error:", response);
+        alertType = "warning";
+      }
+      let alert = createAlertNode(response.msg, alertType);
+      addAlert(alert, "#header");
+    })
+    .catch(err => {
+      let alert = createAlertNode(response.msg, alertType);;
+      addAlert(alert, "#header");
+    });
+  } else 
+      throw new Error("Invalid item reference, please fresh the page");
+} catch (err) {
+  let alert = createAlertNode(err.message, "warning");
+  addAlert(alert, "#header");
+}}
+
+async function pwintyUpdateValue(e, item, itemId, referenceId) {
+try {
+  if (item.value && PWINTY_DATA[0] !== undefined) {
+    let qty = parseInt(item.value);
+    let SKU = PWINTY_DATA[referenceId].SKU;
+    let attributes = PWINTY_DATA[referenceId].attributes;
+    PWINTY_DATA[referenceId].attributes.SKU = undefined;
+    let price = PWINTY_DATA[referenceId].price;
+
+    if (Number.isInteger(qty) && qty >= 0) {
+      await fetch(`http://localhost:8089/api/cart/update/pwinty/${itemId}/${qty}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({SKU, price, attributes}),
+          credentials: "include",
+          mode: "same-origin"
+        }
+      )
+      .then(res => {return res.json();})
+      .then(function(response) {
+        let alertType = "info";
+        if (response.error === false) {
+          let totalQty = response.cart.totalQty;
+          let totalPrice = response.cart.totalPrice;
+          let rowId = document.getElementById(`${itemId}-${referenceId}`);
+
+          if (totalQty === 0) 
+            handleEmptiness();
+
+          document.getElementById("total-price").innerText = formatter.format(totalPrice).replace(',', '.');; 
+          document.getElementById("total-qty").innerText = totalQty;
+          document.getElementById("cartQty").innerText = totalQty;
+
+          if (qty === 0) 
+            document.getElementById(`${itemId}-${referenceId}`).remove();
+          else {
+            if (!rowId.classList.contains("card")) {
+              item.value = response.item.qty;// useless??
+              rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');;
+            }
+          }
+        } else {
+          console.log("API answered with error:", response);
+          alertType = "warning";
+        }
+        let alert = createAlertNode(response.msg, alertType);
+        addAlert(alert, "#header");
+      })
+      .catch(err => {
+        console.log("An error occured while contacting the API:", err);
+        let alert = createAlertNode(err.message, "danger");
+        addAlert(alert, "#header");
+      });
+    } else
+      throw new Error("The <b>quantity</b> has to be a positive integer");
+  } else 
+    throw new Error("The <b>quantity</b> you entered is invalid");
+} catch (err) {
+  item.value = 1;
+  let alert = createAlertNode(err.message, "warning");
+  addAlert(alert, "#header");
+}}
