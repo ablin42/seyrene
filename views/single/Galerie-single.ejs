@@ -48,6 +48,13 @@
           <% } %>
         </ol>
       </div>
+
+      <div class="text-center">
+        <% locals.galleries.tags.forEach(function (tag) { %>
+          <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
+        <% }) %>
+      </div>
+
       <p class="blog-content col-10 offset-1 mt-2"><%= locals.galleries.content %></p>
 
       <div class="col-10 offset-1 text-center">
