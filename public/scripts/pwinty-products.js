@@ -6,12 +6,14 @@ let PWINTY_ITEMS = {
                     {"HPR" : "Hahnemühle Photo Rag"}, {"LPP" : "Lustre Photo Paper"}, {"MFA" : "Museum Fine Art Paper"}, {"MG" : "Metallic Gloss"}, {"SAP" : "Smooth Art Paper"}, {"SPR" : "Smooth Photo Rag"}],
                 "size": [{"20x20" : "20x20cm", "optSize" : {"2370" : "2370"}}, {"20x30" : "20x30cm", "optSize" : {"2370" : "3540"}}, {"A4" : "21x29.7cm", "optSize" : {"2490" : "3420"}},
                     {"30x30" : "30x30cm", "optSize" : {"3540" : "3540"}}, {"28x35" : "28x35.5cm", "optSize" : {"3300" : "4140"}}, {"30x40" : "30x40cm", "optSize" : {"3540" : "4710"}},
-                    {"A3" : "29.7x42cm", "optSize" : {"3420" : "4950"}}, {"25x50" : "25x50cm", "optSize" : {"2940" : "5910"}}, {"30x45" : "30x45cm", "optSize" : {"3540" : "5310"}}, {"40x40" : "40x40cm", "optSize" : {"4710" : "4710"}},
-                    {"40x50" : "40x50cm", "optSize" : {"4710" : "5910"}}, {"40x60" : "40x60cm", "optSize" : {"4710" : "7080"}}, {"A2" : "42x59.4cm", "optSize" : {"4950" : "6960"}},
-                    {"50x50" : "50x50cm", "optSize" : {"5910" : "5910"}}, {"45x60" : "45x60cm", "optSize" : {"5310" : "7080"}}, {"40x80" : "40x80cm", "optSize" : {"4710" : "9450"}}, {"50x70" : "50x70cm", "optSize" : {"5910" : "8280"}}, 
-                    {"60x60" : "60x60cm", "optSize" : {"7080" : "7080"}}, {"50x75" : "50x75cm", "optSize" : {"5910" : "8850"}}, {"60x80" : "60x80cm", "optSize" : {"7080" : "9450"}},
-                    {"A1" : "59.4x84.1cm", "optSize" : {"6960" : "9930"}}, {"70x70" : "70x70cm", "optSize" : {"8280" : "8280"}}, {"50x100" : "50x100cm", "optSize" : {"5910" : "11820"}}, {"60x90" : "60x90cm", "optSize" : {"7080" : "10620"}},
-                    {"75x75" : "75x75cm", "optSize" : {"8850" : "8850"}}, {"80x80" : "80x80cm", "optSize" : {"9450" : "9450"}}, {"70x100" : "70x100cm", "optSize" : {"4950" : "11820"}}, {"90x90" : "90x90cm", "optSize" : {"10620" : "10620"}}],
+                    {"A3" : "29.7x42cm", "optSize" : {"3420" : "4950"}}, {"25x50" : "25x50cm", "optSize" : {"2940" : "5910"}}, {"30x45" : "30x45cm", "optSize" : {"3540" : "5310"}},
+                    {"40x40" : "40x40cm", "optSize" : {"4710" : "4710"}}, {"40x50" : "40x50cm", "optSize" : {"4710" : "5910"}}, {"40x60" : "40x60cm", "optSize" : {"4710" : "7080"}},
+                    {"A2" : "42x59.4cm", "optSize" : {"4950" : "6960"}}, {"50x50" : "50x50cm", "optSize" : {"5910" : "5910"}}, {"45x60" : "45x60cm", "optSize" : {"5310" : "7080"}},
+                    {"40x80" : "40x80cm", "optSize" : {"4710" : "9450"}}, {"50x70" : "50x70cm", "optSize" : {"5910" : "8280"}}, {"60x60" : "60x60cm", "optSize" : {"7080" : "7080"}},
+                    {"50x75" : "50x75cm", "optSize" : {"5910" : "8850"}}, {"60x80" : "60x80cm", "optSize" : {"7080" : "9450"}},{"A1" : "59.4x84.1cm", "optSize" : {"6960" : "9930"}},
+                    {"70x70" : "70x70cm", "optSize" : {"8280" : "8280"}}, {"50x100" : "50x100cm", "optSize" : {"5910" : "11820"}}, {"60x90" : "60x90cm", "optSize" : {"7080" : "10620"}},
+                    {"75x75" : "75x75cm", "optSize" : {"8850" : "8850"}}, {"80x80" : "80x80cm", "optSize" : {"9450" : "9450"}}, {"70x100" : "70x100cm", "optSize" : {"4950" : "11820"}},
+                    {"90x90" : "90x90cm", "optSize" : {"10620" : "10620"}}],
             },
             "BOX": {
                 "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
@@ -94,7 +96,12 @@ class PwintyObject {
                                             <option value="" disabled selected>Pick one</option>`;
             
             PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].forEach(selectOption => {
-                attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)[0]}</option>`;
+                if (attribute !== "size")
+                    attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)[0]}</option>`;
+                else {
+                    if (this.width > Object.keys(Object.values(selectOption)[1])[0] && this.height > Object.values(Object.values(selectOption)[1])[0]) //find a way to check if it roughly fits instead of checking if it is greater than 
+                        attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)[0]}</option>`;
+                }
             });
     
             attributeSelect +=              `</select>
