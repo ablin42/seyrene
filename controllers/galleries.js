@@ -25,7 +25,7 @@ var storage = multer.diskStorage({
 upload = multer({
   storage: storage,
   limits: {
-    fileSize: 10000000 //too low probably
+    fileSize: 50000000 //too low probably
   },
   fileFilter: function(req, file, cb) {
     gHelpers.sanitizeFile(req, file, cb);

@@ -53,6 +53,29 @@ let PWINTY_ITEMS = {
     "mounted": [],
 }
 
+let A_FORMAT = [{code:"A4", size:"21x29.7"}, {code:"A3", size:"29.7x42"}, {code:"A2", size:"42x59.4"}, {code:"A1", size:"59.4x84.1"}]
+
+let DIMENSIONS_FRAMES = [{megapixel: 500000, max: 20}, {megapixel: 1800000, max: 30}, {megapixel: 2900000, max: 40}, {megapixel: 4800000, max: 50},
+    {megapixel: 6700000, max: 60}, {megapixel: 7400000, max: 75}, {megapixel: 9300000, max: 100}];
+
+let DIMENSIONS_CANVAS = [{megapixel: 9300000, max: 150}, {megapixel: 9300000, max: 100}, {megapixel: 7400000, max: 75}, {megapixel: 6700000, max: 60}, 
+    {megapixel: 4800000, max: 50}, {megapixel: 2900000, max: 40}, {megapixel: 1800000, max: 30}];
+
+/*
+What file size do I need for printing good quality prints at different sizes?
+The following table shows pixel values and the equivalent size for which we could guarantee a good result, subject to the image being in focus with the correct image brightness and colour balance.
+
+Image size	Canvas	Prints (framed, mounted)
+0.3 MP	12"	8"
+0.5 MP	16"	12"
+1.8 MP	20"	16"
+2.9 MP	24"	20"
+4.8 MP	30"	24"
+6.7 MP	40"	30"
+7.4 MP	60"	40"
+9.3 MP	No limit	No limit
+*/
+
 class PwintyObject {
     constructor(item) {
         this.SKU = "";
@@ -61,6 +84,7 @@ class PwintyObject {
         this.attributes = {};
         this.width = $('img[alt="0slide"]')[0].naturalWidth;
         this.height = $('img[alt="0slide"]')[0].naturalHeight;
+        this.megapixel = this.width * this.height;
         
         document.getElementById("subcategories").innerHTML = "";
         document.getElementById("attributes").innerHTML = "";
@@ -97,13 +121,32 @@ class PwintyObject {
             
             PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].forEach(selectOption => {
                 if (attribute !== "size")
-                    attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)[0]}</option>`;
+                    attributeSelect += `<option value="${Object.keys(selectOption)[0]}">${Object.values(selectOption)[0]}</option>`;
                 else {
-                    if (this.width > Object.keys(Object.values(selectOption)[1])[0] && this.height > Object.values(Object.values(selectOption)[1])[0]) //find a way to check if it roughly fits instead of checking if it is greater than 
+                    let dimensions = Object.keys(selectOption)[0].split("x");
+                    if (isNaN(parseInt(dimensions[0]))) {
+                        for (let i = 0; i < A_FORMAT.length; i++) {
+                            if (dimensions[0] === A_FORMAT[i].code)
+                                dimensions = A_FORMAT[i].size.split("x");
+                        }
+                    }
+
+                    let maxDimension = parseInt(dimensions[0]);
+                    if (parseInt(dimensions[1]) > parseInt(dimensions[0]))
+                        maxDimension = parseInt(dimensions[1]);               
+
+                    if (this.megapixel > 9300000) 
                         attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)[0]}</option>`;
+                    else {
+                        let i = 0;
+                        while (this.megapixel > DIMENSIONS_FRAMES[i].megapixel) 
+                            i++;
+                        var max = DIMENSIONS_FRAMES[i].max;
+                    }
+                    if (maxDimension <= max)
+                        attributeSelect += `<option value="${Object.keys(selectOption)[0]}">${Object.values(selectOption)[0]}</option>`;
                 }
             });
-    
             attributeSelect +=              `</select>
                                     </div>
                                 </label>`;
