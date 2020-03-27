@@ -61,6 +61,23 @@ let DIMENSIONS_FRAMES = [{megapixel: 500000, max: 20}, {megapixel: 1800000, max:
 let DIMENSIONS_CANVAS = [{megapixel: 9300000, max: 150}, {megapixel: 9300000, max: 100}, {megapixel: 7400000, max: 75}, {megapixel: 6700000, max: 60}, 
     {megapixel: 4800000, max: 50}, {megapixel: 2900000, max: 40}, {megapixel: 1800000, max: 30}];
 
+function closeAllSelect(elmnt) {
+    var x, y, i, arrNo = [];
+    x = document.getElementsByClassName("select-items");
+    y = document.getElementsByClassName("select-selected");
+
+    for (i = 0; i < y.length; i++) {
+        if (elmnt == y[i]) 
+            arrNo.push(i)
+        else 
+            y[i].classList.remove("select-arrow-active");
+    }
+    for (i = 0; i < x.length; i++) {
+        if (arrNo.indexOf(i))
+            x[i].classList.add("select-hide");
+    }
+}
+
 /*
 What file size do I need for printing good quality prints at different sizes?
 The following table shows pixel values and the equivalent size for which we could guarantee a good result, subject to the image being in focus with the correct image brightness and colour balance.
@@ -90,7 +107,7 @@ class PwintyObject {
         document.getElementById("attributes").innerHTML = "";
         this.hidePricing()
 
-        let selection = `<div class="row">`;
+        let selection = ``;
         Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
             let subcategoryRadio = `<label for="${subcategory}">
                                     <div class="sku-item unselectable">
@@ -101,7 +118,7 @@ class PwintyObject {
             if (subcategory !== "sharedAttributes")
                 selection += subcategoryRadio;
         });
-        document.getElementById("subcategories").innerHTML = selection + "</div>";
+        document.getElementById("subcategories").innerHTML = selection;
     }
 
     loadSubCategory(subcategory) {
@@ -109,13 +126,14 @@ class PwintyObject {
         this.subcategory = subcategory.value;
         this.attributes = {};
 
-        let selection = `<div class="row">`;
+        let selection = ``;
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => {
             this.attributes[attribute] = "";
     
             let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable">
                                         <p>${attribute}</p>
+                                        <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
                                             <option value="" disabled selected>Pick one</option>`;
             
@@ -147,7 +165,7 @@ class PwintyObject {
                     }
                 }
             });
-            attributeSelect +=              `</select>
+            attributeSelect +=              `</select></div>
                                     </div>
                                 </label>`;
             selection += attributeSelect;
@@ -158,6 +176,7 @@ class PwintyObject {
             let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable">
                                         <p>${attribute}</p>
+                                        <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
                                             <option value="" disabled selected>Pick one</option>`;
             
@@ -165,13 +184,62 @@ class PwintyObject {
                 attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)}</option>`;
             });
     
-            attributeSelect +=              `</select>
+            attributeSelect +=              `</select></div>
                                     </div>
                                 </label>`;
             selection += attributeSelect;
         });
-        document.getElementById("attributes").innerHTML = selection + "</div>";
+        document.getElementById("attributes").innerHTML = selection;
+        this.selectScript();
         this.printInfo();
+    }
+
+    selectScript() {
+        var x, i, j, selElmnt, a, b, c;
+        x = document.getElementsByClassName("select-wrapper");
+
+        for (i = 0; i < x.length; i++) {
+            selElmnt = x[i].getElementsByTagName("select")[0];
+            a = document.createElement("DIV");
+            a.setAttribute("class", "select-selected");
+            a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+            x[i].appendChild(a);
+            b = document.createElement("DIV");
+            b.setAttribute("class", "select-items select-hide");
+
+            for (j = 1; j < selElmnt.length; j++) {
+                c = document.createElement("DIV");
+                c.innerHTML = selElmnt.options[j].innerHTML;
+
+                c.addEventListener("click", function(e) {
+                    var y, i, k, s, h;
+                    s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                    h = this.parentNode.previousSibling;
+                    for (i = 0; i < s.length; i++) {
+                        if (s.options[i].innerHTML == this.innerHTML) {
+                            s.selectedIndex = i;
+                            h.innerHTML = this.innerHTML;
+                            y = this.parentNode.getElementsByClassName("same-as-selected");
+                            for (k = 0; k < y.length; k++) 
+                                y[k].removeAttribute("class");
+                            this.setAttribute("class", "same-as-selected");
+                            break;
+                        }
+                    }
+                    h.click();
+                });
+                b.appendChild(c);
+            }
+            x[i].appendChild(b);
+            
+            a.addEventListener("click", function(e) {
+                e.stopPropagation();
+                closeAllSelect(this);
+                this.nextSibling.classList.toggle("select-hide");
+                this.classList.toggle("select-arrow-active");
+            });
+        }
+        document.addEventListener("click", closeAllSelect(this));
     }
 
     updateAttribute(attribute) {
