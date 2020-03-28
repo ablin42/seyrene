@@ -1661,6 +1661,11 @@ tr:hover {
   border-radius: 5px;
 }
 
+.select-list {
+  height: 170px;
+  display: grid;
+}
+
 #subcategories, #attributes {
   /*display: inline-block!important;*/
 }
@@ -1715,7 +1720,7 @@ tr:hover {
 .select-items {
   position: absolute;
   background-color: var(--brand-blue-m1);
-  top: 100%;
+  /*top: 100%;*/
   left: 0;
   right: 0;
   z-index: 99;

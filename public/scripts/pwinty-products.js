@@ -131,7 +131,7 @@ class PwintyObject {
             this.attributes[attribute] = "";
     
             let attributeSelect = `<label for="${attribute}">
-                                    <div class="sku-item unselectable">
+                                    <div class="sku-item unselectable select-list">
                                         <p>${attribute}</p>
                                         <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
@@ -174,7 +174,7 @@ class PwintyObject {
             this.attributes[attribute] = "";
     
             let attributeSelect = `<label for="${attribute}">
-                                    <div class="sku-item unselectable">
+                                    <div class="sku-item unselectable select-list">
                                         <p>${attribute}</p>
                                         <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
