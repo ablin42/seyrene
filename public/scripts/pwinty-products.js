@@ -135,7 +135,7 @@ class PwintyObject {
                                         <p>${attribute}</p>
                                         <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
-                                            <option value="" disabled selected>Pick one</option>`;
+                                            <option disabled selected>Pick one</option>`;
             
             PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].forEach(selectOption => {
                 if (attribute !== "size")
@@ -178,7 +178,7 @@ class PwintyObject {
                                         <p>${attribute}</p>
                                         <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
-                                            <option value="" disabled selected>Pick one</option>`;
+                                            <option disabled selected>Pick one</option>`;
             
             PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
                 attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)}</option>`;
@@ -209,12 +209,16 @@ class PwintyObject {
 
             for (j = 1; j < selElmnt.length; j++) {
                 c = document.createElement("DIV");
+                c.dataset.value = selElmnt.options[j].value;
                 c.innerHTML = selElmnt.options[j].innerHTML;
 
                 c.addEventListener("click", function(e) {
                     var y, i, k, s, h;
                     s = this.parentNode.parentNode.getElementsByTagName("select")[0];
                     h = this.parentNode.previousSibling;
+
+                    Pwinty.updateAttribute(s, this.dataset.value)
+
                     for (i = 0; i < s.length; i++) {
                         if (s.options[i].innerHTML == this.innerHTML) {
                             s.selectedIndex = i;
@@ -242,8 +246,12 @@ class PwintyObject {
         document.addEventListener("click", closeAllSelect(this));
     }
 
-    updateAttribute(attribute) {
-        this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
+    updateAttribute(attribute, optionValue = "") {
+        console.log(attribute, optionValue)
+        if (optionValue === "")
+            this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
+        else 
+            this.attributes[attribute.name] = optionValue;
 
         this.checkAttributes();
         //this.printInfo();
