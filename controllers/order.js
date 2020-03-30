@@ -189,11 +189,13 @@ let url = req.header('Referer') || '/Admin/Orders';
 try {
     if (req.user && req.user.level >= 3) {
         let newStatus = req.body.status;
-        console.log(newStatus)
-        if (newStatus !== "Validated" && newStatus !== "Shipping" && newStatus !== "Delivered" && newStatus !== "Cancelled")
+
+       // if (newStatus !== "Validated" && newStatus !== "Shipping" && newStatus !== "Delivered" && newStatus !== "Cancelled")
+        if (newStatus !== "NotYetSubmitted" && newStatus !== "Submitted" && newStatus !== "Complete" && newStatus !== "Cancelled")
             throw new Error("Invalid parameter, please try again");
+
         var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
-        console.log(err, order);
+        console.log(err, order)
         if (err || order == null)
             throw new Error("An error occured while updating the order");
 
@@ -224,6 +226,7 @@ router.get('/cancel/:id', verifySession, async (req, res) => {
 try {
     if (req.user && req.params.id) {
         var [err, order] = await utils.to(Order.findById(req.params.id));
+        console.log("cancel route")
 
         if (err || order == null)
             throw new Error("We couldn't find your order, please try again");

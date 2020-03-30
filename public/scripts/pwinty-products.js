@@ -130,11 +130,12 @@ class PwintyObject {
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => {
             this.attributes[attribute] = "";
     
+            // on select tag: onchange="Pwinty.updateAttribute(this)"
             let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable select-list">
                                         <p>${attribute}</p>
                                         <div class="select-wrapper">
-                                        <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
+                                        <select data-attribute="${attribute}" name="${attribute}" id="${attribute}">
                                             <option disabled selected>Pick one</option>`;
             
             PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].forEach(selectOption => {
@@ -173,11 +174,12 @@ class PwintyObject {
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory]).forEach(attribute => {
             this.attributes[attribute] = "";
     
+             // on select tag: onchange="Pwinty.updateAttribute(this)"
             let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable select-list">
                                         <p>${attribute}</p>
                                         <div class="select-wrapper">
-                                        <select data-attribute="${attribute}" name="${attribute}" id="${attribute}" onchange="Pwinty.updateAttribute(this)">
+                                        <select data-attribute="${attribute}" name="${attribute}" id="${attribute}">
                                             <option disabled selected>Pick one</option>`;
             
             PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
@@ -191,7 +193,7 @@ class PwintyObject {
         });
         document.getElementById("attributes").innerHTML = selection;
         this.selectScript();
-        this.printInfo();
+        //this.printInfo();
     }
 
     selectScript() {
@@ -247,7 +249,6 @@ class PwintyObject {
     }
 
     updateAttribute(attribute, optionValue = "") {
-        console.log(attribute, optionValue)
         if (optionValue === "")
             this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
         else 
