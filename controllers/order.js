@@ -101,7 +101,7 @@ async function createOrder(order, req) {
           response = await rp(options);
           if (response.statusCode === 200) {
               console.log(response)
-              if (response.data.isValid === true) {
+              if (response.data.isValid === true) { //////////////////////////////////////
                   console.log("order is valid");
                   options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
                   options.method = "POST";
@@ -110,6 +110,7 @@ async function createOrder(order, req) {
                   response = await rp(options);
                   if (response.statusCode === 200) {
                         console.log("submitted order");
+
                         var [err, result] = await utils.to(order.save()); //need pwinty order id in db
                         if (err || result == null)
                             throw new Error("An error occured while creating your order");
@@ -141,14 +142,39 @@ async function createOrder(order, req) {
       throw new Error(`Something went wrong while creating the order: ${response.errordata.statusTxt}`);
 }
 
+async function createSimpleOrder(order, req) {
+    var [err, result] = await utils.to(order.save()); //need pwinty order id in db
+    if (err || result == null)
+        throw new Error("An error occured while creating your order");
+
+    // Send mails
+    let subject = `New Order #${order._id}`;
+    let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+    if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+        throw new Error("An error occured while trying to send the mail, please retry");
+
+    var [err, user] = await utils.to(User.findById(req.body.user._id));
+    if (err || user == null)
+        throw new Error("An error occured while finding your user account, please try again");
+    content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+    if (await mailer(user.email, subject, content))
+        throw new Error("An error occured while trying to send the mail, please retry");
+
+    console.log("order saved to db", order._id)
+    return {err: false, orderId: order._id};
+}
+
 router.post('/create', verifySession, async (req, res) => {
 try {
     if (req.body.user) {
         // Set sold out to true if an unique item is bought
+        let isPwinty = false;
         for (let index = 0; index < req.body.items.length; index++) {
-            var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
-            if (err)
-                throw new Error("An error occured while deleting the unique item from the store, please try again");
+           // var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
+            //if (err)
+              //  throw new Error("An error occured while deleting the unique item from the store, please try again");
+            if (!req.body.items[index].attributes.isUnique)
+                isPwinty = true;
         }
         // Fetch delivery infos
         var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.body.user._id }));
@@ -173,8 +199,12 @@ try {
             instructions: infos.instructions
         });
 
-        let pwintyOrderId = "";
-        let response = await createOrder(order, req);
+        if (isPwinty === false)
+            var response = await createSimpleOrder(order, req);
+        else {
+            let pwintyOrderId = "";
+            var response = await createOrder(order, req);
+        }
 
         return res.status(200).json(response);
     } else 
@@ -230,6 +260,62 @@ try {
 
         if (err || order == null)
             throw new Error("We couldn't find your order, please try again");
+        if (order.status !== "NotYetSubmitted") ///
+            throw new Error("You can't cancel an order that is already submitted");
+        if (order._userId === req.user._id || req.user.level >= 3) {
+            // cancel pwinty order if non unique items exist in the order
+            // get pwinty order and check canCancel value
+
+//            var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
+  //          if (err || order == null)
+    //            throw new Error("We couldn't cancel your order, please try again");
+
+            // SET UNIQUE ITEM BOUGHT TO SOLDOUT: FALSE
+            let isPwinty = false;
+            for (let index = 0; index < order.items.length; index++) {
+                //var [err, itemx] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].item._id, isUnique: true}, {$set: {soldOut: false}}));
+                //if (err)
+                    //throw new Error("An error occured while deleting the unique item from the store, please try again");
+                if (!order.items[index].attributes.isUnique)
+                    isPwinty = true;
+            }
+            console.log(isPwinty);
+
+            // REFUND STRIPE PAYMENT
+
+            // Send mails
+            let subject = `Cancelled Order #${order._id}`;
+            let content = `To see the cancelled order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+            if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+                throw new Error("An error occured while trying to send the mail, please retry");
+
+            var [err, user] = await utils.to(User.findById(req.user._id));
+            if (err || user == null)
+                throw new Error("An error occured while finding your user account, please try again");
+            content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+            if (await mailer(user.email, subject, content))
+                throw new Error("An error occured while trying to send the mail, please retry");
+
+            console.log("cancelled order");
+            return res.status(200).json({err: false, msg: "Your order was successfully cancelled"});
+        } else
+            throw new Error("Unauthorized, please make sure you are logged in");
+    } else
+        throw new Error("Unauthorized, please make sure you are logged in");
+} catch (err) {
+    console.log("CANCEL ORDER ERROR:", err);
+    return res.status(200).json({err: true, msg: err.message})
+}})
+
+/* 
+router.get('/cancel/:id', verifySession, async (req, res) => {
+try {
+    if (req.user && req.params.id) {
+        var [err, order] = await utils.to(Order.findById(req.params.id));
+        console.log("cancel route")
+
+        if (err || order == null)
+            throw new Error("We couldn't find your order, please try again");
         if (order.status == "Shipping" || order.status == "Delivered" || order.status == "Cancelled")
             throw new Error("You can't cancel an order that is already shipping, delivered or cancelled!");
         if (order._userId === req.user._id || req.user.level >= 3) {
@@ -269,5 +355,6 @@ try {
     console.log("CANCEL ORDER ERROR:", err);
     return res.status(200).json({err: true, msg: err.message})
 }})
+*/
 
 module.exports = router;

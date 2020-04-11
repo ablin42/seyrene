@@ -141,7 +141,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       itemArr = cart.generateArray();
      
       itemArr.forEach(item => {
-        if (item.attributes.isUnique) {
+        if (item.attributes && item.attributes.isUnique) {         //if (item.attributes.isUnique) {
           var items = {
             item: item.attributes,
             qty: item.qty,
@@ -153,6 +153,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
           obj.products.push(items);
         } else {
           item.elements.forEach(element => {
+            console.log(element)
             if (element.attributes !== undefined) {
               var items = {
                 item: item.attributes, 
@@ -579,7 +580,7 @@ router.get("/Admin/Order/:id", verifySession, async (req, res) => {
           var items = {
             item: item.attributes,
             qty: item.qty,
-            price: formatter.format(item.price).substr(2),
+            price: item.price,
             shortcontent: item.attributes.content.substr(0, 128),
             shorttitle: item.attributes.title.substr(0, 64),
             details: "Toile Unique"

@@ -16,13 +16,13 @@
                 <option <% if (locals.order.status == "NotYetSubmitted") {%> selected disabled <% } %> value="NotYetSubmitted">NotYetSubmitted</option>
                 <option <% if (locals.order.status == "Submitted") {%> selected disabled <% } %> value="Submitted">Submitted</option>
                 <option <% if (locals.order.status == "Complete") {%> selected disabled <% } %> value="Complete">Complete</option>
-                <option <% if (locals.order.status == "Cancelled") {%> selected disabled <% } %> <% if (locals.order.status != "Validated") {%> disabled <% } %> value="Cancelled">Cancelled</option>
+                <option <% if (locals.order.status == "Cancelled") {%> selected disabled <% } %> <% if (locals.order.status != "NotYetSubmitted") {%> disabled <% } %> value="Cancelled">Cancelled</option>
               </select>
               <input type="hidden" name="orderId" value="<%= locals.order._id %>">
               <input type="submit" class="logbtn" value="Update" id="submit-statusform">
             </div>
           </form>
-          <% if (locals.order.status === "Validated") { %> <!-- need better condition here -->
+          <% if (locals.order.status === "NotYetSubmitted") { %> <!-- need better condition here -->
             <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
         <% } %>
         <hr />
