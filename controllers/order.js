@@ -65,6 +65,7 @@ async function createOrder(order, req) {
   if (response.statusCode === 200) {
     console.log("created order");
     pwintyOrderId = response.data.id;
+    order.pwintyOrderId = pwintyOrderId;
     let body = [];
     req.body.items.forEach((item, index) => {
         if (item.attributes.isUnique !== true) {
@@ -263,23 +264,49 @@ try {
         if (order.status !== "NotYetSubmitted") ///
             throw new Error("You can't cancel an order that is already submitted");
         if (order._userId === req.user._id || req.user.level >= 3) {
-            // cancel pwinty order if non unique items exist in the order
-            // get pwinty order and check canCancel value
-
-//            var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
-  //          if (err || order == null)
-    //            throw new Error("We couldn't cancel your order, please try again");
-
             // SET UNIQUE ITEM BOUGHT TO SOLDOUT: FALSE
             let isPwinty = false;
             for (let index = 0; index < order.items.length; index++) {
+                console.log(order.items[index].attributes._id)
                 //var [err, itemx] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].item._id, isUnique: true}, {$set: {soldOut: false}}));
-                //if (err)
-                    //throw new Error("An error occured while deleting the unique item from the store, please try again");
+                var [err, itemx] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].attributes._id, isUnique: true}, {$set: {soldOut: false}}));
+                if (err)
+                    throw new Error("An error occured while deleting the unique item from the store, please try again");
                 if (!order.items[index].attributes.isUnique)
                     isPwinty = true;
             }
-            console.log(isPwinty);
+            console.log(order.pwintyOrderId, isPwinty);
+
+            var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
+            if (err || order == null)
+                throw new Error("We couldn't cancel your order, please try again");
+
+            if (isPwinty === false) {
+                console.log("callto: refundStripe()");
+            } else {
+                let options = {
+                    method: 'GET',
+                    uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}`,//${API_URL}/v3.0/Orders
+                    body: {},
+                    json: true
+                }
+                response = await rp(options);
+                if (response.statusCode === 200) {
+                    if (response.data.canCancel === true) {
+                        options.method = "POST";
+                        options.uri =  `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`;
+                        options.body = {status: "Cancelled"};
+
+                        response = await rp(options);
+                        if (response.statusCode === 200) {
+                            console.log("callto: refundStripe()");
+                        } else 
+                            throw new Error("We could not cancel your order, please try again later");
+                    } else 
+                        throw new Error("Your order status does not allow it to be cancelled");
+                } else 
+                    throw new Error("We could not check the status of your order, please try again later");
+            }
 
             // REFUND STRIPE PAYMENT
 
