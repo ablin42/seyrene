@@ -175,9 +175,7 @@ try {
             'X-Pwinty-MerchantId': MERCHANTID,
             'X-Pwinty-REST-API-Key': APIKEY
         },
-        body: {
-            status: req.body.status,// Cancelled, AwaitingPayment or Submitted. //variable
-        },
+        body: {status: req.body.status},// Cancelled, AwaitingPayment or Submitted. //variable
         json: true
     }
 

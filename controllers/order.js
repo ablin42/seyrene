@@ -103,24 +103,24 @@ async function createOrder(order, req) {
           if (response.statusCode === 200) {
               console.log(response)
               if (response.data.isValid === true) { //////////////////////////////////////
-                  console.log("order is valid");
-                  options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
-                  options.method = "POST";
-                  options.body = { status: "Submitted" };// Cancelled, AwaitingPayment or Submitted.
+                console.log("order is valid");
+                options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
+                options.method = "POST";
+                options.body = { status: "Submitted" };// Cancelled, AwaitingPayment or Submitted.
 
-                  response = await rp(options);
-                  if (response.statusCode === 200) {
-                        console.log("submitted order");
+                response = await rp(options);
+                if (response.statusCode === 200) {
+                    console.log("submitted order");
 
-                        var [err, result] = await utils.to(order.save()); //need pwinty order id in db
-                        if (err || result == null)
-                            throw new Error("An error occured while creating your order");
+                    var [err, result] = await utils.to(order.save()); //need pwinty order id in db
+                    if (err || result == null)
+                        throw new Error("An error occured while creating your order");
 
-                        // Send mails
-                        let subject = `New Order #${order._id}`;
-                        let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
-                        if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-                            throw new Error("An error occured while trying to send the mail, please retry");
+                    // Send mails
+                    let subject = `New Order #${order._id}`;
+                    let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+                    if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+                        throw new Error("An error occured while trying to send the mail, please retry");
 
                         var [err, user] = await utils.to(User.findById(req.body.user._id));
                         if (err || user == null)
@@ -215,7 +215,7 @@ try {
     return res.status(200).json({err: true, message: err.message})
 }})
 
-router.post('/update', verifySession, async (req, res) => {
+router.post('/update', verifySession, async (req, res) => { /////////////////////////////////////
 let url = req.header('Referer') || '/Admin/Orders';
 try {
     if (req.user && req.user.level >= 3) {
@@ -225,10 +225,34 @@ try {
         if (newStatus !== "NotYetSubmitted" && newStatus !== "Submitted" && newStatus !== "Complete" && newStatus !== "Cancelled")
             throw new Error("Invalid parameter, please try again");
 
+        var [err, order] = await utils.to(Order.findOne({"_id": req.body.orderId}));
+        if (err || order == null)
+            throw new Error("An error occured while finding the order");
+
+        let isPwinty = false;
+        for (let index = 0; index < order.items.length; index++) {
+            if (!order.items[index].attributes.isUnique)
+                isPwinty = true;
+        }    
+
         var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
-        console.log(err, order)
         if (err || order == null)
             throw new Error("An error occured while updating the order");
+        
+        if (isPwinty) {
+            console.log("inpwinty")
+            let options = {
+                method: 'POST',
+                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`,
+                body: {status: "Cancelled"},
+                json: true
+            }
+            response = await rp(options);
+            if (response.statusCode === 200) {
+                console.log("success")
+            } else
+                throw new Error("An error occured while trying to update order's status, please try again later");
+        }
 
         // Send mails
         let subject = `Updated Order #${order._id}`;
@@ -267,15 +291,12 @@ try {
             // SET UNIQUE ITEM BOUGHT TO SOLDOUT: FALSE
             let isPwinty = false;
             for (let index = 0; index < order.items.length; index++) {
-                console.log(order.items[index].attributes._id)
-                //var [err, itemx] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].item._id, isUnique: true}, {$set: {soldOut: false}}));
                 var [err, itemx] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].attributes._id, isUnique: true}, {$set: {soldOut: false}}));
                 if (err)
                     throw new Error("An error occured while deleting the unique item from the store, please try again");
                 if (!order.items[index].attributes.isUnique)
                     isPwinty = true;
             }
-            console.log(order.pwintyOrderId, isPwinty);
 
             var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
             if (err || order == null)
@@ -333,6 +354,46 @@ try {
     console.log("CANCEL ORDER ERROR:", err);
     return res.status(200).json({err: true, msg: err.message})
 }})
+
+/*
+router.post('/update', verifySession, async (req, res) => {
+let url = req.header('Referer') || '/Admin/Orders';
+try {
+    if (req.user && req.user.level >= 3) {
+        let newStatus = req.body.status;
+
+       // if (newStatus !== "Validated" && newStatus !== "Shipping" && newStatus !== "Delivered" && newStatus !== "Cancelled")
+        if (newStatus !== "NotYetSubmitted" && newStatus !== "Submitted" && newStatus !== "Complete" && newStatus !== "Cancelled")
+            throw new Error("Invalid parameter, please try again");
+
+        var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
+        console.log(err, order)
+        if (err || order == null)
+            throw new Error("An error occured while updating the order");
+
+        // Send mails
+        let subject = `Updated Order #${order._id}`;
+        let content = `You updated an order, to see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+        if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+            throw new Error("An error occured while trying to send the mail, please retry");
+
+        var [err, user] = await utils.to(User.findById(order._userId));
+        if (err || user == null)
+            throw new Error("An error occured while finding your user account, please try again");
+        content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+        if (await mailer(user.email, subject, content))
+            throw new Error("An error occured while trying to send the mail, please retry");
+
+        req.flash("success", "Order updated");
+        return res.status(200).redirect(url)
+    } else
+        throw new Error("Unauthorized, please make sure you are logged in");
+} catch (err) {
+    console.log("UPDATING ORDER ERROR:", err);
+    req.flash("warning", err.message);
+    return res.status(200).redirect(url)
+}})
+*/
 
 /* 
 router.get('/cancel/:id', verifySession, async (req, res) => {
