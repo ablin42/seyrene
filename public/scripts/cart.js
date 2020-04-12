@@ -78,6 +78,7 @@ async function cartAdd(itemId, caller) {
       let alertType = "info";
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
+        console.log(totalQty)
         let totalPrice = response.cart.totalPrice;
         let rowId = document.getElementById(itemId);
 
@@ -89,11 +90,11 @@ async function cartAdd(itemId, caller) {
           rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           document.getElementById("total-price").innerText = totalPrice + "€";
           document.getElementById("total-qty").innerText = totalQty;
-          document.getElementById("cartQty").innerText = totalQty;
         }
+        document.getElementById("cartQty").innerText = totalQty;
       } else 
         alertType = "warning";
-      let alert = createAlertNode(response.message, alertType);
+      let alert = createAlertNode(response.msg, alertType);
       addAlert(alert, "#header");
     })
     .catch(err => {
@@ -204,8 +205,8 @@ async function cartDel(itemId, caller) {
 
           document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
           document.getElementById("total-qty").innerText = totalQty;
-          document.getElementById("cartQty").innerText = totalQty;
         }
+        document.getElementById("cartQty").innerText = totalQty;
       } else {
         console.log("error:", response);
         alertType = "warning";
@@ -253,8 +254,8 @@ try {
             rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');
             document.getElementById("total-price").innerText = formatter.format(totalPrice).replace(',', '.');;
             document.getElementById("total-qty").innerText = totalQty;
-            document.getElementById("cartQty").innerText = totalQty;
           }
+          document.getElementById("cartQty").innerText = totalQty;
         } else 
             alertType = "warning";
         let alert = createAlertNode(response.msg, alertType);

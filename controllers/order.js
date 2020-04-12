@@ -186,7 +186,7 @@ try {
             _userId: req.body.user._id,
             items: req.body.items,
             price: req.body.price,
-            status: "Validated",
+            status: "Submitted",
             firstname: infos.firstname,
             lastname: infos.lastname,
             full_address: infos.full_address,
@@ -221,38 +221,39 @@ try {
     if (req.user && req.user.level >= 3) {
         let newStatus = req.body.status;
 
-       // if (newStatus !== "Validated" && newStatus !== "Shipping" && newStatus !== "Delivered" && newStatus !== "Cancelled")
-        if (newStatus !== "NotYetSubmitted" && newStatus !== "Submitted" && newStatus !== "Complete" && newStatus !== "Cancelled")
+        if (newStatus !== "AwaitingPayment" && newStatus !== "Submitted")
             throw new Error("Invalid parameter, please try again");
 
         var [err, order] = await utils.to(Order.findOne({"_id": req.body.orderId}));
         if (err || order == null)
             throw new Error("An error occured while finding the order");
 
+        if (order.status === "Cancelled")
+            throw new Error("You can't update the status of a cancelled order");
+
         let isPwinty = false;
         for (let index = 0; index < order.items.length; index++) {
             if (!order.items[index].attributes.isUnique)
                 isPwinty = true;
         }    
-
-        var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
-        if (err || order == null)
-            throw new Error("An error occured while updating the order");
         
-        if (isPwinty) {
-            console.log("inpwinty")
+        if (isPwinty) { //potentially just don't need this at all, pwinty status update handles itself alone, only needs to be cancellable
             let options = {
                 method: 'POST',
-                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`,
-                body: {status: "Cancelled"},
+                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`, //NotYetSubmitted, Submitted,AwaitingPayment, Complete, or Cancelled. (instant nys -> submitted)
+                body: {status: newStatus},//Cancelled, AwaitingPayment or Submitted.
                 json: true
             }
             response = await rp(options);
             if (response.statusCode === 200) {
                 console.log("success")
             } else
-                throw new Error("An error occured while trying to update order's status, please try again later");
+                throw new Error(response.errordata.statusTxt);
         }
+
+        var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
+        if (err || order == null)
+            throw new Error("An error occured while updating the order");
 
         // Send mails
         let subject = `Updated Order #${order._id}`;
@@ -285,8 +286,8 @@ try {
 
         if (err || order == null)
             throw new Error("We couldn't find your order, please try again");
-        if (order.status !== "NotYetSubmitted") ///
-            throw new Error("You can't cancel an order that is already submitted");
+        if (order.status === "Cancelled")
+            throw new Error("You can't cancel an order that is already cancelled");
         if (order._userId === req.user._id || req.user.level >= 3) {
             // SET UNIQUE ITEM BOUGHT TO SOLDOUT: FALSE
             let isPwinty = false;
