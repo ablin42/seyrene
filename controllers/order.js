@@ -278,6 +278,10 @@ try {
     return res.status(200).redirect(url)
 }})
 
+async function refundStripe() {
+
+}
+
 router.get('/cancel/:id', verifySession, async (req, res) => {
 try {
     if (req.user && req.params.id) {
@@ -288,6 +292,10 @@ try {
             throw new Error("We couldn't find your order, please try again");
         if (order.status === "Cancelled")
             throw new Error("You can't cancel an order that is already cancelled");
+        
+        let refund = await refundStripe();
+        console.log(refund)
+        throw new Error("block")
         if (order._userId === req.user._id || req.user.level >= 3) {
             // SET UNIQUE ITEM BOUGHT TO SOLDOUT: FALSE
             let isPwinty = false;

@@ -87,6 +87,7 @@ const orderRoute = require("./controllers/order");
 const frontRoute = require("./controllers/front");
 const imageRoute = require("./controllers/images");
 const pwintyRoute = require("./controllers/pwinty");
+const stripeRoute = require("./controllers/stripe");
 
 app.use("/", pagesRoute);
 app.use("/api/auth", authRoute);
@@ -100,6 +101,7 @@ app.use("/api/order", orderRoute);
 app.use("/api/front", frontRoute);
 app.use("/api/image", imageRoute);
 app.use("/api/pwinty", pwintyRoute);
+app.use("/api/stripe", stripeRoute);
 
 // Handles multer error
 app.use((err, req, res, next) => {
