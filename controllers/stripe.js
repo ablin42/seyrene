@@ -97,16 +97,15 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
-router.get('/refund', verifySession, async (req, res) => {
+router.post('/refund', verifySession, async (req, res) => {
 try {
-    let charge = req.body.charge;
-    stripe.refunds.create(
-        {charge: charge},
+    let chargeId = req.body.chargeId;
+
+    stripe.refunds.create({charge: chargeId},
         function(err, refund) {
-            console.log(refund, err)
             if (err)
-                throw new Error(err)
-            return res.status(200).send(refund);
+                return res.status(200).json({err: true, msg: err.raw.message});
+            return res.status(200).json({err: false, data: refund});
         }
     );
 } catch (err) {

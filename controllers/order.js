@@ -171,7 +171,7 @@ try {
         // Set sold out to true if an unique item is bought
         let isPwinty = false;
         for (let index = 0; index < req.body.items.length; index++) {
-           // var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
+            //var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
             //if (err)
               //  throw new Error("An error occured while deleting the unique item from the store, please try again");
             if (!req.body.items[index].attributes.isUnique)
@@ -279,8 +279,20 @@ try {
     return res.status(200).redirect(url)
 }})
 
-async function refundStripe() {
+async function refundStripe(chargeId) {
+    let options = {
+        uri: `http://localhost:8089/api/stripe/refund`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: {chargeId: chargeId},
+        json: true
+    }
+    let result = await rp(options);
 
+    return result;
 }
 
 router.get('/cancel/:id', verifySession, async (req, res) => {
@@ -294,10 +306,11 @@ try {
         if (order.status === "Cancelled")
             throw new Error("You can't cancel an order that is already cancelled");
         
-        let refund = await refundStripe();
-        console.log(refund)
-        throw new Error("block")
         if (order._userId === req.user._id || req.user.level >= 3) {
+            let refund = await refundStripe(order.chargeId);
+            if (refund.err === true)
+                throw new Error(refund.msg);
+     
             // SET UNIQUE ITEM BOUGHT TO SOLDOUT: FALSE
             let isPwinty = false;
             for (let index = 0; index < order.items.length; index++) {
@@ -338,8 +351,6 @@ try {
                 } else 
                     throw new Error("We could not check the status of your order, please try again later");
             }
-
-            // REFUND STRIPE PAYMENT
 
             // Send mails
             let subject = `Cancelled Order #${order._id}`;
