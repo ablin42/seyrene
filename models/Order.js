@@ -6,6 +6,10 @@ const orderSchema = new mongoose.Schema({
         required: true, 
         ref: 'User' 
     },
+    chargeId: {
+        type: String,
+        required: true,
+    },
     pwintyOrderId: {
         type: String,
         required: false,

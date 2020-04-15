@@ -288,8 +288,7 @@ try {
                 //cancel stripe charging here 
                 return res.status(200).json({"err": true, "msg": err.message});
             })
-        }
-        else
+        } else
             throw new Error("Your cart is empty!");
     } else 
         throw new Error("Unauthorized, please make sure you are logged in");

@@ -184,6 +184,7 @@ try {
 
         const order = new Order({
             _userId: req.body.user._id,
+            chargeId: req.body.chargeId,
             items: req.body.items,
             price: req.body.price,
             status: "Submitted",
