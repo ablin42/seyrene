@@ -1,7 +1,12 @@
 <% include partials/head %>
 
 <script src="https://checkout.stripe.com/checkout.js" ></script>
-<script>const stripePublicKey = '<%= locals.stripePublicKey %>';</script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripePublicKey = '<%= locals.stripePublicKey %>';
+  const stripe = Stripe('pk_test_tFWKfxLQuvpYUl0fasc0GWjd00uwLqE3Xl');
+  const elements = stripe.elements(); 
+</script>
 <script src="/scripts/cart.js"></script>
 
 <div class="container container-single"> 
@@ -130,6 +135,7 @@
   </div>
 </div>
 
+<!--
 <script>
   let stripeHandler = StripeCheckout.configure({
     key: stripePublicKey,
@@ -177,7 +183,8 @@ function submitCheckout () {
   let isDelivery = "<%= locals.isDelivery %>";
 
   checkoutCaller(isLogged, isDelivery);
-}
+}-->
+</script>
 var PWINTY_DATA = [];
 </script>
 

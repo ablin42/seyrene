@@ -186,6 +186,23 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
   }
 });
 
+router.get("/Payment", verifySession, async (req, res) => {
+  try {
+    let obj = {};
+   
+    if (req.user) {
+      obj.userId = req.user._id;
+      obj.name = req.user.name;
+      obj.level = req.user.level;
+    }
+    res.status(200).render("payment", obj);
+  } catch (err) {
+    console.log("PAYMENT ROUTE ERROR", err);
+    req.flash("warning", err.message);
+    res.status(400).redirect("/");
+  }
+});
+
 router.get("/User", verifySession, async (req, res) => {
   try {
     let obj = {};

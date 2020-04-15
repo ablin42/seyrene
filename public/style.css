@@ -1737,10 +1737,6 @@ tr:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-
-
-
-
 .tab-btn {
   padding: 10px 15px;
   width: 200px;
@@ -1918,6 +1914,22 @@ tr:hover {
 }
 
 /* END ADMIN */
+
+/* PAYMENT */
+
+.payment-form-wrapper {
+  background-color: var(--light-shade-m1);
+  padding: 50px;
+  text-align: center;
+}
+
+#card-element {
+  border: 5px solid red;
+  width: 50%;
+  height: 50%;
+}
+
+/* END PAYMENT */
 
 
 /* Extra small devices (portrait phones, less than 576px)
