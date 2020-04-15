@@ -132,9 +132,10 @@
 
 <script>
   let stripeHandler = StripeCheckout.configure({
-  key: stripePublicKey,
-  locale: "auto",
-  token: function (token) {
+    key: stripePublicKey,
+    locale: "auto",
+    token: function (token) {
+      console.log(token)
     /* calls to purchase API, clears cart and redirects to order if purchase is succesful */
     fetch('/api/cart/purchase', {
       method: 'POST',
@@ -162,7 +163,7 @@
 })
 
 function submitCheckout () {
-  fetch('/api/cart/purchase', {
+  /*fetch('/api/cart/purchase', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -170,7 +171,8 @@ function submitCheckout () {
       },
       body: JSON.stringify({stripeTokenId: "issou",})
     })
-    return;
+    return;*/
+    //
   let isLogged = "<%= locals.name %>";
   let isDelivery = "<%= locals.isDelivery %>";
 

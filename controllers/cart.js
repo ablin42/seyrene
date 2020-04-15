@@ -229,12 +229,12 @@ try {
 router.post('/purchase', verifySession, async (req, res) => {
 try {
     if (req.user) {
-        let token = "xx"//req.body.stripeTokenId;
+        let token = req.body.stripeTokenId;
         let cart = new Cart(req.session.cart ? req.session.cart : {});
         let total = cart.totalPrice;
         let items = cart.generateArray();
 
-        let options = {
+        /*let options = {
             uri: `http://localhost:8089/api/order/create`,
             method: 'POST',
             headers: {
@@ -245,15 +245,15 @@ try {
             json: true
         }
         rp(options)
-        return res.status(200).json("xdd");
+        return res.status(200).json("xdd");*/
 
-        for (let i = 0; i < items.length; i++) {
+       /* for (let i = 0; i < items.length; i++) {
             //items[i].item.img = undefined;
             console.log(items[i])
             var [err, item] = await utils.to(Shop.findById(items[i].attributes._id));
             if (err || item === null)
                 throw new Error("An error occured while looking for an item you tried to purchase");
-        }
+        }*/
         if (total > 0) {
             stripe.charges.create({
                 amount: Math.round(total * 100),

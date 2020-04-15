@@ -153,7 +153,6 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
           obj.products.push(items);
         } else {
           item.elements.forEach(element => {
-            console.log(element)
             if (element.attributes !== undefined) {
               var items = {
                 item: item.attributes, 
