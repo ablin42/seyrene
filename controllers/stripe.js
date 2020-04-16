@@ -37,7 +37,7 @@ try {
                 description: 'Charging for purchase @ maral',
                 source: token,
             }, (err, charge) => {
-                if (err || charge === null) {
+                if (err) {
                     req.flash("warning", err.message);
                     return res.status(200).redirect("/payment");
                 }
@@ -78,10 +78,10 @@ try {
     let chargeId = req.body.chargeId;
 
     stripe.refunds.create({charge: chargeId},
-        function(err, refund) {
+        (err, refund) => {
             if (err)
-                return res.status(200).json({err: true, msg: err.raw.message});
-            return res.status(200).json({err: false, data: refund});
+                return res.status(200).json({error: true, message: err.raw.message});
+            return res.status(200).json({error: false, data: refund});
         }
     );
 } catch (err) {
