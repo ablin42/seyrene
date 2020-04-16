@@ -141,7 +141,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       itemArr = cart.generateArray();
      
       itemArr.forEach(item => {
-        if (item.attributes && item.attributes.isUnique) {         //if (item.attributes.isUnique) {
+        if (item.attributes && item.attributes.isUnique) {
           var items = {
             item: item.attributes,
             qty: item.qty,
@@ -188,7 +188,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
 
 router.get("/Payment", verifySession, async (req, res) => {
   try {
-    let obj = {};
+    let obj = {stripePublicKey: stripePublic};
    
     if (req.user) {
       obj.userId = req.user._id;

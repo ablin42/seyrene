@@ -44,7 +44,7 @@ const API_URL = "https://sandbox.pwinty.com";
 const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
 const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
 
-async function createOrder(order, req) {
+async function createPwintyOrder(order, req) {
   let options = {
       method: 'POST',
       uri : `http://localhost:8089/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders
@@ -203,10 +203,8 @@ try {
 
         if (isPwinty === false)
             var response = await createSimpleOrder(order, req);
-        else {
-            let pwintyOrderId = "";
-            var response = await createOrder(order, req);
-        }
+        else 
+            var response = await createPwintyOrder(order, req);
 
         return res.status(200).json(response);
     } else 
