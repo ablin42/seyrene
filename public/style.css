@@ -1923,15 +1923,53 @@ tr:hover {
 /* PAYMENT */
 
 .payment-form-wrapper {
-  background-color: var(--light-shade-m1);
-  padding: 50px;
+  background-color: var(--brand-blue-m1);
+  border: 1px solid var(--brand-blue);
+  margin-top: 10%;
+  margin-bottom: 10%;
+  padding: 50px 50px 50px 50px;
   text-align: center;
 }
 
 #card-element, .celement {
-  border: 5px solid red;
-  width: 50%;
+  margin: 10px;
+  padding: 5px;
+  border: 5px solid var(--brand-blue-p1);
+  background-color: var(--light-shade);
+  width: 100%;
   height: 50%;
+}
+
+.btn-pay {
+  display: block;
+  color: var(--light-shade);
+  background-color: #28a745;
+  border-color: #28a745;
+  font-weight: bold;
+  padding: 10px 30px;
+  margin: auto;
+}
+
+.btn-pay:hover {
+  color: var(--light-shade);
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.payment-price {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.card-label {
+  color: var(--light-shade);
+  font-size: 20px;
+}
+
+.card-error {
+  text-align: center;
+  color: var(--danger-color);
+  width: 100%;
 }
 
 /* END PAYMENT */

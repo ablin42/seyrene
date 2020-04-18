@@ -205,6 +205,8 @@ try {
     let cart = new Cart({});
     cart.clearCart();
     req.session.cart = cart;
+    req.flash("success", "Purchase successful, your order has been placed!");
+    
     return res.status(200).redirect(`/Order/${req.params.id}`);
 } catch (err) {
     console.log("CLEAR CART ERROR");

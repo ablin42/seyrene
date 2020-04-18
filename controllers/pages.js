@@ -188,18 +188,29 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
 
 router.get("/Payment", verifySession, async (req, res) => {
   try {
-    let obj = {stripePublicKey: stripePublic};
-   
+    let obj = {
+      active: "Payment",
+      stripePublicKey: stripePublic,
+      totalPrice: 0
+    };
+    if (req.session.cart) {
+      let cart = new Cart(req.session.cart);
+      if (cart.totalPrice === 0)
+        return res.status(400).redirect("/shopping-cart");
+      obj.totalPrice = formatter.format(cart.totalPrice).substr(2);
+    } else
+      return res.status(400).redirect("/shopping-cart");
+
     if (req.user) {
       obj.userId = req.user._id;
       obj.name = req.user.name;
       obj.level = req.user.level;
     }
-    res.status(200).render("payment", obj);
+    return res.status(200).render("payment", obj);
   } catch (err) {
     console.log("PAYMENT ROUTE ERROR", err);
     req.flash("warning", err.message);
-    res.status(400).redirect("/");
+    return res.status(400).redirect("/");
   }
 });
 
