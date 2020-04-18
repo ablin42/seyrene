@@ -206,7 +206,7 @@ try {
     cart.clearCart();
     req.session.cart = cart;
     req.flash("success", "Purchase successful, your order has been placed!");
-    
+
     return res.status(200).redirect(`/Order/${req.params.id}`);
 } catch (err) {
     console.log("CLEAR CART ERROR");
@@ -226,77 +226,6 @@ try {
 } catch (err) {
     console.log("TOTAL PRICE CART ERROR");
     return res.status(400).json({"err": true, "msg": err.message})
-}})
-
-router.post('/purchase', verifySession, async (req, res) => {
-try {
-    if (req.user) {
-        let token = req.body.stripeTokenId;
-        let cart = new Cart(req.session.cart ? req.session.cart : {});
-        let total = cart.totalPrice;
-        let items = cart.generateArray();
-
-        /*let options = {
-            uri: `http://localhost:8089/api/order/create`,
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: {items: items, price: total, user: req.user},
-            json: true
-        }
-        rp(options)
-        return res.status(200).json("xdd");*/
-
-       /* for (let i = 0; i < items.length; i++) {
-            //items[i].item.img = undefined;
-            console.log(items[i])
-            var [err, item] = await utils.to(Shop.findById(items[i].attributes._id));
-            if (err || item === null)
-                throw new Error("An error occured while looking for an item you tried to purchase");
-        }*/
-        if (total > 0) {
-            stripe.charges.create({
-                amount: Math.round(total * 100),
-                source: token,
-                currency: 'eur'
-            })
-            .then(async () => {
-                let options = {
-                    uri: `http://localhost:8089/api/order/create`,
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Accept': 'application/json'
-                    },
-                    body: {items: items, price: total, user: req.user},
-                    json: true
-                }
-                rp(options)
-                .then(function(response) {
-                    if (response.err === false) 
-                        return res.status(200).json({"err": false, "id": response.orderId});
-                    else 
-                        throw new Error(response.message);
-                })  
-                .catch((err) => {
-                    //cancel stripe charging here 
-                    return res.status(200).json({"err": true, "msg": err.message});
-                })
-            })
-            .catch((err) => {
-                console.log("charging failure", err);
-                //cancel stripe charging here 
-                return res.status(200).json({"err": true, "msg": err.message});
-            })
-        } else
-            throw new Error("Your cart is empty!");
-    } else 
-        throw new Error("Unauthorized, please make sure you are logged in");
-} catch (err) {
-    console.log("PURCHASE ERROR:", err);
-    return res.status(200).json({"err": true, "msg": err.message});
 }})
 
 module.exports = router;

@@ -23,7 +23,7 @@
               <% } %>
             </div>
           </form>
-          <% if (locals.order.status !== "Cancelled" && locals.order.status !== "Complete") { %> <!-- need better condition here -->
+          <% if (locals.order.status !== "Cancelled") { %>
             <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
           <% } %>
         <hr />
