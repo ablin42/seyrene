@@ -24,6 +24,7 @@ try {
         throw new Error("An error occured while fetching your order");
     if (result == null)
         throw new Error("No order exist with this ID!");
+
     if ((result._userId === req.user._id) || req.user.level >= 3) {
         result.price = formatter.format(result.price).substr(2);
         result.items.forEach((item, index) => {
@@ -39,10 +40,6 @@ try {
     console.log("FETCHING ORDER ERROR:", err);
     return res.status(200).json({error: true, message: err.message})
 }})
-
-const API_URL = "https://sandbox.pwinty.com";
-const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
-const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
 
 async function createPwintyOrder(order, req) {
   let options = {
@@ -101,7 +98,6 @@ async function createPwintyOrder(order, req) {
 
           response = await rp(options);
           if (response.statusCode === 200) {
-              console.log(response)
               if (response.data.isValid === true) { //////////////////////////////////////
                 console.log("order is valid");
                 options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
@@ -112,25 +108,8 @@ async function createPwintyOrder(order, req) {
                 if (response.statusCode === 200) {
                     console.log("submitted order");
 
-                    var [err, result] = await utils.to(order.save()); //need pwinty order id in db
-                    if (err || result == null)
-                        throw new Error("An error occured while creating your order");
-
-                    // Send mails
-                    let subject = `New Order #${order._id}`;
-                    let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
-                    if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-                        throw new Error("An error occured while trying to send the mail, please retry");
-
-                        var [err, user] = await utils.to(User.findById(req.body.user._id));
-                        if (err || user == null)
-                            throw new Error("An error occured while finding your user account, please try again");
-                        content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-                        if (await mailer(user.email, subject, content))
-                            throw new Error("An error occured while trying to send the mail, please retry");
-
-                        console.log("order saved to db", order._id)
-                        return {err: false, orderId: order._id};
+                    response = await createSimpleOrder(order, req);
+                    return response;
                   } else
                       throw new Error(`Something went wrong while submitting the order: ${response.errordata.statusTxt}`);
               } else
@@ -147,7 +126,7 @@ async function createSimpleOrder(order, req) {
     var [err, result] = await utils.to(order.save());
     if (err || result == null)
         throw new Error("An error occured while creating your order");
-
+    
     // Send mails
     let subject = `New Order #${order._id}`;
     let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
@@ -214,7 +193,7 @@ try {
     return res.status(200).json({err: true, message: err.message})
 }})
 
-router.post('/update', verifySession, async (req, res) => { /////////////////////////////////////
+router.post('/update', verifySession, async (req, res) => {
 let url = req.header('Referer') || '/Admin/Orders';
 try {
     if (req.user && req.user.level >= 3) {
@@ -244,7 +223,7 @@ try {
                 json: true
             }
             response = await rp(options);
-            if (response.statusCode === 200) {
+            if (response.statusCode === 200) { // if can't update status x from x just update status for global order
                 console.log("success")
             } else
                 throw new Error(response.errordata.statusTxt);
@@ -263,6 +242,7 @@ try {
         var [err, user] = await utils.to(User.findById(order._userId));
         if (err || user == null)
             throw new Error("An error occured while finding your user account, please try again");
+
         content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
         if (await mailer(user.email, subject, content))
             throw new Error("An error occured while trying to send the mail, please retry");
@@ -357,6 +337,7 @@ try {
             var [err, user] = await utils.to(User.findById(req.user._id));
             if (err || user == null)
                 throw new Error("An error occured while finding your user account, please try again");
+
             content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
             if (await mailer(user.email, subject, content))
                 throw new Error("An error occured while trying to send the mail, please retry");
