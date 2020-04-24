@@ -5,7 +5,7 @@ const rp = require("request-promise");
 const mailer = require("./helpers/mailer");
 const verifySession = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
-const User = require("../models/User");
+const Order = require("../models/Order");
 const Token = require("../models/VerificationToken");
 const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
@@ -262,6 +262,42 @@ try {
         console.log("IMAGE BATCH ERROR");
         return res.status(200).json({ error: true, errordata: err.error });
     })
+} catch (err) {
+    return res.status(200).json({ message: err.message });
+}});
+
+router.post("/callback/status", async (req, res) => { //router.post?
+try {
+    console.log("api callback called")
+    if (req.body.orderId && req.body.status) {
+        var [err, order] = await utils.to(Order.findOne({pwintyOrderId: req.body.orderId}));
+        console.log(err, order)
+        if (err || order == null)
+            throw new Error("An error occured while finding the order");
+
+        var [err, order] = await utils.to(Order.findOneAndUpdate({pwintyOrderId: req.body.orderId}, {$set:{status: req.body.status}}));
+        console.log(err, order)
+        if (err || order == null)
+            throw new Error("An error occured while updating the order");
+
+        // Send mails
+        let subject = `Updated Order #${order._id}`;
+        let content = `You order status has been updated, to see the order please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+        if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+            throw new Error("An error occured while trying to send the mail, please retry");
+        
+        var [err, user] = await utils.to(Order.findOne({_userId: order._userId}));
+        console.log(err, user)
+        if (err || user == null)
+            throw new Error("An error occured while finding your user account, please try again later");
+
+        content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+        if (await mailer(user.email, subject, content))
+            throw new Error("An error occured while trying to send the mail, please retry");
+
+        return res.status(200).send("OK");
+    } else 
+        throw new Error("Incorrect body data");
 } catch (err) {
     return res.status(200).json({ message: err.message });
 }});
