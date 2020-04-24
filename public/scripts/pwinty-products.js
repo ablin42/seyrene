@@ -1,68 +1,64 @@
-let PWINTY_ITEMS = {
+const substrateType = {
+    BAP: "Budget Art Paper", BPP: "Budget Photo Paper", CPP: "Box Poster Paper", CPWP: "Cold Press Watercolour Paper", EMA: "Enhanced Matte Art Paper",
+    HFAP: "Hahnemühle Fine Art Paper", HGE: "Hahnemühle German Etching", HPG: "Hahnemühle Photo Glossy", HPL: "Hahnemühle Photo Lustre",
+    HPR: "Hahnemühle Photo Rag", LPP: "Lustre Photo Paper", MFA: "Museum Fine Art Paper", MG: "Metallic Gloss", SAP: "Smooth Art Paper", SPR: "Smooth Photo Rag"
+}
+
+const FRA_sizes = {
+    "20x20": "20x20cm", "20x30": "20x30cm", "A4": "21x29.7cm",
+    "30x30": "30x30cm", "28x35": "28x35.5cm", "30x40": "30x40cm",
+    "A3": "29.7x42cm", "25x50": "25x50cm", "30x45": "30x45cm",
+    "40x40": "40x40cm", "40x50": "40x50cm", "40x60": "40x60cm",
+    "A2": "42x59.4cm", "50x50": "50x50cm", "45x60": "45x60cm",
+    "40x80": "40x80cm", "50x70": "50x70cm", "60x60": "60x60cm",
+    "50x75": "50x75cm", "60x80": "60x80cm","A1": "59.4x84.1cm",
+    "70x70": "70x70cm", "50x100": "50x100cm", "60x90": "60x90cm",
+    "75x75": "75x75cm", "80x80": "80x80cm", "70x100": "70x100cm",
+    "90x90": "90x90cm"
+}
+
+const PWINTY_ITEMS = {
     "FRA": {
-            "sharedAttributes": {
-                "substrateType": [{"BAP" : "Budget Art Paper"}, {"BPP" : "Budget Photo Paper"}, {"CPP" : "Box Poster Paper"}, {"CPWP" : "Cold Press Watercolour Paper"}, {"EMA" : "Enhanced Matte Art Paper"},
-                    {"HFAP" : "Hahnemühle Fine Art Paper"}, {"HGE" : "Hahnemühle German Etching"}, {"HPG" : "Hahnemühle Photo Glossy"}, {"HPL" : "Hahnemühle Photo Lustre"},
-                    {"HPR" : "Hahnemühle Photo Rag"}, {"LPP" : "Lustre Photo Paper"}, {"MFA" : "Museum Fine Art Paper"}, {"MG" : "Metallic Gloss"}, {"SAP" : "Smooth Art Paper"}, {"SPR" : "Smooth Photo Rag"}],
-                "size": [{"20x20" : "20x20cm"}, {"20x30" : "20x30cm"}, {"A4" : "21x29.7cm"},
-                    {"30x30" : "30x30cm"}, {"28x35" : "28x35.5cm"}, {"30x40" : "30x40cm"},
-                    {"A3" : "29.7x42cm"}, {"25x50" : "25x50cm"}, {"30x45" : "30x45cm"},
-                    {"40x40" : "40x40cm"}, {"40x50" : "40x50cm"}, {"40x60" : "40x60cm"},
-                    {"A2" : "42x59.4cm"}, {"50x50" : "50x50cm"}, {"45x60" : "45x60cm"},
-                    {"40x80" : "40x80cm"}, {"50x70" : "50x70cm"}, {"60x60" : "60x60cm"},
-                    {"50x75" : "50x75cm"}, {"60x80" : "60x80cm"},{"A1" : "59.4x84.1cm"},
-                    {"70x70" : "70x70cm"}, {"50x100" : "50x100cm"}, {"60x90" : "60x90cm"},
-                    {"75x75" : "75x75cm"}, {"80x80" : "80x80cm"}, {"70x100" : "70x100cm"},
-                    {"90x90" : "90x90cm"}],
-            },
-            "BOX": {
-                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
-                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
-                "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}],
-                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}]
-            },
-            "CLA": {
-                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
-                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
-                "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}, {"Silver" : "Silver"}, {"Gold" : "Gold"}],
-                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}]
-            }, 
-            "GLO": {
-                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
-                "glaze": [{"ACRY" : "Acrylic / Perspex"}], //, {"GLA" : "Float Glass"}
-                "frameColour": [{"Black" : "Black"}, {"White" : "White"}],
-                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}]
-            }, 
-            "SPACE": {
-                "glaze": [{"ACRY" : "Acrylic / Perspex"}, {"GLA" : "Float Glass"}, {"TRU" : "Tru View Museum Glass"}],
-                "frameColour": [{"Black" : "Black"}, {"Brown" : "Brown"}, {"White" : "White"}, {"Natural" : "Natural"}, {"Silver" : "Silver"}, {"Gold" : "Gold"}]
-            }, 
-            "SUR1": {
-                "frameColour": [{"Black" : "Black"}, {"White" : "White"}]
-            }, 
-            "SUR2": {
-                "frameColour": [{"Black" : "Black"}, {"White" : "White"}]
-            }, 
-            "SWO": {
-                "mountType": [{"MOUNT1" : "1.4mm"}, {"MOUNT2" : "2.0mm"}, {"NM" : "NO MOUNT"}],
-                "glaze": [{"ACRY" : "Acrylic / Perspex"}], //, {"GLA" : "Float Glass"}
-                "frameColour": [{"Black" : "Black"}, {"White" : "White"}],
-                "mountColour": [{"Snow White" : "Snow White"}, {"Off-White" : "Off-White"}, {"Black" : "Black"}]
-            },
+        "sharedAttributes": {
+            "substrateType": substrateType,
+            "size": FRA_sizes,
+        },
+        "BOX": {
+            "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
+            "glaze": {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"},
+            "frameColour": {Black: "Black", Brown: "Brown", White: "White", Natural: "Natural"},
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+        },
+        "CLA": {
+            "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
+            "glaze": {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"},
+            "frameColour": {Black: "Black", Brown: "Brown", White: "White", Natural: "Natural", Silver: "Silver", Gold: "Gold"},
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+        }, 
+        "GLO": {
+            "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
+            "glaze": {ACRY: "Acrylic / Perspex"},// {"GLA" : "Float Glass"}
+            "frameColour": {Black: "Black", White: "White"},
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+        }, 
+        "SPACE": {
+            "glaze": {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"},
+            "frameColour": {Black: "Black", Brown: "Brown", White: "White", Natural: "Natural", Silver: "Silver", Gold: "Gold"}
+        }, 
+        "SUR1": {
+            "frameColour": {Black: "Black", White: "White"}
+        }, 
+        "SUR2": {
+            "frameColour": {Black: "Black", White: "White"}
+        }, 
+        "SWO": {
+            "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
+            "glaze": {ACRY: "Acrylic / Perspex"}, //, {"GLA" : "Float Glass"}
+            "frameColour": {Black: "Black", White: "White"},
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+        },
     },
     "mounted": [],
-}
-
-const mountType = {
-    NM: 'No Mount',
-    MOUNT1: "1.4mm Mount",
-    MOUNT2: "2.0mm Mount"
-}
-
-const glazeType = {
-    ACRY: "Acrylic / Perspex",
-    GLA: "Float Glass",
-    TRU: "Tru View Museum Glass"
 }
 
 let A_FORMAT = [{code:"A4", size:"21x29.7"}, {code:"A3", size:"29.7x42"}, {code:"A2", size:"42x59.4"}, {code:"A1", size:"59.4x84.1"}]
@@ -115,19 +111,6 @@ class PwintyObject {
         this.height = $('img[alt="0slide"]')[0].naturalHeight;
         this.megapixel = this.width * this.height;
         
-        var attr = {
-            "mountType": mountType,
-            "glazeType": glazeType
-        }
-
-        Object.keys(attr).forEach(attrib => {
-            console.log(attrib);
-            for (let i = 0; i < Object.keys(attr[attrib]).length; i++) {
-                console.log(Object.keys(attr[attrib])[i], Object.values(attr[attrib])[i]);
-            }
-        })
-      
-        
         document.getElementById("subcategories").innerHTML = "";
         document.getElementById("attributes").innerHTML = "";
         this.hidePricing()
@@ -155,7 +138,6 @@ class PwintyObject {
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => {
             this.attributes[attribute] = "";
     
-            // on select tag: onchange="Pwinty.updateAttribute(this)"
             let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable select-list">
                                         <p>${attribute}</p>
@@ -163,15 +145,17 @@ class PwintyObject {
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}">
                                             <option disabled selected>Pick one</option>`;
             
-            PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].forEach(selectOption => {
-                if (attribute !== "size")
-                    attributeSelect += `<option value="${Object.keys(selectOption)[0]}">${Object.values(selectOption)[0]}</option>`;
+            for (let i = 0; i < Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute]).length; i++) {
+                if (attribute !== "size") {
+                    attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
+                                            ${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
+                }
                 else {
-                    let dimensions = Object.keys(selectOption)[0].split("x");
+                    let dimensions = Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i].split("x");
                     if (isNaN(parseInt(dimensions[0]))) {
-                        for (let i = 0; i < A_FORMAT.length; i++) {
-                            if (dimensions[0] === A_FORMAT[i].code)
-                                dimensions = A_FORMAT[i].size.split("x");
+                        for (let j = 0; j < A_FORMAT.length; j++) {
+                            if (dimensions[0] === A_FORMAT[j].code)
+                                dimensions = A_FORMAT[j].size.split("x");
                         }
                     }
 
@@ -179,37 +163,42 @@ class PwintyObject {
                     if (parseInt(dimensions[1]) > parseInt(dimensions[0]))
                         maxDimension = parseInt(dimensions[1]);               
 
-                    if (this.megapixel > 9300000) 
-                        attributeSelect += `<option value="${Object.keys(selectOption)[0]}">${Object.values(selectOption)[0]}</option>`;
+                    if (this.megapixel > 9300000) {
+                        attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
+                            ${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
+                    }
                     else {
                         let i = 0;
                         while (this.megapixel > DIMENSIONS_FRAMES[i].megapixel) 
                             i++;
                         var max = DIMENSIONS_FRAMES[i].max;
-                        if (maxDimension <= max)
-                            attributeSelect += `<option value="${Object.keys(selectOption)[0]}">${Object.values(selectOption)[0]}</option>`;
+                        if (maxDimension <= max) {
+                            attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
+                                ${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
+                        }
                     }
                 }
-            });
+            }
             attributeSelect +=              `</select></div>
                                     </div>
                                 </label>`;
             selection += attributeSelect;
         });
+
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory]).forEach(attribute => {
             this.attributes[attribute] = "";
     
-             // on select tag: onchange="Pwinty.updateAttribute(this)"
             let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable select-list">
                                         <p>${attribute}</p>
                                         <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}">
                                             <option disabled selected>Pick one</option>`;
-            
-            PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute].forEach(selectOption => {
-                attributeSelect += `<option value="${Object.keys(selectOption)}">${Object.values(selectOption)}</option>`;
-            });
+ 
+            for (let i = 0; i < Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute]).length; i++) {
+                attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}">\
+                                        ${Object.values(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}</option>`;
+            }
     
             attributeSelect +=              `</select></div>
                                     </div>
@@ -323,6 +312,7 @@ class PwintyObject {
     generateSku() {
         this.SKU = "";
         this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"]+ "-";
+
         if (this.attributes["mountType"])
             this.SKU += this.attributes["mountType"] + "-";
         else if (this.category === "FRA" && !this.attributes["mountType"])
@@ -330,7 +320,6 @@ class PwintyObject {
         if (this.attributes["glaze"])
             this.SKU += this.attributes["glaze"] + "-";
         this.SKU += this.attributes["size"];
-        console.log(this.SKU);
         
         this.generatePricing();
     }
