@@ -199,7 +199,7 @@ try {
     if (req.user && req.user.level >= 3) {
         let newStatus = req.body.status;
 
-        if (newStatus !== "Completed" && newStatus !== "Submitted")
+        if (newStatus !== "AwaitingPayment" && newStatus !== "Submitted")
             throw new Error("Invalid parameter, please try again");
 
         var [err, order] = await utils.to(Order.findOne({"_id": req.body.orderId}));
@@ -208,6 +208,26 @@ try {
 
         if (order.status === "Cancelled")
             throw new Error("You can't update the status of a cancelled order");
+
+        let isPwinty = false;
+        for (let index = 0; index < order.items.length; index++) {
+            if (!order.items[index].attributes.isUnique)
+                isPwinty = true;
+        }    
+        
+        if (isPwinty) { //potentially just don't need this at all, pwinty status update handles itself alone, only needs to be cancellable
+            let options = {
+                method: 'POST',
+                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`, //NotYetSubmitted, Submitted,AwaitingPayment, Complete, or Cancelled. (instant nys -> submitted)
+                body: {status: newStatus},//Cancelled, AwaitingPayment or Submitted.
+                json: true
+            }
+            response = await rp(options);
+            if (response.statusCode === 200) { // if can't update status x from x just update status for global order
+                console.log("success")
+            } else
+                throw new Error(response.errordata.statusTxt);
+        }
 
         var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
         if (err || order == null)

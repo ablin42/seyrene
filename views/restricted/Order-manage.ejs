@@ -9,21 +9,24 @@
         <% if (locals.order) { %>
           Identifiant de commande: <b><%= locals.order._id %></b>
           Prix total: <b><%= locals.order.price %>€</b>
+          <% if (locals.order.status == "awaitingPayment") { %><h6>AWAITING PAYMENT</h6><% } %>
           <form id="statusform" method="POST" action="/api/order/update">
             <div class="form-group">
               <label class="control-label" for="selectStatus">Status de la commande</label>
-              <select class="form-control" name="status" id="selectStatus" <% if (locals.order.status === "Cancelled") {%> disabled readonly <% } %>>
-                <option <% if (locals.order.status === "AwaitingPayment") {%> selected disabled <% } %> value="AwaitingPayment">AwaitingPayment</option>
+              <select class="form-control" name="status" id="selectStatus" <% if (locals.order.status === "Cancelled" || locals.order.status === "Completed") {%> disabled readonly <% } %>>
+                <% if (locals.order.status == "awaitingPayment") { %><option <% if (locals.order.status === "awaitingPayment") {%> selected disabled <% } %> value="awaitingPayment">awaitingPayment</option><% } %>
                 <option <% if (locals.order.status === "Submitted") {%> selected disabled <% } %> value="Submitted">Submitted</option>
+                <option <% if (locals.order.status === "Completed") {%> selected disabled <% } %> value="Completed">Completed</option>
                 <% if (locals.order.status == "Cancelled") { %><option <% if (locals.order.status === "Cancelled") {%> selected disabled <% } %> <% if (locals.order.status != "NotYetSubmitted") {%> disabled <% } %> value="Cancelled">Cancelled</option><% } %>
               </select>
+              <h6>Il n'est nécessaire d'utiliser cette fonctionnalité uniquement pour les commandes traitées manuellement</h6>
               <input type="hidden" name="orderId" value="<%= locals.order._id %>">
-              <% if (locals.order.status !== "Cancelled") { %>
+              <% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
                 <input type="submit" class="logbtn" value="Update" id="submit-statusform">
               <% } %>
             </div>
           </form>
-          <% if (locals.order.status !== "Cancelled") { %>
+          <% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
             <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
           <% } %>
         <hr />
