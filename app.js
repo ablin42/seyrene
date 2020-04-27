@@ -15,6 +15,8 @@ const verifySession = require("./controllers/helpers/verifySession");
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
 
+const fs = require('fs')
+
 //Connect to DB
 mongoose.connect(
   process.env.DB_CONNECTION,

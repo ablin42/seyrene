@@ -245,20 +245,37 @@ class PwintyObject {
         return nbAttributes;
     }
 
-    generateSku() {
+    generateSku() { /* call different function depending on category/subcategory */
         this.SKU = "";
-        this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"]+ "-";
-        if (this.subcategory === "GLOBAL")
-            this.SKU = this.subcategory + "-" + this.attributes["substrateType"]+ "-";
+        if (this.category === "FRA") {
+            this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"]+ "-";
+          
+    
+            if (this.attributes["mountType"])
+                this.SKU += this.attributes["mountType"] + "-";
+            else if (this.category === "FRA" && !this.attributes["mountType"])
+                this.SKU += "NM" + "-";
+            if (this.attributes["glaze"])
+                this.SKU += this.attributes["glaze"] + "-";
+            this.SKU += this.attributes["size"];
 
-        if (this.attributes["mountType"])
-            this.SKU += this.attributes["mountType"] + "-";
-        else if (this.category === "FRA" && !this.attributes["mountType"])
-            this.SKU += "NM" + "-";
-        if (this.attributes["glaze"])
-            this.SKU += this.attributes["glaze"] + "-";
-        this.SKU += this.attributes["size"];
-        
+        } else if (this.category === "CAN") {
+            if (this.subcategory === "ROL") {
+                this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"] + "-" + this.attributes["size"];
+                if (this.attributes["glaze"])
+                    this.SKU += "-VAR";
+            } else {
+                this.SKU = "GLOBAL" + "-";
+                if (this.subcategory !== "STR") 
+                    this.SKU += this.subcategory + "-";
+                this.SKU += this.category + "-" +  this.attributes["size"];
+            }
+        } else if (this.category === "PRINT") {
+            if (this.subcategory === "GLOBAL")
+                this.SKU = this.subcategory + "-" + this.attributes["substrateType"]+ "-";
+            this.SKU += this.attributes["size"];
+        }
+        //this.SKU = "CAN-19MM-HMC-10X10"
         console.log(this.SKU)
         this.generatePricing();
     }
