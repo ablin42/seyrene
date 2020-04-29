@@ -558,23 +558,13 @@ router.get("/Admin/Orders", verifySession, async (req, res) => {
         obj.name = req.user.name;
         obj.level = req.user.level;
       }
-      var [err, orders] = await utils.to(
-        Order.find({}, {}, { sort: { date: -1 } })
-      );
-      if (err)
-        throw new Error(
-          "An error occured while looking for your orders informations, please retry"
-        );
-      if (orders != null) {
-        orders.forEach((order, index) => {
-          orders[index].price = formatter.format(order.price).substr(2);
-          orders[index].date_f = format.asString(
-            "dd/MM/yyyy",
-            new Date(order.date)
-          );
-        });
-        obj.orders = orders;
-      }
+
+      let result = JSON.parse(await request(`http://localhost:8089/api/order/`));
+      if (result.error) 
+        throw new Error(result.message);
+
+      if (result.orders != null) 
+        obj.orders = result.orders;
       return res.status(200).render("restricted/orders", obj);
     } else
       throw new Error(
@@ -583,7 +573,7 @@ router.get("/Admin/Orders", verifySession, async (req, res) => {
   } catch (err) {
     console.log("ADMIN ROUTE ERROR", err);
     req.flash("warning", err.message);
-    res.status(400).redirect("/");
+    res.status(400).redirect("/Admin");
   }
 });
 
@@ -596,9 +586,7 @@ router.get("/Admin/Order/:id", verifySession, async (req, res) => {
         obj.name = req.user.name;
         obj.level = req.user.level;
       }
-      obj.order = JSON.parse(
-        await request(`http://127.0.0.1:8089/api/order/${req.params.id}`)
-      );
+      obj.order = JSON.parse(await request(`http://127.0.0.1:8089/api/order/${req.params.id}`));
       if (obj.order.error) throw new Error(obj.order.message);
 
       obj.products = [];

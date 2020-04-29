@@ -287,7 +287,7 @@ router.get("/single/:id", async (req, res) => {
     if (err || result === null)
       throw new Error("An error occured while fetching the gallery item");
 
-    res.status(200).json(result);
+    return res.status(200).json(result);
   } catch (err) {
     console.log("GALLERY SINGLE ERROR", err);
     return res.status(200).json({ error: true, message: err.message });

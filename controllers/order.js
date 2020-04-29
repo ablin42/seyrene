@@ -12,9 +12,43 @@ const DeliveryInfo = require('../models/DeliveryInfo');
 const verifySession = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
+const format = require("date-format");
 
 //var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+
+router.get('/', verifySession, async (req, res) => {
+try {
+    if (req.user.level >= 3) {
+        const options = {
+            page: parseInt(req.query.page, 10) || 1,
+            limit: 5,//20
+            sort: { date: -1 }
+          };
+        var [err, result] = await utils.to(Order.paginate({}, options));
+        if (err || result === null)
+            throw new Error("An error occured while fetching orders");
+
+        let orders = [];
+        result.docs.forEach((order, index) => {
+            let orderObj = {
+                _id: order._id,
+                status: order.status,
+                price: formatter.format(order.price).substr(2),
+                date_f: format.asString("dd/MM/yyyy", new Date(order.date)),
+                lastname: order.lastname,
+                firstname: order.firstname
+            }
+            orders.push(orderObj);
+        });
+    
+        return res.status(200).json({error: false, orders: orders});
+    } else
+        throw new Error("Unauthorized, contact your administrator if you think this is an issue");
+} catch (err) {
+    console.log("FETCHING ORDERS ERROR:", err);
+    return res.status(200).json({error: true, message: err.message})
+}})
 
 router.get('/:id', verifySession, async (req, res) => {
 try {
@@ -22,7 +56,7 @@ try {
     var [err, result] = await utils.to(Order.findById(id));
     if (err)
         throw new Error("An error occured while fetching your order");
-    if (result == null)
+    if (result === null)
         throw new Error("No order exist with this ID!");
 
     if ((result._userId === req.user._id) || req.user.level >= 3) {

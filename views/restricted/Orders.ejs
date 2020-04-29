@@ -17,7 +17,7 @@
                   </tr>
                 </thead>
       
-                <tbody>
+                <tbody id="container-admin-orders">
                   <% if (locals.orders) { %>
                     <% Object.keys(locals.orders).forEach(function (index) { %>
                       <tr>
@@ -25,13 +25,17 @@
                         <td class="status-grid"><%= locals.orders[index].status %></td>
                         <td class="price-grid"><%= locals.orders[index].price %>€</td>
                         <td class="name-grid"><%= locals.orders[index].firstname[0] %>. <%= locals.orders[index].lastname %></td>
-                        <td class="id-grid"><a href="/Admin/Order/<%= locals.orders[index]._id %>">#<%= locals.orders[index]._id %></a></td>
+                        <td class="id-grid"><a id="<%= locals.orders[index]._id %>" href="/Admin/Order/<%= locals.orders[index]._id %>">#<%= locals.orders[index]._id %></a></td>
                       </tr>
                     <% }) %>
                   <% } %>
                 </tbody>
               </table>
             </section>
+          </div>
+          <div class="col-6 offset-3 mb-3 mt-3">
+            <img id="loader" src="/img/loader.gif" style="width: 50px; height: 50px; margin: 5px auto 5px auto; display: none">
+            <input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteGalleries();">
           </div>
     </div>
 </div>
