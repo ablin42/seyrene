@@ -15,21 +15,6 @@ function closeAllSelect(elmnt) {
     }
 }
 
-/*
-What file size do I need for printing good quality prints at different sizes?
-The following table shows pixel values and the equivalent size for which we could guarantee a good result, subject to the image being in focus with the correct image brightness and colour balance.
-
-Image size	Canvas	Prints (framed, mounted)
-0.3 MP	12"	8"
-0.5 MP	16"	12"
-1.8 MP	20"	16"
-2.9 MP	24"	20"
-4.8 MP	30"	24"
-6.7 MP	40"	30"
-7.4 MP	60"	40"
-9.3 MP	No limit	No limit
-*/
-
 class PwintyObject {
     constructor(item) {
         this.SKU = "";
@@ -39,30 +24,64 @@ class PwintyObject {
         this.width = $('img[alt="0slide"]')[0].naturalWidth;
         this.height = $('img[alt="0slide"]')[0].naturalHeight;
         this.megapixel = this.width * this.height;
-        
+
         document.getElementById("subcategories").innerHTML = "";
         document.getElementById("attributes").innerHTML = "";
         this.hidePricing()
 
         let selection = ``;
-        console.log(Object.keys(PWINTY_ITEMS[this.category]).length)
-        if (Object.keys(PWINTY_ITEMS[this.category]).length === 1) {////////////////////
-            console.log("oof")
-            //this.loadSubCategory("PRINTS")
-            //display attributes instead
-        } else {
-            Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
-                let subcategoryRadio = `<label for="${subcategory}">
-                                        <div class="sku-item unselectable">
-                                            <p>${subcategory}</p>
-                                            <input data-category="${this.category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="Pwinty.loadSubCategory(this)">
-                                        </div>
-                                    </label>`;
-                if (subcategory !== "sharedAttributes")
-                    selection += subcategoryRadio;
-                document.getElementById("subcategories").innerHTML = selection;
-            });
+        Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
+            let subcategoryRadio = `<label for="${subcategory}">
+                                    <div class="sku-item unselectable">
+                                        <p>${subcategory}</p>
+                                        <input data-category="${this.category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="Pwinty.loadSubCategory(this)">
+                                    </div>
+                                </label>`;
+            if (subcategory !== "sharedAttributes")
+                selection += subcategoryRadio;
+            document.getElementById("subcategories").innerHTML = selection;
+        });
+    }
+
+    checkSize(attributeSelect, subcategory, i) {
+        let dimensions = Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i].split("x");
+        if (isNaN(parseInt(dimensions[0]))) {
+            for (let j = 0; j < A_FORMAT.length; j++) {
+                if (dimensions[0] === A_FORMAT[j].code)
+                    dimensions = A_FORMAT[j].size.split("x");
+            }
         }
+
+        let maxDimension = parseInt(dimensions[0]);
+        if (parseInt(dimensions[1]) > parseInt(dimensions[0]))
+            maxDimension = parseInt(dimensions[1]);
+
+        if (this.category !== "FRA")
+            maxDimension = maxDimension * 2.54; //conversion from inches to cm
+      
+        if (this.megapixel > 9300000) {
+            attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}">\
+                ${Object.values(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}</option>`;
+        }
+        else {
+            let index = 0;
+            if (this.category !== "CAN") {
+                while (this.megapixel > DIMENSIONS_FRAMES[index].megapixel) 
+                    index++;
+                var max = DIMENSIONS_FRAMES[index].max;
+            } else {
+                while (this.megapixel > DIMENSIONS_CANVAS[index].megapixel) 
+                    index++;
+                var max = DIMENSIONS_CANVAS[index].max;
+            }
+           
+            if (maxDimension <= max) {
+                attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}">\
+                    ${Object.values(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}</option>`;
+            }
+        }
+        
+        return attributeSelect;
     }
 
     loadSubCategory(subcategory) {
@@ -71,7 +90,7 @@ class PwintyObject {
         this.attributes = {};
 
         let selection = ``;
-        Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => {
+        Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => { 
             this.attributes[attribute] = "";
     
             let attributeSelect = `<label for="${attribute}">
@@ -87,32 +106,7 @@ class PwintyObject {
                                             ${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
                 }
                 else {
-                    let dimensions = Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i].split("x");
-                    if (isNaN(parseInt(dimensions[0]))) {
-                        for (let j = 0; j < A_FORMAT.length; j++) {
-                            if (dimensions[0] === A_FORMAT[j].code)
-                                dimensions = A_FORMAT[j].size.split("x");
-                        }
-                    }
-
-                    let maxDimension = parseInt(dimensions[0]);
-                    if (parseInt(dimensions[1]) > parseInt(dimensions[0]))
-                        maxDimension = parseInt(dimensions[1]);               
-
-                    if (this.megapixel > 9300000) {
-                        attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
-                            ${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
-                    }
-                    else {
-                        let i = 0;
-                        while (this.megapixel > DIMENSIONS_FRAMES[i].megapixel) 
-                            i++;
-                        var max = DIMENSIONS_FRAMES[i].max;
-                        if (maxDimension <= max) {
-                            attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
-                                ${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
-                        }
-                    }
+                    attributeSelect = this.checkSize(attributeSelect, "sharedAttributes", i);
                 }
             }
             attributeSelect +=              `</select></div>
@@ -132,8 +126,12 @@ class PwintyObject {
                                             <option disabled selected>Pick one</option>`;
  
             for (let i = 0; i < Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute]).length; i++) {
-                attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}">\
-                                        ${Object.values(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}</option>`;
+                if (attribute !== "size") {
+                    attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}">\
+                                            ${Object.values(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}</option>`;
+                } else {
+                    attributeSelect = this.checkSize(attributeSelect, this.subcategory, i);
+                }
             }
     
             attributeSelect +=              `</select></div>

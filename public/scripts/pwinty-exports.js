@@ -110,9 +110,9 @@ const PWINTY_ITEMS = {
             "wrap":  {"Black": "Black", "White": "White", "ImageWrap": "Image Wrap", "MirrorWrap": "Mirror Wrap"}, //not sure this belong here
         },
         "ROL": { //glaze only for -VAR, size and substrate used in SKU
+            "size": CAN_ROL_sizes,
             "glaze": {"VAR": "Gloss Varnish", "MAT": "Matt Varnish"},
-            "substrateType": CAN_substrate, //not used for global canvas construction, used for ROL
-            "size": CAN_ROL_sizes
+            "substrateType": CAN_substrate //not used for global canvas construction, used for ROL
         },
         "STR": { //edge always 38mm, size in SKU, substrate globalized to SC
             "size": CAN_sizes,
@@ -121,10 +121,10 @@ const PWINTY_ITEMS = {
     },
 }
 
-let A_FORMAT = [{code:"A4", size:"21x29.7"}, {code:"A3", size:"29.7x42"}, {code:"A2", size:"42x59.4"}, {code:"A1", size:"59.4x84.1"}]
+let A_FORMAT = [{code:"A4", size:"21x29.7"}, {code:"A3", size:"29.7x42"}, {code:"A2", size:"42x59.4"}, {code:"A1", size:"59.4x84.1"}, {code: "A0", size:"84.1x118.9"}]
 
-let DIMENSIONS_FRAMES = [{megapixel: 500000, max: 20}, {megapixel: 1800000, max: 30}, {megapixel: 2900000, max: 40}, {megapixel: 4800000, max: 50},
-    {megapixel: 6700000, max: 60}, {megapixel: 7400000, max: 75}, {megapixel: 9300000, max: 100}];
+let DIMENSIONS_FRAMES = [{megapixel: 300000, max: 20.3}, {megapixel: 500000, max: 30.5}, {megapixel: 1800000, max: 40.65}, {megapixel: 2900000, max: 50.8},
+    {megapixel: 4800000, max: 61}, {megapixel: 6700000, max: 76.2}, {megapixel: 7400000, max: 101.6}];
 
-let DIMENSIONS_CANVAS = [{megapixel: 9300000, max: 150}, {megapixel: 9300000, max: 100}, {megapixel: 7400000, max: 75}, {megapixel: 6700000, max: 60}, 
-    {megapixel: 4800000, max: 50}, {megapixel: 2900000, max: 40}, {megapixel: 1800000, max: 30}];
+let DIMENSIONS_CANVAS = [{megapixel: 300000, max: 30.5}, {megapixel: 500000, max: 40.65}, {megapixel: 1800000, max: 50.8}, {megapixel: 2900000, max: 61},
+    {megapixel: 4800000, max: 76.2}, {megapixel: 6700000, max: 101.6}, {megapixel: 7400000, max: 155.4}];
