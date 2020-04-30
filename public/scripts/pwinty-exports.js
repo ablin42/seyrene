@@ -18,11 +18,11 @@ const FRA_sizes = {
 }
 
 const PRINT_substrate = {
-    FAP: "Enhanced Matte Art Paper", HGE: "Hahnemühle German Etching", HPR: "Hahnemühle Photo Rag", PAP: "Lustre Photo Paper"
+    FAP: "Enhanced Matte Art Paper", HGE: "Hahnemühle German Etching"//, HPR: "Hahnemühle Photo Rag", PAP: "Lustre Photo Paper"
 }
 
 const PRINT_sizes = { //left sizes are in inches CARE
-    "6x4": "15x10", "6x6": "15x15", "8x8": "20x20cm", "8x12": "20x30cm", "A4": "21x29.7cm",
+    "6x4": "15x10cm", "6x6": "15x15cm", "8x8": "20x20cm", "8x12": "20x30cm", "A4": "21x29.7cm",
     "12x12": "30x30cm", "11x14": "28x35.5cm", "12x16": "30x40cm",
     "A3": "29.7x42cm", "10x20": "25x50cm", "12x18": "30x45cm",
     "16x16": "40x40cm", "16x20": "40x50cm", "16x24": "40x60cm",
@@ -40,8 +40,7 @@ const CAN_substrate = {
     PC: "Polycanvas", SC: "Standard Canvas", HMC: "Hahnemühle Monet Canvas", MC: "Metallic Canvas"
 }
 
-const CAN_sizes = {
-    //stretched/framed
+const CAN_sizes = { //stretched/framed
     "8x8": "20x20cm", "8x10": "20x25cm", "8x12": "20x30cm",
     "10x10": "25x25cm", "10x12": "25x30cm", "12x12": "30x30cm",
     "12x16": "30x40cm", "12x18": "30x45cm", "16x16": "40x40cm", "16x20": "40x50cm", "16x24": "40x60cm",
@@ -95,31 +94,24 @@ const PWINTY_ITEMS = {
             "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
         },
     },
-    "PRINT": {
+    "PRINT": { // YOU HERE NIBBA
         "sharedAttributes": {
             "size": PRINT_sizes,
-            "substrateType": PRINT_substrate, //not used for global canvas construction, used for non global?
-            //"glaze": "test"
+            "substrateType": PRINT_substrate, 
         },
         "GLOBAL": {
 
         }
     },
-    /* 
-        CANVAS: 4 canvas substrates(Polycanvas; Standard Canvas; Monet Canvas  or Metallic Canvas) + four finishes (rolled, stretched,  classic/box frame or float framed )
-        3 depths (0.75" (19mm), 1½"  (38mm) or 1¾" (44mm)), wrap:  (black, white, image wrap, mirror wrap)
-        stretched: 19 38 44/ framed: 19 38/ rolled (none, maybe all 19mm)
-    */
     "CAN": { //sizing: ResizeToProductImageSize
-        "sharedAttributes": {
-            "substrateType": CAN_substrate, 
-        },
+        "sharedAttributes": {},
         "FRA": { //frameColour only exist in black apparently // Global frames come in mounted/matted or non-mounted/non-matted options
             "size": CAN_sizes,
             "wrap":  {"Black": "Black", "White": "White", "ImageWrap": "Image Wrap", "MirrorWrap": "Mirror Wrap"}, //not sure this belong here
         },
         "ROL": { //glaze only for -VAR, size and substrate used in SKU
             "glaze": {"VAR": "Gloss Varnish", "MAT": "Matt Varnish"},
+            "substrateType": CAN_substrate, //not used for global canvas construction, used for ROL
             "size": CAN_ROL_sizes
         },
         "STR": { //edge always 38mm, size in SKU, substrate globalized to SC

@@ -64,7 +64,7 @@ async function infiniteOrders() {
   if ($("#container-admin-orders").length === 0)
     return ;
   let nbItem = $("tbody tr").length,
-      page = 1 + Math.floor(nbItem / 5),//20
+      page = 1 + Math.floor(nbItem / 20),
       loader = $("#loader");
   loader.css("display","block");
   await fetch(`http://127.0.0.1:8089/api/order?page=${page}`)

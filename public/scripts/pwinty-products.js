@@ -46,7 +46,7 @@ class PwintyObject {
 
         let selection = ``;
         console.log(Object.keys(PWINTY_ITEMS[this.category]).length)
-        if (Object.keys(PWINTY_ITEMS[this.category]).length === 1) {
+        if (Object.keys(PWINTY_ITEMS[this.category]).length === 1) {////////////////////
             console.log("oof")
             //this.loadSubCategory("PRINTS")
             //display attributes instead
@@ -211,7 +211,7 @@ class PwintyObject {
     hideAttribute(attributeName) {
         let attributeItem = document.getElementById(attributeName);
         attributeItem.parentNode.parentNode.setAttribute("style", "display: none")
-        //this.attributes[attributeName] = ""; enable this doesnt refresh price when selecting mount from no mount option
+        this.attributes[attributeName] = undefined; //enable this doesnt refresh price when selecting mount from no mount option (used not to with = "")
     }
 
     displayAttribute(attributeName) {
@@ -224,9 +224,11 @@ class PwintyObject {
         let selectedAttributes = 0;
     
         Object.keys(this.attributes).forEach(attribute => {
-            if (this.attributes[attribute] !== "")
+            if (this.attributes[attribute])
                 selectedAttributes++; 
         })
+        console.log(nbAttributes, selectedAttributes)
+
         if (selectedAttributes >= nbAttributes)
             this.generateSku();
     }
@@ -234,12 +236,18 @@ class PwintyObject {
     checkDisabledAttributes() {
         let nbAttributes = Object.keys(this.attributes).length;
         if (this.attributes["mountType"]) {
-            if (this.attributes["mountType"] === "NM") { //loop for all elements that could cancel eachother
+            if (this.attributes["mountType"] === "NM") {
                 this.hideAttribute("mountColour");
                 nbAttributes--;
-            }
-            else 
+            } else 
                 this.displayAttribute("mountColour");
+        }
+        if (this.category === "CAN" && this.subcategory === "ROL" && this.attributes["substrateType"]) {
+            if (this.attributes["substrateType"] === "PC") {
+                this.hideAttribute("glaze");
+                nbAttributes--;
+            } else 
+            this.displayAttribute("glaze");
         }
         
         return nbAttributes;

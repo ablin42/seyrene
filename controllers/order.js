@@ -22,7 +22,7 @@ try {
     if (req.user.level >= 3) {
         const options = {
             page: parseInt(req.query.page, 10) || 1,
-            limit: 5,//20
+            limit: 20,
             sort: { date: -1 }
           };
         var [err, result] = await utils.to(Order.paginate({}, options));
