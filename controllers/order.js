@@ -108,14 +108,17 @@ async function createPwintyOrder(order, req) {
                     "copies" : product.qty,
                     "attributes" : ""
                 }
-                let cpy = JSON.parse(JSON.stringify(product.attributes));
+                let cpy = JSON.parse(JSON.stringify(product.attributes));//////////////////////////////////////////////////////////////
                 cpy.category = undefined;
                 cpy.subcategory = undefined;
                 cpy.SKU = undefined;
                 cpy.size = undefined;
-                cpy.substrateType = undefined;
-                cpy.mountType = undefined;
-                cpy.glaze = undefined;
+                cpy.substrateType = undefined;//
+                cpy.mountType = undefined;//
+                cpy.glaze = undefined;//
+
+                console.log(cpy, product.attributes)
+
                 obj.attributes = cpy;
                 body.push(obj);
               })

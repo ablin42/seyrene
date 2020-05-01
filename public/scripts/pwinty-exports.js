@@ -103,6 +103,8 @@ const PWINTY_ITEMS = {
 
         }
     },
+
+    /*ok so the attributes for framed prints and framed canvases would be framecolour (valid options for global frames are black, white and natural) and for stretched canvases there would be wrap (valid option are image, mirror, black and white)*/
     "CAN": { //sizing: ResizeToProductImageSize
         "sharedAttributes": {},
         "FRA": { //frameColour only exist in black apparently // Global frames come in mounted/matted or non-mounted/non-matted options

@@ -256,6 +256,10 @@ try {
 
     rp(options)
     .then((response) => {
+        if (response.statusCode === 200) {
+            console.log(response)
+        } else 
+            return res.status(200).json({ error: true, errordata: "XDDD" });
         return res.status(200).json(response);
     })
     .catch((err) => {

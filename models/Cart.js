@@ -58,7 +58,7 @@ module.exports = function Cart(oldCart) {
         }
     }
 
-    this.pwintyAdd = function (item, data) {
+    this.pwintyAdd = function (item, data) { // data= SKU: req.body.SKU, price: req.body.price, attributes: req.body.attributes (=all attributes + category/subcategory),
         let storedItem = this.items[data.SKU];
         let attributes = data.attributes
         attributes.SKU = data.SKU;

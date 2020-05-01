@@ -209,7 +209,7 @@ class PwintyObject {
     hideAttribute(attributeName) {
         let attributeItem = document.getElementById(attributeName);
         attributeItem.parentNode.parentNode.setAttribute("style", "display: none")
-        this.attributes[attributeName] = undefined; //enable this doesnt refresh price when selecting mount from no mount option (used not to with = "")
+        this.attributes[attributeName] = undefined;
     }
 
     displayAttribute(attributeName) {
@@ -251,7 +251,7 @@ class PwintyObject {
         return nbAttributes;
     }
 
-    generateSku() { /* call different function depending on category/subcategory */
+    generateSku() {
         this.SKU = "";
         if (this.category === "FRA") {
             this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"]+ "-";
@@ -281,7 +281,7 @@ class PwintyObject {
                 this.SKU = this.subcategory + "-" + this.attributes["substrateType"]+ "-";
             this.SKU += this.attributes["size"];
         }
-        //this.SKU = "CAN-19MM-HMC-10X10"
+
         console.log(this.SKU)
         this.generatePricing();
     }
@@ -325,6 +325,8 @@ class PwintyObject {
         attributes.category = this.category;
         attributes.subcategory = this.subcategory;
         let price = this.price;
+
+        console.log(attributes)
 
         caller.disabled = true;
         caller.style.pointerEvents = "none";
