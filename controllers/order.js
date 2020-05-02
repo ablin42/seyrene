@@ -75,6 +75,32 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
+function getNeededAttributes(attributes) {
+    let obj = {}
+    console.log(attributes)
+    switch (attributes.category) {
+        case "CAN": {
+            if (attributes.subcategory === "ROL") 
+                obj.glaze = attributes.glaze;
+            else 
+                obj.wrap = attributes.wrap;
+        }
+        break;
+        case "FRA":{
+            obj.frameColour = attributes.frameColour;
+            if (attributes.subcategory === "BOX" || attributes.subcategory === "CLA" || attributes.subcategory === "GLO" || attributes.subcategory === "SWO") {
+                if (attributes.mountColour && attributes.mountType !== "NM")
+                    obj.mountColour = attributes.mountColour;
+            }
+        }
+        break;
+        case "PRINT": {}// no attributes
+        break;
+    }
+
+    return obj;
+}
+
 async function createPwintyOrder(order, req) {
   let options = {
       method: 'POST',
@@ -104,22 +130,13 @@ async function createPwintyOrder(order, req) {
                 let obj = {
                     "sku" : product.attributes.SKU,
                     "url" : `http://localhost:8089/api/image/main/Shop/${item.attributes._id}`, 
-                    "sizing" : "crop", // idk yet
+                    "sizing" : "crop", // idk yet // resize for canvas
                     "copies" : product.qty,
                     "attributes" : ""
                 }
-                let cpy = JSON.parse(JSON.stringify(product.attributes));//////////////////////////////////////////////////////////////
-                cpy.category = undefined;
-                cpy.subcategory = undefined;
-                cpy.SKU = undefined;
-                cpy.size = undefined;
-                cpy.substrateType = undefined;//
-                cpy.mountType = undefined;//
-                cpy.glaze = undefined;//
 
-                console.log(cpy, product.attributes)
-
-                obj.attributes = cpy;
+                obj.attributes = getNeededAttributes(product.attributes)
+                console.log(obj.attributes, "x")
                 body.push(obj);
               })
           }

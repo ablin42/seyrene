@@ -254,6 +254,8 @@ try {
         json: true
     }
 
+    console.log(options)
+
     rp(options)
     .then((response) => {
         if (response.statusCode === 200) {

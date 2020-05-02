@@ -111,10 +111,10 @@ const PWINTY_ITEMS = {
             "size": CAN_sizes,
             "wrap":  {"Black": "Black", "White": "White", "ImageWrap": "Image Wrap", "MirrorWrap": "Mirror Wrap"}, //not sure this belong here
         },
-        "ROL": { //glaze only for -VAR, size and substrate used in SKU
+        "ROL": { //glaze only for -VAR
             "size": CAN_ROL_sizes,
-            "glaze": {"VAR": "Gloss Varnish", "MAT": "Matt Varnish"},
-            "substrateType": CAN_substrate //not used for global canvas construction, used for ROL
+            "glaze": {"Gloss Varnish": "Gloss Varnish", "Matt Varnish": "Matt Varnish"},
+            "substrateType": CAN_substrate
         },
         "STR": { //edge always 38mm, size in SKU, substrate globalized to SC
             "size": CAN_sizes,

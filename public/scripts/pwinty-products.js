@@ -326,8 +326,6 @@ class PwintyObject {
         attributes.subcategory = this.subcategory;
         let price = this.price;
 
-        console.log(attributes)
-
         caller.disabled = true;
         caller.style.pointerEvents = "none";
         setTimeout(() => {
