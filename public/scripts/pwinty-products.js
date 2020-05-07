@@ -15,6 +15,19 @@ function closeAllSelect(elmnt) {
     }
 }
 
+function testSKU(category) {
+    Object.keys(PWINTY_ITEMS[category]).forEach(subcategory => {
+        if (subcategory !== "sharedAttributes") {
+            let tmpSKU = "GLOBAL-";
+            tmpSKU += subcategory + "-CAN-";
+            Object.keys(CAN_sizes).forEach(singleSize => {
+                let finSKU = tmpSKU + singleSize;
+                console.log(finSKU) // either test sku here or write all SKU to a file and test them later
+            })
+        }
+    })
+};
+
 class PwintyObject {
     constructor(item) {
         this.SKU = "";
@@ -24,6 +37,8 @@ class PwintyObject {
         this.width = $('img[alt="0slide"]')[0].naturalWidth;
         this.height = $('img[alt="0slide"]')[0].naturalHeight;
         this.megapixel = this.width * this.height;
+
+        testSKU(this.category);
 
         document.getElementById("subcategories").innerHTML = "";
         document.getElementById("attributes").innerHTML = "";

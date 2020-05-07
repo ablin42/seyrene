@@ -18,10 +18,10 @@ const FRA_sizes = {
 }
 
 const PRINT_substrate = {
-    FAP: "Enhanced Matte Art Paper", HGE: "Hahnemühle German Etching"//, HPR: "Hahnemühle Photo Rag", PAP: "Lustre Photo Paper"
+    FAP: "Enhanced Matte Art Paper", HGE: "Hahnemühle German Etching"
 }
 
-const PRINT_sizes = { //left sizes are in inches CARE
+const PRINT_sizes = {
     "6x4": "15x10cm", "6x6": "15x15cm", "8x8": "20x20cm", "8x12": "20x30cm", "A4": "21x29.7cm",
     "12x12": "30x30cm", "11x14": "28x35.5cm", "12x16": "30x40cm",
     "A3": "29.7x42cm", "10x20": "25x50cm", "12x18": "30x45cm",

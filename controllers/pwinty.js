@@ -315,25 +315,6 @@ ShrinkToFit	Your image will be shrunk until the whole image fits within the prin
 ShrinkToExactFit	Your image will be resized so that it completely fills the print area of the product. If the aspect ratio of your image is different to that of the printing area, your image will be stretched or squashed to fit. */
 /* END IMAGES */
 
-/* SHIPMENT */
-/* 
-
-Field	Description	Type
-shipmentId	The unique identifier for this shipment. Null if order hasn't been submitted.	string
-isTracked	Whether the order will be tracked.	boolean
-trackingNumber	Tracking number, when available.	string
-trackingUrl	Tracking URL, when available.	string
-earliestEstimatedArrivalDate	Estimated earliest arrival of shipment. *	datetime
-latestEstimatedArrivalDate	Estimated latest arrival of shipment. *	datetime
-shippedOn	The shipping date. Null if the order hasn't been shipped.	datetime
-carrier	The shipping carrier used once a shipment has been dispatched: RoyalMail, RoyalMailFirstClass, RoyalMailSecondClass, FedEx, FedExUK, FedExIntl, Interlink, UPS, UpsTwoDay, UKMail, TNT, ParcelForce, DHL, UPSMI, DpdNextDay, EuPostal, AuPost, AirMail, NotKnown.	string
-photoIds	The IDs in the top-level image object.	array
-* Arrival estimates are beyond our control and are based on typical seasonal processing times and published shipping times for the shipment method relevant to the order.
-*/
-
-/* END SHIPMENT */
-
-
 /* COUNTRIES */
 router.get("/countries", async (req, res) => {
 try {
@@ -360,7 +341,6 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 /* END COUNTRIES */
-
 
 /* CATALOGUE */
 router.post("/countries/:countryCode", async (req, res) => {
