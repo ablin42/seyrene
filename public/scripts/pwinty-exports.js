@@ -79,7 +79,7 @@ const PWINTY_ITEMS = {
         }, 
         "SPACE": {
             "glaze": {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"},
-            "frameColour": {Black: "Black", Brown: "Brown", White: "White", Natural: "Natural", Silver: "Silver", Gold: "Gold"}
+            "frameColour": {Black: "Black", White: "White"}
         }, 
         "SUR1": {
             "frameColour": {Black: "Black", White: "White"}

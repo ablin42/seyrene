@@ -77,10 +77,10 @@ try {
 
 function getNeededAttributes(attributes) {
     let obj = {}
-    console.log(attributes)
+
     switch (attributes.category) {
         case "CAN": {
-            if (attributes.subcategory === "ROL") 
+            if (attributes.subcategory === "ROL" && typeof attributes.glaze === "string") 
                 obj.glaze = attributes.glaze;
             else 
                 obj.wrap = attributes.wrap;
@@ -93,8 +93,6 @@ function getNeededAttributes(attributes) {
                     obj.mountColour = attributes.mountColour;
             }
         }
-        break;
-        case "PRINT": {}// no attributes
         break;
     }
 
@@ -136,7 +134,6 @@ async function createPwintyOrder(order, req) {
                 }
 
                 obj.attributes = getNeededAttributes(product.attributes)
-                console.log(obj.attributes, "x")
                 body.push(obj);
               })
           }

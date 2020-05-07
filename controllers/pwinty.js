@@ -305,6 +305,7 @@ try {
     } else 
         throw new Error("Incorrect body data");
 } catch (err) {
+    console.log("PWINTY CALLBACK ERROR:", err.message);
     return res.status(200).json({ message: err.message });
 }});
 
