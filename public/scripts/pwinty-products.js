@@ -15,17 +15,51 @@ function closeAllSelect(elmnt) {
     }
 }
 
+function checkSKU(SKU) {
+    //contact API to get item price + add our pricing
+    fetch('/api/pwinty/countries/FR', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({skus: [SKU]})
+      })
+      .then((res) => {return res.json()})
+      .then((data) => {
+        if (data.prices[0].price){
+          
+            if (data.prices[0].price === 0) {
+                console.log(data.prices[0].sku)
+                return 1;
+            }
+            return 0;
+        }
+        else {
+            console.log(data.prices[0].sku)
+            return 1
+        }
+      })
+      .catch((err) => {
+        return 1
+      })
+}
+
 function testSKU(category) {
+    let arr = [];
     Object.keys(PWINTY_ITEMS[category]).forEach(subcategory => {
         if (subcategory !== "sharedAttributes") {
             let tmpSKU = "GLOBAL-";
             tmpSKU += subcategory + "-CAN-";
             Object.keys(CAN_sizes).forEach(singleSize => {
                 let finSKU = tmpSKU + singleSize;
-                console.log(finSKU) // either test sku here or write all SKU to a file and test them later
+                let objArr = {SKU: finSKU, error: 2}
+                objArr.error = checkSKU(finSKU)
+                arr.push(objArr);
             })
         }
     })
+    console.log(arr)
 };
 
 class PwintyObject {
