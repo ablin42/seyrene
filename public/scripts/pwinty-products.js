@@ -45,20 +45,111 @@ function checkSKU(SKU) {
       })
 }
 
-function testSKU(category) {
+function testSKU(category, subcategory) {
     let arr = [];
-    Object.keys(PWINTY_ITEMS[category]).forEach(subcategory => {
-        if (subcategory !== "sharedAttributes") {
-            let tmpSKU = "GLOBAL-";
-            tmpSKU += subcategory + "-CAN-";
-            Object.keys(CAN_sizes).forEach(singleSize => {
-                let finSKU = tmpSKU + singleSize;
-                let objArr = {SKU: finSKU, error: 2}
-                objArr.error = checkSKU(finSKU)
-                arr.push(objArr);
+   
+    switch (category) {
+        case "CAN": {
+            switch (subcategory) {
+                case "STR": {
+                    Object.keys(CAN_sizes).forEach(singleSize => {
+                        var SKU = "GLOBAL" + "-" + category + "-" + singleSize;
+                        var objArr = {SKU: SKU, error: 2}
+                        objArr.error = checkSKU(SKU)
+                        arr.push(objArr);
+                    })
+                }
+                break;
+        
+                case "ROL": {
+                    Object.keys(CAN_substrate).forEach(singleSubstrate => {
+                        Object.keys(CAN_ROL_sizes).forEach(singleSize => {
+                            var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize;
+                            var objArr = {SKU: SKU, error: 2}
+                            objArr.error = checkSKU(SKU)
+                            arr.push(objArr);
+                        })
+                    })
+                   
+                    Object.keys(CAN_substrate).forEach(singleSubstrate => {
+                        if (singleSubstrate !== "PC") {
+                            Object.keys(CAN_ROL_sizes).forEach(singleSize => {
+                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize + "-VAR";
+                                var objArr = {SKU: SKU, error: 2}
+                                objArr.error = checkSKU(SKU)
+                                arr.push(objArr);
+                            })
+                        }
+                    })
+                }
+                break;
+        
+                case "FRA": {
+                    Object.keys(CAN_sizes).forEach(singleSize => {
+                        var SKU = "GLOBAL" + "-" + subcategory + "-" + category + "-" + singleSize;
+                        var objArr = {SKU: SKU, error: 2}
+                        objArr.error = checkSKU(SKU)
+                        arr.push(objArr);
+                    })
+                }
+                break;
+            }
+        }
+        break;
+        
+        case "PRINT": {
+            Object.keys(PRINT_substrate).forEach(singleSubstrate => {
+                Object.keys(PRINT_sizes).forEach(singleSize => {
+                    var SKU = "GLOBAL" + "-" + singleSubstrate + "-" + singleSize;
+                    var objArr = {SKU: SKU, error: 2}
+                    objArr.error = checkSKU(SKU)
+                    arr.push(objArr);
+                })
             })
         }
-    })
+        break;
+
+        case "FRA": {
+            switch (subcategory) {
+                case "BOX": {
+
+                }
+                break;
+
+                case "CLA": {
+
+                }
+                break;
+
+                case "GLO": {
+
+                }
+                break;
+
+                case "SPACE": {
+
+                }
+                break;
+
+                case "SUR1": {
+
+                }
+                break;
+
+                case "SUR2": {
+
+                }
+                break;
+
+                case "SWO": {
+
+                }
+                break;
+            }
+        }
+        break;
+    }
+    
     console.log(arr)
 };
 
@@ -71,8 +162,6 @@ class PwintyObject {
         this.width = $('img[alt="0slide"]')[0].naturalWidth;
         this.height = $('img[alt="0slide"]')[0].naturalHeight;
         this.megapixel = this.width * this.height;
-
-        testSKU(this.category);
 
         document.getElementById("subcategories").innerHTML = "";
         document.getElementById("attributes").innerHTML = "";
@@ -137,6 +226,8 @@ class PwintyObject {
         this.hidePricing();
         this.subcategory = subcategory.value;
         this.attributes = {};
+
+        testSKU(this.category, this.subcategory);
 
         let selection = ``;
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => { 
@@ -304,7 +395,6 @@ class PwintyObject {
         this.SKU = "";
         if (this.category === "FRA") {
             this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"]+ "-";
-          
     
             if (this.attributes["mountType"])
                 this.SKU += this.attributes["mountType"] + "-";
