@@ -111,7 +111,34 @@ function testSKU(category, subcategory) {
 
         case "FRA": {
             switch (subcategory) {
+                /*
+                    if (this.category === "FRA") {
+                        this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"]+ "-";
+                
+                        if (this.attributes["mountType"])
+                            this.SKU += this.attributes["mountType"] + "-";
+                        else if (this.category === "FRA" && !this.attributes["mountType"])
+                            this.SKU += "NM" + "-";
+                        if (this.attributes["glaze"])
+                            this.SKU += this.attributes["glaze"] + "-";
+                        this.SKU += this.attributes["size"];
+
+                    }
+                */
                 case "BOX": {
+                    Object.keys(substrateType).forEach(singleSubstrate => {
+                        Object.keys(mountType).forEach(singleMount => {
+                            Object.keys(glazeType).forEach(singleGlaze => {
+                                Object.keys(size).forEach(singleSize => {
+                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + singleGlaze + singleSize;
+                                    var objArr = {SKU: SKU, error: 2}
+                                    objArr.error = checkSKU(SKU)
+                                    arr.push(objArr);
+                                })
+                            })
+                        })
+                    })
+                    /* FRA-BOX-BAP-MOUNT1-ACRY-20x20 */
 
                 }
                 break;
