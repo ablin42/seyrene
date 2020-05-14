@@ -126,11 +126,11 @@ function testSKU(category, subcategory) {
                     }
                 */
                 case "BOX": {
-                    Object.keys(substrateType).forEach(singleSubstrate => {
+                    Object.keys(FRA_sizes).forEach(singleSize => {
                         Object.keys(mountType).forEach(singleMount => {
                             Object.keys(glazeType).forEach(singleGlaze => {
-                                Object.keys(size).forEach(singleSize => {
-                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + singleGlaze + singleSize;
+                                Object.keys(substrateType).forEach(singleSubstrate => {
+                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
                                     var objArr = {SKU: SKU, error: 2}
                                     objArr.error = checkSKU(SKU)
                                     arr.push(objArr);
@@ -138,38 +138,92 @@ function testSKU(category, subcategory) {
                             })
                         })
                     })
-                    /* FRA-BOX-BAP-MOUNT1-ACRY-20x20 */
-
                 }
                 break;
 
                 case "CLA": {
-
+                    Object.keys(FRA_sizes).forEach(singleSize => {
+                        Object.keys(mountType).forEach(singleMount => {
+                            Object.keys(glazeType).forEach(singleGlaze => {
+                                Object.keys(substrateType).forEach(singleSubstrate => {
+                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
+                                    var objArr = {SKU: SKU, error: 2}
+                                    objArr.error = checkSKU(SKU)
+                                    arr.push(objArr);
+                                })
+                            })
+                        })
+                    })
                 }
                 break;
 
                 case "GLO": {
-
+                    Object.keys(FRA_sizes).forEach(singleSize => {
+                        Object.keys(mountType).forEach(singleMount => {
+                            Object.keys(glazeType).forEach(singleGlaze => {
+                                Object.keys(substrateType).forEach(singleSubstrate => {
+                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
+                                    var objArr = {SKU: SKU, error: 2}
+                                    objArr.error = checkSKU(SKU)
+                                    arr.push(objArr);
+                                })
+                            })
+                        })
+                    })
                 }
                 break;
 
                 case "SPACE": {
-
+                    Object.keys(FRA_sizes).forEach(singleSize => {
+                        Object.keys(glazeType).forEach(singleGlaze => {
+                            Object.keys(substrateType).forEach(singleSubstrate => {
+                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleGlaze + "-" + singleSize;
+                                var objArr = {SKU: SKU, error: 2}
+                                objArr.error = checkSKU(SKU)
+                                arr.push(objArr);
+                            })
+                        })
+                    })
                 }
                 break;
 
                 case "SUR1": {
-
+                    Object.keys(FRA_sizes).forEach(singleSize => {
+                        Object.keys(substrateType).forEach(singleSubstrate => {
+                            var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
+                            var objArr = {SKU: SKU, error: 2}
+                            objArr.error = checkSKU(SKU)
+                            arr.push(objArr);
+                        })
+                    })
                 }
                 break;
 
                 case "SUR2": {
-
+                    Object.keys(FRA_sizes).forEach(singleSize => {
+                        Object.keys(substrateType).forEach(singleSubstrate => {
+                            var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
+                            var objArr = {SKU: SKU, error: 2}
+                            objArr.error = checkSKU(SKU)
+                            arr.push(objArr);
+                        })
+                    })
                 }
                 break;
 
                 case "SWO": {
-
+                    Object.keys(FRA_sizes).forEach(singleSize => {
+                        Object.keys(mountType).forEach(singleMount => {
+                            Object.keys(glazeType).forEach(singleGlaze => {
+                                Object.keys(substrateType).forEach(singleSubstrate => {
+                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
+                                    var objArr = {SKU: SKU, error: 2}
+                                    objArr.error = checkSKU(SKU)
+                                    arr.push(objArr);
+                                })
+                            })
+                        })
+                    })
                 }
                 break;
             }
@@ -177,7 +231,7 @@ function testSKU(category, subcategory) {
         break;
     }
     
-    console.log(arr)
+    //console.log(arr)
 };
 
 class PwintyObject {

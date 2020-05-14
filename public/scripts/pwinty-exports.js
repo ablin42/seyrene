@@ -4,6 +4,10 @@ const substrateType = {
     HPR: "Hahnemühle Photo Rag", LPP: "Lustre Photo Paper", MFA: "Museum Fine Art Paper", MG: "Metallic Gloss", SAP: "Smooth Art Paper", SPR: "Smooth Photo Rag"
 }
 
+const mountType = {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"};
+
+const glazeType = {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"};
+
 const FRA_sizes = {
     "20x20": "20x20cm", "20x30": "20x30cm", "A4": "21x29.7cm",
     "30x30": "30x30cm", "28x35": "28x35.5cm", "30x40": "30x40cm",
