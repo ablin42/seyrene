@@ -62,8 +62,8 @@ function testSKU(category, subcategory) {
                 break;
         
                 case "ROL": {
-                    Object.keys(CAN_substrate).forEach(singleSubstrate => {
-                        Object.keys(CAN_ROL_sizes).forEach(singleSize => {
+                    Object.keys(CAN_ROL_sizes).forEach(singleSize => {
+                        Object.keys(CAN_substrate).forEach(singleSubstrate => {
                             var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize;
                             var objArr = {SKU: SKU, error: 2}
                             objArr.error = checkSKU(SKU)
@@ -111,20 +111,6 @@ function testSKU(category, subcategory) {
 
         case "FRA": {
             switch (subcategory) {
-                /*
-                    if (this.category === "FRA") {
-                        this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"]+ "-";
-                
-                        if (this.attributes["mountType"])
-                            this.SKU += this.attributes["mountType"] + "-";
-                        else if (this.category === "FRA" && !this.attributes["mountType"])
-                            this.SKU += "NM" + "-";
-                        if (this.attributes["glaze"])
-                            this.SKU += this.attributes["glaze"] + "-";
-                        this.SKU += this.attributes["size"];
-
-                    }
-                */
                 case "BOX": {
                     Object.keys(FRA_sizes).forEach(singleSize => {
                         Object.keys(mountType).forEach(singleMount => {
@@ -308,7 +294,7 @@ class PwintyObject {
         this.subcategory = subcategory.value;
         this.attributes = {};
 
-        testSKU(this.category, this.subcategory);
+        ///////////////////////////////////////testSKU(this.category, this.subcategory);
 
         let selection = ``;
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => { 
@@ -326,9 +312,8 @@ class PwintyObject {
                     attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
                                             ${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
                 }
-                else {
+                else 
                     attributeSelect = this.checkSize(attributeSelect, "sharedAttributes", i);
-                }
             }
             attributeSelect +=              `</select></div>
                                     </div>
@@ -446,7 +431,6 @@ class PwintyObject {
             if (this.attributes[attribute])
                 selectedAttributes++; 
         })
-        console.log(nbAttributes, selectedAttributes)
 
         if (selectedAttributes >= nbAttributes)
             this.generateSku();
