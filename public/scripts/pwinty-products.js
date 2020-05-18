@@ -216,27 +216,40 @@ function testSKU(category, subcategory) {
     //console.log(arr)
 };
 
+function generateNewObject(arr) {
+    let str = "";
+
+    arr.forEach(item => {
+        let split = item.split("x");
+        aCm = Math.round(split[0] / 0.3937008)
+        bCm = Math.round(split[1] / 0.3937008)
+
+        str += `"${item}": "${aCm}x${bCm}cm", `;
+    })
+    console.log(str)
+}
+
 function filtersize() {
     let arr = [];
-    let alreadyFoundArr = [];
 
-    Object.keys(CAN_sizes).forEach(size => {
-        arr.push(size);
-      
+    Object.keys(CAN_ROL_sizes).forEach(size => {
+        if (arr.length === 0)
+            arr.push(size)
         let split = size.split("x");
         let newNb = split[1] + "x" + split[0];
-        
-        arr.forEach(item => {
-            if (item === newNb)
-                alreadyFoundArr.push(newNb); //or size*
-            if (item === size)
-                alreadyFoundArr.push(size);
-        })
+        let found = 0;
 
+        arr.forEach((item, index) => {
+            if (item == newNb || item == size) 
+                found = 1;
+            if (index === (arr.length - 1) && found === 0)
+                arr.push(size);
+        })
     })
 
-    console.log(alreadyFoundArr)
-    return alreadyFoundArr;
+    console.log(arr)
+    //generateNewObject(arr);
+    return ;
 }
 
 class PwintyObject {
@@ -308,13 +321,13 @@ class PwintyObject {
         return attributeSelect;
     }
 
-    async loadSubCategory(subcategory) {
+    loadSubCategory(subcategory) {
         this.hidePricing();
         this.subcategory = subcategory.value;
         this.attributes = {};
 
-        await filtersize();
-        //testSKU(this.category, this.subcategory);
+        //filtersize();
+        testSKU(this.category, this.subcategory);
 
         let selection = ``;
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => { 
