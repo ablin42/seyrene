@@ -327,7 +327,7 @@ class PwintyObject {
         this.attributes = {};
 
         //filtersize();
-        testSKU(this.category, this.subcategory);
+        //testSKU(this.category, this.subcategory);
 
         let selection = ``;
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => { 
