@@ -146,13 +146,11 @@ function testSKU(category, subcategory) {
                 case "GLO": {
                     Object.keys(FRA_sizes).forEach(singleSize => {
                         Object.keys(mountType).forEach(singleMount => {
-                            Object.keys(glazeType).forEach(singleGlaze => {
-                                Object.keys(substrateType).forEach(singleSubstrate => {
-                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
-                                    var objArr = {SKU: SKU, error: 2}
-                                    objArr.error = checkSKU(SKU)
-                                    arr.push(objArr);
-                                })
+                            Object.keys(substrateType).forEach(singleSubstrate => {
+                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
+                                var objArr = {SKU: SKU, error: 2}
+                                objArr.error = checkSKU(SKU)
+                                arr.push(objArr);
                             })
                         })
                     })
@@ -200,13 +198,11 @@ function testSKU(category, subcategory) {
                 case "SWO": {
                     Object.keys(FRA_sizes).forEach(singleSize => {
                         Object.keys(mountType).forEach(singleMount => {
-                            Object.keys(glazeType).forEach(singleGlaze => {
-                                Object.keys(substrateType).forEach(singleSubstrate => {
-                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
-                                    var objArr = {SKU: SKU, error: 2}
-                                    objArr.error = checkSKU(SKU)
-                                    arr.push(objArr);
-                                })
+                            Object.keys(substrateType).forEach(singleSubstrate => {
+                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
+                                var objArr = {SKU: SKU, error: 2}
+                                objArr.error = checkSKU(SKU)
+                                arr.push(objArr);
                             })
                         })
                     })
@@ -219,6 +215,29 @@ function testSKU(category, subcategory) {
     
     //console.log(arr)
 };
+
+function filtersize() {
+    let arr = [];
+    let alreadyFoundArr = [];
+
+    Object.keys(CAN_sizes).forEach(size => {
+        arr.push(size);
+      
+        let split = size.split("x");
+        let newNb = split[1] + "x" + split[0];
+        
+        arr.forEach(item => {
+            if (item === newNb)
+                alreadyFoundArr.push(newNb); //or size*
+            if (item === size)
+                alreadyFoundArr.push(size);
+        })
+
+    })
+
+    console.log(alreadyFoundArr)
+    return alreadyFoundArr;
+}
 
 class PwintyObject {
     constructor(item) {
@@ -289,12 +308,13 @@ class PwintyObject {
         return attributeSelect;
     }
 
-    loadSubCategory(subcategory) {
+    async loadSubCategory(subcategory) {
         this.hidePricing();
         this.subcategory = subcategory.value;
         this.attributes = {};
 
-        ///////////////////////////////////////testSKU(this.category, this.subcategory);
+        await filtersize();
+        //testSKU(this.category, this.subcategory);
 
         let selection = ``;
         Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"]).forEach(attribute => { 
@@ -472,7 +492,7 @@ class PwintyObject {
         } else if (this.category === "CAN") {
             if (this.subcategory === "ROL") {
                 this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"] + "-" + this.attributes["size"];
-                if (this.attributes["glaze"])
+                if (this.attributes["glaze"] && this.attributes["glaze"] !== "NONE")
                     this.SKU += "-VAR";
             } else {
                 this.SKU = "GLOBAL" + "-";

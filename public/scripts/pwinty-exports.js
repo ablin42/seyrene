@@ -1,7 +1,5 @@
 const substrateType = {
-    BAP: "Budget Art Paper", BPP: "Budget Photo Paper", CPP: "Classic Poster Paper", CPWP: "Cold Press Watercolour Paper", EMA: "Enhanced Matte Art Paper",
-    HFAP: "Hahnemühle Fine Art Paper", HGE: "Hahnemühle German Etching", HPG: "Hahnemühle Photo Glossy", HPL: "Hahnemühle Photo Lustre",
-    HPR: "Hahnemühle Photo Rag", LPP: "Lustre Photo Paper", MFA: "Museum Fine Art Paper", MG: "Metallic Gloss", SAP: "Smooth Art Paper", SPR: "Smooth Photo Rag"
+    BAP: "Budget Art Paper", CPP: "Classic Poster Paper", CPWP: "Cold Press Watercolour Paper", EMA: "Enhanced Matte Art Paper", HFAP: "Hahnemühle Fine Art Paper", HGE: "Hahnemühle German Etching", MFA: "Museum Fine Art Paper", MG: "Metallic Gloss", SAP: "Smooth Art Paper"
 }
 
 const mountType = {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"};
@@ -41,7 +39,7 @@ const PRINT_sizes = {
 }
 
 const CAN_substrate = {
-    PC: "Polycanvas", SC: "Standard Canvas", HMC: "Hahnemühle Monet Canvas", MC: "Metallic Canvas"
+    PC: "Polycanvas", SC: "Standard Canvas", HMC: "Hahnemühle Monet Canvas", //MC: "Metallic Canvas" (too much errors)
 }
 
 const CAN_sizes = { //stretched/framed
@@ -77,7 +75,7 @@ const PWINTY_ITEMS = {
         }, 
         "GLO": {
             "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
-            "glaze": {ACRY: "Acrylic / Perspex"},// {"GLA" : "Float Glass"}
+            "glaze": {ACRY: "Acrylic / Perspex"},
             "frameColour": {Black: "Black", White: "White"},
             "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
         }, 
@@ -93,12 +91,12 @@ const PWINTY_ITEMS = {
         }, 
         "SWO": {
             "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
-            "glaze": {ACRY: "Acrylic / Perspex"}, //, {"GLA" : "Float Glass"}
+            "glaze": {ACRY: "Acrylic / Perspex"},
             "frameColour": {Black: "Black", White: "White"},
             "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
         },
     },
-    "PRINT": { // YOU HERE NIBBA
+    "PRINT": {
         "sharedAttributes": {
             "size": PRINT_sizes,
             "substrateType": PRINT_substrate, 
@@ -117,7 +115,7 @@ const PWINTY_ITEMS = {
         },
         "ROL": { //glaze only for -VAR
             "size": CAN_ROL_sizes,
-            "glaze": {"Gloss Varnish": "Gloss Varnish", "Matt Varnish": "Matt Varnish"},
+            "glaze": {"NONE": "No Varnish", "Gloss Varnish": "Gloss Varnish", "Matt Varnish": "Matt Varnish"},
             "substrateType": CAN_substrate
         },
         "STR": { //edge always 38mm, size in SKU, substrate globalized to SC
