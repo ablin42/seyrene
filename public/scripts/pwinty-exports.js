@@ -42,7 +42,8 @@ const CAN_substrate = {
     PC: "Polycanvas", SC: "Standard Canvas", HMC: "Hahnemühle Monet Canvas", //MC: "Metallic Canvas" (too much errors)
 }
 
-const CAN_sizes = { //stretched/framed
+//Stretched/Framed canvas (GLOBAL)
+const CAN_sizes = { 
     "8x8": "20x20cm", "8x10": "20x25cm", "8x12": "20x30cm",
     "10x10": "25x25cm", "10x12": "25x30cm", "12x12": "30x30cm",
     "12x16": "30x40cm", "12x18": "30x45cm", "16x16": "40x40cm", "16x20": "40x50cm", "16x24": "40x60cm",

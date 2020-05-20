@@ -260,6 +260,7 @@ class PwintyObject {
         this.attributes = {};
         this.width = $('img[alt="0slide"]')[0].naturalWidth;
         this.height = $('img[alt="0slide"]')[0].naturalHeight;
+        this.ratio = Math.round(((this.width / this.height) + Number.EPSILON) * 100) / 100;
         this.megapixel = this.width * this.height;
 
         document.getElementById("subcategories").innerHTML = "";
@@ -282,6 +283,7 @@ class PwintyObject {
 
     checkSize(attributeSelect, subcategory, i) {
         let dimensions = Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i].split("x");
+
         if (isNaN(parseInt(dimensions[0]))) {
             for (let j = 0; j < A_FORMAT.length; j++) {
                 if (dimensions[0] === A_FORMAT[j].code)
@@ -289,16 +291,24 @@ class PwintyObject {
             }
         }
 
+        let sizeRatio = Math.round(((dimensions[0] / dimensions[1]) + Number.EPSILON) * 100) / 100;
+        let ratioMarginOffset = 0.2;
+
         let maxDimension = parseInt(dimensions[0]);
-        if (parseInt(dimensions[1]) > parseInt(dimensions[0]))
+        if (parseInt(dimensions[1]) > parseInt(dimensions[0])) {
             maxDimension = parseInt(dimensions[1]);
+            sizeRatio = Math.round(((dimensions[1] / dimensions[0]) + Number.EPSILON) * 10) / 10;
+        }
+
+        console.log(this.ratio, sizeRatio)
 
         if (this.category !== "FRA")
             maxDimension = maxDimension * 2.54; //conversion from inches to cm
       
         if (this.megapixel > 9300000) {
-            attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}">\
-                ${Object.values(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}</option>`;
+            if (sizeRatio > (this.ratio - (this.ratio * ratioMarginOffset)) && sizeRatio < (this.ratio + (this.ratio * ratioMarginOffset)))
+                attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}">\
+                    ${Object.values(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}</option>`;
         }
         else {
             let index = 0;
@@ -313,8 +323,9 @@ class PwintyObject {
             }
            
             if (maxDimension <= max) {
-                attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}">\
-                    ${Object.values(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}</option>`;
+                if (sizeRatio > (this.ratio - (this.ratio * ratioMarginOffset)) && sizeRatio < (this.ratio + (this.ratio * ratioMarginOffset)))
+                    attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}">\
+                        ${Object.values(PWINTY_ITEMS[this.category][subcategory]["size"])[i]}</option>`;
             }
         }
         
