@@ -77,7 +77,7 @@ router.post('/refund', verifySession, async (req, res) => {
 try {
     let chargeId = req.body.chargeId;
 
-    stripe.refunds.create({charge: chargeId},
+    stripe.refunds.create({charge: chargeId}, //replace charge with paymentIntent
         (err, refund) => {
             if (err)
                 return res.status(200).json({error: true, message: err.raw.message});
@@ -86,6 +86,25 @@ try {
     );
 } catch (err) {
     console.log("STRIPE REFUND ERROR:", err);
+    return res.status(200).json({error: true, message: err.message})
+}})
+
+
+router.post('/create-intent', verifySession, async (req, res) => {
+try {
+    let cart = new Cart(req.session.cart ? req.session.cart : {});
+    let total = cart.totalPrice;
+      
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: total * 100,
+        currency: "eur",
+        description: 'Charging for purchase @ maral'
+    });
+
+    return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret});
+} catch (err) {
+    console.log("STRIPE CREATE INTENT ERROR:", err);
     return res.status(200).json({error: true, message: err.message})
 }})
 
