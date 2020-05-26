@@ -79,7 +79,6 @@
       // Create an instance of the card Element.
       var card = elements.create('card', {style: style});
       card.mount('#card-element');
-    
 
       card.on("change", function (event) {
         // Disable the Pay button if there are no card details in the Element
@@ -90,14 +89,10 @@
       var form = document.getElementById("payment-form");
       form.addEventListener("submit", function(event) {
         event.preventDefault();
-        // Complete payment when the submit button is clicked
         payWithCard(stripe, card, data.clientSecret);
       });
     })
 
-    // Calls stripe.confirmCardPayment
-    // If the card requires authentication Stripe shows a pop-up modal to
-    // prompt the user to enter authentication details without leaving your page.
     var payWithCard = function(stripe, card, clientSecret) {
       stripe.confirmCardPayment(clientSecret, {
         receipt_email: document.getElementById('email').value,
@@ -106,7 +101,7 @@
         }
       })
       .then(function(result) {
-        console.log(result)
+        console.log(result, result.paymentIntent.id)
         if (result.error) {
           let alert = createAlertNode("Your payment didn't go through, please try again");
           addAlert(alert, "#header");
@@ -116,7 +111,7 @@
             headers: {
               "Content-Type": "application/json"
             },
-            body: []
+            body: JSON.stringify({paymentIntentId: result.paymentIntent.id})
           })
           .then(function(result) {return result.json();})
           .then(function(data) {
@@ -127,7 +122,6 @@
       });
     };
 
-  
     /* Create a token or display an error when the form is submitted.
     var form = document.getElementById('payment-form');
     form.addEventListener('submit', function(event) {

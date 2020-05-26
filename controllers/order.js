@@ -263,7 +263,7 @@ try {
                     isPwinty = true;
             }
 
-            var [err, order] = await utils.to(Order.findOneAndUpdate({ _userId: req.user._id, status: "awaitingStripePayment" }, {$set: {status: "Submitted"}}));//could even match with chargeId too
+            var [err, order] = await utils.to(Order.findOneAndUpdate({ _userId: req.user._id, status: "awaitingStripePayment" }, {$set: {status: "Submitted", chargeId: req.body.paymentIntentId}}));
             if (err)
                 throw new Error("An error occurred while submitting your order, please try again later");
 

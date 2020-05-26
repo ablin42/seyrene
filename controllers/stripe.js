@@ -77,7 +77,8 @@ router.post('/refund', verifySession, async (req, res) => {
 try {
     let chargeId = req.body.chargeId;
 
-    stripe.refunds.create({charge: chargeId}, //replace charge with paymentIntent
+    console.log(chargeId)
+    stripe.refunds.create({payment_intent: chargeId},
         (err, refund) => {
             if (err)
                 return res.status(200).json({error: true, message: err.raw.message});
@@ -88,7 +89,6 @@ try {
     console.log("STRIPE REFUND ERROR:", err);
     return res.status(200).json({error: true, message: err.message})
 }})
-
 
 router.post('/create-intent', verifySession, async (req, res) => {
 try {
