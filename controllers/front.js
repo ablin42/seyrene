@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
 try {
     var [err, result] = await utils.to(Front.find());
     if (err)
-        throw new Error("An error occured while fetching fronts");
+        throw new Error("An error occurred while fetching fronts");
     return res.status(200).json(result);
 } catch (err) {
     console.log("FETCHING FRONT ERROR:", err);
@@ -93,9 +93,9 @@ try {
         let id = req.params.id; //sanitize
         var [err, front] = await utils.to(Front.findOneAndUpdate({ referenceId: id }, { $set: { null: true } }));
         if (err)
-            throw new Error("An error occured while deleting the item, please try again");
+            throw new Error("An error occurred while deleting the item, please try again");
         fs.unlink(front.path, (err) => {
-            if (err) throw new Error("An error occured while deleting your image");
+            if (err) throw new Error("An error occurred while deleting your image");
         })
         return res.status(200).json({msg: "Image successfully deleted!"});
     } else 
@@ -111,7 +111,7 @@ try {
     let id = req.params.id;
     var [err, result] = await utils.to(Front.findOne({'_id': id }));
     if (err) 
-        throw new Error("An error occured while fetching the image");
+        throw new Error("An error occurred while fetching the image");
     fs.readFile(result.path, function(err, data) {
         if (err)
             throw new Error("File couldn't be read");

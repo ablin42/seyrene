@@ -35,7 +35,7 @@ module.exports = {
             }
         else 
             return [];
-        } catch (err) {throw new Error("An error occured while parsing your tags, please try again")}
+        } catch (err) {throw new Error("An error occurred while parsing your tags, please try again")}
        
     },
     imgEncode: async function (file) {

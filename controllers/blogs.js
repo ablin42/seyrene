@@ -50,7 +50,7 @@ async function fetchMainImg(blogs) {
     };
     var [err, img] = await utils.to(Image.findOne({_itemId: blogs[i]._id, itemType: "Blog", isMain: true}));
     if (err) 
-      throw new Error("An error occured while fetching the blogs images");
+      throw new Error("An error occurred while fetching the blogs images");
     if (img !== null)
       obj.mainImgId = img._id;
     arr.push(obj);
@@ -81,7 +81,7 @@ router.get("/single/:blogId", async (req, res) => {
     var [err, blog] = await utils.to(Blog.findById(req.params.blogId));
     if (err)
       throw new Error(
-        "An error occured while fetching the blog's data, please try again"
+        "An error occurred while fetching the blog's data, please try again"
       );
     if (blog === null) throw new Error("No blog post exist with this ID");
     var blog = await bHelpers.parseBlogs(blog, true);
@@ -120,7 +120,7 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
       const blog = new Blog(obj);
       var [err, savedBlog] = await utils.to(blog.save());
       if (err)
-        throw new Error("An error occured while posting your blog, please try again");
+        throw new Error("An error occurred while posting your blog, please try again");
 
       for (let i = 0; i < req.files.length; i++) {
         let isMain = false;
@@ -188,7 +188,7 @@ router.post(
         );
         if (err)
           throw new Error(
-            "An error occured while updating the blog, please try again"
+            "An error occurred while updating the blog, please try again"
           );
 
         if (req.files.length > 0) {
@@ -199,7 +199,7 @@ router.post(
             )
           );
           if (err)
-            throw new Error("An error occured while updating the main image");
+            throw new Error("An error occurred while updating the main image");
           
           for (let i = 0; i < req.files.length; i++) {
             let isMain = false;
@@ -250,20 +250,20 @@ router.get("/delete/:blogId", verifySession, async (req, res) => {
         Blog.deleteOne({ _id: blogId })
       );
       if (err)
-        throw new Error("An error occured while deleting the blog, please try again");
+        throw new Error("An error occurred while deleting the blog, please try again");
       
         rp(`http://localhost:8089/api/image/Blog/${blogId}`)
         .then(async (response) => {
         parsed = JSON.parse(response);
         for (let i = 0; i < parsed.length; i++) {
           fs.unlink(parsed[i].path, (err) => {
-            if (err) throw new Error("An error occured while deleting your image");
+            if (err) throw new Error("An error occurred while deleting your image");
           })
           await Image.deleteOne({ _id: parsed[i]._id });
          }
         })
         .catch((err) => {
-          throw new Error("An error occured while fetching the images");
+          throw new Error("An error occurred while fetching the images");
         });
   
         req.flash("success", "Item successfully deleted!");

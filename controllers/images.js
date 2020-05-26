@@ -11,7 +11,7 @@ try {
     let id = req.params.id;
     var [err, result] = await utils.to(Image.findById(id));
     if (err) 
-        throw new Error("An error occured while fetching the image");
+        throw new Error("An error occurred while fetching the image");
     if (result == null)
         throw new Error("No results were found");
 
@@ -34,7 +34,7 @@ try {
 
     var [err, result] = await utils.to(Image.findOne({itemType: itemType, _itemId: id, isMain: true}));
     if (err) 
-        throw new Error("An error occured while fetching the image");
+        throw new Error("An error occurred while fetching the image");
     if (result == null)
         throw new Error("No results were found");
             
@@ -60,11 +60,11 @@ try {
         //set old main to false, set new one to true
         var [err, result] = await utils.to(Image.updateMany({_itemId: itemId, itemType: itemType, isMain: true}, {$set: {isMain: false}}));
         if (err) 
-            throw new Error("An error occured while updating the main image");
+            throw new Error("An error occurred while updating the main image");
     
         var [err, result] = await utils.to(Image.findOneAndUpdate({_id: id}, {$set: {isMain: true}}));
         if (err) 
-            throw new Error("An error occured while updating the main image");
+            throw new Error("An error occurred while updating the main image");
 
         return res.status(200).json({err: false, msg: "New main image successfully selected!"});
     } else 
@@ -86,22 +86,22 @@ try {
         var [err, result] = await utils.to(Image.deleteOne({ _id: id, isMain: false }));
         if (result.n === 1) {
             fs.unlink(find.path, (err) => {
-                if (err) throw new Error("An error occured while deleting your image");
+                if (err) throw new Error("An error occurred while deleting your image");
             })
         }
 
         if (err) 
-            throw new Error("An error occured while deleting the image0");
+            throw new Error("An error occurred while deleting the image0");
         if (result.n === 0) {
             if (find && find.itemType === "Blog") {
                 var [err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
                 if (deleted.n === 1) {
                     fs.unlink(find.path, (err) => {
-                        if (err) throw new Error("An error occured while deleting your image");
+                        if (err) throw new Error("An error occurred while deleting your image");
                     })
                 }
                 if (err) 
-                    throw new Error("An error occured while deleting the image2");
+                    throw new Error("An error occurred while deleting the image2");
             } else 
                 throw new Error("You cannot delete the main image, delete the whole item or add a new image to replace the main image");
         }
@@ -121,7 +121,7 @@ try {
         
     var [err, result] = await utils.to(Image.find({itemType: itemType, _itemId: itemId}).sort({ isMain: -1 }));
     if (err) 
-        throw new Error("An error occured while fetching the image");
+        throw new Error("An error occurred while fetching the image");
     //if (result == null || result.length < 1)
       //  throw new Error("No results were found");
 

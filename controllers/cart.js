@@ -29,7 +29,7 @@ try {
     {
         Shop.findById(productId, (err, product) => {
             if (err || !product)
-                return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+                return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
             if (product.isUnique === true && newQty > 1)
                 return res.status(400).json({"error": true, "msg": "Quantity can't exceed 1 for unique items!"})
 
@@ -60,7 +60,7 @@ try {
 
     Shop.findById(productId, (err, product) => {
         if (err)
-            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+            return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
         if (product.isUnique === true) {
             let arr = cart.generateArray();
             for (let i = 0; i < arr.length; i++) {
@@ -90,7 +90,7 @@ try {
             
     Shop.findById(productId, (err, product) => {
         if (err)
-            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+            return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
         cart.delete(product, product.id);
         req.session.cart = cart;
         let cartCpy = JSON.parse(JSON.stringify(cart));
@@ -117,11 +117,11 @@ try {
 
     Gallery.findById(productId, async (err, product) => {
         if (err)
-            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+            return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
         /*var [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
         if (err) 
-            throw new Error("An error occured while fetching the image");*/
+            throw new Error("An error occurred while fetching the image");*/
 
         let item = cart.pwintyAdd(product, data);
         req.session.cart = cart;
@@ -151,7 +151,7 @@ try {
     if (Number.isInteger(newQty) && (newQty >= 0 && newQty <= 99)) {
         Gallery.findById(productId, (err, product) => {
             if (err || !product)
-                return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+                return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
             let item = cart.pwintyUpdate(data, newQty);
             req.session.cart = cart;
@@ -184,7 +184,7 @@ try {
             
     Gallery.findById(productId, (err, product) => {
         if (err)
-            return res.status(400).json({"error": true, "msg": "An error occured while looking for the product"});
+            return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
         let item = cart.pwintyDelete(data);
         req.session.cart = cart;

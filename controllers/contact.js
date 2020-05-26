@@ -31,7 +31,7 @@ router.post("/", vContact, async (req, res) => {
     //maral.canvas@gmail.com
     if (await mailer("ablin@byom.de", subject, content))
       throw new Error(
-        "An error occured while trying to send the mail, please retry"
+        "An error occurred while trying to send the mail, please retry"
       );
 
     req.flash("success", "Email sent! We will answer as soon as we can");

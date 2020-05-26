@@ -56,6 +56,7 @@
     })
     .then(function(result) {return result.json();})
     .then(function(data) {
+      console.log(data)
       // if data.error == false
       var elements = stripe.elements();
 
@@ -98,8 +99,6 @@
     // If the card requires authentication Stripe shows a pop-up modal to
     // prompt the user to enter authentication details without leaving your page.
     var payWithCard = function(stripe, card, clientSecret) {
-      //loading(true);
-
       stripe.confirmCardPayment(clientSecret, {
         receipt_email: document.getElementById('email').value,
         payment_method: {
@@ -107,14 +106,23 @@
         }
       })
       .then(function(result) {
+        console.log(result)
         if (result.error) {
-          // Show error to your customer
-          alert("oh no")
-          //showError(result.error.message);
+          let alert = createAlertNode("Your payment didn't go through, please try again");
+          addAlert(alert, "#header");
         } else {
-          // The payment succeeded!
-          alert("SUCESS")
-          //orderComplete(result.paymentIntent.id);
+          fetch("/api/order/confirm", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: []
+          })
+          .then(function(result) {return result.json();})
+          .then(function(data) {
+            //check if success 
+            window.location.href = `/api/cart/clear/${data.orderId}`;
+          })
         }
       });
     };

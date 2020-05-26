@@ -23,11 +23,11 @@ try {
                 if (items[i].attributes.isUnique) {
                     var [err, item] = await utils.to(Shop.findById(items[i].attributes._id));
                     if (err || item === null)
-                        throw new Error("An error occured while looking for an item you tried to purchase");
+                        throw new Error("An error occurred while looking for an item you tried to purchase");
                 } else {
                     var [err, item] = await utils.to(Gallery.findById(items[i].attributes._id));
                     if (err || item === null)
-                        throw new Error("An error occured while looking for an item you tried to purchase");
+                        throw new Error("An error occurred while looking for an item you tried to purchase");
                 }
             }
 
@@ -54,7 +54,7 @@ try {
                 }
                 rp(options, (err, response, body) => {
                     if (err) {
-                        req.flash("warning", "An error occured while creating your order");
+                        req.flash("warning", "An error occurred while creating your order");
                         return res.status(200).redirect("/payment");
                     }
                     if (body.err === true) {
@@ -92,17 +92,62 @@ try {
 
 router.post('/create-intent', verifySession, async (req, res) => {
 try {
-    let cart = new Cart(req.session.cart ? req.session.cart : {});
-    let total = cart.totalPrice;
-      
-    // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: total * 100,
-        currency: "eur",
-        description: 'Charging for purchase @ maral'
-    });
+    if (req.user) {
+        let cart = new Cart(req.session.cart ? req.session.cart : {});
+        let total = cart.totalPrice;
+        let items = cart.generateArray();
 
-    return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret});
+        if (total > 0) {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].attributes.isUnique) {
+                    var [err, item] = await utils.to(Shop.findById(items[i].attributes._id));
+                    if (err || item === null)
+                        throw new Error("An error occurred while looking for an item you tried to purchase");
+                } else {
+                    var [err, item] = await utils.to(Gallery.findById(items[i].attributes._id));
+                    if (err || item === null)
+                        throw new Error("An error occurred while looking for an item you tried to purchase");
+                }
+            }
+
+            // Create a PaymentIntent with the order amount and currency
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: total * 100,
+                currency: "eur",
+                description: 'Charging for purchase @ maral'
+            }, (err, paymentIntent) => {
+                if (err) {
+                    req.flash("warning", err.message);
+                    return res.status(200).redirect("/payment");
+                }
+
+                let options = {
+                    uri: `http://localhost:8089/api/order/initialize`,
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    body: {items: items, price: total, user: req.user, chargeId: paymentIntent.client_secret},
+                    json: true
+                }
+                rp(options, (err, response, body) => {
+                    if (err) {
+                        req.flash("warning", "An error occurred while initializing your order");
+                        return res.status(200).redirect("/payment");
+                    }
+                    if (body.err === true) {
+                        req.flash("warning", body.message);
+                        return res.status(200).redirect("/payment");
+                    }
+                    //return res.status(200).redirect(`/api/cart/clear/${body.orderId}`);
+                    return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret});
+                });
+            });
+        } else
+            throw new Error("Your cart is empty!");
+    } else 
+        throw new Error("Unauthorized, please make sure you are logged in");
 } catch (err) {
     console.log("STRIPE CREATE INTENT ERROR:", err);
     return res.status(200).json({error: true, message: err.message})

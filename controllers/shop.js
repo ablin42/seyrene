@@ -59,7 +59,7 @@ async function parsePrice(shopItems) {
     };
     var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
     if (err || img == null) 
-      throw new Error(`An error occured while fetching the shop images ${shopItems[i]._id}`);
+      throw new Error(`An error occurred while fetching the shop images ${shopItems[i]._id}`);
     obj.mainImgId = img._id;
     arr.push(obj);
   }
@@ -77,7 +77,7 @@ router.get("/", async (req, res) => {
     let query = { isUnique: true, soldOut: false };
     if (req.query.tab === "print") query.isUnique = false;
     var [err, result] = await utils.to(Shop.paginate(query, options));
-    if (err) throw new Error("An error occured while fetching the shop items");
+    if (err) throw new Error("An error occurred while fetching the shop items");
     var shopItems = result.docs; //probably can remove img since we use id and api to load it
     ress = await parsePrice(shopItems);
     return res.status(200).json(ress);
@@ -218,7 +218,7 @@ router.get("/delete/:id", verifySession, async (req, res) => {
       var [err, shop] = await utils.to(Shop.deleteOne({ _id: id }));
       if (err)
         throw new Error(
-          "An error occured while deleting the item, please try again"
+          "An error occurred while deleting the item, please try again"
         );
 
       rp(`http://localhost:8089/api/image/Shop/${id}`)
@@ -226,13 +226,13 @@ router.get("/delete/:id", verifySession, async (req, res) => {
         parsed = JSON.parse(response);
         for (let i = 0; i < parsed.length; i++) {
           fs.unlink(parsed[i].path, (err) => {
-            if (err) throw new Error("An error occured while deleting your image");
+            if (err) throw new Error("An error occurred while deleting your image");
           })
           await Image.deleteOne({ _id: parsed[i]._id });
         }
       })
       .catch((err) => {
-        throw new Error("An error occured while fetching the images");
+        throw new Error("An error occurred while fetching the images");
       });
 
       req.flash("success", "Item successfully deleted!");
@@ -252,7 +252,7 @@ router.get("/delete/:id", verifySession, async (req, res) => {
 router.get("/items", async (req, res) => {
   try {
     var [err, result] = await utils.to(Shop.find());
-    if (err) throw new Error("An error occured while fetching the shop items");
+    if (err) throw new Error("An error occurred while fetching the shop items");
     const resArray = result.map(element => element._id);
 
     return res.status(200).json(resArray);
@@ -268,7 +268,7 @@ router.get("/single/:id", async (req, res) => {
     let id = req.params.id;
     var [err, result] = await utils.to(Shop.findById(id));
     if (err || result === null)
-      throw new Error("An error occured while fetching the shop item");
+      throw new Error("An error occurred while fetching the shop item");
 
     result.img = undefined; //set it to this so it doesnt fuck rendering of response (buffer)
     return res.status(200).json(result);

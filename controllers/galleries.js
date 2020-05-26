@@ -56,7 +56,7 @@ async function fetchMainImg(galleries) {
       })
     );
     if (err || img == null)
-      throw new Error("An error occured while fetching the galleries images");
+      throw new Error("An error occurred while fetching the galleries images");
     obj.mainImgId = img._id;
     arr.push(obj);
   }
@@ -71,7 +71,7 @@ router.get("/", async (req, res) => {
       sort: { date: -1 }
     };
     var [err, result] = await utils.to(Gallery.paginate({}, options));
-    if (err) throw new Error("An error occured while fetching galleries");
+    if (err) throw new Error("An error occurred while fetching galleries");
     var galleries = result.docs;
     galleries = await fetchMainImg(galleries);
 
@@ -98,7 +98,7 @@ router.get("/Tags", async (req, res) => {
       Gallery.paginate({ tags: { $all: tagsArr } }, options)
     );
     if (err)
-      throw new Error("An error occured while fetching galleries item by tags");
+      throw new Error("An error occurred while fetching galleries item by tags");
     var galleries = result.docs;
     if (galleries.length == 0)
       throw new Error("No result found for the selected tags");
@@ -236,20 +236,20 @@ router.get("/delete/:id", verifySession, async (req, res) => {
       let id = req.params.id; //sanitize
       var [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
       if (err)
-        throw new Error("An error occured while deleting the item, please try again");
+        throw new Error("An error occurred while deleting the item, please try again");
 
       rp(`http://localhost:8089/api/image/Gallery/${id}`)
       .then(async (response) => {
         parsed = JSON.parse(response);
         for (let i = 0; i < parsed.length; i++) {
           fs.unlink(parsed[i].path, (err) => {
-            if (err) throw new Error("An error occured while deleting your image");
+            if (err) throw new Error("An error occurred while deleting your image");
           })
           await Image.deleteOne({ _id: parsed[i]._id });
         }
       })
       .catch((err) => {
-        throw new Error("An error occured while fetching the images");
+        throw new Error("An error occurred while fetching the images");
       });
 
       req.flash("success", "Item successfully deleted!");
@@ -269,7 +269,7 @@ router.get("/delete/:id", verifySession, async (req, res) => {
 router.get("/items", async (req, res) => {
   try {
     var [err, result] = await utils.to(Gallery.find());
-    if (err) throw new Error("An error occured while fetching galleries");
+    if (err) throw new Error("An error occurred while fetching galleries");
     const resArray = result.map(element => element._id);
 
     return res.status(200).json(resArray);
@@ -285,7 +285,7 @@ router.get("/single/:id", async (req, res) => {
     let id = req.params.id;
     var [err, result] = await utils.to(Gallery.findById(id));
     if (err || result === null)
-      throw new Error("An error occured while fetching the gallery item");
+      throw new Error("An error occurred while fetching the gallery item");
 
     return res.status(200).json(result);
   } catch (err) {

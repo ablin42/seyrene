@@ -47,7 +47,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
     var [err, user] = await utils.to(User.findOne({ email: req.body.email }));
     if (err)
       throw new Error(
-        "An error occured while looking for your account, please retry"
+        "An error occurred while looking for your account, please retry"
       );
     if (user === null)
       throw new Error(
@@ -57,7 +57,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
     var [err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id }));
     if (err)
       throw new Error(
-        "An error occured while looking for your token, please retry"
+        "An error occurred while looking for your token, please retry"
       );
 
     const token = crypto.randomBytes(16).toString("hex");
@@ -66,7 +66,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
       var [err, result] = await utils.to(pwToken.save());
       if (err)
         throw new Error(
-          "An error occured while saving your token, please try again"
+          "An error occurred while saving your token, please try again"
         );
     } else {
       // update token if one already exist
@@ -75,7 +75,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while updating your token, please try again"
+          "An error occurred while updating your token, please try again"
         );
     }
 
@@ -83,7 +83,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
       content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n http:\/\/127.0.0.1:8089\/resetpw\/${pwToken._id}\/${token}`;
     if (await mailer(req.body.email, subject, content))
       throw new Error(
-        "An error occured while send the e-mail, please try again"
+        "An error occurred while send the e-mail, please try again"
       );
 
     req.flash(
@@ -113,7 +113,7 @@ router.post("/resetpw", vPassword, async (req, res) => {
     const hashPw = await bcrypt.hash(req.body.password, 10);
     if (!hashPw)
       throw new Error(
-        "An error occured while encrypting your data, please try again"
+        "An error occurred while encrypting your data, please try again"
       );
 
     // check if token is valid
@@ -129,14 +129,14 @@ router.post("/resetpw", vPassword, async (req, res) => {
     );
     if (err)
       throw new Error(
-        "An error occured while updating your password, please try again"
+        "An error occurred while updating your password, please try again"
       );
     var [err, pwToken] = await utils.to(
       PwToken.deleteOne({ _id: req.body.tokenId })
     );
     if (err)
       throw new Error(
-        "An error occured while cleaning up your token, please try again"
+        "An error occurred while cleaning up your token, please try again"
       );
 
     req.flash("success", "Password successfully modified");
@@ -175,7 +175,7 @@ router.post("/patch/name", vName, verifySession, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while updating your username, please try again"
+          "An error occurred while updating your username, please try again"
         );
       req.flash("success", "Username successfully modified");
       res.status(200).redirect("/User");
@@ -216,14 +216,14 @@ router.post("/patch/email", vEmail, verifySession, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while updating your email, please try again"
+          "An error occurred while updating your email, please try again"
         );
       var [err, token] = await utils.to(
         Token.updateOne({ _userId: id }, { $set: { token: vToken } })
       );
       if (err)
         throw new Error(
-          "An error occured while updating your token, please try again"
+          "An error occurred while updating your token, please try again"
         );
 
       //send mail
@@ -231,7 +231,7 @@ router.post("/patch/email", vEmail, verifySession, async (req, res) => {
         content = `Hello,\n\n Please verify your account by following the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
       if (await mailer(newEmail, subject, content))
         throw new Error(
-          "An error occured while trying to send the mail, please retry"
+          "An error occurred while trying to send the mail, please retry"
         );
 
       req.flash(
@@ -266,7 +266,7 @@ router.post("/patch/password", vPassword, verifySession, async (req, res) => {
       var [err, user] = await utils.to(User.findById(id));
       if (err)
         throw new Error(
-          "An error occured, please make sure you are logged in and try again"
+          "An error occurred, please make sure you are logged in and try again"
         );
 
       // Check if pw matches
@@ -276,7 +276,7 @@ router.post("/patch/password", vPassword, verifySession, async (req, res) => {
       const hashPw = await bcrypt.hash(password, 10);
       if (!hashPw)
         throw new Error(
-          "An error occured while encrypting your data, please try again"
+          "An error occurred while encrypting your data, please try again"
         );
 
       var [err, user] = await utils.to(
@@ -284,7 +284,7 @@ router.post("/patch/password", vPassword, verifySession, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while updating your password, please try again"
+          "An error occurred while updating your password, please try again"
         );
       req.flash("success", "Password successfully modified");
       res.status(200).redirect("/User");
@@ -339,7 +339,7 @@ router.post(
               );
               if (err)
                 throw new Error(
-                  "An error occured while looking for your delivery informations, please retry"
+                  "An error occurred while looking for your delivery informations, please retry"
                 );
               if (infos === null) {
                 let info = new DeliveryInfo({
@@ -360,7 +360,7 @@ router.post(
                 var [err, result] = await utils.to(info.save());
                 if (err)
                   throw new Error(
-                    "An error occured while updating your delivery informations, please try again"
+                    "An error occurred while updating your delivery informations, please try again"
                   );
               } else {
                 let obj = {
@@ -385,7 +385,7 @@ router.post(
                 );
                 if (err)
                   throw new Error(
-                    "An error occured while updating your delivery informations, please try again"
+                    "An error occurred while updating your delivery informations, please try again"
                   );
               }
               req.flash(

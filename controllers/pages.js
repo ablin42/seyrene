@@ -128,7 +128,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while looking for your delivery informations, please retry"
+          "An error occurred while looking for your delivery informations, please retry"
         );
       if (result != null) {
         obj.delivery = result;
@@ -227,7 +227,7 @@ router.get("/User", verifySession, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while looking for your delivery informations, please retry"
+          "An error occurred while looking for your delivery informations, please retry"
         );
       if (result != null) obj.delivery = result;
       var [err, orders] = await utils.to(
@@ -235,7 +235,7 @@ router.get("/User", verifySession, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while looking for your orders informations, please retry"
+          "An error occurred while looking for your orders informations, please retry"
         );
       if (orders != null) {
         orders.forEach((order, index) => {
@@ -273,7 +273,7 @@ router.get("/About", verifySession, async (req, res) => {
     res.status(200).render("about", obj);
   } catch (err) {
     console.log("ABOUT ROUTE ERROR", err);
-    req.flash("warning", "An error occured, please try again");
+    req.flash("warning", "An error occurred, please try again");
     res.status(400).redirect("/");
   }
 });
@@ -292,7 +292,7 @@ router.get("/Account", verifySession, async (req, res) => {
     res.status(200).render("account", obj);
   } catch (err) {
     console.log("ACCOUNT ROUTE ERROR", err);
-    req.flash("warning", "An error occured, please try again");
+    req.flash("warning", "An error occurred, please try again");
     res.status(400).redirect("/");
   }
 });
@@ -339,7 +339,7 @@ router.get("/Resetpw/:tokenId/:token", verifySession, async (req, res) => {
       );
       if (err)
         throw new Error(
-          "An error occured while fetching the token, please try again"
+          "An error occurred while fetching the token, please try again"
         );
       if (pwToken === null)
         throw new Error(
@@ -675,7 +675,7 @@ router.get(
           Gallery.findOne({ _id: req.params.galleryId })
         );
         if (err || !result)
-          throw new Error("An error occured while fetching the gallery item");
+          throw new Error("An error occurred while fetching the gallery item");
         obj.gallery = result;
 
         obj.img = JSON.parse(
@@ -728,7 +728,7 @@ router.get("/Admin/Shop/Patch/:shopId", verifySession, async (req, res) => {
         Shop.findOne({ _id: req.params.shopId })
       );
       if (err || !result)
-        throw new Error("An error occured while fetching the shop item");
+        throw new Error("An error occurred while fetching the shop item");
 
       obj.img = JSON.parse(
         await request(
@@ -791,7 +791,7 @@ router.get("/Admin/Blog/Patch/:blogId", verifySession, async (req, res) => {
       [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
       if (err)
         throw new Error(
-          "An error occured while loading the blog, please try again"
+          "An error occurred while loading the blog, please try again"
         );
       if (blog === null) throw new Error("No blog exists with this ID");
 

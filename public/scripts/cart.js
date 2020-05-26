@@ -157,7 +157,7 @@ async function updateValue(e, item) {
             addAlert(alert, "#header");
           })
           .catch(err => {
-            console.log("An error occured while contacting the API:", err);
+            console.log("An error occurred while contacting the API:", err);
             let alert = createAlertNode(err.message, "danger");
             addAlert(alert, "#header");
           });
@@ -384,7 +384,7 @@ try {
         addAlert(alert, "#header");
       })
       .catch(err => {
-        console.log("An error occured while contacting the API:", err);
+        console.log("An error occurred while contacting the API:", err);
         let alert = createAlertNode(err.message, "danger");
         addAlert(alert, "#header");
       });
