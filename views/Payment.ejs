@@ -54,13 +54,17 @@
       },
       body: []
     })
-    .then(function(result) {return result.json();})
+    .then(function(result) {return result.json()})
     .then(function(data) {
       console.log(data)
-      // if data.error == false
-      var elements = stripe.elements();
+      if (data.error === true) {
+        let alert = createAlertNode(data.message);
+        addAlert(alert, "#header");
+        document.querySelector(".btn-pay").disabled = true
+        return ;
+      }
 
-      // Custom styling can be passed to options when creating an Element.
+      var elements = stripe.elements();
       var style = {
         base: {
         color: "#32325d",

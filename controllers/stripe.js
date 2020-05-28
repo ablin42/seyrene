@@ -111,14 +111,14 @@ try {
             }
 
             // Create a PaymentIntent with the order amount and currency
-            const paymentIntent = await stripe.paymentIntents.create({
+            stripe.paymentIntents.create({
                 amount: total * 100,
                 currency: "eur",
                 description: 'Charging for purchase @ maral'
             }, (err, paymentIntent) => {
                 if (err) {
                     req.flash("warning", err.message);
-                    return res.status(200).redirect("/payment");
+                    return res.status(200).send({error: true, message: err.message});
                 }
 
                 let options = {
@@ -134,13 +134,12 @@ try {
                 rp(options, (err, response, body) => {
                     if (err) {
                         req.flash("warning", "An error occurred while initializing your order");
-                        return res.status(200).redirect("/payment");
+                        return res.status(200).send({error: true, message: "An error occurred while initializing your order"});
                     }
                     if (body.err === true) {
                         req.flash("warning", body.message);
-                        return res.status(200).redirect("/payment");
+                        return res.status(200).send({error: true, message:  body.message});
                     }
-                    //return res.status(200).redirect(`/api/cart/clear/${body.orderId}`);
                     return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret});
                 });
             });
