@@ -114,7 +114,7 @@ try {
             stripe.paymentIntents.create({
                 amount: total * 100,
                 currency: "eur",
-                description: 'Charging for purchase @ maral'
+                description: 'Charging for purchase @ maral',
             }, (err, paymentIntent) => {
                 if (err) {
                     req.flash("warning", err.message);
@@ -138,9 +138,9 @@ try {
                     }
                     if (body.err === true) {
                         req.flash("warning", body.message);
-                        return res.status(200).send({error: true, message:  body.message});
+                        return res.status(200).send({error: true, message: body.message});
                     }
-                    return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret});
+                    return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret, orderId: body._id});
                 });
             });
         } else

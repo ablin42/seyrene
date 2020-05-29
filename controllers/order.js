@@ -245,41 +245,33 @@ try {
     return res.status(200).json({err: true, message: err.message})
 }})
 
-router.post('/confirm', verifySession, async (req, res) => {
+router.post('/confirm', async (req, res) => {
 try {
-    if (req.user) {
-        let cart = new Cart(req.session.cart ? req.session.cart : {});
-        let total = cart.totalPrice;
-        let items = cart.generateArray();
+    if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) { //make sure its sent by webhook
+        var [err, order] = await utils.to(Order.findOneAndUpdate({ _userId: req.user._id, status: "awaitingStripePayment" }, {$set: {status: "Submitted", chargeId: req.body.data.object.id}}));
+        if (err || order === null)
+            throw new Error("An error occurred while submitting your order, please try again later");
 
-        if (total > 0) {
-            // Set sold out to true if an unique item is bought
-            let isPwinty = false;
-            for (let index = 0; index < items.length; index++) {
-                var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
-                if (err)
-                    throw new Error("An error occurred while deleting the unique item from the store, please try again");
-                if (!items[index].attributes.isUnique)
-                    isPwinty = true;
-            }
-
-            var [err, order] = await utils.to(Order.findOneAndUpdate({ _userId: req.user._id, status: "awaitingStripePayment" }, {$set: {status: "Submitted", chargeId: req.body.paymentIntentId}}));
+        let isPwinty = false;
+        for (let index = 0; index < order.items.length; index++) {
+            var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
             if (err)
-                throw new Error("An error occurred while submitting your order, please try again later");
+                throw new Error("An error occurred while deleting the unique item from the store, please try again");
+            if (!order.items[index].attributes.isUnique)
+                isPwinty = true;
+        }
 
-            if (isPwinty === false)
-                var response = await createSimpleOrder(order, req, items);
-            else 
-                var response = await createPwintyOrder(order, req, items);
+        if (isPwinty === false)
+            var response = await createSimpleOrder(order, req, order.items);
+        else 
+            var response = await createPwintyOrder(order, req, order.items);
 
-            return res.status(200).send({orderId: order._id});
-        } else 
-            throw new Error("Your cart is empty");
-    } else 
-        throw new Error("Unauthorized, please make sure you are logged in");
+        return res.status(200).send({error: false, orderId: order._id});
+    }
+    return res.status(200).send("OK");
 } catch (err) {
     console.log("CONFIRMING ORDER ERROR:", err);
-    return res.status(200).json({err: true, message: err.message})
+    return res.status(200).json({error: true, message: err.message})
 }})
 
 router.post('/initialize', verifySession, async (req, res) => {
