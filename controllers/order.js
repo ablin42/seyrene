@@ -386,10 +386,25 @@ try {
         var [err, order] = await utils.to(Order.findById(req.params.id));
         if (err || order == null)
             throw new Error("We couldn't find your order, please try again");
-        if (order.status === "Cancelled")
-            throw new Error("You can't cancel an order that is already cancelled");
+        
+        
+        switch(order.status) {
+            case "Cancelled":
+                throw new Error("You can't cancel an order that is already cancelled");
+                break;
+            case "Completed":
+                throw new Error("You can't cancel an order that is already completed");
+                break;
+            case "awaitingStripePayment":
+                throw new Error("You can't cancel an order that hasn't been finalized");
+                break;
+        }
         
         if (order._userId === req.user._id || req.user.level >= 3) {
+            var [err, order] = await utils.to(Order.findOne({_id: req.params.id}));
+            if (err || order == null)
+                throw new Error("We couldn't find your order, please try again");
+
             let isPwinty = false;
             for (let index = 0; index < order.items.length; index++) {
                 var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].attributes._id, isUnique: true}, {$set: {soldOut: false}}));
@@ -398,10 +413,6 @@ try {
                 if (!order.items[index].attributes.isUnique)
                     isPwinty = true;
             }
-
-            var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
-            if (err || order == null)
-                throw new Error("We couldn't cancel your order, please try again");
 
             if (isPwinty === false) {
                 let refund = await refundStripe(order.chargeId);
@@ -430,12 +441,13 @@ try {
                             throw new Error("We could not cancel your order, please try again later");
                     } else 
                         throw new Error("Your order status does not allow it to be cancelled");
-                } else {
-                    console.log(response)
+                } else 
                     throw new Error("We could not check the status of your order, please try again later");
-
-                }
             }
+
+            var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
+            if (err || order == null)
+                throw new Error("We couldn't cancel your order, please try again");
 
             // Send mails
             let subject = `Cancelled Order #${order._id}`;

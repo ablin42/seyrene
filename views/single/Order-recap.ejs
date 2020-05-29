@@ -7,12 +7,15 @@
     <h1 class="text-center" style="color: var(--light-shade-p1);">Votre commande</h1>
    
     <% if (locals.order && locals.order.items) { %> 
-      <% if (locals.order.status !== "Cancelled") { %>
-        <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
+      <div class="text-center w-100">
+      <h2 style="color: var(--warning-color); display: initial">Status: <%= locals.order.status %> </h2>
+      <% if (locals.order.status !== "Cancelled" && locals.order.status !== "Submitted" && locals.order.status !== "Completed") { %>
+        <i style="color: var(--danger-color); cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
       <% } %>
-      <% if (locals.order.status === "Cancelled") { %>
-        <h2 class="text-center" style="color: var(--danger-color);">You cancelled this order</h2>
+      <% if (locals.order.status !== "awaitingStripePaymenty") { %>
+        <a href="/Payment">Go to payment page</a>
       <% } %>
+      </div>
       <hr />
       <div class="cart-row" id="cart-row-header">
         <span class="cart-item cart-header cart-column">ITEM</span>
