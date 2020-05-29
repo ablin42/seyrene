@@ -100,7 +100,7 @@ function getNeededAttributes(attributes) {
     return obj;
 }
 
-async function createPwintyOrder(order, req, items) {
+async function createPwintyOrder(order, req) {
   let options = {
       method: 'POST',
       uri : `http://localhost:8089/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders
@@ -120,10 +120,9 @@ async function createPwintyOrder(order, req, items) {
   response = await rp(options);
   if (response.statusCode === 200) {
     pwintyOrderId = response.data.id;
-    order.pwintyOrderId = pwintyOrderId;
     let body = [];
 
-    items.forEach((item, index) => {
+    order.items.forEach((item, index) => {
         if (item.attributes.isUnique !== true) {
             item.elements.forEach((product, i) => {
                 let obj = {
@@ -160,10 +159,14 @@ async function createPwintyOrder(order, req, items) {
                 if (response.statusCode === 200) {
                     console.log("submitted order");
 
-                    response = await createSimpleOrder(order, req, items);
+                    var [err, order] = await utils.to(Order.findOneAndUpdate({chargeId: req.body.data.object.id, status: "awaitingStripePayment" }, {$set: {pwintyOrderId: pwintyOrderId}})); 
+                    if (err || order === null)
+                        throw new Error("An error occurred while submitting your order, please try again later");
+
+                    response = await submitOrder(order, req);
                     return response;
-                  } else
-                      throw new Error(`Something went wrong while submitting the order: ${response.errordata.statusTxt}`);
+                } else
+                    throw new Error(`Something went wrong while submitting the order: ${response.errordata.statusTxt}`);
               } else
                   throw new Error(`Order is not valid: ${response.data.generalErrors[0]}`);
           } else
@@ -174,10 +177,10 @@ async function createPwintyOrder(order, req, items) {
       throw new Error(`Something went wrong while creating the order: ${response.errordata.statusTxt}`);
 }
 
-async function createSimpleOrder(order, req, items) {
-    var [err, result] = await utils.to(order.save());
-    if (err || result == null)
-        throw new Error("An error occurred while creating your order");
+async function submitOrder(order, req) {
+    var [err, order] = await utils.to(Order.findOneAndUpdate({chargeId: req.body.data.object.id, status: "awaitingStripePayment" }, {$set: {status: "Submitted"}})); 
+    if (err || order === null)
+        throw new Error("An error occurred while submitting your order, please try again later");
     
     // Send mails
     let subject = `New Order #${order._id}`;
@@ -185,7 +188,7 @@ async function createSimpleOrder(order, req, items) {
     if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
         throw new Error("An error occurred while trying to send the mail, please retry");
 
-    var [err, user] = await utils.to(User.findById(req.user._id));
+    var [err, user] = await utils.to(User.findById(order._userId));
     if (err || user == null)
         throw new Error("An error occurred while finding your user account, please try again");
     content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
@@ -233,7 +236,7 @@ try {
         });
 
         if (isPwinty === false)
-            var response = await createSimpleOrder(order, req);
+            var response = await submitOrder(order, req);
         else 
             var response = await createPwintyOrder(order, req);
 
@@ -248,9 +251,9 @@ try {
 router.post('/confirm', async (req, res) => {
 try {
     if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) { //make sure its sent by webhook
-        var [err, order] = await utils.to(Order.findOneAndUpdate({ _userId: req.user._id, status: "awaitingStripePayment" }, {$set: {status: "Submitted", chargeId: req.body.data.object.id}}));
+        var [err, order] = await utils.to(Order.findOne({chargeId: req.body.data.object.id, status: "awaitingStripePayment" })); 
         if (err || order === null)
-            throw new Error("An error occurred while submitting your order, please try again later");
+            throw new Error("An error occurred while finding your order, please try again later");
 
         let isPwinty = false;
         for (let index = 0; index < order.items.length; index++) {
@@ -262,11 +265,11 @@ try {
         }
 
         if (isPwinty === false)
-            var response = await createSimpleOrder(order, req, order.items);
+            var response = await submitOrder(order, req);
         else 
-            var response = await createPwintyOrder(order, req, order.items);
+            var response = await createPwintyOrder(order, req);
 
-        return res.status(200).send({error: false, orderId: order._id});
+        //return res.status(200).send({error: false, orderId: order._id});
     }
     return res.status(200).send("OK");
 } catch (err) {
@@ -276,17 +279,17 @@ try {
 
 router.post('/initialize', verifySession, async (req, res) => {
 try {
-    if (req.body.user) {
-        var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.body.user._id }));
+    if (req.user) {
+        var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
         if (err)
             throw new Error("An error occurred while looking for your delivery informations, please try again");
 
-        var [err, deletedOrder] = await utils.to(Order.findOneAndDelete({ _userId: req.body.user._id, status: "awaitingStripePayment" }));
+        var [err, deletedOrder] = await utils.to(Order.findOneAndDelete({ _userId: req.user._id, status: "awaitingStripePayment" }));
         if (err)
             throw new Error("An error occurred, please try again later");
 
         const order = new Order({
-            _userId: req.body.user._id,
+            _userId: req.user._id,
             chargeId: req.body.chargeId,
             items: req.body.items,
             price: req.body.price,
@@ -427,8 +430,11 @@ try {
                             throw new Error("We could not cancel your order, please try again later");
                     } else 
                         throw new Error("Your order status does not allow it to be cancelled");
-                } else 
+                } else {
+                    console.log(response)
                     throw new Error("We could not check the status of your order, please try again later");
+
+                }
             }
 
             // Send mails

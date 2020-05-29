@@ -4,6 +4,7 @@ const stripe = require('stripe')('sk_test_52HhMBaVOLRzC2iN3zljiCcP00Zb6YvQ3W');
 const rp = require("request-promise");
 
 const Cart = require('../models/Cart');
+const Order = require('../models/Order');
 const Gallery = require('../models/Gallery');
 const Shop = require('../models/Shop');
 const verifySession = require('./helpers/verifySession');
@@ -75,16 +76,25 @@ try {
 
 router.post('/refund', verifySession, async (req, res) => {
 try {
-    let chargeId = req.body.chargeId;
+    if (req.user) {
+        let chargeId = req.body.chargeId;
 
-    console.log(chargeId)
-    stripe.refunds.create({payment_intent: chargeId},
-        (err, refund) => {
-            if (err)
-                return res.status(200).json({error: true, message: err.raw.message});
-            return res.status(200).json({error: false, data: refund});
-        }
-    );
+        var [err, order] = await utils.to(Order.findOne({chargeId: chargeId})); 
+        if (err || order === null)
+            throw new Error("We couldn't find your order, please try again");
+
+        if (order._userId === req.user._id || req.user.level >= 3) {
+    
+            stripe.refunds.create({payment_intent: chargeId},
+                (err, refund) => {
+                    if (err)
+                        return res.status(200).json({error: true, message: err.raw.message});
+                    return res.status(200).json({error: false, data: refund});
+                }
+            );
+        } else 
+            throw new Error("Unauthorized, contact your administrator if you think this is an issue.");
+    }
 } catch (err) {
     console.log("STRIPE REFUND ERROR:", err);
     return res.status(200).json({error: true, message: err.message})
@@ -110,16 +120,13 @@ try {
                 }
             }
 
-            // Create a PaymentIntent with the order amount and currency
             stripe.paymentIntents.create({
                 amount: total * 100,
                 currency: "eur",
                 description: 'Charging for purchase @ maral',
             }, (err, paymentIntent) => {
-                if (err) {
-                    req.flash("warning", err.message);
+                if (err) 
                     return res.status(200).send({error: true, message: err.message});
-                }
 
                 let options = {
                     uri: `http://localhost:8089/api/order/initialize`,
@@ -128,18 +135,15 @@ try {
                       'Content-Type': 'application/json',
                       'Accept': 'application/json'
                     },
-                    body: {items: items, price: total, user: req.user, chargeId: paymentIntent.client_secret},
+                    body: {items: items, price: total, user: req.user, chargeId: paymentIntent.id},
                     json: true
                 }
                 rp(options, (err, response, body) => {
-                    if (err) {
-                        req.flash("warning", "An error occurred while initializing your order");
+                    if (err) 
                         return res.status(200).send({error: true, message: "An error occurred while initializing your order"});
-                    }
-                    if (body.err === true) {
-                        req.flash("warning", body.message);
+                    if (body.err === true) 
                         return res.status(200).send({error: true, message: body.message});
-                    }
+
                     return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret, orderId: body._id});
                 });
             });

@@ -4,7 +4,6 @@
 <script>
     const stripePublicKey = '<%= locals.stripePublicKey %>';
     const stripe = Stripe(stripePublicKey);
-    const elements = stripe.elements(); 
 </script>
 
 <div class="container container-single"> 
@@ -59,7 +58,7 @@
     .then(function(data) {
       console.log(data)
       if (data.error === true) {
-        let alert = createAlertNode(data.message);
+        let alert = createAlertNode(data.message, "warning");
         addAlert(alert, "#header");
         document.querySelector(".btn-pay").disabled = true
         return ;
@@ -109,7 +108,7 @@
       .then(function(result) {
         console.log(result, result.paymentIntent.id)
         if (result.error) {
-          let alert = createAlertNode("Your payment didn't go through, please try again");
+          let alert = createAlertNode("Your payment didn't go through, please try again", "warning");
           addAlert(alert, "#header");
           return ;
         } 
