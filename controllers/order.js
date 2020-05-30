@@ -6,6 +6,7 @@ const rp = require("request-promise");
 const { getCode, getName } = require('country-list');
 
 const Order = require('../models/Order');
+const Purchase = require('../models/PurchaseData');
 const User = require('../models/User');
 const Shop = require('../models/Shop');
 const Cart = require('../models/Cart');
@@ -164,6 +165,8 @@ async function createPwintyOrder(order, req) {
                         throw new Error("An error occurred while submitting your order, please try again later");
 
                     response = await submitOrder(order, req);
+                    response.pwintyOrderId = pwintyOrderId;
+
                     return response;
                 } else
                     throw new Error(`Something went wrong while submitting the order: ${response.errordata.statusTxt}`);
@@ -248,6 +251,43 @@ try {
     return res.status(200).json({err: true, message: err.message})
 }})
 
+async function savePurchaseData(req, order, response) {
+    let pwintyOrderId = "";
+    let shippingAddress = [];
+    let billingAddress = [];
+    let paymentInfo = [];
+
+    if (response.pwintyOrderId)
+        pwintyOrderId = response.pwintyOrderId;
+    
+    var [err, delivery] = await utils.to(DeliveryInfo.findOne({_userId: order._userId})); 
+    if (err || delivery === null)
+        throw new Error("An error occurred while finding your delivery informations, please try again later");
+
+    var [err, user] = await utils.to(User.findOne({_id: order._userId})); 
+    if (err || user === null)
+        throw new Error("An error occurred while finding your user informations, please try again later");
+    
+    shippingAddress = delivery;
+    const purchaseData = new Purchase({
+        _orderId: order._id,
+        _userId: order._userId,
+        chargeId: order.chargeId,
+        pwintyId: pwintyOrderId,
+        shippingAddress: shippingAddress,
+        billingAddress: billingAddress, //request billing address
+        username: user.name,
+        email: user.email,
+        paymentInfo: req.body 
+    });
+
+    var [err, response] = await utils.to(purchaseData.save());
+    if (err || response == null)
+        throw new Error("An error occurred while saving your purchase informations");
+
+    return purchaseData;
+}
+
 router.post('/confirm', async (req, res) => {
 try {
     if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) { //make sure its sent by webhook
@@ -268,7 +308,8 @@ try {
             var response = await submitOrder(order, req);
         else 
             var response = await createPwintyOrder(order, req);
-
+        
+        let purchaseData = await savePurchaseData(req, order, response);
         //return res.status(200).send({error: false, orderId: order._id});
     }
     return res.status(200).send("OK");

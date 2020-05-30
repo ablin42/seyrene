@@ -5,17 +5,14 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("express-flash");
+const fs = require('fs');
 const expressSanitizer = require("express-sanitizer");
 const filter = require("content-filter");
 require("dotenv/config");
 
 const verifySession = require("./controllers/helpers/verifySession");
-//const MongoStore = require('connect-mongo')(session);//
-
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
-
-const fs = require('fs')
 
 //Connect to DB
 mongoose.connect(
@@ -52,7 +49,6 @@ app.use(
     secret: "keyboard cat",
     resave: false,
     saveUninitialized: true,
-    //store: new MongoStore({mongooseConnection: mongoose.connection}),
     cookie: { maxAge: 180 * 60 * 1000 } //, sameSite: 'none', secure: true}, // 180 = 3mn
   })
 );
