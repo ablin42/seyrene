@@ -296,11 +296,7 @@ router.post("/patch/password", vPassword, verifySession, async (req, res) => {
   }
 });
 
-router.post(
-  "/patch/delivery-info",
-  vDelivery,
-  verifySession,
-  async (req, res) => {
+router.post("/patch/delivery-info", vDelivery, verifySession, async (req, res) => {
     try {
       if (req.user) {
         // Check form inputs validity
@@ -328,19 +324,14 @@ router.post(
           try {
             if (data.status != "OK") {
               if (err)
-                throw new Error(
-                  "We could not find your address, please make sure it is valid"
-                );
+                throw new Error("We could not find your address, please make sure it is valid");
             } else {
               //check if delivery is doable using deliverer's API
 
-              var [err, infos] = await utils.to(
-                DeliveryInfo.findOne({ _userId: req.user._id })
-              );
+              var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
               if (err)
-                throw new Error(
-                  "An error occurred while looking for your delivery informations, please retry"
-                );
+                throw new Error("An error occurred while looking for your delivery informations, please retry");
+
               if (infos === null) {
                 let info = new DeliveryInfo({
                   _userId: req.user._id,
@@ -359,44 +350,36 @@ router.post(
                 // Save info to DB if no entry exist yet
                 var [err, result] = await utils.to(info.save());
                 if (err)
-                  throw new Error(
-                    "An error occurred while updating your delivery informations, please try again"
+                  throw new Error("An error occurred while updating your delivery informations, please try again");
+                } else {
+                  let obj = {
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname,
+                    full_address: req.body.fulltext_address,
+                    full_street: req.body.street_name,
+                    country: req.body.country,
+                    street_name: street_name,
+                    street_number: street_number,
+                    city: req.body.city,
+                    state: req.body.state,
+                    zipcode: req.body.postal_code,
+                    instructions: req.body.instructions
+                  };
+                  // Update if user already has an entry in DB
+                  var [err, result] = await utils.to(
+                    DeliveryInfo.updateOne(
+                      { _userId: req.user._id },
+                      { $set: obj }
+                    )
                   );
-              } else {
-                let obj = {
-                  firstname: req.body.firstname,
-                  lastname: req.body.lastname,
-                  full_address: req.body.fulltext_address,
-                  full_street: req.body.street_name,
-                  country: req.body.country,
-                  street_name: street_name,
-                  street_number: street_number,
-                  city: req.body.city,
-                  state: req.body.state,
-                  zipcode: req.body.postal_code,
-                  instructions: req.body.instructions
-                };
-                // Update if user already has an entry in DB
-                var [err, result] = await utils.to(
-                  DeliveryInfo.updateOne(
-                    { _userId: req.user._id },
-                    { $set: obj }
-                  )
-                );
                 if (err)
-                  throw new Error(
-                    "An error occurred while updating your delivery informations, please try again"
-                  );
+                  throw new Error("An error occurred while updating your delivery informations, please try again");
               }
-              req.flash(
-                "success",
-                "Delivery informations successfully updated"
-              );
+              req.flash("success", "Delivery informations successfully updated");
+
               res.status(200).redirect("/User");
             }
-          } catch (err) {
-            console.log(err);
-          }
+          } catch (err) {console.log(err);}
         });
         console.log(req.body);
       } else

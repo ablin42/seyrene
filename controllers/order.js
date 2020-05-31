@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {validationResult} = require('express-validator');
 const {vOrder} = require('./validators/vShop');//vOrder
+const {vDelivery} = require("./validators/vUser");
 const rp = require("request-promise");
 const { getCode, getName } = require('country-list');
 
@@ -254,8 +255,6 @@ try {
 async function savePurchaseData(req, order, response) {
     let pwintyOrderId = "";
     let shippingAddress = [];
-    let billingAddress = [];
-    let paymentInfo = [];
 
     if (response.pwintyOrderId)
         pwintyOrderId = response.pwintyOrderId;
@@ -275,7 +274,7 @@ async function savePurchaseData(req, order, response) {
         chargeId: order.chargeId,
         pwintyId: pwintyOrderId,
         shippingAddress: shippingAddress,
-        billingAddress: billingAddress, //request billing address
+        billingAddress: order.billing, 
         username: user.name,
         email: user.email,
         paymentInfo: req.body 
@@ -309,8 +308,7 @@ try {
         else 
             var response = await createPwintyOrder(order, req);
         
-        let purchaseData = await savePurchaseData(req, order, response);
-        //return res.status(200).send({error: false, orderId: order._id});
+        await savePurchaseData(req, order, response);
     }
     return res.status(200).send("OK");
 } catch (err) {
@@ -514,4 +512,41 @@ try {
     console.log("CANCEL ORDER ERROR:", err);
     return res.status(200).json({err: true, msg: err.message})
 }})
+
+router.post("/billing/save", vDelivery, verifySession, async (req, res) => {
+try {
+    if (!req.user) 
+        throw new Error("Unauthorized, please make sure you're logged in!");
+    if (req.body.billing && req.body.clientSecret) {
+        const vResult = validationResult(req.body.billing);
+        if (!vResult.isEmpty()) {
+          vResult.errors.forEach(item => {
+            req.flash("info", item.msg);
+          });
+          throw new Error("Incorrect form input");
+        }
+        let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
+        let encoded_address = encodeURI(req.body.billing.fulltext_address);
+        let options = {
+            uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
+            json: true
+          };
+
+        rp(options).then(async data => {
+            if (data.status !== "OK") 
+                return res.status(200).json({error: true, message: "We could not validate your address, please make sure it is valid"});
+            
+            var [err, order] = await utils.to(Order.findOneAndUpdate({_userId: req.user._id, chargeId: req.body.clientSecret, status: "awaitingStripePayment" }, {$set: {billing: req.body.billing}}));
+            if (err || order === null)
+                throw new Error("An error occurred while registering your billing informations, please try again later");
+            
+            return res.status(200).json({error: false})
+        })
+    } else 
+        throw new Error("Missing information, please try again");
+} catch (err) {
+    console.log("SAVE BILLING ERROR:", err);
+    return res.status(200).json({error: true, message: err.message})
+}})
+
 module.exports = router;

@@ -74,6 +74,9 @@ const orderSchema = new mongoose.Schema({
     instructions: {
         type: String,
     },
+    billing: {
+        type: Array,
+    },
     date: {
         type: Date,
         default: Date.now

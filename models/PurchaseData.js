@@ -33,11 +33,7 @@ const PurchaseSchema = mongoose.Schema({
         type: String,
         require: true
     },
-    IP: { //IP too? geoloc?
-        type: String,
-        require: true
-    },
-    paymentInfo: { //stripe purchase ip
+    paymentInfo: {
         type: Array,
         required: true
     },
