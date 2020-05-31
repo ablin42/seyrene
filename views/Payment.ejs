@@ -160,6 +160,19 @@
         receipt_email: document.getElementById('email').value,
         payment_method: {
           card: card
+        },
+        billing_details: {
+          /*"address": {
+            "city": null,
+            "country": null,
+            "line1": null,
+            "line2": null,
+            "postal_code": null,
+            "state": null
+          },
+          "email": null,
+          "name": null,
+          "phone": null*/
         }
       })
       .then(function(result) {

@@ -289,6 +289,7 @@ async function savePurchaseData(req, order, response) {
 
 router.post('/confirm', async (req, res) => {
 try {
+    /////////////// once this is triggered, wait 24h then proceed if no fraud webhook/refund events occurred
     if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) { //make sure its sent by webhook
         var [err, order] = await utils.to(Order.findOne({chargeId: req.body.data.object.id, status: "awaitingStripePayment" })); 
         if (err || order === null)
