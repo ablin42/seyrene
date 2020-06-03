@@ -299,7 +299,6 @@ router.post("/patch/password", vPassword, verifySession, async (req, res) => {
 router.post("/patch/delivery-info", vDelivery, verifySession, async (req, res) => {
     try {
       if (req.user) {
-        // Check form inputs validity
         const vResult = validationResult(req);
         if (!vResult.isEmpty()) {
           vResult.errors.forEach(item => {
@@ -307,7 +306,7 @@ router.post("/patch/delivery-info", vDelivery, verifySession, async (req, res) =
           });
           throw new Error("Incorrect form input");
         }
-        //let doubleCheck = encodeURI(req.body.street_name + "," + req.body.city + "," + req.body.country);
+
         let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
         let encoded_address = encodeURI(req.body.fulltext_address);
         let street_name = req.body.street_name.replace(/[0-9]/g, "").trim();
@@ -326,7 +325,7 @@ router.post("/patch/delivery-info", vDelivery, verifySession, async (req, res) =
               if (err)
                 throw new Error("We could not find your address, please make sure it is valid");
             } else {
-              //check if delivery is doable using deliverer's API
+              //check if delivery is doable using deliverer's API /////////////////
 
               var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
               if (err)
