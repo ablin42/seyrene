@@ -80,11 +80,12 @@ router.get("/single/:blogId", async (req, res) => {
   try {
     var [err, blog] = await utils.to(Blog.findById(req.params.blogId));
     if (err)
-      throw new Error(
-        "An error occurred while fetching the blog's data, please try again"
-      );
-    if (blog === null) throw new Error("No blog post exist with this ID");
+      throw new Error("An error occurred while fetching the blog's data, please try again");
+
+    if (blog === null) 
+      throw new Error("No blog post exist with this ID");
     var blog = await bHelpers.parseBlogs(blog, true);
+
     return res.status(200).json(blog);
   } catch (err) {
     console.log("ERROR FETCHING A BLOG:", err);
@@ -108,14 +109,14 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
       };
       req.session.formData = formData;
 
-      // Check form inputs validity
+      /* Check form inputs validity
       const vResult = validationResult(req);
       if (!vResult.isEmpty()) {
         vResult.errors.forEach(item => {
           req.flash("info", item.msg);
         });
         throw new Error("Incorrect form input");
-      }
+      }*/
 
       const blog = new Blog(obj);
       var [err, savedBlog] = await utils.to(blog.save());
@@ -157,35 +158,20 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
 });
 
 // patch a blog
-router.post(
-  "/patch/:blogId",
-  upload,
-  verifySession,
-  vBlog,
-  async (req, res) => {
+router.post("/patch/:blogId", upload, verifySession, vBlog, async (req, res) => {
     try {
       if (req.user.level > 1) {
         // Check form inputs validity
         let id = req.params.blogId;
-        const vResult = validationResult(req);
+        /*const vResult = validationResult(req);
         if (!vResult.isEmpty()) {
           vResult.errors.forEach(item => {
             req.flash("info", item.msg);
           });
           throw new Error("Incorrect form input");
-        }
+        }*/
 
-        var [err, patchedBlog] = await utils.to(
-          Blog.updateOne(
-            { _id: id },
-            {
-              $set: {
-                title: req.body.title,
-                content: req.body.content
-              }
-            }
-          )
-        );
+        var [err, patchedBlog] = await utils.to(Blog.updateOne({ _id: id },{$set: {title: req.body.title, content: req.body.content}}));
         if (err)
           throw new Error(
             "An error occurred while updating the blog, please try again"

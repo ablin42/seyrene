@@ -11,11 +11,14 @@
                 <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
             </div>
 
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label class="control-label">Description</label>
                 <textarea class="instructions-textarea" id="content" name="content" placeholder="Description de l'oeuvre.." onkeyup="Validate.String(this, 128, 4096);" required><%= locals.blogContent.content %></textarea>
                 <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>  
-            </div>
+            </div>-->
+
+            <div id="editor" style="background-color: white;"></div>
+            <input type="hidden" name="content" id="editorData">
 
             <div class="form-group">
                 <div class="form-group text-center">
@@ -39,6 +42,43 @@
             <input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-blog">
         </form>
     </div>
+
+<script>
+    var toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+        ['link', 'image'],
+        ['clean']                                         // remove formatting button
+    ];
+
+    var quill = new Quill('#editor', {
+        modules: {
+            toolbar: toolbarOptions,
+        },
+        placeholder: "Your blog article...",
+        theme: 'snow'
+    });
+
+    let toAppend = "<%= locals.blogContent.content %>";
+    toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    const delta = quill.clipboard.convert(toAppend)
+    quill.setContents(delta, 'silent')
+    
+    const saveButton = document.getElementById('submit-blog');
+    const editorData = document.getElementById('editorData');
+
+    saveButton.addEventListener('click', (event) => {
+        editorData.value = quill.root.innerHTML;
+    })
+
+</script>
 <script src="/scripts/blog/blogScripts.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 </div>

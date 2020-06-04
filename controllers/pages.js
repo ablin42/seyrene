@@ -480,24 +480,26 @@ router.get("/Blog/:id", verifySession, async (req, res) => {
   try {
     let id = req.params.id;
     let obj = { active: "Blog" };
-    obj.blogs = JSON.parse(
-      await request(`http://127.0.0.1:8089/api/blog/single/${id}`)
-    );
-    if (obj.blogs.error) throw new Error(obj.blogs.message);
-    obj.img = JSON.parse(
-      await request(`http://127.0.0.1:8089/api/image/Blog/${id}`)
-    );
-    if (obj.img.error) throw new Error(obj.img.message);
+
+    obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
+    if (obj.blogs.error) 
+      throw new Error(obj.blogs.message);
+
+    obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Blog/${id}`));
+    if (obj.img.error) 
+      throw new Error(obj.img.message);
+
     if (req.user) {
       obj.userId = req.user._id;
       obj.name = req.user.name;
       obj.level = req.user.level;
     }
+
     return res.status(200).render("single/blog-single", obj);
   } catch (err) {
     console.log("BLOG ROUTE ERROR");
     req.flash("warning", err.message);
-    return res.status(200).redirect("/Blog");
+    return res.status(200).redirect("/About");
   }
 });
 
@@ -777,7 +779,7 @@ router.get("/Admin/Blog/Post", verifySession, async (req, res) => {
   } catch (err) {
     console.log("BLOG POST ROUTE ERROR", err);
     req.flash("warning", err.message);
-    return res.status(200).redirect("/Blog");
+    return res.status(200).redirect("/restricted/blog-post");
   }
 });
 
