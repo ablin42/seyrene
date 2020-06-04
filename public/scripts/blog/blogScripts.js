@@ -1,4 +1,4 @@
-function deleteImage(e, item) {
+/*function deleteImage(e, item) {
     e.preventDefault();
     fetch(item.href, {
         method: 'get',
@@ -52,4 +52,4 @@ function setMain(e, item) {
         </div>`;
     addAlert(alertErr, "#header")
    })
-}
+}*/

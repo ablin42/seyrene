@@ -20,10 +20,10 @@ async function infiniteBlogs() {
                         <b class="blog-author">${blog.author}</b>,
                         <i class="blog-date">${blog.date}</i>
                     </p>`;
-                if (blog.mainImgId) {
+                if (blog.thumbnail) {
                   toAppend += `
                 <div class="blog-overlay-wrapper">
-                    <img class="blog-img" src="/api/image/${blog.mainImgId}">
+                    ${blog.thumbnail}
                     <div class="blog-overlay">
                     <p>${blog.shortcontent}...</p>
                     <form action="/Blog/${id}"><button class="blog-btn">Lire plus</button></form>

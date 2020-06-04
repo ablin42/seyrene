@@ -3,7 +3,7 @@
 <div class="container container-single"> 
     <div class="single-wrapper col-8 offset-2">
         <h1 class="single-title">Rédiger un post de blog</h1>
-        <form class="col-8 offset-2" id="blog" method="POST" action="/api/blog/" enctype="multipart/form-data">
+        <form class="col-8 offset-2" id="blog" method="POST" action="/api/blog/">
             <hr /> 
             <div class="form-group">
                 <label class="control-label">Titre</label>
@@ -15,11 +15,6 @@
                 <div id="editor" style="background-color: white;" onkeyup="saveContent()"></div>
                 <input type="hidden" name="content" id="content">
                 <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
-            </div>
-
-            <div class="form-group text-center">
-                <label for="img" id="imglabel" class="filebtn">Choisir des images</label>
-                <input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" multiple>
             </div>
 
             <input type="submit" class="logbtn" value="Valider" id="submit-blog">
@@ -66,7 +61,7 @@
 
     function saveContent() {
         editorData.value = quill.root.innerHTML;
-        Validate.String(editorData, 128, 4096);
+        Validate.String(editorData, 128);
     }
 </script>
 <script src="/scripts/frontValidation.js"></script>

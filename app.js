@@ -36,9 +36,9 @@ app.use(express.static(__dirname + "/public"));
 // Middleware
 //-- Body parser --//
 // Parse app/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
 // Parse app/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: 100000000}));
 //-- Cross origin --//
 app.use(cors());
 //-- Cookie parser --//
@@ -113,13 +113,12 @@ app.use((err, req, res, next) => {
     return next();
   }
   console.error(err.stack);
-  if (
-    req.originalUrl.indexOf("/api/gallery/") != -1 ||
-    req.originalUrl.indexOf("/api/shop/") != -1
-  )
-    ///////////multer error
+    
+  ///////////multer error
+  if (req.originalUrl.indexOf("/api/gallery/") != -1 ||req.originalUrl.indexOf("/api/shop/") != -1)
     return res.status(500).json({ url: "/", msg: err.message, err: true });
-  req.flash("warning", err.message);
+
+  //req.flash("warning", err.message);
   return res.status(500).redirect("back");
 });
 

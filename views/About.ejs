@@ -114,9 +114,8 @@
                           <i class="blog-date"><%= locals.blogs[index].date %></i>
                         </p>
 
-                      <% if (locals.blogs[index].mainImgId || locals.blogs[index].thumbnail) { %>
+                      <% if (locals.blogs[index].thumbnail) { %>
                         <div class="blog-overlay-wrapper">
-                          <!--<img class="blog-img" src="/api/image/<%= locals.blogs[index].mainImgId %>">-->
                           <div class="blog-overlay">
                             <div class="content-holder"></div>
                             <!--<p><%= locals.blogs[index].shortcontent %>...</p>-->

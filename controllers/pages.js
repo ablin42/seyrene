@@ -485,10 +485,6 @@ router.get("/Blog/:id", verifySession, async (req, res) => {
     if (obj.blogs.error) 
       throw new Error(obj.blogs.message);
 
-    obj.img = JSON.parse(await request(`http://127.0.0.1:8089/api/image/Blog/${id}`));
-    if (obj.img.error) 
-      throw new Error(obj.img.message);
-
     if (req.user) {
       obj.userId = req.user._id;
       obj.name = req.user.name;
@@ -786,35 +782,26 @@ router.get("/Admin/Blog/Post", verifySession, async (req, res) => {
 router.get("/Admin/Blog/Patch/:blogId", verifySession, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
-      let obj = {
-        active: "Edit a blog"
-      };
-      if (req.session.formData) {
-        obj.formData = req.session.formData;
-        req.session.formData = undefined;
-      }
-      var err, blog;
-      [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
-      if (err)
-        throw new Error(
-          "An error occurred while loading the blog, please try again"
-        );
-      if (blog === null) throw new Error("No blog exists with this ID");
-
-      obj.img = JSON.parse(
-        await request(
-          `http://127.0.0.1:8089/api/image/Blog/${req.params.blogId}`
-        )
-      );
-      if (obj.img.error) throw new Error(obj.img.message);
-
-      obj.blogContent = blog;
-      obj._id = req.params.blogId;
+      let obj = {active: "Edit a blog"};
       if (req.user) {
         obj.userId = req.user._id;
         obj.name = req.user.name;
         obj.level = req.user.level;
       }
+      if (req.session.formData) {
+        obj.formData = req.session.formData;
+        req.session.formData = undefined;
+      }
+
+      var [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
+      if (err)
+        throw new Error("An error occurred while loading the blog, please try again");
+      if (blog === null) 
+        throw new Error("No blog exists with this ID");
+
+      obj.blogContent = blog;
+      obj._id = req.params.blogId;
+     
       return res.status(200).render("restricted/blog-patch", obj);
     } else
       throw new Error(
