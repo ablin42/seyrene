@@ -28,9 +28,21 @@
 
 <script>
   let toAppend = "<%= locals.blogs.content %>";
+  let contentHolder = document.getElementById("content-holder");
+
   toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-  document.getElementById("content-holder").innerHTML = toAppend;
-  //<a href="#expand"><img onclick="expand(this);" src="http://localhost:8089/api/image/" alt="1slide"></a>
+  contentHolder.innerHTML = toAppend;
+
+  contentHolder.querySelectorAll("img").forEach(item => {
+    item.setAttribute("onclick", "expand(this)");
+
+    var link = document.createElement('a');
+    link.innerHTML = item.outerHTML;
+    link.setAttribute('href', '#expand');
+    
+    item.parentNode.insertBefore(link, item);
+    item.remove();
+  })
 </script>
 
 <script>
