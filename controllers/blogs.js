@@ -26,7 +26,7 @@ var storage = multer.diskStorage({
 upload = multer({
   storage: storage,
   limits: {
-    fileSize: 10000000 //too low probably
+    fileSize: (25 * 1024 * 1024) //too low probably
   },
   fileFilter: function(req, file, cb) {
     gHelpers.sanitizeFile(req, file, cb);
@@ -36,18 +36,27 @@ upload = multer({
 async function fetchMainImg(blogs) {
   let arr = [];
   for (let i = 0; i < blogs.length; i++) {
+    let images = blogs[i].content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/)
     let obj = {
       _id: blogs[i]._id,
       title: blogs[i].title,
       content: blogs[i].content,
       shorttitle: blogs[i].title.substr(0, 128),
-      shortcontent: blogs[i].content.substr(0, 512),
+      shortcontent: blogs[i].content.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "").substr(0, 512),
+      thumbnail: images,
       date: blogs[i].date,
       createdAt: blogs[i].createdAt,
       updatedAt: blogs[i].updatedAt,
       author: blogs[i].author,
       __v: blogs[i].__v
     };
+    if (images && images.length > 1)
+      obj.thumbnail = images[0]
+    //let firstImg = images[]
+    //firstImg = firstImg.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "")
+    //console.log(firstImg)
+    //foo = foo.substr(0, 512)
+    //console.log(firstImg)
     var [err, img] = await utils.to(Image.findOne({_itemId: blogs[i]._id, itemType: "Blog", isMain: true}));
     if (err) 
       throw new Error("An error occurred while fetching the blogs images");
@@ -167,7 +176,7 @@ router.post("/patch/:blogId", upload, verifySession, vBlog, async (req, res) => 
           content: req.body.content
         };
         req.session.formData = formData;
-        
+
         // Check form inputs validity
         const vResult = validationResult(req);
         if (!vResult.isEmpty()) {

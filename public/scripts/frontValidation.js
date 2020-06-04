@@ -11,13 +11,12 @@ function getInvalid(formId) {
 }
 
 let Validate = {
-    String: function(item, min, max) {
+    String: function(item, min, max = 10000000) {
+        console.log(item.value.length)
         let inputId = item.id,
             spanInfo = document.getElementById(`i_${inputId}`),
             formId = item.form.id;
 
-            console.log(item.value)
-        
         if (item.value.length !== 0 && (item.value.length < min || item.value.length > max)) {
             spanInfo.style.display = "inline-block";
             item.classList.add("invalid");    

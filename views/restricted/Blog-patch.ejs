@@ -80,11 +80,12 @@
 
     saveButton.addEventListener('click', (event) => {
         editorData.value = quill.root.innerHTML;
+        console.log(editorData.value.length)
     })
 
     function saveContent() {
         editorData.value = quill.root.innerHTML;
-        Validate.String(editorData, 128, 4096);
+        Validate.String(editorData, 128);
     }
 
 </script>

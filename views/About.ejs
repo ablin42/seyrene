@@ -114,11 +114,12 @@
                           <i class="blog-date"><%= locals.blogs[index].date %></i>
                         </p>
 
-                      <% if (locals.blogs[index].mainImgId) { %>
+                      <% if (locals.blogs[index].mainImgId || locals.blogs[index].thumbnail) { %>
                         <div class="blog-overlay-wrapper">
-                          <img class="blog-img" src="/api/image/<%= locals.blogs[index].mainImgId %>">
+                          <!--<img class="blog-img" src="/api/image/<%= locals.blogs[index].mainImgId %>">-->
                           <div class="blog-overlay">
-                            <p><%= locals.blogs[index].shortcontent %>...</p>
+                            <div class="content-holder"></div>
+                            <!--<p><%= locals.blogs[index].shortcontent %>...</p>-->
                             <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Lire plus</button></form>
                           </div>
                         </div>
@@ -126,12 +127,24 @@
                       <% } else { %>
                         <div class="blog-no-overlay-wrapper">
                           <div class="blog-no-overlay">
-                            <p><%= locals.blogs[index].shortcontent %>...</p>
+                            <div class="content-holder"></div>
+                            <!--<p><%= locals.blogs[index].shortcontent %>...</p>-->
                             <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Lire plus</button></form>
                           </div>
                         </div>
                       </div>
                       <% } %>
+                      <script>
+                        toAppend = "<%= locals.blogs[index].shortcontent %>";
+                        toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+                        document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".content-holder").innerHTML = toAppend;
+
+                        <% if (locals.blogs[index].thumbnail) { %>
+                          toAppend = "<%= locals.blogs[index].thumbnail %>";
+                          toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+                          document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".blog-overlay-wrapper").innerHTML += toAppend;
+                        <% } %>
+                      </script>
                   <% }) %>
                 <% } %>
               </div>
