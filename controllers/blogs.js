@@ -109,14 +109,14 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
       };
       req.session.formData = formData;
 
-      /* Check form inputs validity
+      //Check form inputs validity
       const vResult = validationResult(req);
       if (!vResult.isEmpty()) {
         vResult.errors.forEach(item => {
           req.flash("info", item.msg);
         });
         throw new Error("Incorrect form input");
-      }*/
+      }
 
       const blog = new Blog(obj);
       var [err, savedBlog] = await utils.to(blog.save());
@@ -161,15 +161,21 @@ router.post("/", upload, verifySession, vBlog, async (req, res) => {
 router.post("/patch/:blogId", upload, verifySession, vBlog, async (req, res) => {
     try {
       if (req.user.level > 1) {
-        // Check form inputs validity
         let id = req.params.blogId;
-        /*const vResult = validationResult(req);
+        const formData = {
+          title: req.body.title,
+          content: req.body.content
+        };
+        req.session.formData = formData;
+        
+        // Check form inputs validity
+        const vResult = validationResult(req);
         if (!vResult.isEmpty()) {
           vResult.errors.forEach(item => {
             req.flash("info", item.msg);
           });
           throw new Error("Incorrect form input");
-        }*/
+        }
 
         var [err, patchedBlog] = await utils.to(Blog.updateOne({ _id: id },{$set: {title: req.body.title, content: req.body.content}}));
         if (err)

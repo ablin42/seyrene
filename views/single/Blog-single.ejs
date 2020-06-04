@@ -2,20 +2,6 @@
 
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 
-
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
-
 <div class="container container-single">
     <% if(locals.blogs){ %>
       <div class="single-wrapper" id="<%= locals.blogs._id %>">
@@ -64,7 +50,7 @@
           <p class="blog-info pb-2">par 
             <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>
           </p>
-          
+
           <div class="blog-content col-10 offset-1" id="content-holder"></div>
         </div>
       </div>

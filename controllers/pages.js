@@ -789,6 +789,10 @@ router.get("/Admin/Blog/Patch/:blogId", verifySession, async (req, res) => {
       let obj = {
         active: "Edit a blog"
       };
+      if (req.session.formData) {
+        obj.formData = req.session.formData;
+        req.session.formData = undefined;
+      }
       var err, blog;
       [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
       if (err)
