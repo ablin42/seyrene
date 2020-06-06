@@ -123,13 +123,9 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       obj.level = req.user.level;
       obj.isDelivery = false;
       obj.delivery = null;
-      var [err, result] = await utils.to(
-        DeliveryInfo.findOne({ _userId: req.user._id })
-      );
+      var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
       if (err)
-        throw new Error(
-          "An error occurred while looking for your delivery informations, please retry"
-        );
+        throw new Error("An error occurred while looking for your delivery informations, please retry");
       if (result != null) {
         obj.delivery = result;
         obj.isDelivery = true;

@@ -88,7 +88,7 @@ try {
             stateOrCounty: "Paris", //optional	State, county or region of the recipient.
             postalOrZipCode: "75012", // optional *	Postal or zip code of the recipient.
             countryCode: "FR", //	Two-letter country code of the recipient.
-            preferredShippingMethod: "standard", // Possible values are Budget, Standard, Express, and Overnight.
+            preferredShippingMethod: "Standard", // Possible values are Budget, Standard, Express, and Overnight.
             payment: "", //optional	Payment option for order, either InvoiceMe or InvoiceRecipient. Default InvoiceMe
             packingSlipUrl: "", //optional †	URL to a packing slip file. PNG format, A4 size recommended.
             mobileTelephone: "", //optional	Customer's mobile number for shipping updates and courier contact.
@@ -360,7 +360,37 @@ try {
     }
     rp(options)
     .then((response) => {
-        console.log(response)
+        console.log(response, "x")
+        return res.status(200).json(response);
+    })
+    .catch((err) => {
+        console.log(err)
+        return res.status(200).json({ error: true, errordata: err.error });
+    })
+} catch (err) {
+    return res.status(200).json({ message: err.message });
+}});
+
+router.get("/pricing/:countryCode", async (req, res) => {
+try {
+    let countryCode = req.params.countryCode;
+    let options = {
+        method: 'POST',
+        uri : `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/order/price`,
+        headers: {
+            'X-Pwinty-MerchantId': MERCHANTID,
+            'X-Pwinty-REST-API-Key': APIKEY
+        },
+        body: {"items": [{
+                "id": 818740, //might be useless
+                "sku": "GLOBAL-CAN-20X20",
+                "quantity": 1
+            }]},
+        json: true
+    }
+    rp(options)
+    .then((response) => {
+        console.log(response, "x")
         return res.status(200).json(response);
     })
     .catch((err) => {

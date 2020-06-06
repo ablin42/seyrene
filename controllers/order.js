@@ -120,6 +120,8 @@ async function createPwintyOrder(order, req) {
   }
 
   response = await rp(options);
+  console.log(response)
+
   if (response.statusCode === 200) {
     pwintyOrderId = response.data.id;
     let body = [];
@@ -144,20 +146,30 @@ async function createPwintyOrder(order, req) {
       options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/images/batch`;
 
       response = await rp(options);
+      console.log(response)
+
       if (response.statusCode === 200) {
           console.log("products and images added to order");
           options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/status`;
-          options.method = "GET";
+          options.method = "GET";   
 
           response = await rp(options);
+          console.log(response)
+
           if (response.statusCode === 200) {
               if (response.data.isValid === true) { //////////////////////////////////////
+                options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}`;
+                response = await rp(options);
+                console.log(response, "xX")
+
                 console.log("order is valid");
                 options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
                 options.method = "POST";
                 options.body = { status: "Submitted" };// Cancelled, AwaitingPayment or Submitted.
 
                 response = await rp(options);
+          console.log(response)
+
                 if (response.statusCode === 200) {
                     console.log("submitted order");
 
