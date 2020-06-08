@@ -104,8 +104,8 @@ router.post('/create-intent', verifySession, async (req, res) => {
 try {
     if (req.user) {
         let cart = new Cart(req.session.cart ? req.session.cart : {});
-        console.log(req.session.cart)
         let total = cart.price.totalIncludingTax; /////////////////////HERE
+        console.log(total)
         let items = cart.generateArray();
 
         if (total > 0) {
@@ -122,7 +122,7 @@ try {
             }
 
             stripe.paymentIntents.create({
-                amount: total * 100, ///////////////////////add delivery price here (and taxes)
+                amount: Math.round(total * 100), ///////////////////////add delivery price here (and taxes)
                 currency: "eur",
                 description: 'Charging for purchase @ maral',
             }, (err, paymentIntent) => {
@@ -136,7 +136,7 @@ try {
                       'Content-Type': 'application/json',
                       'Accept': 'application/json'
                     },
-                    body: {items: items, price: total, user: req.user, chargeId: paymentIntent.id},
+                    body: {items: items, price: total, deliveryPrice: cart.price.shippingIncludingTax, user: req.user, chargeId: paymentIntent.id},
                     json: true
                 }
                 rp(options, (err, response, body) => {

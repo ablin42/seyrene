@@ -207,6 +207,7 @@ module.exports = function Cart(oldCart) {
                 totalIncludingTax: parseFloat(obj.response.totalPriceIncludingTax),
                 totalExcludingTax: parseFloat(obj.response.totalPriceExcludingTax)
             }
+            console.log(this.price)
         }
     }
 }

@@ -111,8 +111,8 @@
       <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
         <div class="col-md-6 offset-3 mt-4">
           <div class="payment-div p-3">
-            <h1><%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</h1>
-            <span id="total-price-span">PRIX TOTAL: <b id="total-price"><%= locals.totalPrice %>€</b></span>
+            <h2>shipping(with tax):<%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</h2>
+            <span id="total-price-span">PRIX TOTAL(with tax): <b id="total-price"><%= locals.totalPrice %>€</b></span>
             <span id="total-qty-span">QUANTITÉ TOTALE: <b id="total-qty"><%= locals.totalQty %></b></span>
             <a href="/Payment" class="linkbtn"><button class="btn-purchase" type="button" id="purchase">Continuer</button></a>
           </div>

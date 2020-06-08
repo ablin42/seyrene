@@ -171,7 +171,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
           })
         }
       });
-      obj.totalPrice = formatter.format(cart.totalPrice).substr(2);
+      obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
       obj.totalQty = cart.totalQty;
 
       let countryCode = "FR";

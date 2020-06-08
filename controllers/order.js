@@ -345,6 +345,7 @@ try {
             chargeId: req.body.chargeId,
             items: req.body.items,
             price: req.body.price,
+            deliveryPrice: req.body.deliveryPrice,
             status: "awaitingStripePayment",
             firstname: infos.firstname,
             lastname: infos.lastname,

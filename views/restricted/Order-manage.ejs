@@ -10,6 +10,7 @@
           Identifiant de commande: <b><%= locals.order._id %></b>
           Prix total: <b><%= locals.order.price %>€</b>
           <% if (locals.order.status === "awaitingPayment") { %><h6>AWAITING PAYMENT</h6><% } %>
+          <h2>delivery price (with tax:) <%= locals.order.deliveryPrice %>€</h2>
           
           <form id="statusform" method="POST" action="/api/order/update">
             <div class="form-group">
