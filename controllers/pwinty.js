@@ -11,6 +11,11 @@ const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
 require("dotenv/config");
 
+var formatter = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR"
+});
+
 const API_URL = "https://sandbox.pwinty.com";
 const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
 const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
@@ -371,34 +376,64 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-router.get("/pricing/:countryCode", async (req, res) => {
+router.post("/pricing/:countryCode", async (req, res) => {
 try {
     let countryCode = req.params.countryCode;
-    let options = {
-        method: 'POST',
-        uri : `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/order/price`,
-        headers: {
-            'X-Pwinty-MerchantId': MERCHANTID,
-            'X-Pwinty-REST-API-Key': APIKEY
-        },
-        body: {"items": [{
-                "id": 818740, //might be useless
-                "sku": "GLOBAL-CAN-20X20",
-                "quantity": 1
-            }]},
-        json: true
-    }
-    rp(options)
-    .then((response) => {
-        console.log(response, "x")
-        return res.status(200).json(response);
-    })
-    .catch((err) => {
-        console.log(err)
-        return res.status(200).json({ error: true, errordata: err.error });
-    })
+    let items = [];
+
+    console.log(req.body.items)
+    if (req.body.items) {
+        req.body.items.forEach(item => {
+            if (item && item !== null) {
+                let obj = {
+                    "sku": item.elements[0].attributes.SKU,
+                    "quantity": item.elements[0].qty //need qty too (qty for elements with frame color diff not counted properly)
+                };
+                items.push(obj);
+            }
+        })
+
+        let options = {
+            method: 'POST',
+            uri : `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/order/price`,
+            headers: {
+                'X-Pwinty-MerchantId': MERCHANTID,
+                'X-Pwinty-REST-API-Key': APIKEY
+            },
+            body: {"items": items},
+            json: true
+        }
+        
+        rp(options)
+        .then((response) => {
+            let found = 0;
+            response.shipmentOptions.forEach(shipmentOption => {
+                if (shipmentOption.isAvailable && shipmentOption.shippingMethod === "Standard") {
+                    found = 1;
+                    let formatted = {
+                        "isAvailable": shipmentOption.isAvailable,
+                        "totalPriceIncludingTax": formatter.format(shipmentOption.totalPriceIncludingTax / 100).substr(2),
+                        "totalPriceExcludingTax": formatter.format(shipmentOption.totalPriceExcludingTax / 100).substr(2),
+                        "shippingMethod": shipmentOption.shippingMethod,
+                        "shippingPriceIncludingTax": formatter.format(shipmentOption.shippingPriceIncludingTax / 100).substr(2),
+                        "shippingPriceExcludingTax": formatter.format(shipmentOption.shippingPriceExcludingTax / 100).substr(2),
+                        "shipments": shipmentOption.shipments
+                    }
+                    return res.status(200).json({error: false, response: formatted});
+                }
+            })
+            if (found === 0)
+                return res.status(200).json({error: false, response: []});
+        })
+        .catch((err) => {
+            console.log(err)
+            return res.status(200).json({ error: true, message: err.message });
+        })
+    } else 
+        throw new Error("We couldn't find the delivery price for this item, please try again");
 } catch (err) {
-    return res.status(200).json({ message: err.message });
+    console.log(err)
+    return res.status(200).json({error: true, message: err.message });
 }});
 /* END CATALOGUE */
 module.exports = router;

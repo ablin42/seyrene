@@ -1,7 +1,10 @@
+let rp = require("request-promise");
+
 module.exports = function Cart(oldCart) {
     this.items = oldCart.items || {};
     this.totalQty = oldCart.totalQty || 0;
     this.totalPrice = oldCart.totalPrice || 0;
+    this.price = oldCart.price || {shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: 0, totalExcludingTax: 0}
 
     this.add = function (item, id) {
         var storedItem = this.items[id];
@@ -58,7 +61,7 @@ module.exports = function Cart(oldCart) {
         }
     }
 
-    this.pwintyAdd = function (item, data) { // data= SKU: req.body.SKU, price: req.body.price, attributes: req.body.attributes (=all attributes + category/subcategory),
+    this.pwintyAdd = async function (item, data) { // data= SKU: req.body.SKU, price: req.body.price, attributes: req.body.attributes (=all attributes + category/subcategory),
         let storedItem = this.items[data.SKU];
         let attributes = data.attributes
         attributes.SKU = data.SKU;
@@ -87,10 +90,12 @@ module.exports = function Cart(oldCart) {
         this.totalQty++;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + data.price) * 100) / 100).toFixed(2));
         retData.price = parseFloat((Math.round(this.items[data.SKU].unitPrice * retData.qty * 100) / 100).toFixed(2));
+
+        await this.fetchPrice();
         return (retData);
     }
 
-    this.pwintyDelete = function (data) {
+    this.pwintyDelete = async function (data) {
         let storedItem = this.items[data.SKU];
         let attributes = data.attributes
         attributes.SKU = data.SKU;
@@ -105,8 +110,10 @@ module.exports = function Cart(oldCart) {
                 if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
                     this.items[data.SKU].elements[index].qty--;
                     retData.qty = this.items[data.SKU].elements[index].qty;
-                    if (this.items[data.SKU].elements[index].qty === 0)
-                        this.items[data.SKU].elements[index].attributes = undefined;
+                    if (this.items[data.SKU].elements[index].qty === 0) {
+                        this.items[data.SKU].elements[index].attributes = undefined; 
+                        this.items[data.SKU].elements[index] = undefined; //check all scenario to find if this compromises cart items
+                    }
                 }
             });
             storedItem.qty--;
@@ -119,10 +126,12 @@ module.exports = function Cart(oldCart) {
             this.totalPrice = parseFloat((Math.round((this.totalPrice - unitPrice) * 100) / 100).toFixed(2));
             retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
         }
+
+        await this.fetchPrice();
         return (retData);
     }
 
-    this.pwintyUpdate = function (data, qty) {
+    this.pwintyUpdate = async function (data, qty) {
         var storedItem = this.items[data.SKU];
         let attributes = data.attributes
         attributes.SKU = data.SKU;
@@ -155,6 +164,8 @@ module.exports = function Cart(oldCart) {
             this.totalPrice = parseFloat((Math.round((this.totalPrice + priceOffset) * 100) / 100).toFixed(2));
             retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
         }
+
+        await this.fetchPrice();
         return (retData);
     }
 
@@ -171,4 +182,31 @@ module.exports = function Cart(oldCart) {
         }
         return arr;
     };
+
+    this.fetchPrice = async function () {
+        let countryCode = "FR";
+        let options = {
+            uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            },
+            body: {items: this.generateArray()},
+            json: true
+        }
+        console.log(options.body)
+        let obj = await rp(options);
+        if (obj.error === true || obj.response.length <= 0) {
+            this.clearCart();
+            throw new Error(obj.message)
+        } else {
+            this.price = {
+                shippingIncludingTax: parseFloat(obj.response.shippingPriceIncludingTax), 
+                shippingExcludingTax: parseFloat(obj.response.shippingPriceExcludingTax),
+                totalIncludingTax: parseFloat(obj.response.totalPriceIncludingTax),
+                totalExcludingTax: parseFloat(obj.response.totalPriceExcludingTax)
+            }
+        }
+    }
 }

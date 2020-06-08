@@ -116,21 +116,26 @@ try {
     }
 
     Gallery.findById(productId, async (err, product) => {
-        if (err)
+        try {
+            if (err)
             return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
-        /*var [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
-        if (err) 
-            throw new Error("An error occurred while fetching the image");*/
+            /*var [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
+            if (err) 
+                throw new Error("An error occurred while fetching the image");*/
 
-        let item = cart.pwintyAdd(product, data);
-        req.session.cart = cart;
-        let cartCpy = JSON.parse(JSON.stringify(cart));
-        cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
-        if (cartCpy.items[data.SKU])
-            cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+            let item = await cart.pwintyAdd(product, data);
+            req.session.cart = cart;
 
-        return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy, item: item}); //send curr item qty/price?
+            let cartCpy = JSON.parse(JSON.stringify(cart));
+            cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
+            if (cartCpy.items[data.SKU])
+                cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+
+            return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy, item: item}); //send curr item qty/price?
+        } catch (err) {
+            return res.status(400).json({"error": true, "msg": err.message})
+        }
     })
 } catch (err) {
     console.log("ADD TO CART ERROR");
@@ -149,21 +154,25 @@ try {
     }
 
     if (Number.isInteger(newQty) && (newQty >= 0 && newQty <= 99)) {
-        Gallery.findById(productId, (err, product) => {
-            if (err || !product)
-                return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
+        Gallery.findById(productId, async (err, product) => {
+            try {
+                if (err || !product)
+                    return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
-            let item = cart.pwintyUpdate(data, newQty);
-            req.session.cart = cart;
-            let cartCpy = JSON.parse(JSON.stringify(cart));
-            cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
-            if (cartCpy.items[productId])
-                cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
-        
-            let msg = "Item quantity updated";
-            if (newQty == 0)
-                msg = "Item removed from cart";
-            return res.status(200).json({error: false, msg: msg, cart: cartCpy, item: item});
+                let item = await cart.pwintyUpdate(data, newQty);
+                req.session.cart = cart;
+                let cartCpy = JSON.parse(JSON.stringify(cart));
+                cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
+                if (cartCpy.items[productId])
+                    cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
+            
+                let msg = "Item quantity updated";
+                if (newQty == 0)
+                    msg = "Item removed from cart";
+                return res.status(200).json({error: false, msg: msg, cart: cartCpy, item: item});
+            } catch (err) {
+                return res.status(400).json({"error": true, "msg": err.message})
+            }
         })
     } else
         throw new Error("Quantity for an item must be between 0 and 99");          
@@ -182,18 +191,23 @@ try {
         attributes: req.body.attributes,
     }
             
-    Gallery.findById(productId, (err, product) => {
-        if (err)
+    Gallery.findById(productId, async (err, product) => {
+        try {
+            if (err)
             return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
-        let item = cart.pwintyDelete(data);
-        req.session.cart = cart;
-        let cartCpy = JSON.parse(JSON.stringify(cart));
-        cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
-        if (cartCpy.items[data.SKU])
-            cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
-        
-        return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy, item: item});
+            let item = await cart.pwintyDelete(data);
+            req.session.cart = cart;
+            let cartCpy = JSON.parse(JSON.stringify(cart));
+            cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
+            if (cartCpy.items[data.SKU])
+                cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+            
+            return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy, item: item});
+        } catch (err) {
+            console.log(err)
+            return res.status(400).json({"error": true, "msg": err.message})
+        }
     })
 } catch (err) {
     console.log("DELETE FROM CART ERROR");

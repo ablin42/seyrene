@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const request = require("request-promise");
+const rp = require("request-promise");
 const format = require("date-format");
 
 const verifySession = require("./helpers/verifySession");
@@ -30,7 +30,7 @@ const router = express.Router();
 router.get("/", verifySession, async (req, res) => {
   try {
     let obj = { active: "Home" }; //{root: path.join(__dirname, '/pages/')};
-    obj.front = JSON.parse(await request("http://127.0.0.1:8089/api/front/"));
+    obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/"));
     if (obj.front.length <= 0) obj.front = undefined;
     if (req.user) {
       obj.userId = req.user._id;
@@ -51,7 +51,7 @@ router.get("/Galerie", verifySession, async (req, res) => {
       root: path.join(__dirname, "/pages/")
     };
     obj.galleries = JSON.parse(
-      await request("http://127.0.0.1:8089/api/gallery/")
+      await rp("http://127.0.0.1:8089/api/gallery/")
     );
     if (obj.galleries.error) throw new Error(obj.galleries.message);
     if (obj.galleries.length === 0)
@@ -80,7 +80,7 @@ router.get("/Galerie/Tags", verifySession, async (req, res) => {
       url = `http://127.0.0.1:8089/api/gallery/tags?t=${req.query.t}`;
       obj.tags = req.query.t;
     }
-    obj.galleries = JSON.parse(await request(url));
+    obj.galleries = JSON.parse(await rp(url));
     if (obj.galleries.error) throw new Error(obj.galleries.message);
     if (req.user) {
       obj.userId = req.user._id;
@@ -173,6 +173,23 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       });
       obj.totalPrice = formatter.format(cart.totalPrice).substr(2);
       obj.totalQty = cart.totalQty;
+
+      let countryCode = "FR";
+      let options = {
+        uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: {items: itemArr},
+        json: true
+      }
+      obj.deliveryPrice = await rp(options);
+      if (obj.deliveryPrice.error) 
+        throw new Error(obj.deliveryPrice.message);
+
+        //parse and format price
     }
     res.status(200).render("cart", obj);
   } catch (err) {
@@ -193,7 +210,7 @@ router.get("/Payment", verifySession, async (req, res) => {
       let cart = new Cart(req.session.cart);
       if (cart.totalPrice === 0)
         return res.status(400).redirect("/shopping-cart");
-      obj.totalPrice = formatter.format(cart.totalPrice).substr(2);
+      obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
     } else
       return res.status(400).redirect("/shopping-cart");
 
@@ -255,7 +272,7 @@ router.get("/User", verifySession, async (req, res) => {
 router.get("/About", verifySession, async (req, res) => {
   try {
     let obj = { active: "About" };
-    obj.blogs = JSON.parse(await request("http://127.0.0.1:8089/api/blog/"));
+    obj.blogs = JSON.parse(await rp("http://127.0.0.1:8089/api/blog/"));
     if (obj.blogs.error) throw new Error(obj.blogs.message);
     if (req.session.formData) {
       obj.formData = req.session.formData;
@@ -296,10 +313,10 @@ router.get("/Account", verifySession, async (req, res) => {
 router.get("/Shop", verifySession, async (req, res) => {
   try {
     let obj = { active: "Shop" };
-    obj.original = JSON.parse(await request("http://127.0.0.1:8089/api/shop/"));
+    obj.original = JSON.parse(await rp("http://127.0.0.1:8089/api/shop/"));
     if (obj.original.error) throw new Error(obj.original.message);
     obj.print = JSON.parse(
-      await request("http://127.0.0.1:8089/api/shop?tab=print")
+      await rp("http://127.0.0.1:8089/api/shop?tab=print")
     );
     if (obj.print.error) throw new Error(obj.print.message);
     if (obj.original.length <= 1 && obj.print.length <= 1)
@@ -363,7 +380,7 @@ router.get("/Order/:id", verifySession, async (req, res) => {
     }
 
     obj.order = JSON.parse(
-      await request(`http://127.0.0.1:8089/api/order/${req.params.id}`)
+      await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`)
     );
     if (obj.order.error) throw new Error(obj.order.message);
 
@@ -420,11 +437,11 @@ router.get("/Galerie/:id", verifySession, async (req, res) => {
       root: path.join(__dirname, "/pages/")
     };
     obj.galleries = JSON.parse(
-      await request(`http://127.0.0.1:8089/api/gallery/single/${id}`)
+      await rp(`http://127.0.0.1:8089/api/gallery/single/${id}`)
     );
     if (obj.galleries.error) throw new Error(obj.galleries.message);
     obj.img = JSON.parse(
-      await request(`http://127.0.0.1:8089/api/image/Gallery/${id}`)
+      await rp(`http://127.0.0.1:8089/api/image/Gallery/${id}`)
     );
     if (obj.img.error) throw new Error(obj.img.error);
 
@@ -449,13 +466,13 @@ router.get("/Shop/:id", verifySession, async (req, res) => {
       root: path.join(__dirname, "/pages/")
     };
     obj.shopItem = JSON.parse(
-      await request(`http://127.0.0.1:8089/api/shop/single/${id}`)
+      await rp(`http://127.0.0.1:8089/api/shop/single/${id}`)
     );
     if (obj.shopItem.error) throw new Error(obj.shopItem.message);
     obj.shopItem.price = formatter.format(obj.shopItem.price).substr(2);
 
     obj.img = JSON.parse(
-      await request(`http://127.0.0.1:8089/api/image/Shop/${id}`)
+      await rp(`http://127.0.0.1:8089/api/image/Shop/${id}`)
     );
     if (obj.img.error) throw new Error(obj.img.error);
 
@@ -477,7 +494,7 @@ router.get("/Blog/:id", verifySession, async (req, res) => {
     let id = req.params.id;
     let obj = { active: "Blog" };
 
-    obj.blogs = JSON.parse(await request(`http://127.0.0.1:8089/api/blog/single/${id}`));
+    obj.blogs = JSON.parse(await rp(`http://127.0.0.1:8089/api/blog/single/${id}`));
     if (obj.blogs.error) 
       throw new Error(obj.blogs.message);
 
@@ -523,7 +540,7 @@ router.get("/Admin/Front", verifySession, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Update Homepage" };
-      obj.front = JSON.parse(await request("http://127.0.0.1:8089/api/front/"));
+      obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/"));
       if (obj.front.length <= 0) obj.front = undefined;
       if (req.user) {
         obj.userId = req.user._id;
@@ -553,7 +570,7 @@ router.get("/Admin/Orders", verifySession, async (req, res) => {
         obj.level = req.user.level;
       }
 
-      let result = JSON.parse(await request(`http://localhost:8089/api/order/`));
+      let result = JSON.parse(await rp(`http://localhost:8089/api/order/`));
       if (result.error) 
         throw new Error(result.message);
 
@@ -580,7 +597,7 @@ router.get("/Admin/Order/:id", verifySession, async (req, res) => {
         obj.name = req.user.name;
         obj.level = req.user.level;
       }
-      obj.order = JSON.parse(await request(`http://127.0.0.1:8089/api/order/${req.params.id}`));
+      obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`));
       if (obj.order.error) throw new Error(obj.order.message);
 
       obj.products = [];
@@ -672,11 +689,7 @@ router.get(
           throw new Error("An error occurred while fetching the gallery item");
         obj.gallery = result;
 
-        obj.img = JSON.parse(
-          await request(
-            `http://127.0.0.1:8089/api/image/Gallery/${req.params.galleryId}`
-          )
-        );
+        obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Gallery/${req.params.galleryId}`));
         if (obj.img.error) throw new Error(obj.img.error);
 
         return res.status(200).render("restricted/gallery-patch", obj);
@@ -725,7 +738,7 @@ router.get("/Admin/Shop/Patch/:shopId", verifySession, async (req, res) => {
         throw new Error("An error occurred while fetching the shop item");
 
       obj.img = JSON.parse(
-        await request(
+        await rp(
           `http://127.0.0.1:8089/api/image/Shop/${req.params.shopId}`
         )
       );

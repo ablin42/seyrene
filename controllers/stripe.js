@@ -104,7 +104,8 @@ router.post('/create-intent', verifySession, async (req, res) => {
 try {
     if (req.user) {
         let cart = new Cart(req.session.cart ? req.session.cart : {});
-        let total = cart.totalPrice;
+        console.log(req.session.cart)
+        let total = cart.price.totalIncludingTax; /////////////////////HERE
         let items = cart.generateArray();
 
         if (total > 0) {
@@ -121,7 +122,7 @@ try {
             }
 
             stripe.paymentIntents.create({
-                amount: total * 100,
+                amount: total * 100, ///////////////////////add delivery price here (and taxes)
                 currency: "eur",
                 description: 'Charging for purchase @ maral',
             }, (err, paymentIntent) => {
