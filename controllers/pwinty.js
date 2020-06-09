@@ -384,7 +384,7 @@ try {
     console.log(req.body.items)
     if (req.body.items) {
         req.body.items.forEach(item => {
-            if (item && item !== null) {
+            if (item && item !== null && item.attributes.isUnique !== true) {
                 let obj = {
                     "sku": item.elements[0].attributes.SKU,
                     "quantity": item.elements[0].qty //need qty too (qty for elements with frame color diff not counted properly)

@@ -5,6 +5,7 @@ module.exports = function Cart(oldCart) {
     this.totalQty = oldCart.totalQty || 0;
     this.totalPrice = oldCart.totalPrice || 0;
     this.price = oldCart.price || {shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: 0, totalExcludingTax: 0}
+    this.uniquePriceTotal = oldCart.uniquePriceTotal || 0;
 
     this.add = function (item, id) {
         var storedItem = this.items[id];
@@ -15,9 +16,12 @@ module.exports = function Cart(oldCart) {
         storedItem.qty++;
         storedItem.price = parseFloat((this.items[id].unitPrice * storedItem.qty).toFixed(2));
         this.totalQty++;
+        this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal + this.items[id].unitPrice) * 100) / 100).toFixed(2));
+        this.price.totalIncludingTax += this.uniquePriceTotal;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[id].unitPrice) * 100) / 100).toFixed(2));
     };
 
+    // don't need this function
     this.update = function (item, id, qty) {
         var storedItem = this.items[id];
         if (!storedItem) //shouldnt need
@@ -51,11 +55,14 @@ module.exports = function Cart(oldCart) {
                 this.items[id] = undefined;
                 storedItem = undefined;
                 this.totalQty--;
+                this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal - singlePrice) * 100) / 100).toFixed(2));
+                this.price.totalIncludingTax = parseFloat((Math.round((this.price.totalIncludingTax - singlePrice) * 100) / 100).toFixed(2));
                 this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
-            } else if (storedItem.qty > 1) {
+            } else if (storedItem.qty > 1) { // should always be 1 or 0 since its for unique only
                 storedItem.qty--;
                 storedItem.price = parseFloat((storedItem.qty * singlePrice).toFixed(2));
-                this.totalQty--;
+                this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal - singlePrice) * 100) / 100).toFixed(2));
+                this.price.totalIncludingTax = parseFloat((Math.round((this.price.totalIncludingTax - singlePrice) * 100) / 100).toFixed(2));
                 this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
             }
         }
@@ -204,7 +211,7 @@ module.exports = function Cart(oldCart) {
             this.price = {
                 shippingIncludingTax: parseFloat(obj.response.shippingPriceIncludingTax), 
                 shippingExcludingTax: parseFloat(obj.response.shippingPriceExcludingTax),
-                totalIncludingTax: parseFloat(obj.response.totalPriceIncludingTax),
+                totalIncludingTax: parseFloat(obj.response.totalPriceIncludingTax) + this.uniquePriceTotal,
                 totalExcludingTax: parseFloat(obj.response.totalPriceExcludingTax)
             }
             console.log(this.price)

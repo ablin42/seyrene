@@ -172,6 +172,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
         }
       });
       obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
+      console.log(obj.totalPrice)
       obj.totalQty = cart.totalQty;
 
       let countryCode = "FR";
@@ -189,6 +190,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       if (obj.deliveryPrice.error) 
         throw new Error(obj.deliveryPrice.message);
 
+        console.log(obj.deliveryPrice)
         //parse and format price
     }
     res.status(200).render("cart", obj);
@@ -379,11 +381,10 @@ router.get("/Order/:id", verifySession, async (req, res) => {
       obj.level = req.user.level;
     }
 
-    obj.order = JSON.parse(
-      await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`)
-    );
+    obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`));
     if (obj.order.error) throw new Error(obj.order.message);
 
+    obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
     obj.products = [];
     obj.order.items.forEach(item => {
       if (item.attributes.isUnique) {
@@ -600,6 +601,7 @@ router.get("/Admin/Order/:id", verifySession, async (req, res) => {
       obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`));
       if (obj.order.error) throw new Error(obj.order.message);
 
+      obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
       obj.products = [];
       obj.order.items.forEach(item => {
         if (item.attributes.isUnique) {
