@@ -11,6 +11,8 @@ const {
   vLostPw,
   vDelivery
 } = require("./validators/vUser");
+const { getCode, getName } = require('country-list');
+const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
 const verifySession = require("./helpers/verifySession");
@@ -390,5 +392,42 @@ router.post("/patch/delivery-info", vDelivery, verifySession, async (req, res) =
     }
   }
 );
+
+router.get("/countryCode", verifySession, async (req, res) => {
+try {
+  const ip = "90.79.188.153"; /* (req.headers['x-forwarded-for'] || '').split(',').pop().trim() || 
+  req.connection.remoteAddress || 
+  req.socket.remoteAddress || 
+  req.connection.socket.remoteAddress || */
+
+  const IPINFO_TOKEN = "4c60ea37e18dd1";
+  const ipinfo = new IPinfo(IPINFO_TOKEN);
+  let country = "";
+  let countryCode = "";
+  
+  if (req.user) {
+    var [err, result] = await utils.to(DeliveryInfo.findOne({_userId: req.user._id}));
+    if (err || result === null) {
+      ipinfo.lookupIp(ip).then((response) => {
+        countryCode = getCode(response.country); //check for errors
+  
+        return res.status(200).json({ error: false, countryCode: countryCode });
+      })
+    } else 
+      country = result.country;
+  } else {
+    ipinfo.lookupIp(ip).then((response) => {
+      countryCode = getCode(response.country); //check for errors
+
+      return res.status(200).json({ error: false, countryCode: countryCode });
+  })}
+
+  countryCode = getCode(country); //check for errors
+
+  return res.status(200).json({ error: false, countryCode: countryCode });
+} catch (err) {
+  console.log(err)
+  return res.status(400).json({ error: true, message: err.message });
+}});
 
 module.exports = router;

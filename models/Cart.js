@@ -191,7 +191,7 @@ module.exports = function Cart(oldCart) {
     };
 
     this.fetchPrice = async function () {
-        let countryCode = "FR";
+        let countryCode = await this.fetchCountryCode();
         let options = {
             uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
             method: 'POST',
@@ -216,5 +216,21 @@ module.exports = function Cart(oldCart) {
             }
             console.log(this.price)
         }
+    }
+
+    this.fetchCountryCode = async function () {
+        let options = {  
+            method: "GET",
+            headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+            },
+            credentials: "include",
+            mode: "same-origin"
+        }
+        let response = await rp(`http://localhost:8089/api/user/countryCode/`, options);
+        if (response.error === false)
+            return response.countryCode;
+        return "FR";
     }
 }

@@ -15,9 +15,9 @@ function closeAllSelect(elmnt) {
     }
 }
 
-function checkSKU(SKU) {
-    //contact API to get item price + add our pricing
-    fetch('/api/pwinty/countries/FR', {
+async function checkSKU(SKU) {
+    let countryCode = await this.fetchCountryCode();
+    fetch(`/api/pwinty/countries/${countryCode}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -534,9 +534,9 @@ class PwintyObject {
         this.generatePricing();
     }
 
-    generatePricing() {
-        //contact API to get item price + add our pricing
-        fetch('/api/pwinty/countries/FR', {
+    async generatePricing() {
+        let countryCode = await this.fetchCountryCode();
+        fetch(`/api/pwinty/countries/${countryCode}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -608,6 +608,35 @@ class PwintyObject {
             addAlert(alert, "#header");
         });
         return;
+    }
+
+    async fetchCountryCode() {
+        let countryCode = await fetch(`http://localhost:8089/api/user/countryCode/`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            credentials: "include",
+            mode: "same-origin"
+        })
+        .then(res => {return res.json();})
+        .then(function(response) {
+            if (response.error === false) 
+                return response.countryCode;
+            else {
+                let alert = createAlertNode(response.message, "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+                addAlert(alert, "#header");
+                return "FR";
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            let alert = createAlertNode("An error occured while looking for your country, please refresh the page", "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+            addAlert(alert, "#header");
+            return "FR";
+        });
+        return countryCode;
     }
 
     hidePricing() {document.getElementById("purchasebox").setAttribute("style", "display: none");}

@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const rp = require("request-promise");
 const format = require("date-format");
+const { getCode, getName } = require('country-list');
 
 const verifySession = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
@@ -175,7 +176,7 @@ router.get("/shopping-cart", verifySession, async (req, res) => {
       console.log(obj.totalPrice)
       obj.totalQty = cart.totalQty;
 
-      let countryCode = "FR";
+      let countryCode = getCode(obj.delivery.country);
       let options = {
         uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
         method: 'POST',

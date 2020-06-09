@@ -74,6 +74,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
+/* seems like this is never used
 router.get("/orders/update/:id", async (req, res) => { //router.post?
 try {
     let id = req.params.id;
@@ -117,7 +118,7 @@ try {
     })
 } catch (err) {
     return res.status(200).json({ message: err.message });
-}});
+}});*/
 
 router.get("/orders/:id", async (req, res) => {
 try {
