@@ -80,7 +80,7 @@ async function cartAdd(itemId, caller) {
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
         console.log(totalQty)
-        let totalPrice = response.cart.totalPrice;
+        /*let totalPrice = response.cart.totalPrice;
         let rowId = document.getElementById(itemId);
 
         if (rowId.classList.contains("cart-row-item")) {
@@ -91,7 +91,7 @@ async function cartAdd(itemId, caller) {
           rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           document.getElementById("total-price").innerText = totalPrice + "€";
           document.getElementById("total-qty").innerText = totalQty;
-        }
+        }*/
         document.getElementById("cartQty").innerText = totalQty;
       } else 
         alertType = "warning";
@@ -106,6 +106,7 @@ async function cartAdd(itemId, caller) {
   return;
 }
 
+/*
 async function updateValue(e, item) {
   try {
     if (item.value) {
@@ -169,9 +170,9 @@ async function updateValue(e, item) {
     let alert = createAlertNode(err.message, "warning");
     addAlert(alert, "#header");
   }
-}
+}*/
 
-async function cartDel(itemId, caller) {
+async function cartDel(itemId, caller) { ///////////////////////////always delete since max qty is 1
   cooldownBtn(caller, 1500);
   await fetch(`http://localhost:8089/api/cart/del/${itemId}`, {
     method: "GET",
@@ -189,7 +190,7 @@ async function cartDel(itemId, caller) {
       let alertType = "info";
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
-        let totalPrice = response.cart.totalPrice;
+        let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');////////////////////////////////fetch total price including tax (delivery)
         let rowId = document.getElementById(itemId);
 
         if (totalQty === 0) 
@@ -204,7 +205,7 @@ async function cartDel(itemId, caller) {
             rowId.childNodes[5].childNodes[1].childNodes[0].innerText = itemPrice + "€";
           } else rowId.remove();
 
-          document.getElementById("total-price").innerText = totalPrice + "€"; //format here or in api
+          document.getElementById("total-price").innerText = totalPrice; //format here or in api
           document.getElementById("total-qty").innerText = totalQty;
         }
         document.getElementById("cartQty").innerText = totalQty;
@@ -247,13 +248,14 @@ try {
         let alertType = "success";
         if (response.error === false) {
           let totalQty = response.cart.totalQty;
-          let totalPrice = response.cart.totalPrice;
+          console.log(response.cart.price.totalIncludingTax)
+          let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');
           let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
           if (rowId.classList.contains("cart-row-item")) {
             $(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
             rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');
-            document.getElementById("total-price").innerText = formatter.format(totalPrice).replace(',', '.');;
+            document.getElementById("total-price").innerText = totalPrice
             document.getElementById("total-qty").innerText = totalQty;
           }
           document.getElementById("cartQty").innerText = totalQty;
@@ -297,7 +299,7 @@ try {
       let alertType = "warning";
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
-        let totalPrice = response.cart.totalPrice;
+        let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');
         let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
         if (totalQty === 0) 
@@ -307,11 +309,11 @@ try {
           if (response.item.qty === 0)
             rowId.remove();
           $(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
-          rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');;
+          rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');
         } else 
           rowId.remove();
 
-        document.getElementById("total-price").innerText =  formatter.format(totalPrice).replace(',', '.');;
+        document.getElementById("total-price").innerText = totalPrice;
         document.getElementById("total-qty").innerText = totalQty;
         document.getElementById("cartQty").innerText = totalQty;
       } else {
@@ -358,13 +360,13 @@ try {
         let alertType = "info";
         if (response.error === false) {
           let totalQty = response.cart.totalQty;
-          let totalPrice = response.cart.totalPrice;
+          let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');
           let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
           if (totalQty === 0) 
             handleEmptiness();
 
-          document.getElementById("total-price").innerText = formatter.format(totalPrice).replace(',', '.');; 
+          document.getElementById("total-price").innerText = totalPrice;
           document.getElementById("total-qty").innerText = totalQty;
           document.getElementById("cartQty").innerText = totalQty;
 
