@@ -10,7 +10,7 @@ const expressSanitizer = require("express-sanitizer");
 const filter = require("content-filter");
 require("dotenv/config");
 
-const verifySession = require("./controllers/helpers/verifySession");
+const { ROLE, verifySession, authUser, authRole } = require("./controllers/helpers/verifySession");
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
 

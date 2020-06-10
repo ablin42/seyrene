@@ -3,7 +3,7 @@ const router = express.Router();
 const rp = require("request-promise");
 
 const mailer = require("./helpers/mailer");
-const verifySession = require("./helpers/verifySession");
+const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Order = require("../models/Order");
 const Token = require("../models/VerificationToken");

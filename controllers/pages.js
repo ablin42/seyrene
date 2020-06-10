@@ -4,7 +4,7 @@ const rp = require("request-promise");
 const format = require("date-format");
 const { getCode, getName } = require('country-list');
 
-const verifySession = require("./helpers/verifySession");
+const { ROLE, verifySession, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Blog = require("../models/Blog");
 const User = require("../models/User");
@@ -230,7 +230,7 @@ router.get("/Payment", verifySession, async (req, res) => {
   }
 });
 
-router.get("/User", verifySession, async (req, res) => {
+router.get("/User", verifySession, authUser, async (req, res) => {
   try {
     let obj = {};
     if (req.user) {
@@ -373,7 +373,7 @@ router.get("/Resetpw/:tokenId/:token", verifySession, async (req, res) => {
 /* END MAIN ROUTES */
 /* SINGLE ITEM ROUTES */
 
-router.get("/Order/:id", verifySession, async (req, res) => {
+router.get("/Order/:id", verifySession, authUser, setOrder, authGetOrder, async (req, res) => {
   try {
     let obj = { active: "Order recap" };
     if (req.user) {
@@ -517,7 +517,7 @@ router.get("/Blog/:id", verifySession, async (req, res) => {
 /* END SINGLE */
 /* ADMIN ROUTES */
 
-router.get("/Admin", verifySession, async (req, res) => {
+router.get("/Admin", verifySession, authUser, authRole(ROLE.ADMIN), async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Admin" };

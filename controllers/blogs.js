@@ -4,7 +4,7 @@ const { vBlog } = require("./validators/vBlog");
 const rp = require("request-promise");
 
 const Blog = require("../models/Blog");
-const verifySession = require("./helpers/verifySession");
+const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
 const bHelpers = require("./helpers/blogHelpers");
 const utils = require("./helpers/utils");
 

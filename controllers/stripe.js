@@ -7,7 +7,7 @@ const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 const Gallery = require('../models/Gallery');
 const Shop = require('../models/Shop');
-const verifySession = require('./helpers/verifySession');
+const { ROLE, verifySession, authUser, authRole } = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 
 

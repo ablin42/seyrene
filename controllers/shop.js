@@ -9,7 +9,7 @@ const rp = require("request-promise");
 
 const Shop = require("../models/Shop");
 const Image = require("../models/Image");
-const verifySession = require("./helpers/verifySession");
+const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers"); //////////
 //const sHelpers = require('./helpers/shopHelpers');
 const utils = require("./helpers/utils");

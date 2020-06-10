@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-const verifySession = require('./helpers/verifySession');
+const { ROLE, verifySession, authUser, authRole } = require('./helpers/verifySession');
 const Image = require('../models/Image');
 const utils = require('./helpers/utils');
 

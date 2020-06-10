@@ -15,7 +15,7 @@ const { getCode, getName } = require('country-list');
 const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
-const verifySession = require("./helpers/verifySession");
+const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");

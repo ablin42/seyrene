@@ -11,7 +11,7 @@ const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const rp = require('request-promise');
 
-const verifySession = require('./helpers/verifySession');
+const { ROLE, verifySession, authUser, authRole } = require('./helpers/verifySession');
 require('dotenv/config');
 
 //var formatter = new Intl.NumberFormat();
