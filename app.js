@@ -127,12 +127,10 @@ app.set("view engine", "ejs");
 
 app.get("*", setUser, (req, res) => {
   let obj = { active: "404" };
-  if (req.user) {
-    obj.userId = req.user._id;
-    obj.name = req.user.name;
-    obj.level = req.user.level;
-  }
-  res.status(404).render("404", obj);
+  if (req.user)
+    obj.user = req.user;
+
+  return res.status(404).render("404", obj);
 });
 
 const port = process.env.PORT || 8089;

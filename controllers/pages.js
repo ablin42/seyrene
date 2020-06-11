@@ -202,11 +202,9 @@ try {
   let obj = {
     active: "Payment",
     stripePublicKey: stripePublic,
-    totalPrice: 0
+    totalPrice: 0,
+    user: req.user
   };
-
-  if (req.user)
-    obj.user = req.user;
 
   if (req.session.cart) {
     let cart = new Cart(req.session.cart);
@@ -226,14 +224,11 @@ try {
 
 router.get("/User", setUser, authUser, async (req, res) => {
 try {
-  let obj = {};
+  let obj = {user: req.user};
   obj = await User.findOne({ _id: req.user._id });
   obj.password = undefined;
   obj.active = "User";
   obj.delivery = false; /////////////////?
-  
-  if (req.user)
-    obj.user = req.user;
 
   var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
   if (err)
@@ -285,224 +280,202 @@ try {
 }});
 
 router.get("/Account", setUser, async (req, res) => {
-  try {
-    let obj = { active: "Account" };
-    if (req.session.formData) {
-      obj.formData = req.session.formData;
-      req.session.formData = undefined;
-    }
-    if (req.user) {
-      req.flash("info", "You're already logged in");
-      return res.status(200).redirect("/");
-    }
-    res.status(200).render("account", obj);
-  } catch (err) {
-    console.log("ACCOUNT ROUTE ERROR", err);
-    req.flash("warning", "An error occurred, please try again");
-    res.status(400).redirect("/");
+try {
+  let obj = { active: "Account" };
+  if (req.session.formData) {
+    obj.formData = req.session.formData;
+    req.session.formData = undefined;
   }
-});
+
+  if (req.user) {
+    req.flash("info", "You're already logged in");
+    return res.status(200).redirect("/");
+  }
+
+  return res.status(200).render("account", obj);
+} catch (err) {
+  console.log("ACCOUNT ROUTE ERROR", err);
+  req.flash("warning", "An error occurred, please try again");
+  return res.status(400).redirect("/");
+}});
 
 router.get("/Shop", setUser, async (req, res) => {
-  try {
-    let obj = { active: "Shop" };
-    obj.original = JSON.parse(await rp("http://127.0.0.1:8089/api/shop/"));
-    if (obj.original.error) throw new Error(obj.original.message);
-    obj.print = JSON.parse(
-      await rp("http://127.0.0.1:8089/api/shop?tab=print")
-    );
-    if (obj.print.error) throw new Error(obj.print.message);
-    if (obj.original.length <= 1 && obj.print.length <= 1)
-      throw new Error("Shop is under maintenance, please try again later");
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    res.status(200).render("shop", obj);
-  } catch (err) {
-    console.log("SHOP ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/");
-  }
-});
+try {
+  let obj = { active: "Shop" };
+
+  if (req.user)
+    obj.user = req.user;
+
+  obj.original = JSON.parse(await rp("http://127.0.0.1:8089/api/shop/")); //same as /About
+  if (obj.original.error) 
+    throw new Error(obj.original.message);
+
+  obj.print = JSON.parse(await rp("http://127.0.0.1:8089/api/shop?tab=print"));
+  if (obj.print.error) 
+    throw new Error(obj.print.message);
+  if (obj.original.length <= 1 && obj.print.length <= 1)
+    throw new Error("Shop is under maintenance, please try again later");
+
+  return res.status(200).render("shop", obj);
+} catch (err) {
+  console.log("SHOP ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/");
+}});
 
 router.get("/Resetpw/:tokenId/:token", setUser, async (req, res) => {
-  try {
-    if (req.user) {
-      req.flash("info", "You're logged in, you can change your password here");
-      return res.status(200).redirect("/User");
-    } else {
-      let obj = {
-        active: "Reset password",
-        root: path.join(__dirname, "/pages/"),
-        tokenId: req.params.tokenId, //sanitize
-        token: req.params.token
-      };
+try {
+  if (req.user) {
+    req.flash("info", "You're logged in, you can change your password here");
+    return res.status(200).redirect("/User");
+  } 
+  let obj = {
+    active: "Reset password",
+    root: path.join(__dirname, "/pages/"),
+    tokenId: req.params.tokenId, //sanitize
+    token: req.params.token
+  };
 
-      var [err, pwToken] = await utils.to(
-        PwToken.findOne({ _id: obj.tokenId, token: obj.token })
-      );
-      if (err)
-        throw new Error(
-          "An error occurred while fetching the token, please try again"
-        );
-      if (pwToken === null)
-        throw new Error(
-          "Invalid token, please try to request another one here"
-        );
-      res.status(200).render("Resetpw", obj);
-    }
-  } catch (err) {
-    console.log("RESETPW ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    return res.status(200).redirect("/Account");
-  }
-});
+  var [err, pwToken] = await utils.to(PwToken.findOne({ _id: obj.tokenId, token: obj.token }));
+  if (err)
+    throw new Error("An error occurred while fetching the token, please try again");
+  if (pwToken === null)
+    throw new Error("Invalid token, please try to request another one here");
+
+  return res.status(200).render("Resetpw", obj); 
+} catch (err) {
+  console.log("RESETPW ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(200).redirect("/Account");
+}});
 
 /* END MAIN ROUTES */
 /* SINGLE ITEM ROUTES */
 
 router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
-  try {
-    let obj = { active: "Order recap" };
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
+try {
+  let obj = { active: "Order recap", user: req.user };
+    
+  obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`)); //same as /About
+  if (obj.order.error) 
+    throw new Error(obj.order.message);
+
+  obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
+  obj.products = [];
+  obj.order.items.forEach(item => {
+    if (item.attributes.isUnique) {
+      var items = {
+        item: item.attributes,
+        qty: item.qty,
+        price: formatter.format(item.price).substr(2),
+        shortcontent: item.attributes.content.substr(0, 128),
+        shorttitle: item.attributes.title.substr(0, 64),
+        details: "Toile Unique"
+      };
+      obj.products.push(items);
+    } else {
+      item.elements.forEach(element => {
+        if (element.attributes !== undefined) {
+          var items = {
+            item: item.attributes, 
+            attributes: element.attributes,
+            stringifiedAttributes: JSON.stringify(element.attributes),
+            qty: element.qty,
+            unitPrice: item.unitPrice,
+            price: formatter.format(item.unitPrice * element.qty).substr(2),
+            shortcontent: item.attributes.content.substr(0, 128), 
+            shorttitle: item.attributes.title.substr(0, 64), 
+            details: ""
+          };
+          let details = "";
+          Object.keys(element.attributes).forEach((attribute, index) => {
+            details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
+          })
+          items.details = details.substr(0, (details.length - 3));
+          obj.products.push(items);
+        }
+      })
     }
+  });
 
-    obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`));
-    if (obj.order.error) throw new Error(obj.order.message);
-
-    obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
-    obj.products = [];
-    obj.order.items.forEach(item => {
-      if (item.attributes.isUnique) {
-        var items = {
-          item: item.attributes,
-          qty: item.qty,
-          price: formatter.format(item.price).substr(2),
-          shortcontent: item.attributes.content.substr(0, 128),
-          shorttitle: item.attributes.title.substr(0, 64),
-          details: "Toile Unique"
-        };
-        obj.products.push(items);
-      } else {
-        item.elements.forEach(element => {
-          if (element.attributes !== undefined) {
-            var items = {
-              item: item.attributes, 
-              attributes: element.attributes,
-              stringifiedAttributes: JSON.stringify(element.attributes),
-              qty: element.qty,
-              unitPrice: item.unitPrice,
-              price: formatter.format(item.unitPrice * element.qty).substr(2),
-              shortcontent: item.attributes.content.substr(0, 128), 
-              shorttitle: item.attributes.title.substr(0, 64), 
-              details: ""
-            };
-            let details = "";
-            Object.keys(element.attributes).forEach((attribute, index) => {
-              details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
-            })
-            items.details = details.substr(0, (details.length - 3));
-            obj.products.push(items);
-          }
-        })
-      }
-    });
-
-    res.status(200).render("single/order-recap", obj);
-  } catch (err) {
-    console.log("ORDER RECAP ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/");
-  }
-});
+  return res.status(200).render("single/order-recap", obj);
+} catch (err) {
+  console.log("ORDER RECAP ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/");
+}});
 
 router.get("/Galerie/:id", setUser, async (req, res) => {
-  try {
-    let id = req.params.id;
-    let obj = {
-      active: "Galerie",
-      root: path.join(__dirname, "/pages/")
-    };
-    obj.galleries = JSON.parse(
-      await rp(`http://127.0.0.1:8089/api/gallery/single/${id}`)
-    );
-    if (obj.galleries.error) throw new Error(obj.galleries.message);
-    obj.img = JSON.parse(
-      await rp(`http://127.0.0.1:8089/api/image/Gallery/${id}`)
-    );
-    if (obj.img.error) throw new Error(obj.img.error);
+try {
+  let id = req.params.id;
+  let obj = {
+    active: "Galerie",
+    root: path.join(__dirname, "/pages/")
+  };
 
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    res.status(200).render("single/galerie-single", obj);
-  } catch (err) {
-    console.log("GALLERY SINGLE ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Galerie");
-  }
-});
+  if (req.user)
+    obj.user = req.user;
+
+  obj.galleries = JSON.parse(await rp(`http://127.0.0.1:8089/api/gallery/single/${id}`)); // like /About
+  if (obj.galleries.error) 
+    throw new Error(obj.galleries.message);
+
+  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Gallery/${id}`)); // like /About
+  if (obj.img.error) 
+    throw new Error(obj.img.error);
+
+  return res.status(200).render("single/galerie-single", obj);
+} catch (err) {
+  console.log("GALLERY SINGLE ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/Galerie");
+}});
 
 router.get("/Shop/:id", setUser, async (req, res) => {
-  try {
-    let id = req.params.id;
-    let obj = {
-      active: "Shop",
-      root: path.join(__dirname, "/pages/")
-    };
-    obj.shopItem = JSON.parse(
-      await rp(`http://127.0.0.1:8089/api/shop/single/${id}`)
-    );
-    if (obj.shopItem.error) throw new Error(obj.shopItem.message);
-    obj.shopItem.price = formatter.format(obj.shopItem.price).substr(2);
+try {
+  let id = req.params.id;
+  let obj = {
+    active: "Shop",
+    root: path.join(__dirname, "/pages/")
+  };
 
-    obj.img = JSON.parse(
-      await rp(`http://127.0.0.1:8089/api/image/Shop/${id}`)
-    );
-    if (obj.img.error) throw new Error(obj.img.error);
+  if (req.user)
+    obj.user = req.user;
 
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    res.status(200).render("single/shop-single", obj);
-  } catch (err) {
-    console.log("SHOP SINGLE ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Shop");
-  }
-});
+  obj.shopItem = JSON.parse(await rp(`http://127.0.0.1:8089/api/shop/single/${id}`)); // like /About
+  if (obj.shopItem.error) 
+    throw new Error(obj.shopItem.message);
+  obj.shopItem.price = formatter.format(obj.shopItem.price).substr(2);
+
+  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Shop/${id}`)); // like /About
+  if (obj.img.error) 
+    throw new Error(obj.img.error);
+
+  return res.status(200).render("single/shop-single", obj);
+} catch (err) {
+  console.log("SHOP SINGLE ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/Shop");
+}});
 
 router.get("/Blog/:id", setUser, async (req, res) => {
-  try {
-    let id = req.params.id;
-    let obj = { active: "Blog" };
+try {
+  let id = req.params.id;
+  let obj = { active: "Blog" };
 
-    obj.blogs = JSON.parse(await rp(`http://127.0.0.1:8089/api/blog/single/${id}`));
-    if (obj.blogs.error) 
-      throw new Error(obj.blogs.message);
+  if (req.user)
+    obj.user = req.user;
 
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
+  obj.blogs = JSON.parse(await rp(`http://127.0.0.1:8089/api/blog/single/${id}`)); // like /About
+  if (obj.blogs.error) 
+    throw new Error(obj.blogs.message);
 
-    return res.status(200).render("single/blog-single", obj);
-  } catch (err) {
-    console.log("BLOG ROUTE ERROR");
-    req.flash("warning", err.message);
-    return res.status(200).redirect("/About");
-  }
-});
+  return res.status(200).render("single/blog-single", obj);
+} catch (err) {
+  console.log("BLOG ROUTE ERROR");
+  req.flash("warning", err.message);
+  return res.status(200).redirect("/About");
+}});
 
 /* END SINGLE */
 /* ADMIN ROUTES */
@@ -511,299 +484,201 @@ router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 try {
   let obj = { active: "Admin", user: req.user };
 
-  console.log(obj.user)
-
   return res.status(200).render("restricted/admin", obj);
 } catch (err) {
   console.log("ADMIN ROUTE ERROR", err);
   req.flash("warning", err.message);
-  res.status(400).redirect("/");
+  return res.status(400).redirect("/");
 }});
 
-router.get("/Admin/Front", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Update Homepage" };
-      obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/"));
-      if (obj.front.length <= 0) obj.front = undefined;
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
-      //fetch current homepage images
-      return res.status(200).render("restricted/front-post", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("ADMIN FRONT ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/");
-  }
-});
+router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Update Homepage", user: req.user };
 
-router.get("/Admin/Orders", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Admin Orders" };
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
+  obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/")); // like /About
+  if (obj.front.length <= 0) 
+    obj.front = undefined;
 
-      let result = JSON.parse(await rp(`http://localhost:8089/api/order/`));
-      if (result.error) 
-        throw new Error(result.message);
+return res.status(200).render("restricted/front-post", obj);
+} catch (err) {
+  console.log("ADMIN FRONT ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/");
+}});
 
-      if (result.orders != null) 
-        obj.orders = result.orders;
-      return res.status(200).render("restricted/orders", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("ADMIN ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Admin");
-  }
-});
+router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Admin Orders", user: req.user };
 
-router.get("/Admin/Order/:id", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Order recap" };
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
-      obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`));
-      if (obj.order.error) throw new Error(obj.order.message);
+  let result = JSON.parse(await rp(`http://localhost:8089/api/order/`)); // like /About
+  if (result.error) 
+    throw new Error(result.message);
 
-      obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
-      obj.products = [];
-      obj.order.items.forEach(item => {
-        if (item.attributes.isUnique) {
+  if (result.orders != null) 
+    obj.orders = result.orders;
+
+  return res.status(200).render("restricted/orders", obj);
+} catch (err) {
+  console.log("ADMIN ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/Admin");
+}});
+
+router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Order recap", user: req.user };
+  
+  obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`)); // like /About
+  if (obj.order.error) 
+    throw new Error(obj.order.message);
+
+  obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
+  obj.products = [];
+  obj.order.items.forEach(item => {
+    if (item.attributes.isUnique) {
+      var items = {
+        item: item.attributes,
+        qty: item.qty,
+        price: item.price,
+        shortcontent: item.attributes.content.substr(0, 128),
+        shorttitle: item.attributes.title.substr(0, 64),
+        details: "Toile Unique"
+      };
+      obj.products.push(items);
+    } else {
+      item.elements.forEach(element => {
+        if (element.attributes !== undefined) {
           var items = {
-            item: item.attributes,
-            qty: item.qty,
-            price: item.price,
-            shortcontent: item.attributes.content.substr(0, 128),
-            shorttitle: item.attributes.title.substr(0, 64),
-            details: "Toile Unique"
+            item: item.attributes, 
+            attributes: element.attributes,
+            stringifiedAttributes: JSON.stringify(element.attributes),
+            qty: element.qty,
+            unitPrice: item.unitPrice,
+            price: formatter.format(item.unitPrice * element.qty).substr(2),
+            shortcontent: item.attributes.content.substr(0, 128), 
+            shorttitle: item.attributes.title.substr(0, 64), 
+            details: ""
           };
-          obj.products.push(items);
-        } else {
-          item.elements.forEach(element => {
-            if (element.attributes !== undefined) {
-              var items = {
-                item: item.attributes, 
-                attributes: element.attributes,
-                stringifiedAttributes: JSON.stringify(element.attributes),
-                qty: element.qty,
-                unitPrice: item.unitPrice,
-                price: formatter.format(item.unitPrice * element.qty).substr(2),
-                shortcontent: item.attributes.content.substr(0, 128), 
-                shorttitle: item.attributes.title.substr(0, 64), 
-                details: ""
-              };
-              let details = "";
-              Object.keys(element.attributes).forEach((attribute, index) => {
-                details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
-              })
-              items.details = details.substr(0, (details.length - 3));
-              obj.products.push(items);
-            }
+          let details = "";
+          Object.keys(element.attributes).forEach((attribute, index) => {
+            details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
           })
+          items.details = details.substr(0, (details.length - 3));
+          obj.products.push(items);
         }
-      });
-
-      res.status(200).render("restricted/order-manage", obj);
-    } else
-      throw new Error("Please make sure you're logged in to check your order");
-  } catch (err) {
-    console.log("ORDER RECAP ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/");
-  }
-});
-
-router.get("/Admin/Galerie/Post", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Post a gallery item" };
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
-
-      return res.status(200).render("restricted/gallery-post", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("GALLERY POST ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Galerie");
-  }
-});
-
-router.get("/Admin/Galerie/Patch/:galleryId", setUser,
-  async (req, res) => {
-    try {
-      if (req.user && req.user.level >= 3) {
-        let obj = { active: "Edit a gallery item" };
-        if (req.user) {
-          obj.userId = req.user._id;
-          obj.name = req.user.name;
-          obj.level = req.user.level;
-        }
-
-        var [err, result] = await utils.to(
-          Gallery.findOne({ _id: req.params.galleryId })
-        );
-        if (err || !result)
-          throw new Error("An error occurred while fetching the gallery item");
-        obj.gallery = result;
-
-        obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Gallery/${req.params.galleryId}`));
-        if (obj.img.error) throw new Error(obj.img.error);
-
-        return res.status(200).render("restricted/gallery-patch", obj);
-      } else
-        throw new Error(
-          "Unauthorized. Contact your administrator if you think this is a mistake"
-        );
-    } catch (err) {
-      console.log("GALLERY PATCH ROUTE ERROR", err);
-      req.flash("warning", err.message);
-      res.status(400).redirect("/Galerie");
+      })
     }
+  });
+
+  return res.status(200).render("restricted/order-manage", obj);
+} catch (err) {
+  console.log("ORDER RECAP ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/");
+}});
+
+router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Post a gallery item", user: req.user };
+    
+  return res.status(200).render("restricted/gallery-post", obj);
+} catch (err) {
+  console.log("GALLERY POST ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/Galerie");
+}});
+
+router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Edit a gallery item" };
+      
+  var [err, result] = await utils.to(Gallery.findOne({ _id: req.params.galleryId }));
+  if (err || !result)
+    throw new Error("An error occurred while fetching the gallery item");
+  obj.gallery = result;
+
+  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Gallery/${req.params.galleryId}`));
+  if (obj.img.error) 
+    throw new Error(obj.img.error);
+
+  return res.status(200).render("restricted/gallery-patch", obj);
+
+} catch (err) {
+  console.log("GALLERY PATCH ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/Galerie");
+}});
+
+router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Post a shop item", user: req.user };
+
+  return res.status(200).render("restricted/shop-post", obj);
+} catch (err) {
+  console.log("SHOP POST ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/Shop");
+}});
+
+router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Edit a shop item", user: req.user };
+
+  var [err, result] = await utils.to(Shop.findOne({ _id: req.params.shopId }));
+  if (err || !result)
+    throw new Error("An error occurred while fetching the shop item");
+  obj.shop = result;
+
+  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Shop/${req.params.shopId}`));
+  if (obj.img.error) 
+    throw new Error(obj.img.error);
+
+  return res.status(200).render("restricted/shop-patch", obj);
+} catch (err) {
+  console.log("SHOP PATCH ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/Shop");
+}});
+
+router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Post a blog", user: req.user };
+
+  if (req.session.formData) {
+    obj.formData = req.session.formData;
+    req.session.formData = undefined;
   }
-);
 
-router.get("/Admin/Shop/Post", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Post a shop item" };
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
+  return res.status(200).render("restricted/blog-post", obj);
+} catch (err) {
+  console.log("BLOG POST ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(200).redirect("/restricted/blog-post");
+}});
 
-      return res.status(200).render("restricted/shop-post", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("SHOP POST ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Shop");
+router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = {active: "Edit a blog", user: req.user};
+
+  if (req.session.formData) {
+    obj.formData = req.session.formData;
+    req.session.formData = undefined;
   }
-});
 
-router.get("/Admin/Shop/Patch/:shopId", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Edit a shop item" };
-      var [err, result] = await utils.to(
-        Shop.findOne({ _id: req.params.shopId })
-      );
-      if (err || !result)
-        throw new Error("An error occurred while fetching the shop item");
+  var [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
+  if (err)
+    throw new Error("An error occurred while loading the blog, please try again");
+  if (blog === null) 
+    throw new Error("No blog exists with this ID");
 
-      obj.img = JSON.parse(
-        await rp(
-          `http://127.0.0.1:8089/api/image/Shop/${req.params.shopId}`
-        )
-      );
-      if (obj.img.error) throw new Error(obj.img.error);
-
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
-      obj.shop = result;
-
-      return res.status(200).render("restricted/shop-patch", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("SHOP PATCH ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Shop");
-  }
-});
-
-router.get("/Admin/Blog/Post", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Post a blog" };
-      if (req.session.formData) {
-        obj.formData = req.session.formData;
-        req.session.formData = undefined;
-      }
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
-      return res.status(200).render("restricted/blog-post", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("BLOG POST ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    return res.status(200).redirect("/restricted/blog-post");
-  }
-});
-
-router.get("/Admin/Blog/Patch/:blogId", setUser, async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = {active: "Edit a blog"};
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
-      if (req.session.formData) {
-        obj.formData = req.session.formData;
-        req.session.formData = undefined;
-      }
-
-      var [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
-      if (err)
-        throw new Error("An error occurred while loading the blog, please try again");
-      if (blog === null) 
-        throw new Error("No blog exists with this ID");
-
-      obj.blogContent = blog;
-      obj._id = req.params.blogId;
+  obj.blogContent = blog;
+  obj._id = req.params.blogId;
      
-      return res.status(200).render("restricted/blog-patch", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("BLOG PATCH ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    return res.status(200).redirect("/");
-  }
-});
+  return res.status(200).render("restricted/blog-patch", obj);
+} catch (err) {
+  console.log("BLOG PATCH ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(200).redirect("/");
+}});
 
 module.exports = router;
