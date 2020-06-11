@@ -53,10 +53,9 @@
         <% }) %>
       <% } %>
 
-      <% if(locals.isDelivery) { %>
         <div class="panel-heading">
           <h2 class="panel-title">Informations pour la livraison</h2>
-          <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
+            <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
         </div>
         <div class="row">
           <div class="col-md-6">
@@ -106,7 +105,6 @@
           <div class="col-md-6">
             <textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
           </div>
-      <% } %>
 
       <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
         <div class="col-md-6 offset-3 mt-4">
@@ -118,9 +116,7 @@
           </div>
         </div>
       <% } %>
-      <% if(locals.isDelivery){ %>
-        </div>
-      <% } %>
+      </div>
     </div>
   </div>
 </div>

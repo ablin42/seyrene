@@ -20,40 +20,38 @@ const format = require("date-format");
 //var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
-router.get('/', setUser, async (req, res) => {
+router.get('/', setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
-    if (req.user.level >= 3) {
-        const options = {
-            page: parseInt(req.query.page, 10) || 1,
-            limit: 20,
-            sort: { date: -1 }
-          };
-        var [err, result] = await utils.to(Order.paginate({}, options));
-        if (err || result === null)
-            throw new Error("An error occurred while fetching orders");
+    const options = {
+        page: parseInt(req.query.page, 10) || 1,
+        limit: 20,
+        sort: { date: -1 }
+    };
 
-        let orders = [];
-        result.docs.forEach((order, index) => {
-            let orderObj = {
-                _id: order._id,
-                status: order.status,
-                price: formatter.format(order.price).substr(2),
-                date_f: format.asString("dd/MM/yyyy", new Date(order.date)),
-                lastname: order.lastname,
-                firstname: order.firstname
-            }
-            orders.push(orderObj);
-        });
+    var [err, result] = await utils.to(Order.paginate({}, options));
+    if (err || result === null)
+        throw new Error("An error occurred while fetching orders");
+
+    let orders = [];
+    result.docs.forEach((order, index) => {
+        let orderObj = {
+            _id: order._id,
+            status: order.status,
+            price: formatter.format(order.price).substr(2),
+            date_f: format.asString("dd/MM/yyyy", new Date(order.date)),
+            lastname: order.lastname,
+            firstname: order.firstname
+        }
+        orders.push(orderObj);
+    });
     
-        return res.status(200).json({error: false, orders: orders});
-    } else
-        throw new Error("Unauthorized, contact your administrator if you think this is an issue");
+    return res.status(200).json({error: false, orders: orders});
 } catch (err) {
     console.log("FETCHING ORDERS ERROR:", err);
     return res.status(200).json({error: true, message: err.message})
 }})
 
-router.get('/:id', setUser, async (req, res) => {
+router.get('/:id', setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 try {
     let id = req.params.id;
     var [err, result] = await utils.to(Order.findById(id));
@@ -62,17 +60,13 @@ try {
     if (result === null)
         throw new Error("No order exist with this ID!");
 
-    if ((result._userId === req.user._id) || req.user.level >= 3) {
-        result.price = formatter.format(result.price).substr(2);
-        result.items.forEach((item, index) => {
-            result.items[index].price = formatter.format(item.price).substr(2);
-            result.items[index].attributes.content = item.attributes.content.substr(0, 128);
-            result.items[index].attributes.title = item.attributes.title.substr(0, 64);
-        })
-        return res.status(200).json(result);
-    }
-    else
-        throw new Error("Please make sure you're logged in to check your order");
+    result.price = formatter.format(result.price).substr(2);
+    result.items.forEach((item, index) => {
+        result.items[index].price = formatter.format(item.price).substr(2);
+        result.items[index].attributes.content = item.attributes.content.substr(0, 128);
+        result.items[index].attributes.title = item.attributes.title.substr(0, 64);
+    })
+    return res.status(200).json(result);
 } catch (err) {
     console.log("FETCHING ORDER ERROR:", err);
     return res.status(200).json({error: true, message: err.message})
@@ -329,100 +323,96 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
-router.post('/initialize', setUser, async (req, res) => {
+router.post('/initialize', setUser, authUser, async (req, res) => {
 try {
-    if (req.user) {
-        var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-        if (err)
-            throw new Error("An error occurred while looking for your delivery informations, please try again");
+    var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+    if (err)
+        throw new Error("An error occurred while looking for your delivery informations, please try again");
 
-        var [err, deletedOrder] = await utils.to(Order.findOneAndDelete({ _userId: req.user._id, status: "awaitingStripePayment" }));
-        if (err)
-            throw new Error("An error occurred, please try again later");
+    var [err, deletedOrder] = await utils.to(Order.findOneAndDelete({ _userId: req.user._id, status: "awaitingStripePayment" }));
+    if (err)
+        throw new Error("An error occurred, please try again later");
 
-        const order = new Order({
-            _userId: req.user._id,
-            chargeId: req.body.chargeId,
-            items: req.body.items,
-            price: req.body.price,
-            deliveryPrice: req.body.deliveryPrice,
-            status: "awaitingStripePayment",
-            firstname: infos.firstname,
-            lastname: infos.lastname,
-            full_address: infos.full_address,
-            full_street: infos.full_street,
-            country: infos.country,
-            street_name: infos.street_name,
-            street_number: infos.street_number,
-            city: infos.city,
-            state: infos.state,
-            zipcode: infos.zipcode,
-            instructions: infos.instructions
-        });
+    const order = new Order({
+        _userId: req.user._id,
+        chargeId: req.body.chargeId,
+        items: req.body.items,
+        price: req.body.price,
+        deliveryPrice: req.body.deliveryPrice,
+        status: "awaitingStripePayment",
+        firstname: infos.firstname,
+        lastname: infos.lastname,
+        full_address: infos.full_address,
+        full_street: infos.full_street,
+        country: infos.country,
+        street_name: infos.street_name,
+        street_number: infos.street_number,
+        city: infos.city,
+        state: infos.state,
+        zipcode: infos.zipcode,
+        instructions: infos.instructions
+    });
 
-        var [err, response] = await utils.to(order.save());
-        if (err || response == null)
-            throw new Error("An error occurred while creating your order");
 
-        return res.status(200).json(response);
-    } else 
-        throw new Error("Unauthorized, please make sure you are logged in");
+    var [err, response] = await utils.to(order.save());
+    if (err || response == null)
+        throw new Error("An error occurred while creating your order");
+
+    return res.status(200).json(response);
 } catch (err) {
     console.log("INITIALIZING ORDER ERROR:", err);
     return res.status(200).json({err: true, message: err.message})
 }})
 
-router.post('/update', setUser, async (req, res) => {
-let url = req.header('Referer') || '/Admin/Orders';
+router.post('/update', setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
-    if (req.user && req.user.level >= 3) {
-        let newStatus = req.body.status;
+    let url = req.header('Referer') || '/Admin/Orders';
+    let newStatus = req.body.status;
 
-        if (newStatus !== "Completed" && newStatus !== "Submitted")
-            throw new Error("Invalid parameter, please try again");
+    if (newStatus !== "Completed" && newStatus !== "Submitted")
+        throw new Error("Invalid parameter, please try again");
 
-        var [err, order] = await utils.to(Order.findOne({"_id": req.body.orderId}));
-        if (err || order == null)
-            throw new Error("An error occurred while finding the order");
+    var [err, order] = await utils.to(Order.findOne({"_id": req.body.orderId}));
+    if (err || order == null)
+        throw new Error("An error occurred while finding the order");
 
-        if (order.status === "Cancelled")
-            throw new Error("You can't update the status of a cancelled order");
+    if (order.status === "Cancelled")
+        throw new Error("You can't update the status of a cancelled order");
 
-        var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
-        if (err || order == null)
-            throw new Error("An error occurred while updating the order");
+    var [err, order] = await utils.to(Order.findOneAndUpdate({"_id": req.body.orderId}, {$set: {status: newStatus}}));
+    if (err || order == null)
+        throw new Error("An error occurred while updating the order");
 
-        // Send mails
-        let subject = `Updated Order #${order._id}`;
-        let content = `You updated an order, to see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
-        if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-            throw new Error("An error occurred while trying to send the mail, please retry");
+    // Send mails
+    let subject = `Updated Order #${order._id}`;
+    let content = `You updated an order, to see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+    if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+        throw new Error("An error occurred while trying to send the mail, please retry");
 
-        var [err, user] = await utils.to(User.findById(order._userId));
-        if (err || user == null)
-            throw new Error("An error occurred while finding your user account, please try again");
+    var [err, user] = await utils.to(User.findById(order._userId));
+    if (err || user == null)
+        throw new Error("An error occurred while finding your user account, please try again");
 
-        content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-        if (await mailer(user.email, subject, content))
-            throw new Error("An error occurred while trying to send the mail, please retry");
+    content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+    if (await mailer(user.email, subject, content))
+        throw new Error("An error occurred while trying to send the mail, please retry");
 
-        req.flash("success", "Order updated");
-        return res.status(200).redirect(url)
-    } else
-        throw new Error("Unauthorized, please make sure you are logged in");
+    req.flash("success", "Order updated");
+    return res.status(200).redirect(url)
 } catch (err) {
     console.log("UPDATING ORDER ERROR:", err);
     req.flash("warning", err.message);
     return res.status(200).redirect(url)
 }})
 
-async function refundStripe(chargeId) {
+async function refundStripe(req, chargeId, orderId) {
     let options = {
-        uri: `http://localhost:8089/api/stripe/refund`,
+        uri: `http://localhost:8089/api/stripe/refund/${orderId}`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'cookie': req.headers.cookie
         },
         body: {chargeId: chargeId},
         json: true
@@ -432,96 +422,93 @@ async function refundStripe(chargeId) {
     return result;
 }
 
-router.get('/cancel/:id', setUser, async (req, res) => {
+router.get('/cancel/:id', setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 try {
-    if (req.user && req.params.id) {
-        console.log("cancel route")
-        var [err, order] = await utils.to(Order.findById(req.params.id));
+    let orderId = req.params.id
+    if (!orderId)
+        throw new Error("Please provide an order ID"); 
+
+    console.log("cancel route")
+    var [err, order] = await utils.to(Order.findById(req.params.id));
+    if (err || order == null)
+        throw new Error("We couldn't find your order, please try again");
+
+    switch(order.status) {
+        case "Cancelled":
+            throw new Error("You can't cancel an order that is already cancelled");
+            break;
+        case "Completed":
+            throw new Error("You can't cancel an order that is already completed");
+            break;
+        case "awaitingStripePayment":
+            throw new Error("You can't cancel an order that hasn't been finalized");
+            break;
+    }
+        
+        var [err, order] = await utils.to(Order.findOne({_id: req.params.id}));
         if (err || order == null)
             throw new Error("We couldn't find your order, please try again");
-        
-        
-        switch(order.status) {
-            case "Cancelled":
-                throw new Error("You can't cancel an order that is already cancelled");
-                break;
-            case "Completed":
-                throw new Error("You can't cancel an order that is already completed");
-                break;
-            case "awaitingStripePayment":
-                throw new Error("You can't cancel an order that hasn't been finalized");
-                break;
+
+        let isPwinty = false;
+        for (let index = 0; index < order.items.length; index++) {
+            var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].attributes._id, isUnique: true}, {$set: {soldOut: false}}));
+            if (err)
+                throw new Error("An error occurred while deleting the unique item from the store, please try again");
+            if (!order.items[index].attributes.isUnique)
+                isPwinty = true;
         }
-        
-        if (order._userId === req.user._id || req.user.level >= 3) {
-            var [err, order] = await utils.to(Order.findOne({_id: req.params.id}));
-            if (err || order == null)
-                throw new Error("We couldn't find your order, please try again");
 
-            let isPwinty = false;
-            for (let index = 0; index < order.items.length; index++) {
-                var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: order.items[index].attributes._id, isUnique: true}, {$set: {soldOut: false}}));
-                if (err)
-                    throw new Error("An error occurred while deleting the unique item from the store, please try again");
-                if (!order.items[index].attributes.isUnique)
-                    isPwinty = true;
+        if (isPwinty === false) {
+            let refund = await refundStripe(req, order.chargeId, order._id);
+            if (refund.error === true)
+                throw new Error(refund.message);
+        } else {
+            let options = {
+                method: 'GET',
+                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}`,//${API_URL}/v3.0/Orders
+                body: {},
+                json: true
             }
+            response = await rp(options);
+            if (response.statusCode === 200) {
+                if (response.data.canCancel === true) {
+                    options.method = "POST";
+                    options.uri =  `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`;
+                    options.body = {status: "Cancelled"};
 
-            if (isPwinty === false) {
-                let refund = await refundStripe(order.chargeId);
-                if (refund.error === true)
-                    throw new Error(refund.message);
-            } else {
-                let options = {
-                    method: 'GET',
-                    uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}`,//${API_URL}/v3.0/Orders
-                    body: {},
-                    json: true
-                }
-                response = await rp(options);
-                if (response.statusCode === 200) {
-                    if (response.data.canCancel === true) {
-                        options.method = "POST";
-                        options.uri =  `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`;
-                        options.body = {status: "Cancelled"};
-
-                        response = await rp(options);
-                        if (response.statusCode === 200) {
-                            let refund = await refundStripe(order.chargeId);
-                            if (refund.error === true)
-                                throw new Error(refund.message);
-                        } else 
-                            throw new Error("We could not cancel your order, please try again later");
+                    response = await rp(options);
+                    if (response.statusCode === 200) {
+                        let refund = await refundStripe(req, order.chargeId, order._id);
+                        if (refund.error === true)
+                            throw new Error(refund.message);
                     } else 
-                        throw new Error("Your order status does not allow it to be cancelled");
+                        throw new Error("We could not cancel your order, please try again later");
                 } else 
-                    throw new Error("We could not check the status of your order, please try again later");
-            }
+                    throw new Error("Your order status does not allow it to be cancelled");
+            } else 
+                throw new Error("We could not check the status of your order, please try again later");
+        }
 
-            var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
-            if (err || order == null)
-                throw new Error("We couldn't cancel your order, please try again");
+    var [err, order] = await utils.to(Order.findOneAndUpdate({_id: req.params.id}, {$set:{status: "Cancelled"}}));
+    if (err || order == null)
+        throw new Error("We couldn't cancel your order, please try again");
 
-            // Send mails
-            let subject = `Cancelled Order #${order._id}`;
-            let content = `To see the cancelled order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
-            if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
-                throw new Error("An error occurred while trying to send the mail, please retry");
+    // Send mails
+    let subject = `Cancelled Order #${order._id}`;
+    let content = `To see the cancelled order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+    if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
+        throw new Error("An error occurred while trying to send the mail, please retry");
 
-            var [err, user] = await utils.to(User.findById(req.user._id));
-            if (err || user == null)
-                throw new Error("An error occurred while finding your user account, please try again");
+    var [err, user] = await utils.to(User.findById(req.user._id));
+    if (err || user == null)
+        throw new Error("An error occurred while finding your user account, please try again");
 
-            content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
-            if (await mailer(user.email, subject, content))
-                throw new Error("An error occurred while trying to send the mail, please retry");
+    content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+    if (await mailer(user.email, subject, content))
+        throw new Error("An error occurred while trying to send the mail, please retry");
 
-            console.log("cancelled order");
-            return res.status(200).json({err: false, msg: "Your order was successfully cancelled"});
-        } else
-            throw new Error("Unauthorized, please make sure you are logged in");
-    } else
-        throw new Error("Unauthorized, please make sure you are logged in");
+    console.log("cancelled order");
+    return res.status(200).json({err: false, msg: "Your order was successfully cancelled"});
 } catch (err) {
     console.log("CANCEL ORDER ERROR:", err);
     return res.status(200).json({err: true, msg: err.message})

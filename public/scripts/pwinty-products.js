@@ -543,9 +543,9 @@ class PwintyObject {
               'Accept': 'application/json'
             },
             body: JSON.stringify({skus: [this.SKU]})
-          })
-          .then((res) => {return res.json()})
-          .then((data) => {
+        })
+        .then((res) => {return res.json()})
+        .then((data) => {
             if (data.prices[0].price){
                 if (data.prices[0].price === 0)
                     throw new Error("Something went wrong while searching this item in our catalog");
@@ -554,12 +554,12 @@ class PwintyObject {
             }
             else 
                 throw new Error("Something went wrong while searching this item in our catalog");
-          })
-          .catch((err) => {
+        })
+        .catch((err) => {
             this.hidePricing();
             let alert = createAlertNode(err.message, "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
             addAlert(alert, "#header");
-          })
+        })
     }
 
     displayPricing() {

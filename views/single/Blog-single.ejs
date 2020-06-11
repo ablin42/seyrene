@@ -5,7 +5,7 @@
       <div class="single-wrapper" id="<%= locals.blogs._id %>">
         <div class="col-10 offset-1">
           <h3 class="single-title col-12"><%= locals.blogs.title %>
-            <% if (locals.level && locals.level > 1) { %>
+            <% if (locals.user && locals.user.role === "admin") { %>
               <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
             <% } %> 
           </h3>  

@@ -67,80 +67,66 @@ try {
 }});
 
 // post a blog
-router.post("/", setUser, vBlog, async (req, res) => {
+router.post("/", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res) => {
 try {
-  if (req.user.level > 1) {
-    const obj = { //sanitize
-      authorId: req.user._id,
-      title: req.body.title,
-      content: req.body.content
-    };
-    const formData = {
-      title: obj.title,
-      content: obj.content
-    };
-    req.session.formData = formData;
+  const obj = { //sanitize
+    authorId: req.user._id,
+    title: req.body.title,
+    content: req.body.content
+  };
+  req.session.formData = {title: obj.title,content: obj.content};
 
-    const blog = new Blog(obj);
-    var [err, savedBlog] = await utils.to(blog.save());
-    if (err) {
-      console.log(err)
-      throw new Error("An error occurred while posting your blog, please try again");
-    }
+  const blog = new Blog(obj);
+  var [err, savedBlog] = await utils.to(blog.save());
+  if (err) {
+    console.log(err)
+    throw new Error("An error occurred while posting your blog, please try again");
+  }
 
-    req.flash("success", "Post successfully uploaded");
-    res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);
-  } else
-    throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+  req.flash("success", "Post successfully uploaded");
+  return res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);
 } catch (err) {
   console.log("POST BLOG ERROR", err);
   req.flash("warning", err.message);
-  res.status(400).redirect("/Admin/Blog/Post");
+  return res.status(400).redirect("/Admin/Blog/Post");
 }});
 
 // patch a blog
-router.post("/patch/:blogId", setUser, vBlog, async (req, res) => {
+router.post("/patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res) => {
 try {
-  if (req.user.level > 1) {
-    let id = req.params.blogId;
-    const formData = {
-      title: req.body.title,
-      content: req.body.content
-    };
-    req.session.formData = formData;
+  let id = req.params.blogId;
+  req.session.formData = {
+    title: req.body.title,
+    content: req.body.content
+  };
 
-    var [err, patchedBlog] = await utils.to(Blog.updateOne({ _id: id },{$set: {title: req.body.title, content: req.body.content}}));
-    if (err)
-      throw new Error("An error occurred while updating the blog, please try again");
+  var [err, patchedBlog] = await utils.to(Blog.updateOne({ _id: id },{$set: {title: req.body.title, content: req.body.content}}));
+  if (err)
+    throw new Error("An error occurred while updating the blog, please try again");
 
-    req.flash("success", "Post corrigé avec succès");
-    res.status(200).redirect(`/Blog/${req.params.blogId}`);
-  } else
-      throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+  req.flash("success", "Post corrigé avec succès");
+  return res.status(200).redirect(`/Blog/${req.params.blogId}`);
 } catch (err) {
   console.log("PATCH BLOG ERROR", err);
   req.flash("warning", err.message);
-  res.status(400).redirect(`/Admin/Blog/Patch/${req.params.blogId}`);
+  return res.status(400).redirect(`/Admin/Blog/Patch/${req.params.blogId}`);
 }});
 
 // delete a blog
-router.get("/delete/:blogId", setUser, async (req, res) => {
+router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
-  if (req.user.level > 1) {
-    let blogId = req.params.blogId
-    var [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
+  let blogId = req.params.blogId;
 
-    if (err)
-      throw new Error("An error occurred while deleting the blog, please try again");
+  var [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
+  if (err)
+    throw new Error("An error occurred while deleting the blog, please try again");
   
-      req.flash("success", "Item successfully deleted!");
-      return res.status(200).redirect("/About");
-    } else
-      throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+  req.flash("success", "Item successfully deleted!");
+  return res.status(200).redirect("/About");
 } catch (err) {
   console.log("DELETE BLOG ERROR", err);
   req.flash("warning", err.message);
-  res.status(400).redirect("/About");
+  return res.status(400).redirect("/About");
 }});
 
 module.exports = router;

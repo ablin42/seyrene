@@ -4,7 +4,7 @@ const rp = require("request-promise");
 const format = require("date-format");
 const { getCode, getName } = require('country-list');
 
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setDelivery, isDelivery, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Blog = require("../models/Blog");
 const User = require("../models/User");
@@ -104,30 +104,18 @@ try {
   return res.status(400).render("tags", obj);
 }});
 
-router.get("/shopping-cart", setUser, async (req, res) => {
+router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (req, res) => {
 try {
   let obj = {
     active: "Cart",
     stripePublicKey: stripePublic,
     products: null,
     totalPrice: 0,
-    totalQty: 0
+    totalQty: 0,
+    user: req.user,
+    delivery: req.delivery
   };
 
-  if (req.user) 
-    obj.user = req.user
-
-  /* might need req.user condition */
-  obj.isDelivery = false;
-  obj.delivery = null;
-  var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-  if (err)
-    throw new Error("An error occurred while looking for your delivery informations, please retry");
-  if (result != null) {
-    obj.delivery = result;
-    obj.isDelivery = true;
-  } //until here
-    
   if (req.session.cart) {
     let cart = new Cart(req.session.cart);
     obj.products = [];
@@ -186,8 +174,6 @@ try {
     obj.deliveryPrice = await rp(options);
     if (obj.deliveryPrice.error) 
       throw new Error(obj.deliveryPrice.message);
-
-    console.log(obj.deliveryPrice)
     //parse and format price
   }
   return res.status(200).render("cart", obj);
@@ -224,8 +210,9 @@ try {
 
 router.get("/User", setUser, authUser, async (req, res) => {
 try {
-  let obj = {user: req.user};
+  let obj = {};
   obj = await User.findOne({ _id: req.user._id });
+  obj.user = req.user;
   obj.password = undefined;
   obj.active = "User";
   obj.delivery = false; /////////////////?
@@ -355,8 +342,15 @@ try {
 router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 try {
   let obj = { active: "Order recap", user: req.user };
+
+  let options = {
+    method: "GET",
+    uri: `http://127.0.0.1:8089/api/order/${req.params.id}`,
+    headers: {cookie: req.headers.cookie},
+    json: true
+  }
     
-  obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`)); //same as /About
+  obj.order = await rp(options); //same as /About
   if (obj.order.error) 
     throw new Error(obj.order.message);
 
@@ -510,11 +504,20 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 try {
   let obj = { active: "Admin Orders", user: req.user };
 
-  let result = JSON.parse(await rp(`http://localhost:8089/api/order/`)); // like /About
+  let options = {
+    method: "GET",
+    uri: "http://localhost:8089/api/order/",
+    headers: {
+      cookie: req.headers.cookie
+    },
+    json: true
+  }
+  let result = await rp(options);
+  if (typeof result === "string") 
+    throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
   if (result.error) 
     throw new Error(result.message);
-
-  if (result.orders != null) 
+  if (result.orders) 
     obj.orders = result.orders;
 
   return res.status(200).render("restricted/orders", obj);
@@ -528,7 +531,14 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (r
 try {
   let obj = { active: "Order recap", user: req.user };
   
-  obj.order = JSON.parse(await rp(`http://127.0.0.1:8089/api/order/${req.params.id}`)); // like /About
+  let options = {
+    method: "GET",
+    uri: `http://127.0.0.1:8089/api/order/${req.params.id}`,
+    headers: {cookie: req.headers.cookie},
+    json: true
+  }
+    
+  obj.order = await rp(options); //same as /About
   if (obj.order.error) 
     throw new Error(obj.order.message);
 

@@ -9,7 +9,7 @@
   <% if (locals.galleries) { %>
     <div class="col-10 offset-1" id="<%= locals.galleries._id %>">
       <h3 class="single-title col-12"><%= locals.galleries.title %>
-        <% if (locals.level && locals.level > 1) { %>
+        <% if (locals.user && locals.user.role === "admin") { %>
           <a href="/Admin/Galerie/Patch/<%= locals.galleries._id %>"><i class="fas fa-edit"></i></a>
         <% } %> 
       </h3>  
