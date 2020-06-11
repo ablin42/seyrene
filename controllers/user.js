@@ -15,7 +15,7 @@ const { getCode, getName } = require('country-list');
 const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
-const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
@@ -152,7 +152,7 @@ router.post("/resetpw", vPassword, async (req, res) => {
   }
 });
 
-router.post("/patch/name", vName, verifySession, async (req, res) => {
+router.post("/patch/name", vName, setUser, async (req, res) => {
   try {
     if (req.user) {
       // Check form inputs validity
@@ -189,7 +189,7 @@ router.post("/patch/name", vName, verifySession, async (req, res) => {
   }
 });
 
-router.post("/patch/email", vEmail, verifySession, async (req, res) => {
+router.post("/patch/email", vEmail, setUser, async (req, res) => {
   try {
     if (req.user) {
       // Check form inputs validity
@@ -249,7 +249,7 @@ router.post("/patch/email", vEmail, verifySession, async (req, res) => {
   }
 });
 
-router.post("/patch/password", vPassword, verifySession, async (req, res) => {
+router.post("/patch/password", vPassword, setUser, async (req, res) => {
   try {
     if (req.user) {
       // Check form inputs validity
@@ -298,7 +298,7 @@ router.post("/patch/password", vPassword, verifySession, async (req, res) => {
   }
 });
 
-router.post("/patch/delivery-info", vDelivery, verifySession, async (req, res) => {
+router.post("/patch/delivery-info", vDelivery, setUser, async (req, res) => {
     try {
       if (req.user) {
         const vResult = validationResult(req);
@@ -393,7 +393,7 @@ router.post("/patch/delivery-info", vDelivery, verifySession, async (req, res) =
   }
 );
 
-router.get("/countryCode", verifySession, async (req, res) => {
+router.get("/countryCode", setUser, async (req, res) => {
 try {
   const ip = "90.79.188.153"; /* (req.headers['x-forwarded-for'] || '').split(',').pop().trim() || 
   req.connection.remoteAddress || 

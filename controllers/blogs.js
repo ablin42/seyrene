@@ -4,7 +4,7 @@ const { vBlog } = require("./validators/vBlog");
 const rp = require("request-promise");
 
 const Blog = require("../models/Blog");
-const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const bHelpers = require("./helpers/blogHelpers");
 const utils = require("./helpers/utils");
 
@@ -67,7 +67,7 @@ try {
 }});
 
 // post a blog
-router.post("/", verifySession, vBlog, async (req, res) => {
+router.post("/", setUser, vBlog, async (req, res) => {
 try {
   if (req.user.level > 1) {
     const obj = { //sanitize
@@ -99,7 +99,7 @@ try {
 }});
 
 // patch a blog
-router.post("/patch/:blogId", verifySession, vBlog, async (req, res) => {
+router.post("/patch/:blogId", setUser, vBlog, async (req, res) => {
 try {
   if (req.user.level > 1) {
     let id = req.params.blogId;
@@ -124,7 +124,7 @@ try {
 }});
 
 // delete a blog
-router.get("/delete/:blogId", verifySession, async (req, res) => {
+router.get("/delete/:blogId", setUser, async (req, res) => {
 try {
   if (req.user.level > 1) {
     let blogId = req.params.blogId

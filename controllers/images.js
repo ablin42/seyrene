@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-const { ROLE, verifySession, authUser, authRole } = require('./helpers/verifySession');
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
 const Image = require('../models/Image');
 const utils = require('./helpers/utils');
 
@@ -50,7 +50,7 @@ try {
     return res.status(400).json(err.message);
 }})
  
-router.get('/select/:itemType/:itemId/:id', verifySession, async (req, res) => {
+router.get('/select/:itemType/:itemId/:id', setUser, async (req, res) => {
 try {
     if (req.user.level >= 3) {
         let id = req.params.id;
@@ -74,7 +74,7 @@ try {
     return res.status(400).json({err: true, msg: err.message});
 }})
 
-router.get('/delete/:id', verifySession, async (req, res) => {
+router.get('/delete/:id', setUser, async (req, res) => {
 try {
     if (req.user.level >= 3) {
         let id = req.params.id;

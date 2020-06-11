@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const Front = require('../models/Front');
-const { ROLE, verifySession, authUser, authRole } = require('./helpers/verifySession');
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
 const gHelpers = require('./helpers/galleryHelpers');
 const utils = require('./helpers/utils');
 
@@ -40,7 +40,7 @@ try {
 }})
 
 //sanitize input
-router.post('/post', upload, verifySession, async (req, res) => { //vgallery
+router.post('/post', upload, setUser, async (req, res) => { //vgallery
 try {
     if (req.user.level >= 3) {
         if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
@@ -87,7 +87,7 @@ try {
 }})
 
 //delete item using its id + sanitize :id
-router.get('/delete/:id', verifySession, async (req, res) => { /////////////////////// HERE
+router.get('/delete/:id', setUser, async (req, res) => { /////////////////////// HERE
 try {
     if (req.user.level >= 3) {
         let id = req.params.id; //sanitize

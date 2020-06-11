@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    level: {
-        type: Number,
-        default: 1
+    role: {
+        type: String,
+        default: "basic"
     },
     name: {
         type: String,

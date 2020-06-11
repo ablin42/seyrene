@@ -7,11 +7,11 @@ const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 const Gallery = require('../models/Gallery');
 const Shop = require('../models/Shop');
-const { ROLE, verifySession, authUser, authRole } = require('./helpers/verifySession');
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 
 
-router.post('/charge', verifySession, async (req, res) => {
+router.post('/charge', setUser, async (req, res) => {
 try {
     if (req.user) {
         let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -74,7 +74,7 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
-router.post('/refund', verifySession, async (req, res) => {
+router.post('/refund', setUser, async (req, res) => {
 try {
     if (req.user) {
         let chargeId = req.body.chargeId;
@@ -100,7 +100,7 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
-router.post('/create-intent', verifySession, async (req, res) => {
+router.post('/create-intent', setUser, async (req, res) => {
 try {
     if (req.user) {
         let cart = new Cart(req.session.cart ? req.session.cart : {});

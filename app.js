@@ -10,7 +10,7 @@ const expressSanitizer = require("express-sanitizer");
 const filter = require("content-filter");
 require("dotenv/config");
 
-const { ROLE, verifySession, authUser, authRole } = require("./controllers/helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./controllers/helpers/verifySession");
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripePublic = process.env.STRIPE_PUBLIC;
 
@@ -125,7 +125,7 @@ app.use((err, req, res, next) => {
 // set the view engine to ejs
 app.set("view engine", "ejs");
 
-app.get("*", verifySession, (req, res) => {
+app.get("*", setUser, (req, res) => {
   let obj = { active: "404" };
   if (req.user) {
     obj.userId = req.user._id;

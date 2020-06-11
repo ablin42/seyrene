@@ -70,7 +70,7 @@
                 >Boutique</a
               >
             </li>
-            <% if (!locals.name) { %>
+            <% if (!locals.user) { %>
             <li>
               <a
                 href="/Account"
@@ -86,13 +86,9 @@
                 >Compte</a
               >
             </li>
-            <% if (locals.level >= 3) { %>
+            <% if (locals.user && locals.user.role === "admin") { %>
             <li>
-              <a
-                href="/Admin"
-                class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>"
-                >ADMIN</a
-              >
+              <a href="/Admin"class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>">ADMIN</a>
             </li>
             <% } %>
             <li>

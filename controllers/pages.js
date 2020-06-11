@@ -4,7 +4,7 @@ const rp = require("request-promise");
 const format = require("date-format");
 const { getCode, getName } = require('country-list');
 
-const { ROLE, verifySession, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Blog = require("../models/Blog");
 const User = require("../models/User");
@@ -28,273 +28,263 @@ const router = express.Router();
 
 /* MAIN ROUTES */
 
-router.get("/", verifySession, async (req, res) => {
-  try {
-    let obj = { active: "Home" }; //{root: path.join(__dirname, '/pages/')};
-    obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/"));
-    if (obj.front.length <= 0) obj.front = undefined;
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    res.status(200).render("home", obj);
-  } catch (err) {
-    console.log("HOME ROUTE ERROR", err);
-    res.status(400).render("home");
-  }
-});
+router.get("/", setUser, async (req, res) => {
+try {
+  let obj = { active: "Home" }; //{root: path.join(__dirname, '/pages/')};
 
-router.get("/Galerie", verifySession, async (req, res) => {
-  try {
-    let obj = {
-      active: "Galerie",
-      root: path.join(__dirname, "/pages/")
-    };
-    obj.galleries = JSON.parse(
-      await rp("http://127.0.0.1:8089/api/gallery/")
-    );
-    if (obj.galleries.error) throw new Error(obj.galleries.message);
-    if (obj.galleries.length === 0)
-      throw new Error("Gallery is under maintenance, please come back later");
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    res.status(200).render("galerie", obj);
-  } catch (err) {
-    console.log("GALLERY ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/");
-  }
-});
+  if (req.user) 
+    obj.user = req.user
 
-router.get("/Galerie/Tags", verifySession, async (req, res) => {
-  try {
-    let obj = {
-      active: "Tags search",
-      root: path.join(__dirname, "/pages/")
-    };
-    let url = `http://127.0.0.1:8089/api/gallery/`;
-    if (req.query.t) {
-      url = `http://127.0.0.1:8089/api/gallery/tags?t=${req.query.t}`;
-      obj.tags = req.query.t;
-    }
-    obj.galleries = JSON.parse(await rp(url));
-    if (obj.galleries.error) throw new Error(obj.galleries.message);
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    res.status(200).render("tags", obj);
-  } catch (err) {
-    console.log("GALLERY TAGS ROUTE ERROR", err);
-    let obj = {
-      active: "Tags search",
-      root: path.join(__dirname, "/pages/")
-    };
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    if (req.query.t) {
-      obj.error = true;
-      obj.tags = req.query.t;
-    }
-    req.flash("warning", err.message);
-    res.status(400).render("tags", obj);
-  }
-});
+  obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/"));
+  if (obj.front.length <= 0) 
+    obj.front = undefined;
+   
+  return res.status(200).render("home", obj);
+} catch (err) {
+  console.log("HOME ROUTE ERROR", err);
+  return res.status(400).render("home");
+}});
 
-router.get("/shopping-cart", verifySession, async (req, res) => {
-  try {
-    let obj = {
-      active: "Cart",
-      stripePublicKey: stripePublic,
-      products: null,
-      totalPrice: 0,
-      totalQty: 0
-    };
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-      obj.isDelivery = false;
-      obj.delivery = null;
-      var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-      if (err)
-        throw new Error("An error occurred while looking for your delivery informations, please retry");
-      if (result != null) {
-        obj.delivery = result;
-        obj.isDelivery = true;
-      }
-    }
-    if (req.session.cart) {
-      let cart = new Cart(req.session.cart);
-      obj.products = [];
-      itemArr = cart.generateArray();
+router.get("/Galerie", setUser, async (req, res) => {
+try {
+  let obj = {
+    active: "Galerie",
+    root: path.join(__dirname, "/pages/")
+  };
+
+  if (req.user) 
+    obj.user = req.user;
+
+  obj.galleries = JSON.parse(await rp("http://127.0.0.1:8089/api/gallery/"));
+  if (obj.galleries.error) 
+    throw new Error(obj.galleries.message);
+  if (obj.galleries.length === 0)
+    throw new Error("Gallery is under maintenance, please come back later");
+   
+  return res.status(200).render("galerie", obj);
+} catch (err) {
+  console.log("GALLERY ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/");
+}});
+
+router.get("/Galerie/Tags", setUser, async (req, res) => {
+try {
+  let obj = {
+        active: "Tags search",
+        root: path.join(__dirname, "/pages/")
+      };
+
+  if (req.user) 
+    obj.user = req.user
+
+  let url = `http://127.0.0.1:8089/api/gallery/`;
+  if (req.query.t) {
+    url = `http://127.0.0.1:8089/api/gallery/tags?t=${req.query.t}`;
+    obj.tags = req.query.t;
+  }
+
+  obj.galleries = JSON.parse(await rp(url));
+  if (obj.galleries.error) 
+    throw new Error(obj.galleries.message);
+
+  return res.status(200).render("tags", obj);
+} catch (err) {
+  console.log("GALLERY TAGS ROUTE ERROR", err);
+  let obj = { //test if this is needed or not
+    active: "Tags search",
+    root: path.join(__dirname, "/pages/")
+  };
+  
+  if (req.query.t) {
+    obj.error = true;
+    obj.tags = req.query.t;
+  }
+  req.flash("warning", err.message);
+  return res.status(400).render("tags", obj);
+}});
+
+router.get("/shopping-cart", setUser, async (req, res) => {
+try {
+  let obj = {
+    active: "Cart",
+    stripePublicKey: stripePublic,
+    products: null,
+    totalPrice: 0,
+    totalQty: 0
+  };
+
+  if (req.user) 
+    obj.user = req.user
+
+  /* might need req.user condition */
+  obj.isDelivery = false;
+  obj.delivery = null;
+  var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+  if (err)
+    throw new Error("An error occurred while looking for your delivery informations, please retry");
+  if (result != null) {
+    obj.delivery = result;
+    obj.isDelivery = true;
+  } //until here
+    
+  if (req.session.cart) {
+    let cart = new Cart(req.session.cart);
+    obj.products = [];
+    itemArr = cart.generateArray();
      
-      itemArr.forEach(item => {
-        if (item.attributes && item.attributes.isUnique) {
-          var items = {
-            item: item.attributes,
-            qty: item.qty,
-            price: formatter.format(item.price).substr(2),
-            shortcontent: item.attributes.content.substr(0, 128),
-            shorttitle: item.attributes.title.substr(0, 64),
-            details: "Toile Unique"
-          };
-          obj.products.push(items);
-        } else {
-          item.elements.forEach(element => {
-            if (element.attributes !== undefined) {
-              var items = {
-                item: item.attributes, 
-                attributes: element.attributes,
-                stringifiedAttributes: JSON.stringify(element.attributes),
-                qty: element.qty,
-                unitPrice: item.unitPrice,
-                price: formatter.format(item.unitPrice * element.qty).substr(2),
-                shortcontent: item.attributes.content.substr(0, 128), 
-                shorttitle: item.attributes.title.substr(0, 64), 
-                details: ""
-              };
-              let details = "";
-              Object.keys(element.attributes).forEach((attribute, index) => {
-                details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
-              })
-              items.details = details.substr(0, (details.length - 3));
-              obj.products.push(items);
+    itemArr.forEach(item => {
+      if (item.attributes && item.attributes.isUnique) {
+        var items = {
+          item: item.attributes,
+          qty: item.qty,
+          price: formatter.format(item.price).substr(2),
+          shortcontent: item.attributes.content.substr(0, 128),
+          shorttitle: item.attributes.title.substr(0, 64),
+          details: "Toile Unique"
+        };
+        obj.products.push(items);
+      } else {
+        item.elements.forEach(element => {
+          if (element.attributes !== undefined) {
+            var items = {
+              item: item.attributes, 
+              attributes: element.attributes,
+              stringifiedAttributes: JSON.stringify(element.attributes),
+              qty: element.qty,
+              unitPrice: item.unitPrice,
+              price: formatter.format(item.unitPrice * element.qty).substr(2),
+              shortcontent: item.attributes.content.substr(0, 128), 
+              shorttitle: item.attributes.title.substr(0, 64), 
+              details: ""
+            };
+            let details = "";
+            Object.keys(element.attributes).forEach((attribute, index) => {
+              details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
+            })
+            items.details = details.substr(0, (details.length - 3));
+            obj.products.push(items);
             }
           })
         }
-      });
-      obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-      console.log(obj.totalPrice)
-      obj.totalQty = cart.totalQty;
+    });
+    obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
+    console.log(obj.totalPrice)
+    obj.totalQty = cart.totalQty;
 
-      let countryCode = getCode(obj.delivery.country);
-      let options = {
-        uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: {items: itemArr},
-        json: true
-      }
-      obj.deliveryPrice = await rp(options);
-      if (obj.deliveryPrice.error) 
-        throw new Error(obj.deliveryPrice.message);
-
-        console.log(obj.deliveryPrice)
-        //parse and format price
+    let countryCode = getCode(obj.delivery.country);
+    let options = {
+      uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: {items: itemArr},
+      json: true
     }
-    res.status(200).render("cart", obj);
-  } catch (err) {
-    console.log("CART ERROR", err);
-    req.flash("info", err.message);
-    return res.status(400).redirect("/");
-  }
-});
+    obj.deliveryPrice = await rp(options);
+    if (obj.deliveryPrice.error) 
+      throw new Error(obj.deliveryPrice.message);
 
-router.get("/Payment", verifySession, async (req, res) => {
-  try {
-    let obj = {
-      active: "Payment",
-      stripePublicKey: stripePublic,
-      totalPrice: 0
-    };
-    if (req.session.cart) {
-      let cart = new Cart(req.session.cart);
-      if (cart.totalPrice === 0)
-        return res.status(400).redirect("/shopping-cart");
-      obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-    } else
+    console.log(obj.deliveryPrice)
+    //parse and format price
+  }
+  return res.status(200).render("cart", obj);
+} catch (err) {
+  console.log("CART ERROR", err);
+  req.flash("info", err.message);
+  return res.status(400).redirect("/");
+}});
+
+router.get("/Payment", setUser, authUser, async (req, res) => {
+try {
+  let obj = {
+    active: "Payment",
+    stripePublicKey: stripePublic,
+    totalPrice: 0
+  };
+
+  if (req.user)
+    obj.user = req.user;
+
+  if (req.session.cart) {
+    let cart = new Cart(req.session.cart);
+
+    if (cart.totalPrice === 0)
       return res.status(400).redirect("/shopping-cart");
+    obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
+  } else
+    return res.status(400).redirect("/shopping-cart");
 
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    return res.status(200).render("payment", obj);
-  } catch (err) {
-    console.log("PAYMENT ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    return res.status(400).redirect("/");
+  return res.status(200).render("payment", obj);
+} catch (err) {
+  console.log("PAYMENT ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect("/");
+}});
+
+router.get("/User", setUser, authUser, async (req, res) => {
+try {
+  let obj = {};
+  obj = await User.findOne({ _id: req.user._id });
+  obj.password = undefined;
+  obj.active = "User";
+  obj.delivery = false; /////////////////?
+  
+  if (req.user)
+    obj.user = req.user;
+
+  var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+  if (err)
+    throw new Error("An error occurred while looking for your delivery informations, please retry");
+
+  if (result != null) 
+    obj.delivery = result;
+
+  var [err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
+  if (err)
+    throw new Error("An error occurred while looking for your orders informations, please retry");
+
+  if (orders != null) {
+    orders.forEach((order, index) => {
+      orders[index].price = formatter.format(order.price).substr(2);
+      orders[index].date_f = format.asString("dd/MM/yyyy", new Date(order.date));
+    });
+    obj.orders = orders;
   }
-});
 
-router.get("/User", verifySession, authUser, async (req, res) => {
-  try {
-    let obj = {};
-    if (req.user) {
-      obj = await User.findOne({ _id: req.user._id });
-      obj.password = undefined;
-      obj.active = "User";
-      obj.delivery = false;
-      var [err, result] = await utils.to(
-        DeliveryInfo.findOne({ _userId: req.user._id })
-      );
-      if (err)
-        throw new Error(
-          "An error occurred while looking for your delivery informations, please retry"
-        );
-      if (result != null) obj.delivery = result;
-      var [err, orders] = await utils.to(
-        Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } })
-      );
-      if (err)
-        throw new Error(
-          "An error occurred while looking for your orders informations, please retry"
-        );
-      if (orders != null) {
-        orders.forEach((order, index) => {
-          orders[index].price = formatter.format(order.price).substr(2);
-          orders[index].date_f = format.asString(
-            "dd/MM/yyyy",
-            new Date(order.date)
-          );
-        });
-        obj.orders = orders;
-      }
-      res.status(200).render("user", obj);
-    } else throw new Error("You need to be logged in");
-  } catch (err) {
-    console.log("USER ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/Account");
+    return res.status(200).render("user", obj);
+} catch (err) {
+  console.log("USER ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  res.status(400).redirect("/Account");
+}});
+
+router.get("/About", setUser, async (req, res) => {
+try {
+  let obj = { active: "About" };
+
+  if (req.user)
+    obj.user = req.user;
+
+  obj.blogs = JSON.parse(await rp("http://127.0.0.1:8089/api/blog/")); //maybe better save in object check error and if no error -> store value in obj.blogs
+  if (obj.blogs.error) 
+    throw new Error(obj.blogs.message);
+
+  if (req.session.formData) {
+    obj.formData = req.session.formData;
+    req.session.formData = undefined;
   }
-});
 
-router.get("/About", verifySession, async (req, res) => {
-  try {
-    let obj = { active: "About" };
-    obj.blogs = JSON.parse(await rp("http://127.0.0.1:8089/api/blog/"));
-    if (obj.blogs.error) throw new Error(obj.blogs.message);
-    if (req.session.formData) {
-      obj.formData = req.session.formData;
-      req.session.formData = undefined;
-    }
-    if (req.user) {
-      obj.userId = req.user._id;
-      obj.name = req.user.name;
-      obj.level = req.user.level;
-    }
-    res.status(200).render("about", obj);
-  } catch (err) {
-    console.log("ABOUT ROUTE ERROR", err);
-    req.flash("warning", "An error occurred, please try again");
-    res.status(400).redirect("/");
-  }
-});
+  return res.status(200).render("about", obj);
+} catch (err) {
+  console.log("ABOUT ROUTE ERROR", err);
+  req.flash("warning", "An error occurred, please try again");
+  return res.status(400).redirect("/");
+}});
 
-router.get("/Account", verifySession, async (req, res) => {
+router.get("/Account", setUser, async (req, res) => {
   try {
     let obj = { active: "Account" };
     if (req.session.formData) {
@@ -313,7 +303,7 @@ router.get("/Account", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Shop", verifySession, async (req, res) => {
+router.get("/Shop", setUser, async (req, res) => {
   try {
     let obj = { active: "Shop" };
     obj.original = JSON.parse(await rp("http://127.0.0.1:8089/api/shop/"));
@@ -337,7 +327,7 @@ router.get("/Shop", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Resetpw/:tokenId/:token", verifySession, async (req, res) => {
+router.get("/Resetpw/:tokenId/:token", setUser, async (req, res) => {
   try {
     if (req.user) {
       req.flash("info", "You're logged in, you can change your password here");
@@ -373,7 +363,7 @@ router.get("/Resetpw/:tokenId/:token", verifySession, async (req, res) => {
 /* END MAIN ROUTES */
 /* SINGLE ITEM ROUTES */
 
-router.get("/Order/:id", verifySession, authUser, setOrder, authGetOrder, async (req, res) => {
+router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
   try {
     let obj = { active: "Order recap" };
     if (req.user) {
@@ -431,7 +421,7 @@ router.get("/Order/:id", verifySession, authUser, setOrder, authGetOrder, async 
   }
 });
 
-router.get("/Galerie/:id", verifySession, async (req, res) => {
+router.get("/Galerie/:id", setUser, async (req, res) => {
   try {
     let id = req.params.id;
     let obj = {
@@ -460,7 +450,7 @@ router.get("/Galerie/:id", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Shop/:id", verifySession, async (req, res) => {
+router.get("/Shop/:id", setUser, async (req, res) => {
   try {
     let id = req.params.id;
     let obj = {
@@ -491,7 +481,7 @@ router.get("/Shop/:id", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Blog/:id", verifySession, async (req, res) => {
+router.get("/Blog/:id", setUser, async (req, res) => {
   try {
     let id = req.params.id;
     let obj = { active: "Blog" };
@@ -517,28 +507,20 @@ router.get("/Blog/:id", verifySession, async (req, res) => {
 /* END SINGLE */
 /* ADMIN ROUTES */
 
-router.get("/Admin", verifySession, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-  try {
-    if (req.user && req.user.level >= 3) {
-      let obj = { active: "Admin" };
-      if (req.user) {
-        obj.userId = req.user._id;
-        obj.name = req.user.name;
-        obj.level = req.user.level;
-      }
-      return res.status(200).render("restricted/admin", obj);
-    } else
-      throw new Error(
-        "Unauthorized. Contact your administrator if you think this is a mistake"
-      );
-  } catch (err) {
-    console.log("ADMIN ROUTE ERROR", err);
-    req.flash("warning", err.message);
-    res.status(400).redirect("/");
-  }
-});
+router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+try {
+  let obj = { active: "Admin", user: req.user };
 
-router.get("/Admin/Front", verifySession, async (req, res) => {
+  console.log(obj.user)
+
+  return res.status(200).render("restricted/admin", obj);
+} catch (err) {
+  console.log("ADMIN ROUTE ERROR", err);
+  req.flash("warning", err.message);
+  res.status(400).redirect("/");
+}});
+
+router.get("/Admin/Front", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Update Homepage" };
@@ -562,7 +544,7 @@ router.get("/Admin/Front", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Admin/Orders", verifySession, async (req, res) => {
+router.get("/Admin/Orders", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Admin Orders" };
@@ -590,7 +572,7 @@ router.get("/Admin/Orders", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Admin/Order/:id", verifySession, async (req, res) => {
+router.get("/Admin/Order/:id", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Order recap" };
@@ -650,7 +632,7 @@ router.get("/Admin/Order/:id", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Admin/Galerie/Post", verifySession, async (req, res) => {
+router.get("/Admin/Galerie/Post", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Post a gallery item" };
@@ -672,9 +654,7 @@ router.get("/Admin/Galerie/Post", verifySession, async (req, res) => {
   }
 });
 
-router.get(
-  "/Admin/Galerie/Patch/:galleryId",
-  verifySession,
+router.get("/Admin/Galerie/Patch/:galleryId", setUser,
   async (req, res) => {
     try {
       if (req.user && req.user.level >= 3) {
@@ -708,7 +688,7 @@ router.get(
   }
 );
 
-router.get("/Admin/Shop/Post", verifySession, async (req, res) => {
+router.get("/Admin/Shop/Post", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Post a shop item" };
@@ -730,7 +710,7 @@ router.get("/Admin/Shop/Post", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Admin/Shop/Patch/:shopId", verifySession, async (req, res) => {
+router.get("/Admin/Shop/Patch/:shopId", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Edit a shop item" };
@@ -766,7 +746,7 @@ router.get("/Admin/Shop/Patch/:shopId", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Admin/Blog/Post", verifySession, async (req, res) => {
+router.get("/Admin/Blog/Post", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = { active: "Post a blog" };
@@ -791,7 +771,7 @@ router.get("/Admin/Blog/Post", verifySession, async (req, res) => {
   }
 });
 
-router.get("/Admin/Blog/Patch/:blogId", verifySession, async (req, res) => {
+router.get("/Admin/Blog/Patch/:blogId", setUser, async (req, res) => {
   try {
     if (req.user && req.user.level >= 3) {
       let obj = {active: "Edit a blog"};

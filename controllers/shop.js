@@ -9,7 +9,7 @@ const rp = require("request-promise");
 
 const Shop = require("../models/Shop");
 const Image = require("../models/Image");
-const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers"); //////////
 //const sHelpers = require('./helpers/shopHelpers');
 const utils = require("./helpers/utils");
@@ -88,7 +88,7 @@ router.get("/", async (req, res) => {
 });
 
 //sanitize input
-router.post("/post", upload, verifySession, vShop, async (req, res) => {
+router.post("/post", upload, setUser, vShop, async (req, res) => {
   try {
     if (req.user.level > 1) {
       // Check form inputs validity
@@ -150,7 +150,7 @@ router.post("/post", upload, verifySession, vShop, async (req, res) => {
 });
 
 //sanitize :id (and input)
-router.post("/patch/:id", upload, verifySession, vShop, async (req, res) => {
+router.post("/patch/:id", upload, setUser, vShop, async (req, res) => {
   try {
     if (req.user.level > 1) {
       // Check form inputs validity
@@ -210,7 +210,7 @@ router.post("/patch/:id", upload, verifySession, vShop, async (req, res) => {
 });
 
 //delete item using its id + sanitize :id
-router.get("/delete/:id", verifySession, async (req, res) => {
+router.get("/delete/:id", setUser, async (req, res) => {
   /////////////////////// HERE
   try {
     if (req.user.level > 1) {

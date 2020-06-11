@@ -1,9 +1,49 @@
 const Order = require("../../models/Order");
 const utils = require("../helpers/utils");
+const User = require("../../models/User");
 
 const ROLE = {
   ADMIN: 'admin',
   BASIC: 'basic'
+}
+
+/*
+function verifySession(req, res, next) {
+  if (req.session._id) {
+    const user = {
+      _id: req.session._id,
+      name: req.session.name,
+      level: req.session.level,
+      role: ROLE.ADMIN
+    };
+    req.user = user;
+  }
+
+  /*
+  req.user = {
+    _id: "5d810b9365761c0840e0de25",
+    name: "ADMIN",
+    level: 3,
+    role: ROLE.ADMIN
+  };
+
+  return next();
+};*/
+
+async function setUser(req, res, next) {
+  const userId = req.session._id;
+
+  if (userId) {
+    var [err, user] = await utils.to(User.findById(userId));
+    if (err || user == null) {
+      req.flash("warning", "Invalid User");
+      return res.status(401).redirect("/Account");
+    }
+    req.user = user;
+    req.user.password = undefined;
+  }
+
+  next();
 }
 
 function authUser(req, res, next) {
@@ -25,26 +65,6 @@ function authRole(role) {
     next();
   }
 }
-
-function verifySession(req, res, next) {
-  if (req.session._id) {
-    const user = {
-      _id: req.session._id,
-      name: req.session.name,
-      level: req.session.level
-    };
-    req.user = user;
-  }
-
-  req.user = {
-    _id: "5d810b9365761c0840e0de25",
-    name: "ADMIN",
-    level: 3,
-    role: "basic"
-  };
-
-  return next();
-};
 
 async function setOrder(req, res, next) {
   const orderId = req.params.id
@@ -79,7 +99,7 @@ function authGetOrder(req, res, next) {
 
 module.exports = {
   ROLE,
-  verifySession,
+  setUser,
   authUser,
   authRole,
   setOrder,

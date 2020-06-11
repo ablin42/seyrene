@@ -12,7 +12,7 @@ const User = require('../models/User');
 const Shop = require('../models/Shop');
 const Cart = require('../models/Cart');
 const DeliveryInfo = require('../models/DeliveryInfo');
-const { ROLE, verifySession, authUser, authRole } = require('./helpers/verifySession');
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const format = require("date-format");
@@ -20,7 +20,7 @@ const format = require("date-format");
 //var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
-router.get('/', verifySession, async (req, res) => {
+router.get('/', setUser, async (req, res) => {
 try {
     if (req.user.level >= 3) {
         const options = {
@@ -53,7 +53,7 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
-router.get('/:id', verifySession, async (req, res) => {
+router.get('/:id', setUser, async (req, res) => {
 try {
     let id = req.params.id;
     var [err, result] = await utils.to(Order.findById(id));
@@ -215,7 +215,7 @@ async function submitOrder(order, req) {
     return {err: false, orderId: order._id};
 }
 
-router.post('/create', verifySession, async (req, res) => {
+router.post('/create', setUser, async (req, res) => {
 try {
     if (req.body.user) {
         // Set sold out to true if an unique item is bought
@@ -329,7 +329,7 @@ try {
     return res.status(200).json({error: true, message: err.message})
 }})
 
-router.post('/initialize', verifySession, async (req, res) => {
+router.post('/initialize', setUser, async (req, res) => {
 try {
     if (req.user) {
         var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
@@ -372,7 +372,7 @@ try {
     return res.status(200).json({err: true, message: err.message})
 }})
 
-router.post('/update', verifySession, async (req, res) => {
+router.post('/update', setUser, async (req, res) => {
 let url = req.header('Referer') || '/Admin/Orders';
 try {
     if (req.user && req.user.level >= 3) {
@@ -432,7 +432,7 @@ async function refundStripe(chargeId) {
     return result;
 }
 
-router.get('/cancel/:id', verifySession, async (req, res) => {
+router.get('/cancel/:id', setUser, async (req, res) => {
 try {
     if (req.user && req.params.id) {
         console.log("cancel route")
@@ -527,7 +527,7 @@ try {
     return res.status(200).json({err: true, msg: err.message})
 }})
 
-router.post("/billing/save", vDelivery, verifySession, async (req, res) => {
+router.post("/billing/save", vDelivery, setUser, async (req, res) => {
 try {
     if (!req.user) 
         throw new Error("Unauthorized, please make sure you're logged in!");

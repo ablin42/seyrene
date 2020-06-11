@@ -9,7 +9,7 @@ const rp = require("request-promise");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
-const { ROLE, verifySession, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 
@@ -112,7 +112,7 @@ router.get("/Tags", async (req, res) => {
 });
 
 //sanitize input
-router.post("/post", upload, verifySession, vGallery, async (req, res) => {
+router.post("/post", upload, setUser, vGallery, async (req, res) => {
   try {
     if (req.user.level > 1) {
       // Check form inputs validity
@@ -174,7 +174,7 @@ router.post("/post", upload, verifySession, vGallery, async (req, res) => {
 });
 
 //sanitize :id (and input)
-router.post("/patch/:id", upload, verifySession, vGallery, async (req, res) => {
+router.post("/patch/:id", upload, setUser, vGallery, async (req, res) => {
   try {
     if (req.user.level > 1) {
       // Check form inputs validity
@@ -230,7 +230,7 @@ router.post("/patch/:id", upload, verifySession, vGallery, async (req, res) => {
 });
 
 //delete item using its id + sanitize :id
-router.get("/delete/:id", verifySession, async (req, res) => {
+router.get("/delete/:id", setUser, async (req, res) => {
   try {
     if (req.user.level > 1) {
       let id = req.params.id; //sanitize

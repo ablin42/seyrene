@@ -127,8 +127,8 @@ router.post("/login", vLogin, async (req, res) => {
 
     // Create session variables
     req.session._id = user._id;
-    req.session.name = user.name;
-    req.session.level = user.level;
+    //req.session.name = user.name;
+    //req.session.level = user.level;
 
     req.flash("success", "Logged in successfully!");
     res.redirect("/");
