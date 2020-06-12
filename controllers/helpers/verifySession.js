@@ -97,7 +97,7 @@ async function setOrder(req, res, next) {
     req.flash("warning", "Invalid Order");
     return res.status(404).redirect("/User");
   }
-  req.orderx = order; //////////
+  req.order = order; 
 
   next();
 }
@@ -110,7 +110,7 @@ function canViewOrder(user, order) {
 }
 
 function authGetOrder(req, res, next) {
-  if (!canViewOrder(req.user, req.orderx)) {
+  if (!canViewOrder(req.user, req.order)) {
     req.flash("warning", "Unauthorized. Contact your administrator if you think this is a mistake");
     return res.status(401).redirect("/User");
   }

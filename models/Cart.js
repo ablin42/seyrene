@@ -202,11 +202,10 @@ module.exports = function Cart(oldCart) {
             body: {items: this.generateArray()},
             json: true
         }
-        console.log(options.body)
         let obj = await rp(options);
         if (obj.error === true || obj.response.length <= 0) {
             this.clearCart();
-            throw new Error(obj.message)
+            throw new Error("Sorry, there are no shipment options available to the selected destination for these products");
         } else {
             this.price = {
                 shippingIncludingTax: parseFloat(obj.response.shippingPriceIncludingTax), 

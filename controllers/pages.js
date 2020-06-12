@@ -148,7 +148,6 @@ try {
         }
     });
     obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-    console.log(obj.totalPrice)
     obj.totalQty = cart.totalQty;
 
     let countryCode = getCode(obj.delivery.country);

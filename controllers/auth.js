@@ -83,7 +83,7 @@ try {
   }
 
   // Check if email exists in DB
-  var [err, user] = await utils.to(User.findOne({ email: formData.email }));
+  var [err, user] = await utils.to(User.findOne({ email: req.body.email }));
   if (err)
     throw new Error("An error occurred while looking for your user account, please try again");
   if (!user) 
@@ -96,7 +96,7 @@ try {
 
   // Check if user is verified
   if (!user.isVerified) {
-    request.post("http://127.0.0.1:8089/api/auth/resend",{json: { email: formData.email }}, err => {
+    request.post("http://127.0.0.1:8089/api/auth/resend",{json: { email: req.body.email }}, err => {
       if (err)
         throw new Error("An error occurred while sending your validation token, please try again");
     });
