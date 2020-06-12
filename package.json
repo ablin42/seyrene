@@ -23,7 +23,7 @@
     "content-filter": "^1.1.2",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
-    "country-list": "^2.2.0",
+    "country-list-js": "^3.1.7",
     "date-format": "^2.1.0",
     "dotenv": "^8.1.0",
     "ejs": "^2.7.1",

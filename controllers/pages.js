@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const rp = require("request-promise");
 const format = require("date-format");
-const { getCode, getName } = require('country-list');
+const country = require('country-list-js')
 
 const { ROLE, setUser, notLoggedUser, authUser, authRole, setDelivery, isDelivery, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
@@ -15,6 +15,20 @@ const DeliveryInfo = require("../models/DeliveryInfo");
 const PwToken = require("../models/PasswordToken");
 const Cart = require("../models/Cart");
 require("dotenv/config");
+
+const toTitleCase = (phrase) => {
+  let arr = phrase.toLowerCase().split(' ');
+  let parsed = [];
+  
+  arr.forEach(item => {
+      let obj = item.charAt(0).toUpperCase() + item.slice(1);
+      if (item === "and")
+          obj = "and";
+      parsed.push(obj);
+  })
+  
+  return parsed.join(' ');
+}
 
 //var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat("de-DE", {
@@ -150,7 +164,11 @@ try {
     obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
     obj.totalQty = cart.totalQty;
 
-    let countryCode = getCode(obj.delivery.country);
+     let countryCode = country.findByName(toTitleCase(obj.delivery.country));
+    if (countryCode)
+        countryCode = countryCode.code.iso2;
+    else 
+        throw new Error("We cannot find your country ISO code, please contact us if the error persist");
     let options = {
       uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
       method: 'POST',

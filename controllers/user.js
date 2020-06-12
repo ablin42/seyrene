@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const rp = require("request-promise");
 const { validationResult } = require("express-validator");
 const { vName, vEmail, vPassword, vLostPw, vDelivery } = require("./validators/vUser");
-const { getCode, getName } = require('country-list');
+const countryList = require('country-list-js')
 const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
@@ -16,6 +16,20 @@ const Token = require("../models/VerificationToken");
 const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
 require("dotenv/config");
+
+const toTitleCase = (phrase) => {
+  let arr = phrase.toLowerCase().split(' ');
+  let parsed = [];
+  
+  arr.forEach(item => {
+      let obj = item.charAt(0).toUpperCase() + item.slice(1);
+      if (item === "and")
+          obj = "and";
+      parsed.push(obj);
+  })
+  
+  return parsed.join(' ');
+}
 
 router.post("/lostpw", vLostPw, async (req, res) => {
 try {
@@ -323,17 +337,30 @@ try {
     var [err, result] = await utils.to(DeliveryInfo.findOne({_userId: req.user._id}));
     if (err || result === null) {
       ipinfo.lookupIp(ip).then((response) => {
-        countryCode = getCode(response.country); //check for errors
+        countryCode = countryList.findByName(toTitleCase(response.country));
+        if (countryCode)
+            countryCode = countryCode.code.iso2;
+        else 
+            throw new Error("We cannot find your country ISO code, please contact us if the error persist");
         return res.status(200).json({ error: false, countryCode: countryCode });
       })
     } else {
       country = result.country;
-      countryCode = getCode(country); //check for errors
+      countryCode = countryList.findByName(toTitleCase(country));
+      if (countryCode)
+        countryCode = countryCode.code.iso2;
+      else 
+        throw new Error("We cannot find your country ISO code, please contact us if the error persist");
+
       return res.status(200).json({ error: false, countryCode: countryCode });
     }
   } else {
     ipinfo.lookupIp(ip).then((response) => {
-      countryCode = getCode(response.country); //check for errors
+      countryCode = countryList.findByName(toTitleCase(response.country));
+      if (countryCode)
+        countryCode = countryCode.code.iso2;
+      else 
+        throw new Error("We cannot find your country ISO code, please contact us if the error persist");
       return res.status(200).json({ error: false, countryCode: countryCode });
   })}
 } catch (err) {

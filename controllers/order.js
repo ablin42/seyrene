@@ -4,7 +4,7 @@ const {validationResult} = require('express-validator');
 const {vOrder} = require('./validators/vShop');//vOrder
 const {vDelivery} = require("./validators/vUser");
 const rp = require("request-promise");
-const { getCode, getName } = require('country-list');
+const country = require('country-list-js')
 
 const Order = require('../models/Order');
 const Purchase = require('../models/PurchaseData');
@@ -17,6 +17,42 @@ const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const format = require("date-format");
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+
+const toTitleCase = (phrase) => {
+    let arr = phrase.toLowerCase().split(' ');
+    let parsed = [];
+    
+    arr.forEach(item => {
+        let obj = item.charAt(0).toUpperCase() + item.slice(1);
+        if (item === "and")
+            obj = "and";
+        parsed.push(obj);
+    })
+    
+    return parsed.join(' ');
+}
+
+/*
+router.get('/cc', async (req, res) => {
+try {
+    let nbFail = 0;
+    
+    pwintyCountries.forEach(countryn => {
+        resu = country.findByName(toTitleCase(countryn.name));
+        //resu = getCode(countryn.name)
+        //resu = countries.getAlpha2Code(countryn.name, 'en');
+        if (!resu) {
+            console.log("Err:", countryn.name)
+            nbFail++;
+        }
+    })
+    //console.log(country.findByName(pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')), pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
+    //console.log(country.findByIso2("BA"))
+    return res.status(200).json({error: false, number: nbFail});
+} catch (err) {
+    console.log("COUNTRY TESTS ERR", err);
+    return res.status(200).json({error: true, message: err.message})
+}})*/
 
 router.get('/', setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
@@ -95,21 +131,26 @@ function getNeededAttributes(attributes) {
 }
 
 async function createPwintyOrder(order, req) {
-  let options = {
-      method: 'POST',
-      uri : `http://localhost:8089/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders
-      body: {
-          merchantOrderId: order._id,
-          recipientName: order.firstname + " " + order.lastname,
-          address1: order.full_address, //has city + country, might need to use only full_street
-          addressTownOrCity: order.city,
-          stateOrCounty: order.state,
-          postalOrZipCode: order.zipcode,
-          countryCode: getCode(order.country),
-          preferredShippingMethod: "standard", // Possible values are Budget, Standard, Express, and Overnight.
-      },
+    let countryCode = country.findByName(toTitleCase(order.country));
+    if (countryCode)
+        countryCode = countryCode.code.iso2;
+    else 
+        throw new Error("We cannot find your country ISO code, please contact us if the error persist");
+    let options = {
+        method: 'POST',
+        uri : `http://localhost:8089/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders
+        body: {
+            merchantOrderId: order._id,
+            recipientName: order.firstname + " " + order.lastname,
+            address1: order.full_address, //has city + country, might need to use only full_street
+            addressTownOrCity: order.city,
+            stateOrCounty: order.state,
+            postalOrZipCode: order.zipcode,
+            countryCode: countryCode,
+            preferredShippingMethod: "standard", // Possible values are Budget, Standard, Express, and Overnight.
+        },
       json: true
-  }
+    }
 
   response = await rp(options);
   console.log(response)
