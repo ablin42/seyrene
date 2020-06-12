@@ -6,9 +6,10 @@ const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('.
 const Image = require('../models/Image');
 const utils = require('./helpers/utils');
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', setUser, async (req, res) => {
 try {
     let id = req.params.id;
+
     var [err, result] = await utils.to(Image.findById(id));
     if (err) 
         throw new Error("An error occurred while fetching the image");
@@ -19,15 +20,16 @@ try {
         if (err)
             return res.status(400).json({error: true, message: "File couldn't be read"});
         let contentType = { 'Content-Type': result.mimetype };
+
         res.writeHead(200, contentType);
-        res.status(200).end(data);
+        return res.status(200).end(data);
     });
 } catch (err) {
     console.log("IMAGE FETCH ERROR", err);
     return res.status(400).json({error: true, message: err.message});
 }})
 
-router.get('/main/:itemType/:itemId', async (req, res) => {
+router.get('/main/:itemType/:itemId', setUser, async (req, res) => {
 try {
     let id = req.params.itemId,
         itemType = req.params.itemType;
@@ -109,7 +111,7 @@ try {
     return res.status(400).json({err: true, msg: err.message});
 }})
 
-router.get('/:itemType/:itemId', async (req, res) => {
+router.get('/:itemType/:itemId', setUser, async (req, res) => {
 try {
     let itemId = req.params.itemId,
         itemType = req.params.itemType;

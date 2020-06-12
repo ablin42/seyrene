@@ -77,9 +77,7 @@ router.post("/resetpw", vPassword, async (req, res) => {
     // hash and salt pw
     const hashPw = await bcrypt.hash(req.body.password, 10);
     if (!hashPw)
-      throw new Error(
-        "An error occurred while encrypting your data, please try again"
-      );
+      throw new Error("An error occurred while encrypting your data, please try again");
 
     // check if token is valid
     var [err, pwToken] = await utils.to(

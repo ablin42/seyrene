@@ -28,7 +28,7 @@ upload = multer({
     }
 }).single("img");
 
-router.get('/', async (req, res) => {
+router.get('/', setUser, async (req, res) => {
 try {
     var [err, result] = await utils.to(Front.find());
     if (err)
@@ -100,7 +100,7 @@ try {
 }})
 
 //sanitize :id
-router.get('/image/:id', async (req, res) => {
+router.get('/image/:id', setUser, async (req, res) => {
 try {
     let id = req.params.id;
 

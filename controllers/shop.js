@@ -67,25 +67,29 @@ async function parsePrice(shopItems) {
 }
 
 //update all entries to have soldOut: false
-router.get("/", async (req, res) => {
-  try {
-    const options = {
-      page: parseInt(req.query.page, 10) || 1,
-      limit: 3,
-      sort: { date: -1 }
-    };
-    let query = { isUnique: true, soldOut: false };
-    if (req.query.tab === "print") query.isUnique = false;
-    var [err, result] = await utils.to(Shop.paginate(query, options));
-    if (err) throw new Error("An error occurred while fetching the shop items");
-    var shopItems = result.docs; //probably can remove img since we use id and api to load it
-    ress = await parsePrice(shopItems);
-    return res.status(200).json(ress);
-  } catch (err) {
-    console.log("FETCHING SHOP ERROR:", err);
-    return res.status(200).json({ error: true, message: err.message });
-  }
-});
+router.get("/", setUser, async (req, res) => {
+try {
+  const options = {
+    page: parseInt(req.query.page, 10) || 1,
+    limit: 3,
+    sort: { date: -1 }
+  };
+  let query = { isUnique: true, soldOut: false };
+
+  if (req.query.tab === "print") 
+    query.isUnique = false;
+
+  var [err, result] = await utils.to(Shop.paginate(query, options));
+  if (err) 
+    throw new Error("An error occurred while fetching the shop items");
+  var shopItems = result.docs; //probably can remove img since we use id and api to load it
+    
+  ress = await parsePrice(shopItems);
+  return res.status(200).json(ress);
+} catch (err) {
+  console.log("FETCHING SHOP ERROR:", err);
+  return res.status(200).json({ error: true, message: err.message });
+}});
 
 //sanitize input
 router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
@@ -225,22 +229,8 @@ try {
   return res.status(400).redirect(`/Shop`);
 }});
 
-//show all item's id
-router.get("/items", async (req, res) => {
-  try {
-    var [err, result] = await utils.to(Shop.find());
-    if (err) throw new Error("An error occurred while fetching the shop items");
-    const resArray = result.map(element => element._id);
-
-    return res.status(200).json(resArray);
-  } catch (err) {
-    console.log("SHOP ITEMS ERROR", err);
-    return res.status(400).json(err.message);
-  }
-});
-
 //sanitize :id
-router.get("/single/:id", async (req, res) => {
+router.get("/single/:id", setUser, async (req, res) => {
   try {
     let id = req.params.id;
     var [err, result] = await utils.to(Shop.findById(id));

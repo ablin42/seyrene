@@ -8,27 +8,6 @@ const ROLE = {
   BASIC: 'basic'
 }
 
-/*
-function verifySession(req, res, next) {
-  if (req.session._id) {
-    const user = {
-      _id: req.session._id,
-      name: req.session.name,
-      role: ROLE.ADMIN
-    };
-    req.user = user;
-  }
-
-  /*
-  req.user = {
-    _id: "5d810b9365761c0840e0de25",
-    name: "ADMIN",
-    role: ROLE.ADMIN
-  };
-
-  return next();
-};*/
-
 async function setUser(req, res, next) {
   const userId = req.session._id;
 
@@ -59,9 +38,17 @@ async function setUser(req, res, next) {
 
 function authUser(req, res, next) {
   if (req.user == null) {
-    console.log("prout")
     req.flash("warning", "You need to be logged in");
     return res.status(403).redirect("/Account");
+  }
+
+  next ();
+}
+
+function notLoggedUser(req, res, next) {
+  if (req.user != null) {
+    req.flash("warning", "You're already logged in");
+    return res.status(403).redirect("/");
   }
 
   next ();
@@ -107,13 +94,11 @@ async function setOrder(req, res, next) {
 
   var [err, order] = await utils.to(Order.findById(orderId));
   if (err || order == null) {
-       //req flash
-       return res.status(404).redirect("/User");
+    req.flash("warning", "Invalid Order");
+    return res.status(404).redirect("/User");
   }
+  req.orderx = order; //////////
 
-  req.orderx = order;
-
-  console.log(req.orderx, orderId)
   next();
 }
 
@@ -136,6 +121,7 @@ function authGetOrder(req, res, next) {
 module.exports = {
   ROLE,
   setUser,
+  notLoggedUser,
   authUser,
   authRole,
   setDelivery,

@@ -21,7 +21,7 @@ const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
 const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
 
 /* START ORDERS */
-router.get("/orders", async (req, res) => {
+router.get("/orders", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => { //useless route
 try {
     let limit = req.query.limit || 100;
     let start = req.query.start || 0;
@@ -48,7 +48,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-router.post("/orders/create", async (req, res) => { //router.post?
+router.post("/orders/create", setUser, authUser, async (req, res) => {
 try {
     let options = {
         method: 'POST',
@@ -74,53 +74,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-/* seems like this is never used
-router.get("/orders/update/:id", async (req, res) => { //router.post?
-try {
-    let id = req.params.id;
-    let options = {
-        method: 'PUT',
-        uri : `${API_URL}/v3.0/Orders/${id}`,
-        headers: {
-            'X-Pwinty-MerchantId': MERCHANTID,
-            'X-Pwinty-REST-API-Key': APIKEY
-        },
-        body: {
-            merchantOrderId: "123test", //optional	Your identifier for this order.
-            recipientName: "njrkgez", //	Recipient name.
-            address1: "addreeeeeeeee", //optional * First line of recipient address.
-            address2: "", //optional	Second line of recipient address.
-            addressTownOrCity: "Paris", // optional *	Town or city of the recipient.
-            stateOrCounty: "Paris", //optional	State, county or region of the recipient.
-            postalOrZipCode: "75012", // optional *	Postal or zip code of the recipient.
-            countryCode: "FR", //	Two-letter country code of the recipient.
-            preferredShippingMethod: "Standard", // Possible values are Budget, Standard, Express, and Overnight.
-            payment: "", //optional	Payment option for order, either InvoiceMe or InvoiceRecipient. Default InvoiceMe
-            packingSlipUrl: "", //optional †	URL to a packing slip file. PNG format, A4 size recommended.
-            mobileTelephone: "", //optional	Customer's mobile number for shipping updates and courier contact.
-            telephone: "", //optional	Customer's non-mobile phone number for shipping updates and courier contact.
-            email: "", //optional	Customer's email address.
-            invoiceAmountNet: "", //optional	Used for orders where an invoice amount must be supplied (e.g. to Middle East).
-            invoiceTax: "", //optional	Used for orders where an invoice amount must be supplied (e.g. to Middle East).
-            invoiceCurrency: "", //optional	Used for orders where an invoice amount must be supplied (e.g. to Middle East).
-        },
-        json: true
-    }
-
-    rp(options)
-    .then((response) => {
-        console.log(response)
-        return res.status(200).json(response);
-    })
-    .catch((err) => {
-        console.log(err, "x")
-        return res.status(200).json({ error: true, errordata: err.error });
-    })
-} catch (err) {
-    return res.status(200).json({ message: err.message });
-}});*/
-
-router.get("/orders/:id", async (req, res) => {
+router.get("/orders/:id", setUser, authUser, async (req, res) => {
 try {
     let id = req.params.id;
     let options = {
@@ -146,7 +100,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-router.get("/orders/:id/status", async (req, res) => {
+router.get("/orders/:id/status", setUser, authUser, async (req, res) => {
 try {
     let id = req.params.id;
     let options = {
@@ -171,7 +125,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-router.post("/orders/:id/submit", async (req, res) => {
+router.post("/orders/:id/submit", setUser, authUser, async (req, res) => { //might need setOrder canview
 try {
     let id = req.params.id;
     let options = {
@@ -200,7 +154,7 @@ try {
 
 
 /* IMAGES */
-router.get("/orders/:id/images", async (req, res) => {
+router.get("/orders/:id/images", setUser, authUser, async (req, res) => { //maybe unused route
 try {
     let id = req.params.id;
     let options = {
@@ -210,15 +164,6 @@ try {
             'X-Pwinty-MerchantId': MERCHANTID,
             'X-Pwinty-REST-API-Key': APIKEY
         },
-       /* body: {
-            sku: "",//	An identification code of the product for this image.
-            url: "",//	The image's URL.
-            copies: "",//	Number of copies of the image to include in the order.
-            sizing: "",//	How the image should be resized when printing.
-            priceToUser: "",// optional	If payment is set to InvoiceRecipient then the price (in cents/pence) you want to charge for each copy. Only available if your payment option is InvoiceRecipient.
-            md5Hash: "",// optional	An MD5 hash of the image file.
-            attributes: "",// optional	An object with properties representing the attributes for the image.
-        },*/
         body: {
             "sku" : "T-PHO-GP2-CS-M",
             "url" : "https://i.imgur.com/kRiXs12.png",
@@ -246,7 +191,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-router.post("/orders/:id/images/batch", async (req, res) => { //POST
+router.post("/orders/:id/images/batch", setUser, authUser, async (req, res) => { //POST
 try {
     let id = req.params.id;
     let options = {
@@ -259,8 +204,6 @@ try {
         body: req.body,
         json: true
     }
-
-    console.log(options)
 
     rp(options)
     .then((response) => {
@@ -278,7 +221,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-router.post("/callback/status", async (req, res) => { //router.post?
+router.post("/callback/status", async (req, res) => {
 try {
     console.log("api callback called")
     if (req.body.orderId && req.body.status) {
@@ -322,7 +265,7 @@ ShrinkToExactFit	Your image will be resized so that it completely fills the prin
 /* END IMAGES */
 
 /* COUNTRIES */
-router.get("/countries", async (req, res) => {
+router.get("/countries", setUser, async (req, res) => { //maybe unused
 try {
     let options = {
         method: 'GET',
@@ -349,7 +292,7 @@ try {
 /* END COUNTRIES */
 
 /* CATALOGUE */
-router.post("/countries/:countryCode", async (req, res) => {
+router.post("/countries/:countryCode", setUser, async (req, res) => {
 try {
     let countryCode = req.params.countryCode;
     let options = {
@@ -377,7 +320,7 @@ try {
     return res.status(200).json({ message: err.message });
 }});
 
-router.post("/pricing/:countryCode", async (req, res) => {
+router.post("/pricing/:countryCode", setUser, async (req, res) => {
 try {
     let countryCode = req.params.countryCode;
     let items = [];

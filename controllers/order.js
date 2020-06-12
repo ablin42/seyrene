@@ -16,8 +16,6 @@ const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('.
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const format = require("date-format");
-
-//var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
 router.get('/', setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
@@ -209,55 +207,6 @@ async function submitOrder(order, req) {
     return {err: false, orderId: order._id};
 }
 
-router.post('/create', setUser, async (req, res) => {
-try {
-    if (req.body.user) {
-        // Set sold out to true if an unique item is bought
-        let isPwinty = false;
-        for (let index = 0; index < req.body.items.length; index++) {
-            var [err, item] = await utils.to(Shop.findOneAndUpdate({_id: req.body.items[index].attributes._id, isUnique: true}, {$set: {soldOut: true}}));
-            if (err)
-                throw new Error("An error occurred while deleting the unique item from the store, please try again");
-            if (!req.body.items[index].attributes.isUnique)
-                isPwinty = true;
-        }
-        // Fetch delivery infos
-        var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.body.user._id }));
-        if (err)
-            throw new Error("An error occurred while looking for your delivery informations, please try again");
-
-        const order = new Order({
-            _userId: req.body.user._id,
-            chargeId: req.body.chargeId,
-            items: req.body.items,
-            price: req.body.price,
-            status: "Submitted",
-            firstname: infos.firstname,
-            lastname: infos.lastname,
-            full_address: infos.full_address,
-            full_street: infos.full_street,
-            country: infos.country,
-            street_name: infos.street_name,
-            street_number: infos.street_number,
-            city: infos.city,
-            state: infos.state,
-            zipcode: infos.zipcode,
-            instructions: infos.instructions
-        });
-
-        if (isPwinty === false)
-            var response = await submitOrder(order, req);
-        else 
-            var response = await createPwintyOrder(order, req);
-
-        return res.status(200).json(response);
-    } else 
-        throw new Error("Unauthorized, please make sure you are logged in");
-} catch (err) {
-    console.log("CREATING ORDER ERROR:", err);
-    return res.status(200).json({err: true, message: err.message})
-}})
-
 async function savePurchaseData(req, order, response) {
     let pwintyOrderId = "";
     let shippingAddress = [];
@@ -293,7 +242,7 @@ async function savePurchaseData(req, order, response) {
     return purchaseData;
 }
 
-router.post('/confirm', async (req, res) => {
+router.post('/confirm', setUser, authUser, async (req, res) => {
 try {
     /////////////// once this is triggered, wait 24h then proceed if no fraud webhook/refund events occurred
     if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) { //make sure its sent by webhook
@@ -514,10 +463,8 @@ try {
     return res.status(200).json({err: true, msg: err.message})
 }})
 
-router.post("/billing/save", vDelivery, setUser, async (req, res) => {
+router.post("/billing/save", vDelivery, setUser, authUser, async (req, res) => {
 try {
-    if (!req.user) 
-        throw new Error("Unauthorized, please make sure you're logged in!");
     if (req.body.billing && req.body.clientSecret) {
         const vResult = validationResult(req.body.billing);
         if (!vResult.isEmpty()) {

@@ -63,7 +63,7 @@ async function fetchMainImg(galleries) {
   return arr;
 }
 
-router.get("/", async (req, res) => {
+router.get("/", setUser, async (req, res) => {
   try {
     const options = {
       page: parseInt(req.query.page, 10) || 1,
@@ -82,21 +82,19 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/Tags", async (req, res) => {
+router.get("/Tags", setUser, async (req, res) => {
   try {
     const options = {
       page: parseInt(req.query.page, 10) || 1,
       limit: 6,
       sort: { date: -1 }
     };
-    console.log(
-      "this is to make sure i notice if there is a problem with tags parameter"
-    );
-    if (req.query.t) var tagsArr = req.query.t.split(","); //sanitize
+    console.log("this is to make sure i notice if there is a problem with tags parameter");
 
-    var [err, result] = await utils.to(
-      Gallery.paginate({ tags: { $all: tagsArr } }, options)
-    );
+    if (req.query.t) 
+      var tagsArr = req.query.t.split(","); //sanitize
+
+    var [err, result] = await utils.to(Gallery.paginate({ tags: { $all: tagsArr } }, options));
     if (err)
       throw new Error("An error occurred while fetching galleries item by tags");
     var galleries = result.docs;
@@ -232,22 +230,8 @@ try {
   return res.status(400).redirect(`/Galerie/`);
 }});
 
-//show all item's id
-router.get("/items", async (req, res) => {
-  try {
-    var [err, result] = await utils.to(Gallery.find());
-    if (err) throw new Error("An error occurred while fetching galleries");
-    const resArray = result.map(element => element._id);
-
-    return res.status(200).json(resArray);
-  } catch (err) {
-    console.log("GALLERY ITEMS ERROR", err);
-    return res.status(400).json(err.message);
-  }
-});
-
 //sanitize :id
-router.get("/single/:id", async (req, res) => {
+router.get("/single/:id", setUser, async (req, res) => {
   try {
     let id = req.params.id;
     var [err, result] = await utils.to(Gallery.findById(id));

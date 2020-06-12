@@ -4,7 +4,7 @@ const rp = require("request-promise");
 const format = require("date-format");
 const { getCode, getName } = require('country-list');
 
-const { ROLE, setUser, authUser, authRole, setDelivery, isDelivery, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, notLoggedUser, authUser, authRole, setDelivery, isDelivery, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Blog = require("../models/Blog");
 const User = require("../models/User");
@@ -30,7 +30,7 @@ const router = express.Router();
 
 router.get("/", setUser, async (req, res) => {
 try {
-  let obj = { active: "Home" }; //{root: path.join(__dirname, '/pages/')};
+  let obj = { active: "Home"};
 
   if (req.user) 
     obj.user = req.user
@@ -47,10 +47,7 @@ try {
 
 router.get("/Galerie", setUser, async (req, res) => {
 try {
-  let obj = {
-    active: "Galerie",
-    root: path.join(__dirname, "/pages/")
-  };
+  let obj = {active: "Galerie",};
 
   if (req.user) 
     obj.user = req.user;
@@ -70,10 +67,7 @@ try {
 
 router.get("/Galerie/Tags", setUser, async (req, res) => {
 try {
-  let obj = {
-        active: "Tags search",
-        root: path.join(__dirname, "/pages/")
-      };
+  let obj = {active: "Tags search"};
 
   if (req.user) 
     obj.user = req.user
@@ -90,16 +84,13 @@ try {
 
   return res.status(200).render("tags", obj);
 } catch (err) {
-  console.log("GALLERY TAGS ROUTE ERROR", err);
-  let obj = { //test if this is needed or not
-    active: "Tags search",
-    root: path.join(__dirname, "/pages/")
-  };
-  
+  let obj = {active: "Tags search"};
   if (req.query.t) {
     obj.error = true;
     obj.tags = req.query.t;
   }
+
+  console.log("GALLERY TAGS ROUTE ERROR", err);
   req.flash("warning", err.message);
   return res.status(400).render("tags", obj);
 }});
@@ -183,7 +174,7 @@ try {
   return res.status(400).redirect("/");
 }});
 
-router.get("/Payment", setUser, authUser, async (req, res) => {
+router.get("/Payment", setUser, authUser, setDelivery, isDelivery, async (req, res) => {
 try {
   let obj = {
     active: "Payment",
@@ -266,17 +257,12 @@ try {
   return res.status(400).redirect("/");
 }});
 
-router.get("/Account", setUser, async (req, res) => {
+router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 try {
   let obj = { active: "Account" };
   if (req.session.formData) {
     obj.formData = req.session.formData;
     req.session.formData = undefined;
-  }
-
-  if (req.user) {
-    req.flash("info", "You're already logged in");
-    return res.status(200).redirect("/");
   }
 
   return res.status(200).render("account", obj);
@@ -310,15 +296,10 @@ try {
   return res.status(400).redirect("/");
 }});
 
-router.get("/Resetpw/:tokenId/:token", setUser, async (req, res) => {
+router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) => {
 try {
-  if (req.user) {
-    req.flash("info", "You're logged in, you can change your password here");
-    return res.status(200).redirect("/User");
-  } 
   let obj = {
     active: "Reset password",
-    root: path.join(__dirname, "/pages/"),
     tokenId: req.params.tokenId, //sanitize
     token: req.params.token
   };
@@ -402,10 +383,7 @@ try {
 router.get("/Galerie/:id", setUser, async (req, res) => {
 try {
   let id = req.params.id;
-  let obj = {
-    active: "Galerie",
-    root: path.join(__dirname, "/pages/")
-  };
+  let obj = {active: "Galerie"};
 
   if (req.user)
     obj.user = req.user;
@@ -428,10 +406,7 @@ try {
 router.get("/Shop/:id", setUser, async (req, res) => {
 try {
   let id = req.params.id;
-  let obj = {
-    active: "Shop",
-    root: path.join(__dirname, "/pages/")
-  };
+  let obj = {active: "Shop"};
 
   if (req.user)
     obj.user = req.user;

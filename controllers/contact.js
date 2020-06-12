@@ -3,11 +3,12 @@ const router = express.Router();
 const { validationResult } = require("express-validator");
 const { vContact } = require("./validators/vContact");
 
+const { setUser } = require("./helpers/verifySession");
 const mailer = require("./helpers/mailer");
 require("dotenv/config");
 
 // Send us a mail
-router.post("/", vContact, async (req, res) => {
+router.post("/", vContact, setUser, async (req, res) => {
   try {
     const subject = `FROM ${req.body.name}, [${req.body.email}] - ${req.body.title}`;
     const content = req.body.content;

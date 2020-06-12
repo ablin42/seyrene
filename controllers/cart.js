@@ -19,7 +19,7 @@ var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'E
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
 
-router.get('/update/:itemId/:qty', async (req, res) => {
+router.get('/update/:itemId/:qty', setUser, async (req, res) => {
 try {
     let productId = req.params.itemId;
     let newQty = parseInt(req.params.qty); //sanitize
@@ -53,7 +53,7 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.get('/add/:itemId', async (req, res) => {
+router.get('/add/:itemId', setUser, async (req, res) => {
 try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -83,7 +83,7 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.get('/del/:itemId', async (req, res) => {
+router.get('/del/:itemId', setUser, async (req, res) => {
 try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -105,7 +105,7 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.post('/add/pwinty/:itemId', async (req, res) => {
+router.post('/add/pwinty/:itemId', setUser, async (req, res) => {
 try {
     let productId = req.params.itemId; //for now is shop id, but will make it later image id
     let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -142,7 +142,7 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.post('/update/pwinty/:itemId/:qty', async (req, res) => {
+router.post('/update/pwinty/:itemId/:qty', setUser, async (req, res) => {
 try {
     let productId = req.params.itemId;
     let newQty = parseInt(req.params.qty); //sanitize
@@ -181,7 +181,7 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.post('/del/pwinty/:itemId', async (req, res) => {
+router.post('/del/pwinty/:itemId', setUser, async (req, res) => {
 try {
     let productId = req.params.itemId;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -214,7 +214,7 @@ try {
     return res.status(400).json({"error": true, "msg": err.message})
 }})
 
-router.get('/clear/:id', async (req, res) => {
+router.get('/clear/:id', setUser, async (req, res) => {
 try {
     let cart = new Cart({});
     cart.clearCart();
@@ -228,7 +228,7 @@ try {
     return res.status(400).redirect('/');
 }})
 
-router.get('/totalprice', async (req, res) => {
+router.get('/totalprice', setUser, async (req, res) => {
 try {
     let total = 0;   
 

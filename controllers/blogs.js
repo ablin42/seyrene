@@ -33,7 +33,7 @@ async function formatBlogData(blogs) {
 }
 
 //blog pagination
-router.get("/", async (req, res) => {
+router.get("/", setUser, async (req, res) => {
 try {
   const options = {
     page: parseInt(req.query.page, 10) || 1,
@@ -43,14 +43,14 @@ try {
   let result = await bHelpers.getBlogs(options);
   result = await formatBlogData(result);
 
-  res.status(200).json(result);
+  return res.status(200).json(result);
 } catch (err) {
   console.log("BLOG FETCH ERROR", err);
-  res.status(200).json({ error: true, message: err.message });
+  return res.status(200).json({ error: true, message: err.message });
 }});
 
 // get a blog object
-router.get("/single/:blogId", async (req, res) => {
+router.get("/single/:blogId", setUser, async (req, res) => {
 try {
   var [err, blog] = await utils.to(Blog.findById(req.params.blogId));
   if (err)
@@ -63,7 +63,7 @@ try {
   return res.status(200).json(blog);
 } catch (err) {
   console.log("ERROR FETCHING A BLOG:", err);
-  res.status(200).json({ error: true, message: err.message });
+  return res.status(200).json({ error: true, message: err.message });
 }});
 
 // post a blog
