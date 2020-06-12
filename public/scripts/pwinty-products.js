@@ -16,8 +16,7 @@ function closeAllSelect(elmnt) {
 }
 
 async function checkSKU(SKU) {
-    let countryCode = await this.fetchCountryCode();
-    fetch(`/api/pwinty/countries/${countryCode}`, {
+    fetch(`/api/pwinty/countries/FR`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,6 +44,31 @@ async function checkSKU(SKU) {
       })
 }
 
+async function checkIsDelivery(SKU) {
+    await fetch(`http://localhost:8089/api/pwinty/pricing/FR`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({items: [{SKU: SKU, quantity: 1}]}),
+          credentials: "include",
+          mode: "same-origin"
+        })
+        .then(res => {return res.json();})
+        .then(async function(response) {
+            if (response.error === true || response.response.length <= 0) {
+                console.log(`No delivery option for: ${SKU}`)
+                return;
+            } else 
+                console.log("f")
+        })
+        .catch(err => {
+            console.log(`No delivery option for: ${SKU}`)
+            return;
+        });
+}
+
 function testSKU(category, subcategory) {
     let arr = [];
    
@@ -56,17 +80,20 @@ function testSKU(category, subcategory) {
                         var SKU = "GLOBAL" + "-" + category + "-" + singleSize;
                         var objArr = {SKU: SKU, error: 2}
                         objArr.error = checkSKU(SKU)
+                        checkIsDelivery(SKU)
                         arr.push(objArr);
                     })
                 }
                 break;
         
                 case "ROL": {
+                    
                     Object.keys(CAN_ROL_sizes).forEach(singleSize => {
-                        Object.keys(CAN_substrate).forEach(singleSubstrate => {
+                        Object.keys(CAN_substrate).forEach(singleSubstrate => { 
                             var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize;
                             var objArr = {SKU: SKU, error: 2}
                             objArr.error = checkSKU(SKU)
+                            checkIsDelivery(SKU)
                             arr.push(objArr);
                         })
                     })
@@ -77,6 +104,7 @@ function testSKU(category, subcategory) {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize + "-VAR";
                                 var objArr = {SKU: SKU, error: 2}
                                 objArr.error = checkSKU(SKU)
+                                checkIsDelivery(SKU)
                                 arr.push(objArr);
                             })
                         }
@@ -89,6 +117,7 @@ function testSKU(category, subcategory) {
                         var SKU = "GLOBAL" + "-" + subcategory + "-" + category + "-" + singleSize;
                         var objArr = {SKU: SKU, error: 2}
                         objArr.error = checkSKU(SKU)
+                        checkIsDelivery(SKU)
                         arr.push(objArr);
                     })
                 }
@@ -103,6 +132,7 @@ function testSKU(category, subcategory) {
                     var SKU = "GLOBAL" + "-" + singleSubstrate + "-" + singleSize;
                     var objArr = {SKU: SKU, error: 2}
                     objArr.error = checkSKU(SKU)
+                    checkIsDelivery(SKU)
                     arr.push(objArr);
                 })
             })
@@ -119,6 +149,7 @@ function testSKU(category, subcategory) {
                                     var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
                                     var objArr = {SKU: SKU, error: 2}
                                     objArr.error = checkSKU(SKU)
+                                    checkIsDelivery(SKU)
                                     arr.push(objArr);
                                 })
                             })
@@ -135,6 +166,7 @@ function testSKU(category, subcategory) {
                                     var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
                                     var objArr = {SKU: SKU, error: 2}
                                     objArr.error = checkSKU(SKU)
+                                    checkIsDelivery(SKU)
                                     arr.push(objArr);
                                 })
                             })
@@ -150,6 +182,7 @@ function testSKU(category, subcategory) {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
                                 var objArr = {SKU: SKU, error: 2}
                                 objArr.error = checkSKU(SKU)
+                                checkIsDelivery(SKU)
                                 arr.push(objArr);
                             })
                         })
@@ -164,6 +197,7 @@ function testSKU(category, subcategory) {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleGlaze + "-" + singleSize;
                                 var objArr = {SKU: SKU, error: 2}
                                 objArr.error = checkSKU(SKU)
+                                checkIsDelivery(SKU)
                                 arr.push(objArr);
                             })
                         })
@@ -172,11 +206,12 @@ function testSKU(category, subcategory) {
                 break;
 
                 case "SUR1": {
-                    Object.keys(FRA_sizes).forEach(singleSize => {
+                    Object.keys(FRA_SUR_sizes).forEach(singleSize => {
                         Object.keys(substrateType).forEach(singleSubstrate => {
                             var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
                             var objArr = {SKU: SKU, error: 2}
                             objArr.error = checkSKU(SKU)
+                            checkIsDelivery(SKU)
                             arr.push(objArr);
                         })
                     })
@@ -184,11 +219,12 @@ function testSKU(category, subcategory) {
                 break;
 
                 case "SUR2": {
-                    Object.keys(FRA_sizes).forEach(singleSize => {
+                    Object.keys(FRA_SUR_sizes).forEach(singleSize => {
                         Object.keys(substrateType).forEach(singleSubstrate => {
                             var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
                             var objArr = {SKU: SKU, error: 2}
                             objArr.error = checkSKU(SKU)
+                            checkIsDelivery(SKU)
                             arr.push(objArr);
                         })
                     })
@@ -202,6 +238,7 @@ function testSKU(category, subcategory) {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
                                 var objArr = {SKU: SKU, error: 2}
                                 objArr.error = checkSKU(SKU)
+                                checkIsDelivery(SKU)
                                 arr.push(objArr);
                             })
                         })
@@ -299,8 +336,6 @@ class PwintyObject {
             maxDimension = parseInt(dimensions[1]);
             sizeRatio = Math.round(((dimensions[1] / dimensions[0]) + Number.EPSILON) * 10) / 10;
         }
-
-        console.log(this.ratio, sizeRatio)
 
         if (this.category !== "FRA")
             maxDimension = maxDimension * 2.54; //conversion from inches to cm

@@ -2,6 +2,11 @@ const substrateType = {
     BAP: "Budget Art Paper", CPP: "Classic Poster Paper", CPWP: "Cold Press Watercolour Paper", EMA: "Enhanced Matte Art Paper", HFAP: "Hahnemühle Fine Art Paper", HGE: "Hahnemühle German Etching", MFA: "Museum Fine Art Paper", MG: "Metallic Gloss", SAP: "Smooth Art Paper"
 }
 
+const substrateTypeCLA = {
+    BAP: "Budget Art Paper", CPP: "Classic Poster Paper", CPWP: "Cold Press Watercolour Paper", HFAP: "Hahnemühle Fine Art Paper", HGE: "Hahnemühle German Etching", MFA: "Museum Fine Art Paper", MG: "Metallic Gloss", SAP: "Smooth Art Paper"
+}
+
+
 const mountType = {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"};
 
 const glazeType = {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"};
@@ -17,6 +22,10 @@ const FRA_sizes = {
     "70x70": "70x70cm", "50x100": "50x100cm", "60x90": "60x90cm",
     "75x75": "75x75cm", "80x80": "80x80cm", "70x100": "70x100cm",
     "90x90": "90x90cm"
+}
+
+const FRA_SUR_sizes = {
+    "21x29": "A4", "29x42": "A3", "42x59": "A2", "59x84": "A1"
 }
 
 const PRINT_substrate = {
@@ -59,42 +68,54 @@ const CAN_ROL_sizes = {
 const PWINTY_ITEMS = {
     "FRA": {
         "sharedAttributes": {
-            "substrateType": substrateType,
-            "size": FRA_sizes,
         },
         "BOX": {
             "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
             "glaze": {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"},
             "frameColour": {Black: "Black", Brown: "Brown", White: "White", Natural: "Natural"},
-            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"},
+            "size": FRA_sizes,
+            "substrateType": substrateType,
         },
         "CLA": {
             "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
             "glaze": {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"},
             "frameColour": {Black: "Black", Brown: "Brown", White: "White", Natural: "Natural", Silver: "Silver", Gold: "Gold"},
-            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"},
+            "size": FRA_sizes,
+            "substrateType": substrateTypeCLA,
         }, 
         "GLO": {
             "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
             "glaze": {ACRY: "Acrylic / Perspex"},
             "frameColour": {Black: "Black", White: "White"},
-            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"},
+            "size": FRA_sizes,
+            "substrateType": substrateType,
         }, 
         "SPACE": {
             "glaze": {ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass"},
-            "frameColour": {Black: "Black", White: "White"}
+            "frameColour": {Black: "Black", White: "White"},
+            "size": FRA_sizes,
+            "substrateType": substrateType,
         }, 
         "SUR1": {
-            "frameColour": {Black: "Black", White: "White"}
+            "frameColour": {Black: "Black", White: "White"},
+            "size": FRA_SUR_sizes,
+            "substrateType": substrateType,
         }, 
         "SUR2": {
-            "frameColour": {Black: "Black", White: "White"}
+            "frameColour": {Black: "Black", White: "White"},
+            "size": FRA_SUR_sizes,
+            "substrateType": substrateType,
         }, 
         "SWO": {
             "mountType": {MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT"},
             "glaze": {ACRY: "Acrylic / Perspex"},
             "frameColour": {Black: "Black", White: "White"},
-            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"}
+            "mountColour": {"Snow White": "Snow White", "Off-White": "Off-White", Black: "Black"},
+            "size": FRA_sizes,
+            "substrateType": substrateType,
         },
     },
     "PRINT": {
@@ -114,11 +135,11 @@ const PWINTY_ITEMS = {
             "size": CAN_sizes,
             "wrap":  {"Black": "Black", "White": "White", "ImageWrap": "Image Wrap", "MirrorWrap": "Mirror Wrap"}, //not sure this belong here
         },
-        "ROL": { //glaze only for -VAR
+        /*"ROL": { //glaze only for -VAR
             "size": CAN_ROL_sizes,
             "glaze": {"NONE": "No Varnish", "Gloss Varnish": "Gloss Varnish", "Matt Varnish": "Matt Varnish"},
             "substrateType": CAN_substrate
-        },
+        },*/
         "STR": { //edge always 38mm, size in SKU, substrate globalized to SC
             "size": CAN_sizes,
             "wrap":  {"Black": "Black", "White": "White", "ImageWrap": "Image Wrap", "MirrorWrap": "Mirror Wrap"},

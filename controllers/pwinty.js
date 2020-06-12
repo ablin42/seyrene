@@ -355,7 +355,6 @@ try {
         
         rp(options)
         .then((response) => {
-            console.log(response.shipmentOptions)
             let found = 0;
             response.shipmentOptions.forEach(shipmentOption => {
                 if (shipmentOption.isAvailable && shipmentOption.shippingMethod === "Standard") {
