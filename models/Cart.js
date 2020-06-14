@@ -163,12 +163,15 @@ module.exports = function Cart(oldCart) {
                         this.items[data.SKU].elements[index].attributes = undefined;
                 }
             });
+           
+            storedItem.qty = storedItem.qty + qtyOffset;
+            storedItem.price = parseFloat((unitPrice * storedItem.qty).toFixed(2));
+            
             if (storedItem.qty === 0) {
                 this.items[data.SKU] = undefined;
                 storedItem = undefined;
             }
-            storedItem.qty = storedItem.qty + qtyOffset;
-            storedItem.price = parseFloat((unitPrice * storedItem.qty).toFixed(2));
+
             this.totalQty = this.totalQty + qtyOffset;
             this.totalPrice = parseFloat((Math.round((this.totalPrice + priceOffset) * 100) / 100).toFixed(2));
             retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
@@ -196,7 +199,6 @@ module.exports = function Cart(oldCart) {
     this.generatePwintyArray = function () {
         let arr = [];
         for (let id in this.items) {
-            console.log(id, this.items, this.items[id])
             if (this.items[id] && !this.items[id].attributes.isUnique)
                 arr.push(this.items[id]);
         }
@@ -218,7 +220,7 @@ module.exports = function Cart(oldCart) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
             },
-            body: {items: this.generateArray()},
+            body: {items: items},
             json: true
         }
         let obj = await rp(options);

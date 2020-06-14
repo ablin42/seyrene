@@ -17,7 +17,11 @@
       <% } %>
       </div>
       <hr />
-      <h2>delivery price (with tax:) <%= locals.deliveryPriceFormatted %>€</h2>
+      <% if (locals.deliveryPriceFormatted != "0.00") { %>
+        <h2>shipping(with tax): <%= locals.deliveryPriceFormatted %>€</h2>
+      <% } else { %>
+        <h2>shipping(with tax): FREE</h2>
+      <% } %>
       <div class="cart-row" id="cart-row-header">
         <span class="cart-item cart-header cart-column">ITEM</span>
         <span class="cart-quantity cart-header cart-column">QUANTITÉ</span>

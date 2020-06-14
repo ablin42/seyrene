@@ -21,7 +21,7 @@ async function setUser(req, res, next) {
     req.user.password = undefined;
   }
 
-  /*req.user = { 
+  req.user = { 
     role: 'admin',
     isVerified: true,
     _id: "5d810b9365761c0840e0de25",
@@ -31,7 +31,7 @@ async function setUser(req, res, next) {
     __v: 0,
     createdAt: "2019-09-28T20:27:37.382Z",
     updatedAt: "2020-06-10T23:25:09.803Z"
-  }*/
+  }
 
   next();
 }

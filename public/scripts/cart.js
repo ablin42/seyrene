@@ -236,7 +236,13 @@ try {
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
         let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');
+        let deliveryPrice = response.cart.price.shippingIncludingTax;
         let rowId = document.getElementById(`${itemId}-${referenceId}`);
+
+        if (deliveryPrice === 0)
+          deliveryPrice = "FREE";
+        else 
+          deliveryPrice = formatter.format( response.cart.price.shippingIncludingTax).replace(',', '.');
 
         if (totalQty === 0) 
           handleEmptiness();
@@ -250,6 +256,7 @@ try {
           rowId.remove();
 
         document.getElementById("total-price").innerText = totalPrice;
+        document.getElementById("delivery-price").innerText = deliveryPrice;
         document.getElementById("total-qty").innerText = totalQty;
         document.getElementById("cartQty").innerText = totalQty;
       } else {
@@ -298,11 +305,18 @@ try {
           let totalQty = response.cart.totalQty;
           let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');
           let rowId = document.getElementById(`${itemId}-${referenceId}`);
+          let deliveryPrice = response.cart.price.shippingIncludingTax;
+  
+          if (deliveryPrice === 0)
+            deliveryPrice = "FREE";
+          else 
+            deliveryPrice = formatter.format( response.cart.price.shippingIncludingTax).replace(',', '.');
 
           if (totalQty === 0) 
             handleEmptiness();
 
           document.getElementById("total-price").innerText = totalPrice;
+          document.getElementById("delivery-price").innerText = deliveryPrice;
           document.getElementById("total-qty").innerText = totalQty;
           document.getElementById("cartQty").innerText = totalQty;
 

@@ -328,9 +328,11 @@ try {
     let countryCode = req.params.countryCode;
     let items = [];
 
+
     if (req.body.items) {
         req.body.items.forEach(item => {
             if (item && item.attributes && item.attributes.isUnique !== true) {
+                console.log(item.elements[0].attributes)
                 let obj = {
                     "sku": item.elements[0].attributes.SKU,
                     "quantity": item.elements[0].qty //need qty too (qty for elements with frame color diff not counted properly)

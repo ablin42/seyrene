@@ -176,7 +176,7 @@ try {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: {items: itemArr},
+      body: {items: cart.generatePwintyArray()},
       json: true
     }
     obj.deliveryPrice = await rp(options);
@@ -359,7 +359,7 @@ try {
       var items = {
         item: item.attributes,
         qty: item.qty,
-        price: formatter.format(item.price).substr(2),
+        price: item.price,
         shortcontent: item.attributes.content.substr(0, 128),
         shorttitle: item.attributes.title.substr(0, 64),
         details: "Toile Unique"

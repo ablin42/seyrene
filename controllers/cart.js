@@ -99,8 +99,6 @@ try {
             if (cartCpy.items[data.SKU])
                 cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
-            console.log(item.price, cartCpy.items[data.SKU].price, cartCpy.totalPrice, cart.price.totalIncludingTax)
-
             return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy, item: item}); //send curr item qty/price?
         } catch (err) {
             return res.status(400).json({"error": true, "msg": err.message})
