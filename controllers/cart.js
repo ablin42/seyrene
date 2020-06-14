@@ -10,9 +10,6 @@ const DeliveryInfo = require('../models/DeliveryInfo');
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const rp = require('request-promise');
-const Money = require("money-exchange");
-const fx = new Money();
-fx.init();
 
 const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
 require('dotenv/config');
@@ -201,18 +198,21 @@ try {
     return res.status(400).redirect('/');
 }})
 
+/*
 router.get('/totalprice', setUser, async (req, res) => {
 try {
     let total = 0;   
 
     if (req.session.cart) 
-        total =  item.price = formatter.format(fx.convert(item.price, "GBP", "EUR")).substr(2);req.session.cart.totalPrice; ///////////////WTF IS THIS
+        total = req.session.cart.totalPrice; ///////////////WTF IS THIS
+
+    console.log(total, req.session.cart.totalPrice)
 
     //maybe add delivery fees and taxes etc
     return res.status(400).json({"err": false, "total": total})
 } catch (err) {
     console.log("TOTAL PRICE CART ERROR");
     return res.status(400).json({"err": true, "msg": err.message})
-}})
+}})*/
 
 module.exports = router;

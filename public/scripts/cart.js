@@ -19,6 +19,7 @@ function handleEmptiness () {
   $("#cart-row-header").attr("style", "display: none");
 }
 
+/*
 function checkoutCaller(isLogged, isDelivery) {
   if (isLogged === "") {
     window.location.href = "http://localhost:8089/Account"; //need req message
@@ -59,7 +60,7 @@ function checkoutCaller(isLogged, isDelivery) {
       addAlert(alert, "#header");
     }
   }
-}
+}*/
 
 async function cartAdd(itemId, caller) {
   cooldownBtn(caller, 1500);

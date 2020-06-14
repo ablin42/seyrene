@@ -1,7 +1,4 @@
 let rp = require("request-promise");
-const Money = require("money-exchange");
-const fx = new Money();
-fx.init();
 
 module.exports = function Cart(oldCart) {
     this.items = oldCart.items || {};
