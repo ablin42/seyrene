@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const rp = require("request-promise");
 const format = require("date-format");
-const country = require('country-list-js')
+const country = require('country-list-js');
 
 const { ROLE, setUser, notLoggedUser, authUser, authRole, setDelivery, isDelivery, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
@@ -164,7 +164,7 @@ try {
     obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
     obj.totalQty = cart.totalQty;
 
-     let countryCode = country.findByName(toTitleCase(obj.delivery.country));
+    let countryCode = country.findByName(toTitleCase(obj.delivery.country));
     if (countryCode)
         countryCode = countryCode.code.iso2;
     else 
@@ -207,7 +207,7 @@ try {
       return res.status(400).redirect("/shopping-cart");
     obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
   } else
-    return res.status(400).redirect("/shopping-cart");
+      return res.status(400).redirect("/shopping-cart");
 
   return res.status(200).render("payment", obj);
 } catch (err) {

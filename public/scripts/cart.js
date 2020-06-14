@@ -160,7 +160,7 @@ async function cartDel(itemId, caller) { ///////////////////////////always delet
 
 async function pwintyCartAdd(itemId, referenceId, caller) {
 try {
-  if (PWINTY_DATA[0] !== undefined) {
+  if (PWINTY_DATA.length > 0) {
     cooldownBtn(caller, 1500);
     let SKU = PWINTY_DATA[referenceId].SKU;
     let attributes = PWINTY_DATA[referenceId].attributes;
@@ -179,17 +179,18 @@ try {
     })
     .then(res => {return res.json();})
     .then(function(response) {
+      console.log(response)
         let alertType = "success";
         if (response.error === false) {
           let totalQty = response.cart.totalQty;
-          console.log(response.cart.price.totalIncludingTax)
+          console.log(response.cart.price.totalIncludingTax, response.cart.totalPrice)
           let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');
           let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
           if (rowId.classList.contains("cart-row-item")) {
             $(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
             rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');
-            document.getElementById("total-price").innerText = totalPrice
+            document.getElementById("total-price").innerText = totalPrice;
             document.getElementById("total-qty").innerText = totalQty;
           }
           document.getElementById("cartQty").innerText = totalQty;
@@ -211,7 +212,7 @@ try {
 
 async function pwintyCartDel(itemId, referenceId, caller) {
 try {
-  if (PWINTY_DATA[0] !== undefined) {
+  if (PWINTY_DATA.length > 0) {
     cooldownBtn(caller, 1500);
     let SKU = PWINTY_DATA[referenceId].SKU;
     let attributes = PWINTY_DATA[referenceId].attributes;
@@ -270,7 +271,7 @@ try {
 
 async function pwintyUpdateValue(e, item, itemId, referenceId) {
 try {
-  if (item.value && PWINTY_DATA[0] !== undefined) {
+  if (item.value && PWINTY_DATA.length > 0) {
     let qty = parseInt(item.value);
     let SKU = PWINTY_DATA[referenceId].SKU;
     let attributes = PWINTY_DATA[referenceId].attributes;

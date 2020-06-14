@@ -571,20 +571,20 @@ class PwintyObject {
 
     async generatePricing() {
         let countryCode = await this.fetchCountryCode();
-        fetch(`/api/pwinty/countries/${countryCode}`, {
+        fetch(`/api/pwinty/pricing/${countryCode}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json'
             },
-            body: JSON.stringify({skus: [this.SKU]})
+            body: JSON.stringify({items: [{SKU: this.SKU, quantity: 1}]})
         })
         .then((res) => {return res.json()})
         .then((data) => {
-            if (data.prices[0].price){
-                if (data.prices[0].price === 0)
+            if (data.response.unitPriceIncludingTax){
+                if (data.response.unitPriceIncludingTax === 0)
                     throw new Error("Something went wrong while searching this item in our catalog");
-                this.price = data.prices[0].price / 100; //+ convert to eur
+                this.price = data.response.unitPriceIncludingTax;
                 this.displayPricing();
             }
             else 

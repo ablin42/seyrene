@@ -1,4 +1,7 @@
 let rp = require("request-promise");
+const Money = require("money-exchange");
+const fx = new Money();
+fx.init();
 
 module.exports = function Cart(oldCart) {
     this.items = oldCart.items || {};
@@ -19,6 +22,8 @@ module.exports = function Cart(oldCart) {
         this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal + this.items[id].unitPrice) * 100) / 100).toFixed(2));
         this.price.totalIncludingTax += this.uniquePriceTotal;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[id].unitPrice) * 100) / 100).toFixed(2));
+
+        this.generateArray()
     };
 
     // don't need this function
@@ -68,7 +73,7 @@ module.exports = function Cart(oldCart) {
         }
     }
 
-    this.pwintyAdd = async function (item, data) { // data= SKU: req.body.SKU, price: req.body.price, attributes: req.body.attributes (=all attributes + category/subcategory),
+    this.pwintyAdd = async function (item, data) {
         let storedItem = this.items[data.SKU];
         let attributes = data.attributes
         attributes.SKU = data.SKU;
@@ -81,7 +86,7 @@ module.exports = function Cart(oldCart) {
             storedItem = this.items[data.SKU] = {attributes: item, elements: [{attributes : attributes, qty: 1}], qty: 1, price: data.price, unitPrice: data.price}; 
         else {
             let found = 0;
-            this.items[data.SKU].qty++; 
+            this.items[data.SKU].qty++;
             this.items[data.SKU].price = parseFloat((Math.round(this.items[data.SKU].unitPrice * this.items[data.SKU].qty * 100) / 100).toFixed(2));
 
             storedItem.elements.forEach((element, index) => {
@@ -172,6 +177,7 @@ module.exports = function Cart(oldCart) {
             retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
         }
 
+        
         await this.fetchPrice();
         return (retData);
     }
@@ -190,7 +196,23 @@ module.exports = function Cart(oldCart) {
         return arr;
     };
 
+    this.generatePwintyArray = function () {
+        let arr = [];
+        for (let id in this.items) {
+            console.log(id, this.items, this.items[id])
+            if (this.items[id] && !this.items[id].attributes.isUnique)
+                arr.push(this.items[id]);
+        }
+        return arr;
+    };
+
     this.fetchPrice = async function () {
+        let items = this.generatePwintyArray();
+        if (items.length <= 0)  {
+            this.price = {shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: this.uniquePriceTotal, totalExcludingTax: 0}
+            return;
+        }
+            
         let countryCode = await this.fetchCountryCode();
         let options = {
             uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
@@ -213,7 +235,6 @@ module.exports = function Cart(oldCart) {
                 totalIncludingTax: parseFloat(obj.response.totalPriceIncludingTax) + this.uniquePriceTotal,
                 totalExcludingTax: parseFloat(obj.response.totalPriceExcludingTax)
             }
-            console.log(this.price)
         }
     }
 

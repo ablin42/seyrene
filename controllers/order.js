@@ -4,7 +4,7 @@ const {validationResult} = require('express-validator');
 const {vOrder} = require('./validators/vShop');//vOrder
 const {vDelivery} = require("./validators/vUser");
 const rp = require("request-promise");
-const country = require('country-list-js')
+const country = require('country-list-js');
 
 const Order = require('../models/Order');
 const Purchase = require('../models/PurchaseData');

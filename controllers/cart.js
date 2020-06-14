@@ -10,6 +10,9 @@ const DeliveryInfo = require('../models/DeliveryInfo');
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const rp = require('request-promise');
+const Money = require("money-exchange");
+const fx = new Money();
+fx.init();
 
 const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
 require('dotenv/config');
@@ -18,40 +21,6 @@ require('dotenv/config');
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 const stripeSecret = process.env.STRIPE_SECRET;
 const stripe = require('stripe')(stripeSecret);
-
-router.get('/update/:itemId/:qty', setUser, async (req, res) => {
-try {
-    let productId = req.params.itemId;
-    let newQty = parseInt(req.params.qty); //sanitize
-    let cart = new Cart(req.session.cart ? req.session.cart : {});
-
-    if (Number.isInteger(newQty) && (newQty >= 0 && newQty <= 99))
-    {
-        Shop.findById(productId, (err, product) => {
-            if (err || !product)
-                return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
-            if (product.isUnique === true && newQty > 1)
-                return res.status(400).json({"error": true, "msg": "Quantity can't exceed 1 for unique items!"})
-
-            cart.update(product, product.id, newQty);
-            req.session.cart = cart;
-            let cartCpy = JSON.parse(JSON.stringify(cart));
-            cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
-            if (cartCpy.items[productId])
-                cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
-        
-            let msg = "Item quantity updated";
-            if (newQty == 0)
-                msg = "Item removed from cart";
-            return res.status(200).json({error: false, msg: msg, cart: cartCpy});
-        })
-    }
-    else
-        throw new Error("Quantity for an item must be between 0 and 99");          
-} catch (err) {
-    console.log("UPDATE CART ERROR");
-    return res.status(400).json({"error": true, "msg": err.message})
-}})
 
 router.get('/add/:itemId', setUser, async (req, res) => {
 try {
@@ -75,6 +44,7 @@ try {
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
         cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
+        console.log(cartCpy.totalPrice,  cartCpy.items[product.id].price)
 
         return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
     })
@@ -132,6 +102,8 @@ try {
             if (cartCpy.items[data.SKU])
                 cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
+            console.log(item.price, cartCpy.items[data.SKU].price, cartCpy.totalPrice, cart.price.totalIncludingTax)
+
             return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy, item: item}); //send curr item qty/price?
         } catch (err) {
             return res.status(400).json({"error": true, "msg": err.message})
@@ -160,6 +132,7 @@ try {
                     return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
                 let item = await cart.pwintyUpdate(data, newQty);
+                item.price = formatter.format(item.price).substr(2);
                 req.session.cart = cart;
                 let cartCpy = JSON.parse(JSON.stringify(cart));
                 cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
@@ -201,7 +174,7 @@ try {
             let cartCpy = JSON.parse(JSON.stringify(cart));
             cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
             if (cartCpy.items[data.SKU])
-                cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+                cartCpy.items[data.SKU].price = formatter.format(cartCpy.items[data.SKU].price).substr(2);
             
             return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy, item: item});
         } catch (err) {
@@ -233,7 +206,7 @@ try {
     let total = 0;   
 
     if (req.session.cart) 
-        total = req.session.cart.totalPrice;
+        total =  item.price = formatter.format(fx.convert(item.price, "GBP", "EUR")).substr(2);req.session.cart.totalPrice; ///////////////WTF IS THIS
 
     //maybe add delivery fees and taxes etc
     return res.status(400).json({"err": false, "total": total})

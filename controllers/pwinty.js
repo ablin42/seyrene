@@ -10,6 +10,9 @@ const Token = require("../models/VerificationToken");
 const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
 require("dotenv/config");
+const Money = require("money-exchange");
+const fx = new Money();
+fx.init();
 
 var formatter = new Intl.NumberFormat("de-DE", {
     style: "currency",
@@ -309,7 +312,7 @@ try {
     }
     rp(options)
     .then((response) => {
-        console.log(response, "x")
+        console.log(response)
         return res.status(200).json(response);
     })
     .catch((err) => {
@@ -361,11 +364,12 @@ try {
                     found = 1;
                     let formatted = {
                         "isAvailable": shipmentOption.isAvailable,
-                        "totalPriceIncludingTax": formatter.format(shipmentOption.totalPriceIncludingTax / 100).substr(2),
-                        "totalPriceExcludingTax": formatter.format(shipmentOption.totalPriceExcludingTax / 100).substr(2),
+                        "unitPriceIncludingTax": formatter.format(fx.convert((shipmentOption.shipments[0].items[0].unitPriceIncludingTax / 100), "GBP", "EUR")).substr(2),
+                        "totalPriceIncludingTax": formatter.format(fx.convert((shipmentOption.totalPriceIncludingTax / 100), "GBP", "EUR")).substr(2),
+                        "totalPriceExcludingTax": formatter.format(fx.convert((shipmentOption.totalPriceExcludingTax / 100), "GBP", "EUR")).substr(2),
                         "shippingMethod": shipmentOption.shippingMethod,
-                        "shippingPriceIncludingTax": formatter.format(shipmentOption.shippingPriceIncludingTax / 100).substr(2),
-                        "shippingPriceExcludingTax": formatter.format(shipmentOption.shippingPriceExcludingTax / 100).substr(2),
+                        "shippingPriceIncludingTax": formatter.format(fx.convert((shipmentOption.shippingPriceIncludingTax / 100), "GBP", "EUR")).substr(2),
+                        "shippingPriceExcludingTax": formatter.format(fx.convert((shipmentOption.shippingPriceExcludingTax / 100), "GBP", "EUR")).substr(2),
                         "shipments": shipmentOption.shipments
                     }
                     return res.status(200).json({error: false, response: formatted});
