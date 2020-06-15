@@ -1,5 +1,6 @@
 <% include partials/head %>
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <div class="container-with-menu container">
     <div class="row row-height">
       <div class="menu col-3">
@@ -19,7 +20,7 @@
                 <h5>Nous avons besoin de ces informations pour pouvoir vous répondre...</h5>
                 <h6>Sinon, vous pouvez nous envoyer un mail directement à l'adresse <b>Maral.canvas@gmail.com</b></h6>
             </div>
-            <form class="col-10 offset-1 mt-4" id="contact-form" method="POST" action="/api/contact/">
+            <form class="col-10 offset-1 mt-4" id="contact" method="POST" onsubmit="submitContact(event)" action="/api/contact/">
                 <div class="row">
                     <div class="col-6">
                         <label class="control-label">Nom</label>
@@ -41,12 +42,38 @@
                 <textarea id="content" onkeyup="Validate.String(this, 64, 2048);" class="instructions-textarea" style="min-height: 175px;" name="content" placeholder="Écrivez votre message ici..." required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
                 <span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
 
+                <div class="g-recaptcha" data-sitekey="6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9"></div>
                 <input type="submit" class="logbtn mt-3" value="Envoyer" id="submit-contact">
             </form>
           </div>
         </div>
         </section>
       </div>
+
+      <script>
+        function submitContact(e) {
+          e.preventDefault();
+
+          const name = document.querySelector("#name").value;
+          const email = document.querySelector("#email").value;
+          const title = document.querySelector("#title").value;
+          const content = document.querySelector("#content").value;
+          const captcha = document.querySelector("#g-recaptcha-response").value;
+
+          fetch('/api/contact/subscribe', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: name, email: email, title: title, content: content, captcha: captcha})
+          })
+          .then((res) => res.json())
+          .then((response) => {
+            alert(response.message)
+          })
+        }
+      </script>
   
       <div id="bio" class="tab col-9" style="display: none;">
         <section>

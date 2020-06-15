@@ -157,6 +157,7 @@ try {
 
 
 /* IMAGES */
+/*
 router.get("/orders/:id/images", setUser, authUser, async (req, res) => { //maybe unused route
 try {
     let id = req.params.id;
@@ -192,7 +193,7 @@ try {
     })
 } catch (err) {
     return res.status(200).json({ message: err.message });
-}});
+}});*/
 
 router.post("/orders/:id/images/batch", setUser, authUser, async (req, res) => { //POST
 try {

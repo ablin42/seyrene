@@ -105,20 +105,18 @@ app.use("/api/stripe", stripeRoute);
 app.use((err, req, res, next) => {
   //////
   // treat as 404
-  if (
-    err.message &&
-    (~err.message.indexOf("not found") ||
-      ~err.message.indexOf("Cast to ObjectId failed"))
-  ) {
+  if (err.message && (~err.message.indexOf("not found") ||
+      ~err.message.indexOf("Cast to ObjectId failed"))) {
     return next();
   }
   console.error(err.stack);
     
   ///////////multer error
-  if (req.originalUrl.indexOf("/api/gallery/") != -1 ||req.originalUrl.indexOf("/api/shop/") != -1)
+  if (req.originalUrl.indexOf("/api/gallery/") != -1 || req.originalUrl.indexOf("/api/shop/") != -1 || req.originalUrl.indexOf("/api/front/") != -1)
     return res.status(500).json({ url: "/", msg: err.message, err: true });
 
-  //req.flash("warning", err.message);
+  if (err.message)
+    req.flash("warning", err.message);
   return res.status(500).redirect("back");
 });
 

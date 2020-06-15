@@ -2,10 +2,35 @@ const express = require("express");
 const router = express.Router();
 const { validationResult } = require("express-validator");
 const { vContact } = require("./validators/vContact");
+const rp = require("request-promise");
 
 const { setUser } = require("./helpers/verifySession");
+const { setCaptcha } = require("./helpers/captcha");
 const mailer = require("./helpers/mailer");
 require("dotenv/config");
+
+router.post("/subscribe", setCaptcha, (req, res) => {
+try {
+  console.log("issou")
+  /*if (req.body.captcha === undefined || req.body.captcha === '' || req.body.captcha === null)
+    throw new Error("Please solve the captcha");
+  
+  const secretKey = "6Ld8MaUZAAAAAJOHua_oEH4mVX0P2ATrfacoxIgM";
+  const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${req.body.captcha}&remoteip=${req.connection.remoteAddress}`;
+
+  rp(verifyUrl, (err, response, body) => {
+    body = JSON.parse(body);
+
+    if (body.success && !body.success) {
+      throw new Error("Failed captcha verification, please try again");
+    }
+
+    return res.json({error: false, message: "Captcha passed"});
+  })*/
+} catch (err) {
+  console.log(err)
+  return res.json({error: true, message: err.message});
+}})
 
 // Send us a mail
 router.post("/", vContact, setUser, async (req, res) => {

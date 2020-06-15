@@ -455,7 +455,7 @@ try {
         } else {
             let options = {
                 method: 'GET',
-                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}`,//${API_URL}/v3.0/Orders
+                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}`,
                 body: {},
                 json: true
             }
