@@ -11,10 +11,11 @@ const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
 const { ROLE, setUser, notLoggedUser, authUser, authRole} = require("./helpers/verifySession");
+const { checkCaptcha } = require("./helpers/captcha");
 
 require("dotenv/config");
 
-router.post("/register", vRegister, setUser, notLoggedUser, async (req, res) => {
+router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async (req, res) => {
 try {
   req.session.formData = {
     name: req.body.name,
@@ -36,8 +37,8 @@ try {
 
   // Create User and validationToken objects
   const user = new User({
-    name: formData.name,
-    email: formData.email,
+    name: req.session.formData.name,
+    email: req.session.formData.email,
     password: hashPw
   });
 
@@ -62,12 +63,12 @@ try {
   if (await mailer(user.email, subject, content))
     throw new Error("An error occurred while trying to send the mail, please retry");
 
-  req.flash("success", "Account created successfully, please check your emails to confirm your account");
-  return res.status(200).redirect("/Account");
+  //req.flash("success", "Account created successfully, please check your emails to confirm your account");
+  return res.status(200).json({error: false, message: "Account created successfully, please check your emails to confirm your account"});
 } catch (err) {
   console.log("ERROR REGISTER:", err);
-  req.flash("warning", err.message);
-  return res.status(400).redirect("/Account");
+  //req.flash("warning", err.message);
+  return res.status(200).json({error: true, message: err.message});
 }});
 
 router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
