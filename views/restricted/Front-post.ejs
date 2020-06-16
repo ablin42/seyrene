@@ -12,7 +12,7 @@
                             <label for="upload<%= index %>" class="filebtn">Choisir une image</label>
                             <input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);">
                         </div>
-                        <img class="w-100" id="image<%= index %>" src="http://localhost:8089/api/front/image/<%= locals.front[index]._id %>" alt="uploadedImg" data-uploaded="true">
+                        <img class="w-100" id="image<%= index %>" src="/api/front/image/<%= locals.front[index]._id %>" alt="uploadedImg" data-uploaded="true">
                         <div class="form-group text-center">
                             <button id="delete<%= index %>" onclick="deleteImage(this, event);" class="delbtn">SUPPRIMER</button>
                         </div>
@@ -67,6 +67,6 @@ window.onload = function () {
     }
 }
 </script>
-<script src="frontScripts.js"></script>
+<script src="/scripts/frontScripts.js"></script>
   
 <% include ../partials/footer %>

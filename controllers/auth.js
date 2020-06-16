@@ -13,7 +13,7 @@ const Token = require("../models/VerificationToken");
 const { ROLE, setUser, notLoggedUser, authUser, authRole} = require("./helpers/verifySession");
 const { checkCaptcha } = require("./helpers/captcha");
 
-require("dotenv/config");
+require('dotenv').config()
 
 router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async (req, res) => {
 try {
@@ -59,7 +59,7 @@ try {
 
   // Send account confirmation mail to user
   let subject = `Account Verification Token for Maral`;
-  let content = `Hello,\n\n Please verify your account by following the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
+  let content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
   if (await mailer(user.email, subject, content))
     throw new Error("An error occurred while trying to send the mail, please retry");
 
@@ -97,7 +97,7 @@ try {
 
   // Check if user is verified
   if (!user.isVerified) {
-    request.post("http://127.0.0.1:8089/api/auth/resend",{json: { email: req.body.email }}, err => {
+    request.post(`${process.env.BASEURL}/api/auth/resend`,{json: { email: req.body.email }}, err => {
       if (err)
         throw new Error("An error occurred while sending your validation token, please try again");
     });
@@ -188,7 +188,7 @@ try {
     throw new Error("An error occurred while saving your token, please try again");
 
   let subject = `Account Verification Token for Maral`;
-  let content = `Hello,\n\n Please verify your account by clicking the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
+  let content = `Hello,\n\n Please verify your account by clicking the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
   if (await mailer(user.email, subject, content))
     throw new Error("An error occurred while sending your the email, please try again");
 

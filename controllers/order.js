@@ -17,6 +17,7 @@ const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const format = require("date-format");
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+require('dotenv').config();
 
 const toTitleCase = (phrase) => {
     let arr = phrase.toLowerCase().split(' ');
@@ -138,7 +139,7 @@ async function createPwintyOrder(order, req) {
         throw new Error("We cannot find your country ISO code, please contact us if the error persist");
     let options = {
         method: 'POST',
-        uri : `http://localhost:8089/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders
+        uri : `${process.env.BASEURL}/api/pwinty/orders/create`,//${API_URL}/v3.0/Orders
         body: {
             merchantOrderId: order._id,
             recipientName: order.firstname + " " + order.lastname,
@@ -164,7 +165,7 @@ async function createPwintyOrder(order, req) {
             item.elements.forEach((product, i) => {
                 let obj = {
                     "sku" : product.attributes.SKU,
-                    "url" : `http://localhost:8089/api/image/main/Shop/${item.attributes._id}`, 
+                    "url" : `${process.env.BASEURL}/api/image/main/Shop/${item.attributes._id}`, 
                     "sizing" : "crop", // idk yet // resize for canvas
                     "copies" : product.qty,
                     "attributes" : ""
@@ -176,14 +177,14 @@ async function createPwintyOrder(order, req) {
           }
       })
       options.body = body;
-      options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/images/batch`;
+      options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/images/batch`;
 
       response = await rp(options);
       console.log(response)
 
       if (response.statusCode === 200) {
           console.log("products and images added to order");
-          options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/status`;
+          options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/status`;
           options.method = "GET";   
 
           response = await rp(options);
@@ -191,12 +192,12 @@ async function createPwintyOrder(order, req) {
 
           if (response.statusCode === 200) {
               if (response.data.isValid === true) { //////////////////////////////////////
-                options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}`;
+                options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}`;
                 response = await rp(options);
                 console.log(response, "xX")
 
                 console.log("order is valid");
-                options.uri = `http://localhost:8089/api/pwinty/orders/${pwintyOrderId}/submit`;
+                options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/submit`;
                 options.method = "POST";
                 options.body = { status: "Submitted" };// Cancelled, AwaitingPayment or Submitted.
 
@@ -233,14 +234,14 @@ async function submitOrder(order, req) {
     
     // Send mails
     let subject = `New Order #${order._id}`;
-    let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+    let content = `To see the order, please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
     if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
         throw new Error("An error occurred while trying to send the mail, please retry");
 
     var [err, user] = await utils.to(User.findById(order._userId));
     if (err || user == null)
         throw new Error("An error occurred while finding your user account, please try again");
-    content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+    content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
     if (await mailer(user.email, subject, content))
         throw new Error("An error occurred while trying to send the mail, please retry");
 
@@ -375,7 +376,7 @@ try {
 
     // Send mails
     let subject = `Updated Order #${order._id}`;
-    let content = `You updated an order, to see the order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+    let content = `You updated an order, to see the order, please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
     if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
         throw new Error("An error occurred while trying to send the mail, please retry");
 
@@ -383,7 +384,7 @@ try {
     if (err || user == null)
         throw new Error("An error occurred while finding your user account, please try again");
 
-    content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+    content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
     if (await mailer(user.email, subject, content))
         throw new Error("An error occurred while trying to send the mail, please retry");
 
@@ -397,7 +398,7 @@ try {
 
 async function refundStripe(req, chargeId, orderId) {
     let options = {
-        uri: `http://localhost:8089/api/stripe/refund/${orderId}`,
+        uri: `${process.env.BASEURL}/api/stripe/refund/${orderId}`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -455,7 +456,7 @@ try {
         } else {
             let options = {
                 method: 'GET',
-                uri : `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}`,
+                uri : `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}`,
                 body: {},
                 json: true
             }
@@ -463,7 +464,7 @@ try {
             if (response.statusCode === 200) {
                 if (response.data.canCancel === true) {
                     options.method = "POST";
-                    options.uri =  `http://localhost:8089/api/pwinty/orders/${order.pwintyOrderId}/submit`;
+                    options.uri =  `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}/submit`;
                     options.body = {status: "Cancelled"};
 
                     response = await rp(options);
@@ -485,7 +486,7 @@ try {
 
     // Send mails
     let subject = `Cancelled Order #${order._id}`;
-    let content = `To see the cancelled order, please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+    let content = `To see the cancelled order, please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
     if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
         throw new Error("An error occurred while trying to send the mail, please retry");
 
@@ -493,7 +494,7 @@ try {
     if (err || user == null)
         throw new Error("An error occurred while finding your user account, please try again");
 
-    content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+    content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
     if (await mailer(user.email, subject, content))
         throw new Error("An error occurred while trying to send the mail, please retry");
 

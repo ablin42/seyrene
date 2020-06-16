@@ -6,7 +6,7 @@ const { vContact } = require("./validators/vContact");
 const { setUser } = require("./helpers/verifySession");
 const { checkCaptcha } = require("./helpers/captcha");
 const mailer = require("./helpers/mailer");
-require("dotenv/config");
+require('dotenv').config()
 
 // Send us a mail
 router.post("/", vContact, setUser, checkCaptcha, async (req, res) => {

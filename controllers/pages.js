@@ -14,7 +14,7 @@ const Gallery = require("../models/Gallery");
 const DeliveryInfo = require("../models/DeliveryInfo");
 const PwToken = require("../models/PasswordToken");
 const Cart = require("../models/Cart");
-require("dotenv/config");
+require('dotenv').config();
 
 const toTitleCase = (phrase) => {
   let arr = phrase.toLowerCase().split(' ');
@@ -49,7 +49,7 @@ try {
   if (req.user) 
     obj.user = req.user
 
-  obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/"));
+  obj.front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
   if (obj.front.length <= 0) 
     obj.front = undefined;
    
@@ -66,7 +66,7 @@ try {
   if (req.user) 
     obj.user = req.user;
 
-  obj.galleries = JSON.parse(await rp("http://127.0.0.1:8089/api/gallery/"));
+  obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/`));
   if (obj.galleries.error) 
     throw new Error(obj.galleries.message);
   if (obj.galleries.length === 0)
@@ -86,9 +86,9 @@ try {
   if (req.user) 
     obj.user = req.user
 
-  let url = `http://127.0.0.1:8089/api/gallery/`;
+  let url = `${process.env.BASEURL}/api/gallery/`;
   if (req.query.t) {
-    url = `http://127.0.0.1:8089/api/gallery/tags?t=${req.query.t}`;
+    url = `${process.env.BASEURL}/api/gallery/tags?t=${req.query.t}`;
     obj.tags = req.query.t;
   }
 
@@ -170,7 +170,7 @@ try {
     else 
         throw new Error("We cannot find your country ISO code, please contact us if the error persist");
     let options = {
-      uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
+      uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -258,7 +258,7 @@ try {
   if (req.user)
     obj.user = req.user;
 
-  obj.blogs = JSON.parse(await rp("http://127.0.0.1:8089/api/blog/")); //maybe better save in object check error and if no error -> store value in obj.blogs
+  obj.blogs = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/`)); //maybe better save in object check error and if no error -> store value in obj.blogs
   if (obj.blogs.error) 
     throw new Error(obj.blogs.message);
 
@@ -296,11 +296,11 @@ try {
   if (req.user)
     obj.user = req.user;
 
-  obj.original = JSON.parse(await rp("http://127.0.0.1:8089/api/shop/")); //same as /About
+  obj.original = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/`)); //same as /About
   if (obj.original.error) 
     throw new Error(obj.original.message);
 
-  obj.print = JSON.parse(await rp("http://127.0.0.1:8089/api/shop?tab=print"));
+  obj.print = JSON.parse(await rp(`${process.env.BASEURL}/api/shop?tab=print`));
   if (obj.print.error) 
     throw new Error(obj.print.message);
   if (obj.original.length <= 1 && obj.print.length <= 1)
@@ -343,7 +343,7 @@ try {
 
   let options = {
     method: "GET",
-    uri: `http://127.0.0.1:8089/api/order/${req.params.id}`,
+    uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
     headers: {cookie: req.headers.cookie},
     json: true
   }
@@ -405,11 +405,11 @@ try {
   if (req.user)
     obj.user = req.user;
 
-  obj.galleries = JSON.parse(await rp(`http://127.0.0.1:8089/api/gallery/single/${id}`)); // like /About
+  obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/single/${id}`)); // like /About
   if (obj.galleries.error) 
     throw new Error(obj.galleries.message);
 
-  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Gallery/${id}`)); // like /About
+  obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${id}`)); // like /About
   if (obj.img.error) 
     throw new Error(obj.img.error);
 
@@ -428,12 +428,12 @@ try {
   if (req.user)
     obj.user = req.user;
 
-  obj.shopItem = JSON.parse(await rp(`http://127.0.0.1:8089/api/shop/single/${id}`)); // like /About
+  obj.shopItem = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/single/${id}`)); // like /About
   if (obj.shopItem.error) 
     throw new Error(obj.shopItem.message);
   obj.shopItem.price = formatter.format(obj.shopItem.price).substr(2);
 
-  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Shop/${id}`)); // like /About
+  obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${id}`)); // like /About
   if (obj.img.error) 
     throw new Error(obj.img.error);
 
@@ -452,7 +452,7 @@ try {
   if (req.user)
     obj.user = req.user;
 
-  obj.blogs = JSON.parse(await rp(`http://127.0.0.1:8089/api/blog/single/${id}`)); // like /About
+  obj.blogs = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/single/${id}`)); // like /About
   if (obj.blogs.error) 
     throw new Error(obj.blogs.message);
 
@@ -481,7 +481,7 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 try {
   let obj = { active: "Update Homepage", user: req.user };
 
-  obj.front = JSON.parse(await rp("http://127.0.0.1:8089/api/front/")); // like /About
+  obj.front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`)); // like /About
   if (obj.front.length <= 0) 
     obj.front = undefined;
 
@@ -498,7 +498,7 @@ try {
 
   let options = {
     method: "GET",
-    uri: "http://localhost:8089/api/order/",
+    uri: `${process.env.BASEURL}/api/order/`,
     headers: {
       cookie: req.headers.cookie
     },
@@ -525,7 +525,7 @@ try {
   
   let options = {
     method: "GET",
-    uri: `http://127.0.0.1:8089/api/order/${req.params.id}`,
+    uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
     headers: {cookie: req.headers.cookie},
     json: true
   }
@@ -599,7 +599,7 @@ try {
     throw new Error("An error occurred while fetching the gallery item");
   obj.gallery = result;
 
-  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Gallery/${req.params.galleryId}`));
+  obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${req.params.galleryId}`));
   if (obj.img.error) 
     throw new Error(obj.img.error);
 
@@ -631,7 +631,7 @@ try {
     throw new Error("An error occurred while fetching the shop item");
   obj.shop = result;
 
-  obj.img = JSON.parse(await rp(`http://127.0.0.1:8089/api/image/Shop/${req.params.shopId}`));
+  obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${req.params.shopId}`));
   if (obj.img.error) 
     throw new Error(obj.img.error);
 

@@ -22,7 +22,7 @@ function handleEmptiness () {
 /*
 function checkoutCaller(isLogged, isDelivery) {
   if (isLogged === "") {
-    window.location.href = "http://localhost:8089/Account"; //need req message
+    window.location.href = "/Account"; //need req message
   } else {
     if (isDelivery === "true") {
       // fetch total price from API
@@ -64,7 +64,7 @@ function checkoutCaller(isLogged, isDelivery) {
 
 async function cartAdd(itemId, caller) {
   cooldownBtn(caller, 1500);
-  await fetch(`http://localhost:8089/api/cart/add/${itemId}`, {
+  await fetch(`/api/cart/add/${itemId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -109,7 +109,7 @@ async function cartAdd(itemId, caller) {
 
 async function cartDel(itemId, caller) { ///////////////////////////always delete since max qty is 1
   cooldownBtn(caller, 1500);
-  await fetch(`http://localhost:8089/api/cart/del/${itemId}`, {
+  await fetch(`/api/cart/del/${itemId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -220,7 +220,7 @@ try {
     PWINTY_DATA[referenceId].attributes.SKU = undefined;
     let price = PWINTY_DATA[referenceId].price;
 
-    await fetch(`http://localhost:8089/api/cart/del/pwinty/${itemId}`, {
+    await fetch(`/api/cart/del/pwinty/${itemId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -287,7 +287,7 @@ try {
     let price = PWINTY_DATA[referenceId].price;
 
     if (Number.isInteger(qty) && qty >= 0) {
-      await fetch(`http://localhost:8089/api/cart/update/pwinty/${itemId}/${qty}`, {
+      await fetch(`/api/cart/update/pwinty/${itemId}/${qty}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

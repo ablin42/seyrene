@@ -9,6 +9,7 @@ const Gallery = require('../models/Gallery');
 const Shop = require('../models/Shop');
 const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
+require('dotenv').config();
 
 router.post('/create-intent', setUser, authUser, async (req, res) => { 
 try {
@@ -38,7 +39,7 @@ try {
                 return res.status(200).send({error: true, message: err.message});
 
             let options = {
-                uri: `http://localhost:8089/api/order/initialize`,
+                uri: `${process.env.BASEURL}/api/order/initialize`,
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ async function infiniteBlogs() {
     page = 1 + Math.floor(nbItem / 6),
     loader = $("#loader");
   loader.css("display", "block");
-  await fetch(`http://127.0.0.1:8089/api/blog?page=${page}`)
+  await fetch(`/api/blog?page=${page}`)
     .then(function(response) {
       response.json().then(function(data) {
         if (!data.error) {

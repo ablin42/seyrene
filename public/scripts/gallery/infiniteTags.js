@@ -2,14 +2,14 @@ async function infiniteTags() {
     let nbItem = $(".card").length;
         page = 1 + Math.floor(nbItem / 6),
         loader = $("#loader"),
-        urlToFetch = `http://127.0.0.1:8089/api/gallery/tags?page=${page}`,
+        urlToFetch = `/api/gallery/tags?page=${page}`,
         parsedURL = new URL(window.location.href),
         tagsParam = parsedURL.searchParams.get("t");
     loader.css("display","block");
     if (tagsParam)
         urlToFetch += `&t=${tagsParam}`;
     else 
-        urlToFetch = `http://127.0.0.1:8089/api/gallery?page=${page}`;
+        urlToFetch = `/api/gallery?page=${page}`;
     await fetch(urlToFetch)
     .then(function(response) {
         response.json().then(function(data) {

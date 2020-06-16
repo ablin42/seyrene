@@ -2,7 +2,7 @@ async function infiniteShopItems(tab) {
   let nbItem = $(`#${tab} > .card`).length,
     page = 1 + Math.floor(nbItem / 3),
     loader = $("#loader"),
-    url = `http://127.0.0.1:8089/api/shop?page=${page}&tab=${tab}`;
+    url = `/api/shop?page=${page}&tab=${tab}`;
   loader.css("display", "block");
   await fetch(url)
     .then(function(response) {

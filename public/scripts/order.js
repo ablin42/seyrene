@@ -11,7 +11,7 @@ function closeDialog () {
 
 async function confirmAction(orderId) {
   closeDialog ();
-  await fetch(`http://localhost:8089/api/order/cancel/${orderId}`, {
+  await fetch(`/api/order/cancel/${orderId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ async function infiniteOrders() {
       page = 1 + Math.floor(nbItem / 20),
       loader = $("#loader");
   loader.css("display","block");
-  await fetch(`http://127.0.0.1:8089/api/order?page=${page}`)
+  await fetch(`/api/order?page=${page}`)
   .then(function(response) {
       response.json().then(function(data) {
           if (!data.error) {

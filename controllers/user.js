@@ -15,7 +15,7 @@ const User = require("../models/User");
 const Token = require("../models/VerificationToken");
 const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
-require("dotenv/config");
+require('dotenv').config()
 
 const toTitleCase = (phrase) => {
   let arr = phrase.toLowerCase().split(' ');
@@ -64,7 +64,7 @@ try {
   }
 
   const subject = "Password Reset Token for Maral",
-        content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n http:\/\/127.0.0.1:8089\/resetpw\/${pwToken._id}\/${token}`;
+        content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n ${process.env.BASEURL}/resetpw/${pwToken._id}/${token}`;
         
   if (await mailer(req.body.email, subject, content))
     throw new Error("An error occurred while send the e-mail, please try again");
@@ -186,7 +186,7 @@ try {
       
   //send mail
   let subject = `Account Verification Token for Maral`,
-    content = `Hello,\n\n Please verify your account by following the link: \nhttp:\/\/127.0.0.1:8089\/api\/auth\/confirmation\/${vToken}`;
+    content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
   if (await mailer(newEmail, subject, content))
     throw new Error("An error occurred while trying to send the mail, please retry");
 

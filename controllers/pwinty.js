@@ -9,10 +9,11 @@ const Order = require("../models/Order");
 const Token = require("../models/VerificationToken");
 const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
-require("dotenv/config");
+require('dotenv').config()
 const Money = require("money-exchange");
 const fx = new Money();
 fx.init();
+require('dotenv').config();
 
 var formatter = new Intl.NumberFormat("de-DE", {
     style: "currency",
@@ -241,7 +242,7 @@ try {
 
         // Send mails
         let subject = `Updated Order #${order._id}`;
-        let content = `You order status has been updated, to see the order please follow the link below using your administrator account: <hr/><a href="http://localhost:8089/Admin/Order/${order._id}">CLICK HERE</a>`;
+        let content = `You order status has been updated, to see the order please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
         if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
             throw new Error("An error occurred while trying to send the mail, please retry");
         
@@ -250,7 +251,7 @@ try {
         if (err || user == null)
             throw new Error("An error occurred while finding your user account, please try again later");
 
-        content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="http://localhost:8089/Order/${order._id}">CLICK HERE</a>`;
+        content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
         if (await mailer(user.email, subject, content))
             throw new Error("An error occurred while trying to send the mail, please retry");
 

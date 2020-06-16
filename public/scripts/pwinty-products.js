@@ -45,7 +45,7 @@ async function checkSKU(SKU) {
 }
 
 async function checkIsDelivery(SKU) {
-    await fetch(`http://localhost:8089/api/pwinty/pricing/FR`, {
+    await fetch(`/api/pwinty/pricing/FR`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -619,7 +619,7 @@ class PwintyObject {
 
         
         //fetch delivery pricing
-        await fetch(`http://localhost:8089/api/pwinty/pricing/${countryCode}`, {
+        await fetch(`/api/pwinty/pricing/${countryCode}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -636,7 +636,7 @@ class PwintyObject {
                 addAlert(alert, "#header");
                 return;
             } else {
-                await fetch(`http://localhost:8089/api/cart/add/pwinty/${itemId}`, {
+                await fetch(`/api/cart/add/pwinty/${itemId}`, {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
@@ -673,7 +673,7 @@ class PwintyObject {
     }
 
     async fetchCountryCode() {
-        let countryCode = await fetch(`http://localhost:8089/api/user/countryCode/`, {
+        let countryCode = await fetch(`/api/user/countryCode/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

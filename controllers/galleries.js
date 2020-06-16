@@ -12,6 +12,8 @@ const Image = require("../models/Image");
 const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
+require('dotenv').config();
+
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -208,7 +210,7 @@ try {
   if (err)
     throw new Error("An error occurred while deleting the item, please try again");
 
-  rp(`http://localhost:8089/api/image/Gallery/${id}`)
+  rp(`${process.env.BASEURL}/api/image/Gallery/${id}`)
   .then(async (response) => {
     parsed = JSON.parse(response);
     for (let i = 0; i < parsed.length; i++) {

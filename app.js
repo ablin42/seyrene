@@ -8,7 +8,7 @@ const flash = require("express-flash");
 const fs = require('fs');
 const expressSanitizer = require("express-sanitizer");
 const filter = require("content-filter");
-require("dotenv/config");
+require('dotenv').config();
 
 const { setUser } = require("./controllers/helpers/verifySession");
 const stripeSecret = process.env.STRIPE_SECRET;

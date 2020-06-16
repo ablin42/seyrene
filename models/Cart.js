@@ -1,4 +1,5 @@
 let rp = require("request-promise");
+require('dotenv').config();
 
 module.exports = function Cart(oldCart) {
     this.items = oldCart.items || {};
@@ -214,7 +215,7 @@ module.exports = function Cart(oldCart) {
             
         let countryCode = await this.fetchCountryCode();
         let options = {
-            uri: `http://localhost:8089/api/pwinty/pricing/${countryCode}`,
+            uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
@@ -247,7 +248,7 @@ module.exports = function Cart(oldCart) {
             credentials: "include",
             mode: "same-origin"
         }
-        let response = await rp(`http://localhost:8089/api/user/countryCode/`, options);
+        let response = await rp(`${process.env.BASEURL}/api/user/countryCode/`, options);
         if (response.error === false)
             return response.countryCode;
         return "FR";
