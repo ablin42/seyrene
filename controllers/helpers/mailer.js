@@ -8,14 +8,14 @@ module.exports =  async function sendValidationMail(email, subject, text) {
             user: process.env.SERVER_EMAIL,
             pass: process.env.SERVER_EMAILPW
         }
-    })
+    });
 
     let mailOptions = {
         from: process.env.SERVER_EMAIL,
         to: email,
         subject: subject,
         text: text
-    }
+    };
 
     transporter.sendMail(mailOptions, (err) => {
         if (err) {
@@ -24,6 +24,7 @@ module.exports =  async function sendValidationMail(email, subject, text) {
         } else {
             console.log("MAIL SENT SUCCESSFULLY");
         }
-    })
+    });
+
     return false;
-}
+};

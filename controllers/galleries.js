@@ -9,22 +9,22 @@ const rp = require("request-promise");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 require('dotenv').config();
 
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/img/upload/')
+    cb(null, './public/img/upload/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname))
+    cb(null, Date.now() + path.extname(file.originalname));
   }
-})
+});
 
-upload = multer({
+const upload = multer({
   storage: storage,
   limits: {
     fileSize: 100000000
@@ -114,6 +114,7 @@ router.get("/Tags", setUser, async (req, res) => {
 //sanitize input
 router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
+  let err, result, savedImage;
   const vResult = validationResult(req);
   if (!vResult.isEmpty()) {
     vResult.errors.forEach(item => {
@@ -125,7 +126,7 @@ try {
   obj.tags = gHelpers.parseTags(req.body.tags);
 
   const gallery = new Gallery(obj);
-  var [err, result] = await utils.to(gallery.save());
+  [err, result] = await utils.to(gallery.save());
   if (err)
     throw new Error("Something went wrong while uploading your file");
       
@@ -142,10 +143,10 @@ try {
     let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
     fs.rename(oldpath, newpath, (err) => {
       if (err)
-        throw new Error(err)
-    })
+        throw new Error(err);
+    });
     image.path = newpath;
-    var [err, savedImage] = await utils.to(image.save());
+    [err, savedImage] = await utils.to(image.save());
     if (err)
       throw new Error("Something went wrong while uploading your image");
   }
@@ -160,6 +161,7 @@ try {
 //sanitize :id (and input)
 router.post("/patch/:id", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
+  let err, savedImage, result;
   const vResult = validationResult(req);
   if (!vResult.isEmpty()) {
     vResult.errors.forEach(item => {
@@ -182,15 +184,15 @@ try {
     image.path = newpath;
     fs.rename(oldpath, newpath, (err) => {
       if (err)
-        throw new Error(err)
-    })
+        throw new Error(err);
+    });
 
-    var [err, savedImage] = await utils.to(image.save());
+    [err, savedImage] = await utils.to(image.save());
     if (err) 
       throw new Error("Something went wrong while uploading your image");
   }
 
-  var [err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
+  [err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
   if (err) 
     throw new Error("Something went wrong while updating your file");
 
@@ -206,17 +208,17 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 try {
   let id = req.params.id; //sanitize
   
-  var [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
+  let [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
   if (err)
     throw new Error("An error occurred while deleting the item, please try again");
 
   rp(`${process.env.BASEURL}/api/image/Gallery/${id}`)
   .then(async (response) => {
-    parsed = JSON.parse(response);
+    let parsed = JSON.parse(response);
     for (let i = 0; i < parsed.length; i++) {
       fs.unlink(parsed[i].path, (err) => {
         if (err) throw new Error("An error occurred while deleting your image");
-      })
+      });
       await Image.deleteOne({ _id: parsed[i]._id });
     }
   })

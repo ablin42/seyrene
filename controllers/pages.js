@@ -1,8 +1,8 @@
 const express = require("express");
-const path = require("path");
 const rp = require("request-promise");
 const format = require("date-format");
 const country = require('country-list-js');
+const router = express.Router();
 
 const { ROLE, setUser, notLoggedUser, authUser, authRole, setDelivery, isDelivery, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
@@ -15,6 +15,7 @@ const DeliveryInfo = require("../models/DeliveryInfo");
 const PwToken = require("../models/PasswordToken");
 const Cart = require("../models/Cart");
 require('dotenv').config();
+const stripePublic = process.env.STRIPE_PUBLIC;
 
 const toTitleCase = (phrase) => {
   let arr = phrase.toLowerCase().split(' ');
@@ -25,20 +26,16 @@ const toTitleCase = (phrase) => {
       if (item === "and")
           obj = "and";
       parsed.push(obj);
-  })
+  });
   
   return parsed.join(' ');
-}
+};
 
 //var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat("de-DE", {
   style: "currency",
   currency: "EUR"
 });
-const stripeSecret = process.env.STRIPE_SECRET;
-const stripePublic = process.env.STRIPE_PUBLIC;
-
-const router = express.Router();
 
 /* MAIN ROUTES */
 
@@ -47,7 +44,7 @@ try {
   let obj = { active: "Home"};
 
   if (req.user) 
-    obj.user = req.user
+    obj.user = req.user;
 
   obj.front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
   if (obj.front.length <= 0) 
@@ -84,7 +81,7 @@ try {
   let obj = {active: "Tags search"};
 
   if (req.user) 
-    obj.user = req.user
+    obj.user = req.user;
 
   let url = `${process.env.BASEURL}/api/gallery/`;
   if (req.query.t) {
@@ -124,7 +121,7 @@ try {
   if (req.session.cart) {
     let cart = new Cart(req.session.cart);
     obj.products = [];
-    itemArr = cart.generateArray();
+    let itemArr = cart.generateArray();
      
     itemArr.forEach(item => {
       if (item.attributes && item.attributes.isUnique) {
@@ -152,13 +149,13 @@ try {
               details: ""
             };
             let details = "";
-            Object.keys(element.attributes).forEach((attribute, index) => {
+            Object.keys(element.attributes).forEach((attribute) => {
               details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
-            })
+            });
             items.details = details.substr(0, (details.length - 3));
             obj.products.push(items);
             }
-          })
+          });
         }
     });
     obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
@@ -178,7 +175,8 @@ try {
       },
       body: {items: cart.generatePwintyArray()},
       json: true
-    }
+    };
+
     obj.deliveryPrice = await rp(options);
     if (obj.deliveryPrice.error) 
       throw new Error(obj.deliveryPrice.message);
@@ -218,6 +216,7 @@ try {
 
 router.get("/User", setUser, authUser, async (req, res) => {
 try {
+  let err, result, orders;
   let obj = {};
   obj = await User.findOne({ _id: req.user._id });
   obj.user = req.user;
@@ -225,14 +224,14 @@ try {
   obj.active = "User";
   obj.delivery = false; /////////////////?
 
-  var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+  [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
   if (err)
     throw new Error("An error occurred while looking for your delivery informations, please retry");
 
   if (result != null) 
     obj.delivery = result;
 
-  var [err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
+  [err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
   if (err)
     throw new Error("An error occurred while looking for your orders informations, please retry");
 
@@ -346,7 +345,7 @@ try {
     uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
     headers: {cookie: req.headers.cookie},
     json: true
-  }
+  };
     
   obj.order = await rp(options); //same as /About
   if (obj.order.error) 
@@ -380,13 +379,13 @@ try {
             details: ""
           };
           let details = "";
-          Object.keys(element.attributes).forEach((attribute, index) => {
+          Object.keys(element.attributes).forEach((attribute) => {
             details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
-          })
+          });
           items.details = details.substr(0, (details.length - 3));
           obj.products.push(items);
         }
-      })
+      });
     }
   });
 
@@ -503,7 +502,8 @@ try {
       cookie: req.headers.cookie
     },
     json: true
-  }
+  };
+
   let result = await rp(options);
   if (typeof result === "string") 
     throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
@@ -528,7 +528,7 @@ try {
     uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
     headers: {cookie: req.headers.cookie},
     json: true
-  }
+  };
     
   obj.order = await rp(options); //same as /About
   if (obj.order.error) 
@@ -562,13 +562,13 @@ try {
             details: ""
           };
           let details = "";
-          Object.keys(element.attributes).forEach((attribute, index) => {
+          Object.keys(element.attributes).forEach((attribute) => {
             details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
-          })
+          });
           items.details = details.substr(0, (details.length - 3));
           obj.products.push(items);
         }
-      })
+      });
     }
   });
 

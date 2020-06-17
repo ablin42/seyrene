@@ -24,7 +24,7 @@ function deleteImage (item, e) {
                 let alert = createAlertNode(data.msg, "success");
                 addAlert(alert, "#header");
             }
-        })
+        });
     }
     else {
         let alert = createAlertNode(" Image was successfully deleted!", "success");
@@ -52,7 +52,7 @@ function readURL(input) {
             $(targetDeleteId).attr('style', "display: inline-block");
             $(targetUploadId).attr('style', "display: block");
             $(targetBtnId).attr('style', "display: none");
-        }
+        };
         reader.readAsDataURL(input.files[0]);
     } 
 }
@@ -78,5 +78,5 @@ async function postFront(e, form) {
             let alert = createAlertNode(data.msg, "success");
             addAlert(alert, "#header");
         }
-    })
+    });
 }

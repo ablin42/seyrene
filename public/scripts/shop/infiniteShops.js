@@ -63,16 +63,12 @@ async function infiniteShopItems(tab) {
 }
 
 $(window).scroll(function() {
-  val1 = Math.ceil($(window).scrollTop() + $(window).height());
-  val2 = $(document).height();
+  const val1 = Math.ceil($(window).scrollTop() + $(window).height());
+  const val2 = $(document).height();
   let tab = "original";
-  if (
-    document
-      .getElementById("infinitebtn")
-      .getAttribute("onclick")
-      .indexOf("original") === -1
-  )
-  tab = "print";
+  
+  if (document.getElementById("infinitebtn").getAttribute("onclick").indexOf("original") === -1)
+    tab = "print";
   if (val1 >= val2) {
     infiniteShopItems(tab);
   }

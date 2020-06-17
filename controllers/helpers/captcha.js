@@ -16,9 +16,9 @@ async function checkCaptcha(req, res, next) {
             return res.status(200).json({error: true, message: "Failed captcha verification, please try again"});
         
         next();
-    })
+    });
 }
 
 module.exports = {
     checkCaptcha
-}
+};

@@ -1,23 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
-const Image = require('../models/Image');
 const Gallery = require('../models/Gallery');
 const Shop = require('../models/Shop');
-const Order = require('../models/Order');
-const User = require('../models/User');
-const DeliveryInfo = require('../models/DeliveryInfo');
-const utils = require('./helpers/utils');
-const mailer = require('./helpers/mailer');
-const rp = require('request-promise');
 
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
+const { setUser } = require('./helpers/verifySession');
 require('dotenv/config');
-
-//var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
-const stripeSecret = process.env.STRIPE_SECRET;
-const stripe = require('stripe')(stripeSecret);
 
 router.get('/add/:itemId', setUser, async (req, res) => {
 try {
@@ -41,14 +30,13 @@ try {
         let cartCpy = JSON.parse(JSON.stringify(cart));
         cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
         cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
-        console.log(cartCpy.totalPrice,  cartCpy.items[product.id].price)
 
         return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy});
-    })
+    });
 } catch (err) {
     console.log("ADD TO CART ERROR");
-    return res.status(400).json({"error": true, "msg": err.message})
-}})
+    return res.status(400).json({"error": true, "msg": err.message});
+}});
 
 router.get('/del/:itemId', setUser, async (req, res) => {
 try {
@@ -66,11 +54,11 @@ try {
             cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
         return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy});
-    })
+    });
 } catch (err) {
     console.log("DELETE FROM CART ERROR");
-    return res.status(400).json({"error": true, "msg": err.message})
-}})
+    return res.status(400).json({"error": true, "msg": err.message});
+}});
 
 router.post('/add/pwinty/:itemId', setUser, async (req, res) => {
 try {
@@ -80,7 +68,7 @@ try {
         SKU: req.body.SKU,
         price: req.body.price,
         attributes: req.body.attributes,
-    }
+    };
 
     Gallery.findById(productId, async (err, product) => {
         try {
@@ -101,13 +89,13 @@ try {
 
             return res.status(200).json({error: false, msg: "Item added to cart", cart: cartCpy, item: item}); //send curr item qty/price?
         } catch (err) {
-            return res.status(400).json({"error": true, "msg": err.message})
+            return res.status(400).json({"error": true, "msg": err.message});
         }
-    })
+    });
 } catch (err) {
     console.log("ADD TO CART ERROR");
-    return res.status(400).json({"error": true, "msg": err.message})
-}})
+    return res.status(400).json({"error": true, "msg": err.message});
+}});
 
 router.post('/update/pwinty/:itemId/:qty', setUser, async (req, res) => {
 try {
@@ -118,7 +106,7 @@ try {
         SKU: req.body.SKU,
         price: req.body.price,
         attributes: req.body.attributes,
-    }
+    };
 
     if (Number.isInteger(newQty) && (newQty >= 0 && newQty <= 99)) {
         Gallery.findById(productId, async (err, product) => {
@@ -139,15 +127,15 @@ try {
                     msg = "Item removed from cart";
                 return res.status(200).json({error: false, msg: msg, cart: cartCpy, item: item});
             } catch (err) {
-                return res.status(400).json({"error": true, "msg": err.message})
+                return res.status(400).json({"error": true, "msg": err.message});
             }
-        })
+        });
     } else
         throw new Error("Quantity for an item must be between 0 and 99");          
 } catch (err) {
     console.log("UPDATE CART ERROR");
-    return res.status(400).json({"error": true, "msg": err.message})
-}})
+    return res.status(400).json({"error": true, "msg": err.message});
+}});
 
 router.post('/del/pwinty/:itemId', setUser, async (req, res) => {
 try {
@@ -157,12 +145,12 @@ try {
         SKU: req.body.SKU,
         price: req.body.price,
         attributes: req.body.attributes,
-    }
+    };
             
-    Gallery.findById(productId, async (err, product) => {
+    Gallery.findById(productId, async (err) => {
         try {
             if (err)
-            return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
+                return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
             let item = await cart.pwintyDelete(data);
             req.session.cart = cart;
@@ -173,14 +161,14 @@ try {
             
             return res.status(200).json({error: false, msg: "Item removed from cart", cart: cartCpy, item: item});
         } catch (err) {
-            console.log(err)
-            return res.status(400).json({"error": true, "msg": err.message})
+            console.log(err);
+            return res.status(400).json({"error": true, "msg": err.message});
         }
-    })
+    });
 } catch (err) {
     console.log("DELETE FROM CART ERROR");
-    return res.status(400).json({"error": true, "msg": err.message})
-}})
+    return res.status(400).json({"error": true, "msg": err.message});
+}});
 
 router.get('/clear/:id', setUser, async (req, res) => {
 try {
@@ -194,7 +182,7 @@ try {
     console.log("CLEAR CART ERROR");
     req.flash("warning", err.message);
     return res.status(400).redirect('/');
-}})
+}});
 
 /*
 router.get('/totalprice', setUser, async (req, res) => {

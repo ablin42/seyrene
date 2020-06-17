@@ -10,13 +10,13 @@ const mailer = require("./helpers/mailer");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
-const { ROLE, setUser, notLoggedUser, authUser, authRole} = require("./helpers/verifySession");
+const { setUser, notLoggedUser, authUser } = require("./helpers/verifySession");
 const { checkCaptcha } = require("./helpers/captcha");
-
-require('dotenv').config()
+require('dotenv').config();
 
 router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async (req, res) => {
 try {
+  let err, result;
   req.session.formData = {
     name: req.body.name,
     email: req.body.email
@@ -49,7 +49,7 @@ try {
   });
 
   // Save User and validationToken to DB
-  var [err, result] = await utils.to(user.save());
+  [err, result] = await utils.to(user.save());
   if (err)
     throw new Error("An error occurred while creating your account, please try again");
 
@@ -134,15 +134,17 @@ try {
 // Confirm account with token
 router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
 try {
+  let err, token, user;
   const receivedToken = req.params.token; //sanitiwe
-  var [err, token] = await utils.to(Token.findOne({ token: receivedToken }));
+  
+  [err, token] = await utils.to(Token.findOne({ token: receivedToken }));
   if (err)
     throw new Error("An error occurred while looking for your token, please try again");
   if (!token)
     throw new Error("We were unable to find a valid token. Your token may have expired");
 
   // If we found a token, find a matching user
-  var [err, user] = await utils.to(User.findOne({ _id: token._userId }));
+  [err, user] = await utils.to(User.findOne({ _id: token._userId }));
   if (err)
     throw new Error("An error occurred while looking for your user account, please try again");
   if (!user) 
@@ -153,7 +155,7 @@ try {
 
   // Verify and save the user
   user.isVerified = true;
-  var [err, user] = await utils.to(user.save());
+  [err, user] = await utils.to(user.save());
   if (err) 
     throw new Error(err.message);
 
@@ -168,8 +170,10 @@ try {
 // Resend account confirmation token
 router.post("/resend", setUser, notLoggedUser, async (req, res) => {
 try {
+  let err, user, savedToken;
   const email = req.body.email; //sanitize
-  var [err, user] = await utils.to(User.findOne({ email: email }));
+  
+  [err, user] = await utils.to(User.findOne({ email: email }));
   // Check if an user exist with this email and check if his account is verified
   if (err)
     throw new Error("An error occurred while looking for you user account, please try again");
@@ -183,7 +187,7 @@ try {
   let token = new Token({ _userId: user._id, token: vToken });
 
   // Save the token
-  var [err, savedToken] = await utils.to(token.save());
+  [err, savedToken] = await utils.to(token.save());
   if (err)
     throw new Error("An error occurred while saving your token, please try again");
 

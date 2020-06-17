@@ -1,15 +1,17 @@
 async function infiniteTags() {
-    let nbItem = $(".card").length;
+    let nbItem = $(".card").length,
         page = 1 + Math.floor(nbItem / 6),
         loader = $("#loader"),
         urlToFetch = `/api/gallery/tags?page=${page}`,
         parsedURL = new URL(window.location.href),
         tagsParam = parsedURL.searchParams.get("t");
+
     loader.css("display","block");
     if (tagsParam)
         urlToFetch += `&t=${tagsParam}`;
     else 
         urlToFetch = `/api/gallery?page=${page}`;
+
     await fetch(urlToFetch)
     .then(function(response) {
         response.json().then(function(data) {
@@ -33,7 +35,7 @@ async function infiniteTags() {
     
                                 gallery.tags.forEach(tag => {
                                     toAppend += ` <a href="/Galerie/Tags?t=${tag}">#${tag}</a>`;
-                                })
+                                });
                                 toAppend += `   </div>
                                             <form action="/Galerie/${id}"><button class="blog-btn">Lire plus</button></form>
                                             </div></div>`;
@@ -54,18 +56,18 @@ async function infiniteTags() {
                 let alert = createAlertNode(data.message, "warning");
                 addAlert(alert, "#header");
             }
-        })
+        });
     })   
     .catch((err) => {
         let alert = createAlertNode(err.message, "warning");
         addAlert(alert, "#header");
-    })
+    });
     loader.css("display","none");
 }
 
 $(window).scroll(function() {
-    val1 = Math.ceil($(window).scrollTop() + $(window).height());
-    val2 = $(document).height();
+    const val1 = Math.ceil($(window).scrollTop() + $(window).height());
+    const val2 = $(document).height();
     if (val1 >= val2) {
         infiniteTags();
     }

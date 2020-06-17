@@ -80,7 +80,7 @@ async function cartAdd(itemId, caller) {
       let alertType = "info";
       if (response.error === false) {
         let totalQty = response.cart.totalQty;
-        console.log(totalQty)
+        console.log(totalQty);
         /*let totalPrice = response.cart.totalPrice;
         let rowId = document.getElementById(itemId);
 
@@ -180,11 +180,11 @@ try {
     })
     .then(res => {return res.json();})
     .then(function(response) {
-      console.log(response)
+      console.log(response);
         let alertType = "success";
         if (response.error === false) {
           let totalQty = response.cart.totalQty;
-          console.log(response.cart.price.totalIncludingTax, response.cart.totalPrice)
+          console.log(response.cart.price.totalIncludingTax, response.cart.totalPrice);
           let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(',', '.');
           let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
@@ -202,7 +202,7 @@ try {
     })
     .catch(err => {
       let alert = createAlertNode(err.message, "danger");
-        addAlert(alert, "#header");
+      addAlert(alert, "#header");
     });
   } else 
       throw new Error("Invalid item reference, please fresh the page");
@@ -267,7 +267,7 @@ try {
       addAlert(alert, "#header");
     })
     .catch(err => {
-      let alert = createAlertNode(response.msg, alertType);;
+      let alert = createAlertNode(response.msg, alertType);
       addAlert(alert, "#header");
     });
   } else 
@@ -325,7 +325,7 @@ try {
           else {
             if (!rowId.classList.contains("card")) {
               item.value = response.item.qty;// useless??
-              rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');;
+              rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(',', '.');
             }
           }
         } else {

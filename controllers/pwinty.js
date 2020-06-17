@@ -3,13 +3,9 @@ const router = express.Router();
 const rp = require("request-promise");
 
 const mailer = require("./helpers/mailer");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Order = require("../models/Order");
-const Token = require("../models/VerificationToken");
-const PwToken = require("../models/PasswordToken");
-const DeliveryInfo = require("../models/DeliveryInfo");
-require('dotenv').config()
 const Money = require("money-exchange");
 const fx = new Money();
 fx.init();
@@ -37,18 +33,19 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         json: true
-    }
+    };
 
     rp(options)
     .then((response) => {
-        console.log(response)
+        console.log(response);
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err)
+        console.log(err);
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY ORDERS LIST ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 
@@ -63,18 +60,19 @@ try {
         },
         body: req.body,
         json: true
-    }
+    };
 
     rp(options)
     .then((response) => {
-        console.log(response)
+        console.log(response);
         return res.status(200).json(response);
     })
     .catch((err) => {
         //console.log(err)
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY ORDER CREATE ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 
@@ -89,18 +87,19 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         json: true
-    }
+    };
 
     rp(options)
     .then((response) => {
-        console.log(response)
+        console.log(response);
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err.error)
+        console.log(err.error);
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY ORDER FETCH ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 
@@ -115,17 +114,18 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         json: true
-    }
+    };
 
     rp(options)
     .then((response) => {
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err.error)
+        console.log(err.error);
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY ORDER STATUS ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 
@@ -141,17 +141,18 @@ try {
         },
         body: {status: req.body.status},// Cancelled, AwaitingPayment or Submitted. //variable
         json: true
-    }
+    };
 
     rp(options)
     .then((response) => {
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err.error)
+        console.log(err.error);
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY ORDER SUBMIT ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 /* END ORDERS */
@@ -208,12 +209,12 @@ try {
         },
         body: req.body,
         json: true
-    }
+    };
 
     rp(options)
     .then((response) => {
         if (response.statusCode === 200) {
-            console.log(response)
+            console.log(response);
         } else 
             return res.status(200).json({ error: true, errordata: "XDDD" });
         return res.status(200).json(response);
@@ -221,22 +222,24 @@ try {
     .catch((err) => {
         console.log("IMAGE BATCH ERROR");
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY IMAGE BATCH ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 
 router.post("/callback/status", async (req, res) => {
 try {
-    console.log("api callback called")
+    let err, order, user;
+    console.log("api callback called");
     if (req.body.orderId && req.body.status) {
-        var [err, order] = await utils.to(Order.findOne({pwintyOrderId: req.body.orderId}));
-        console.log(err, order)
+        [err, order] = await utils.to(Order.findOne({pwintyOrderId: req.body.orderId}));
+        console.log(err, order);
         if (err || order == null)
             throw new Error("An error occurred while finding the order");
 
-        var [err, order] = await utils.to(Order.findOneAndUpdate({pwintyOrderId: req.body.orderId}, {$set:{status: req.body.status}}));
-        console.log(err, order)
+        [err, order] = await utils.to(Order.findOneAndUpdate({pwintyOrderId: req.body.orderId}, {$set:{status: req.body.status}}));
+        console.log(err, order);
         if (err || order == null)
             throw new Error("An error occurred while updating the order");
 
@@ -246,8 +249,8 @@ try {
         if (await mailer("ablin@byom.de", subject, content)) //maral.canvas@gmail.com
             throw new Error("An error occurred while trying to send the mail, please retry");
         
-        var [err, user] = await utils.to(Order.findOne({_userId: order._userId}));
-        console.log(err, user)
+        [err, user] = await utils.to(Order.findOne({_userId: order._userId}));
+        console.log(err, user);
         if (err || user == null)
             throw new Error("An error occurred while finding your user account, please try again later");
 
@@ -280,18 +283,19 @@ try {
             'X-Pwinty-REST-API-Key': APIKEY
         },
         json: true
-    }
+    };
     
     rp(options)
     .then((response) => {
-        console.log(response)
+        console.log(response);
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err)
+        console.log(err);
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY COUNTRIES ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 /* END COUNTRIES */
@@ -311,17 +315,19 @@ try {
             "skus": req.body.skus,
         },
         json: true
-    }
+    };
+
     rp(options)
     .then((response) => {
-        console.log(response)
+        console.log(response);
         return res.status(200).json(response);
     })
     .catch((err) => {
-        console.log(err)
+        console.log(err);
         return res.status(200).json({ error: true, errordata: err.error });
-    })
+    });
 } catch (err) {
+    console.log("PWINTY COUNTRYCODE ERROR:", err);
     return res.status(200).json({ message: err.message });
 }});
 
@@ -330,11 +336,10 @@ try {
     let countryCode = req.params.countryCode;
     let items = [];
 
-
     if (req.body.items) {
         req.body.items.forEach(item => {
             if (item && item.attributes && item.attributes.isUnique !== true) {
-                console.log(item.elements[0].attributes)
+                console.log(item.elements[0].attributes);
                 let obj = {
                     "sku": item.elements[0].attributes.SKU,
                     "quantity": item.elements[0].qty //need qty too (qty for elements with frame color diff not counted properly)
@@ -347,7 +352,7 @@ try {
                 };
                 items.push(obj);
             }
-        })
+        });
 
         let options = {
             method: 'POST',
@@ -358,7 +363,7 @@ try {
             },
             body: {"items": items},
             json: true
-        }
+        };
         
         rp(options)
         .then((response) => {
@@ -375,21 +380,22 @@ try {
                         "shippingPriceIncludingTax": formatter.format(fx.convert((shipmentOption.shippingPriceIncludingTax / 100), "GBP", "EUR")).substr(2),
                         "shippingPriceExcludingTax": formatter.format(fx.convert((shipmentOption.shippingPriceExcludingTax / 100), "GBP", "EUR")).substr(2),
                         "shipments": shipmentOption.shipments
-                    }
+                    };
+
                     return res.status(200).json({error: false, response: formatted});
                 }
-            })
+            });
             if (found === 0)
                 return res.status(200).json({error: false, response: []});
         })
         .catch((err) => {
-            console.log(err)
+            console.log(err);
             return res.status(200).json({ error: true, message: err.message });
-        })
+        });
     } else 
         throw new Error("We couldn't find the delivery price for this item, please try again");
 } catch (err) {
-    console.log(err)
+    console.log("PWINTY PRICING ERROR:", err);
     return res.status(200).json({error: true, message: err.message });
 }});
 /* END CATALOGUE */

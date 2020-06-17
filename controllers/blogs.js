@@ -1,17 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const { vBlog } = require("./validators/vBlog");
-const rp = require("request-promise");
 
 const Blog = require("../models/Blog");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const bHelpers = require("./helpers/blogHelpers");
 const utils = require("./helpers/utils");
 
 async function formatBlogData(blogs) {
   let arr = [];
   for (let i = 0; i < blogs.length; i++) {
-    let images = blogs[i].content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/)
+    let images = blogs[i].content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/);
     let obj = {
       _id: blogs[i]._id,
       title: blogs[i].title,
@@ -26,7 +25,7 @@ async function formatBlogData(blogs) {
       __v: blogs[i].__v
     };
     if (images && images.length > 1)
-      obj.thumbnail = images[0]
+      obj.thumbnail = images[0];
     arr.push(obj);
   }
   return arr;
@@ -52,13 +51,13 @@ try {
 // get a blog object
 router.get("/single/:blogId", setUser, async (req, res) => {
 try {
-  var [err, blog] = await utils.to(Blog.findById(req.params.blogId));
+  let [err, blog] = await utils.to(Blog.findById(req.params.blogId));
   if (err)
     throw new Error("An error occurred while fetching the blog's data, please try again");
 
   if (blog === null) 
     throw new Error("No blog post exist with this ID");
-  var blog = await bHelpers.parseBlogs(blog, true);
+  blog = await bHelpers.parseBlogs(blog, true);
 
   return res.status(200).json(blog);
 } catch (err) {
@@ -78,10 +77,8 @@ try {
 
   const blog = new Blog(obj);
   var [err, savedBlog] = await utils.to(blog.save());
-  if (err) {
-    console.log(err)
+  if (err) 
     throw new Error("An error occurred while posting your blog, please try again");
-  }
 
   req.flash("success", "Post successfully uploaded");
   return res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);

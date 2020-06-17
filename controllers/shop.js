@@ -9,22 +9,21 @@ const rp = require("request-promise");
 
 const Shop = require("../models/Shop");
 const Image = require("../models/Image");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
-const gHelpers = require("./helpers/galleryHelpers"); //////////
-//const sHelpers = require('./helpers/shopHelpers');
+const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
+const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 require('dotenv').config();
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/img/upload/')
+    cb(null, './public/img/upload/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname))
+    cb(null, Date.now() + path.extname(file.originalname));
   }
-})
+});
 
-upload = multer({
+const upload = multer({
   storage: storage,
   limits: {
     fileSize: 100000000
@@ -34,8 +33,6 @@ upload = multer({
   }
 }).array("img");
 
-
-//var formatter = new Intl.NumberFormat();
 var formatter = new Intl.NumberFormat("de-DE", {
   style: "currency",
   currency: "EUR"
@@ -80,12 +77,12 @@ try {
   if (req.query.tab === "print") 
     query.isUnique = false;
 
-  var [err, result] = await utils.to(Shop.paginate(query, options));
+  let [err, result] = await utils.to(Shop.paginate(query, options));
   if (err) 
     throw new Error("An error occurred while fetching the shop items");
-  var shopItems = result.docs; //probably can remove img since we use id and api to load it
+  let shopItems = result.docs; //probably can remove img since we use id and api to load it
     
-  ress = await parsePrice(shopItems);
+  let ress = await parsePrice(shopItems);
   return res.status(200).json(ress);
 } catch (err) {
   console.log("FETCHING SHOP ERROR:", err);
@@ -95,6 +92,7 @@ try {
 //sanitize input
 router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
+  let err, result, savedImage;
   const vResult = validationResult(req);
   if (!vResult.isEmpty()) {
     vResult.errors.forEach(item => {
@@ -115,7 +113,7 @@ try {
   }; // need to sanitize data
 
   const shop = new Shop(obj);
-  var [err, result] = await utils.to(shop.save());
+  [err, result] = await utils.to(shop.save());
   if (err)
     throw new Error("Something went wrong while uploading your file");
 
@@ -132,10 +130,10 @@ try {
     let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
     fs.rename(oldpath, newpath, (err) => {
       if (err)
-        throw new Error(err)
-    })
+        throw new Error(err);
+    });
     image.path = newpath;
-    var [err, savedImage] = await utils.to(image.save());
+    [err, savedImage] = await utils.to(image.save());
     if (err)
       throw new Error("Something went wrong while uploading your image");
   }
@@ -150,6 +148,7 @@ try {
 //sanitize :id (and input)
 router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
+  let err, result, savedImage;
   const vResult = validationResult(req);
   if (!vResult.isEmpty()) {
     vResult.errors.forEach(item => {
@@ -170,7 +169,7 @@ try {
     price: formattedPrice
   }; // need to sanitize data
 
-  var [err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
+  [err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
   if (err) 
     throw new Error("Something went wrong while updating your file");
 
@@ -185,10 +184,10 @@ try {
     let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
     fs.rename(oldpath, newpath, (err) => {
       if (err)
-        throw new Error(err)
-    })
+        throw new Error(err);
+    });
     image.path = newpath;
-    var [err, savedImage] = await utils.to(image.save());
+    [err, savedImage] = await utils.to(image.save());
     if (err)
       throw new Error("Something went wrong while uploading your image");
   }
@@ -204,17 +203,18 @@ try {
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
   let id = req.params.id; //sanitize
-  var [err, shop] = await utils.to(Shop.deleteOne({ _id: id }));
+
+  let [err, shop] = await utils.to(Shop.deleteOne({ _id: id }));
   if (err)
     throw new Error("An error occurred while deleting the item, please try again");
 
   rp(`${process.env.BASEURL}/api/image/Shop/${id}`)
   .then(async (response) => {
-    parsed = JSON.parse(response);
+    let parsed = JSON.parse(response);
     for (let i = 0; i < parsed.length; i++) {
       fs.unlink(parsed[i].path, (err) => {
         if (err) throw new Error("An error occurred while deleting your image");
-      })
+      });
       await Image.deleteOne({ _id: parsed[i]._id });
     }
   })

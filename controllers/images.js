@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
+const { ROLE, setUser, authUser, authRole } = require('./helpers/verifySession');
 const Image = require('../models/Image');
 const utils = require('./helpers/utils');
 
@@ -27,7 +27,7 @@ try {
 } catch (err) {
     console.log("IMAGE FETCH ERROR", err);
     return res.status(400).json({error: true, message: err.message});
-}})
+}});
 
 router.get('/main/:itemType/:itemId', setUser, async (req, res) => {
 try {
@@ -50,7 +50,7 @@ try {
 } catch (err) {
     console.log("IMAGE FETCH ERROR", err);
     return res.status(400).json(err.message);
-}})
+}});
  
 router.get('/select/:itemType/:itemId/:id', setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
@@ -59,11 +59,11 @@ try {
     let itemId = req.params.itemId;
     
     //set old main to false, set new one to true
-    var [err, result] = await utils.to(Image.updateMany({_itemId: itemId, itemType: itemType, isMain: true}, {$set: {isMain: false}}));
+    let [err, result] = await utils.to(Image.updateMany({_itemId: itemId, itemType: itemType, isMain: true}, {$set: {isMain: false}}));
     if (err) 
         throw new Error("An error occurred while updating the main image");
     
-    var [err, result] = await utils.to(Image.findOneAndUpdate({_id: id}, {$set: {isMain: true}}));
+    [err, result] = await utils.to(Image.findOneAndUpdate({_id: id}, {$set: {isMain: true}}));
     if (err) 
         throw new Error("An error occurred while updating the main image");
 
@@ -71,21 +71,22 @@ try {
 } catch (err) {
     console.log("IMAGE SELECT MAIN ERROR", err);
     return res.status(400).json({err: true, msg: err.message});
-}})
+}});
 
 router.get('/delete/:id', setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 try {
     let id = req.params.id;
+    let err, find, result, deleted;
 
-    var [err, find] = await utils.to(Image.findOne({_id: id}));
+    [err, find] = await utils.to(Image.findOne({_id: id}));
     if (err) 
         throw new Error("We could not find your image, please try again");
         
-    var [err, result] = await utils.to(Image.deleteOne({ _id: id, isMain: false }));
+    [err, result] = await utils.to(Image.deleteOne({ _id: id, isMain: false }));
     if (result.n === 1) {
         fs.unlink(find.path, (err) => {
             if (err) throw new Error("An error occurred while deleting your image");
-        })
+        });
     }
 
     if (err) 
@@ -93,11 +94,11 @@ try {
 
     if (result.n === 0) {
         if (find && find.itemType === "Blog") {
-            var [err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
+            [err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
             if (deleted.n === 1) {
                 fs.unlink(find.path, (err) => {
                     if (err) throw new Error("An error occurred while deleting your image");
-                })
+                });
             }
             if (err) 
                 throw new Error("An error occurred while deleting the image2");
@@ -109,7 +110,7 @@ try {
 } catch (err) {
     console.log("IMAGE DELETE ERROR", err);
     return res.status(400).json({err: true, msg: err.message});
-}})
+}});
 
 router.get('/:itemType/:itemId', setUser, async (req, res) => {
 try {
@@ -126,6 +127,6 @@ try {
 } catch (err) {
     console.log("IMAGES FETCH ERROR", err);
     return res.status(200).json({error: true, message: err.message});
-}})
+}});
     
 module.exports = router;

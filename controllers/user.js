@@ -5,17 +5,17 @@ const bcrypt = require("bcryptjs");
 const rp = require("request-promise");
 const { validationResult } = require("express-validator");
 const { vName, vEmail, vPassword, vLostPw, vDelivery } = require("./validators/vUser");
-const countryList = require('country-list-js')
+const countryList = require('country-list-js');
 const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { setUser, authUser } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
 const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
-require('dotenv').config()
+require('dotenv').config();
 
 const toTitleCase = (phrase) => {
   let arr = phrase.toLowerCase().split(' ');
@@ -26,13 +26,14 @@ const toTitleCase = (phrase) => {
       if (item === "and")
           obj = "and";
       parsed.push(obj);
-  })
+  });
   
   return parsed.join(' ');
-}
+};
 
 router.post("/lostpw", vLostPw, async (req, res) => {
 try {
+  let err, user, pwToken, result;
   const vResult = validationResult(req);
   if (!vResult.isEmpty()) {
     vResult.errors.forEach(item => {
@@ -41,24 +42,24 @@ try {
     throw new Error("Incorrect form input");
   }
 
-  var [err, user] = await utils.to(User.findOne({ email: req.body.email })); //sanitize
+  [err, user] = await utils.to(User.findOne({ email: req.body.email })); //sanitize
   if (err)
     throw new Error("An error occurred while looking for your account, please retry");
   if (user === null)
     throw new Error("Invalid e-mail, please make sure you entered the correct e-mail");
 
-  var [err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id }));
+  [err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id }));
   if (err)
     throw new Error("An error occurred while looking for your token, please retry");
 
   const token = crypto.randomBytes(16).toString("hex");
   if (pwToken === null) {
     pwToken = new PwToken({ _userId: user._id, token: token });
-    var [err, result] = await utils.to(pwToken.save());
+    [err, result] = await utils.to(pwToken.save());
     if (err)
       throw new Error("An error occurred while saving your token, please try again");
   } else {
-    var [err, result] = await utils.to(PwToken.updateOne({ _userId: user._id }, { $set: { token: token } }));
+    [err, result] = await utils.to(PwToken.updateOne({ _userId: user._id }, { $set: { token: token } }));
     if (err)
       throw new Error("An error occurred while updating your token, please try again");
   }
@@ -78,54 +79,41 @@ try {
 }});
 
 router.post("/resetpw", vPassword, async (req, res) => {
-  try {
-    // Check form inputs validity
-    const vResult = validationResult(req);
-    if (!vResult.isEmpty()) {
-      vResult.errors.forEach(item => {
-        req.flash("info", item.msg);
-      });
-      throw new Error("Incorrect form input");
-    }
-
-    // hash and salt pw
-    const hashPw = await bcrypt.hash(req.body.password, 10);
-    if (!hashPw)
-      throw new Error("An error occurred while encrypting your data, please try again");
-
-    // check if token is valid
-    var [err, pwToken] = await utils.to(
-      PwToken.findOne({ _id: req.body.tokenId, token: req.body.token })
-    );
-    if (err || pwToken === null)
-      throw new Error("Invalid token, please try to request another one");
-
-    // update password and delete token
-    var [err, user] = await utils.to(
-      User.updateOne({ _id: pwToken._userId }, { $set: { password: hashPw } })
-    );
-    if (err)
-      throw new Error(
-        "An error occurred while updating your password, please try again"
-      );
-    var [err, pwToken] = await utils.to(
-      PwToken.deleteOne({ _id: req.body.tokenId })
-    );
-    if (err)
-      throw new Error(
-        "An error occurred while cleaning up your token, please try again"
-      );
-
-    req.flash("success", "Password successfully modified");
-    return res.status(200).redirect("/Account");
-  } catch (err) {
-    console.log("ERROR RESETPW:", err);
-    req.flash("warning", err.message);
-    return res
-      .status(400)
-      .redirect(`/Resetpw/${req.body.tokenId}/${req.body.token}`);
+try {
+  let err, pwToken, user;
+  const vResult = validationResult(req);
+  if (!vResult.isEmpty()) {
+    vResult.errors.forEach(item => {
+      req.flash("info", item.msg);
+    });
+    throw new Error("Incorrect form input");
   }
-});
+
+  // hash and salt pw
+  const hashPw = await bcrypt.hash(req.body.password, 10);
+  if (!hashPw)
+    throw new Error("An error occurred while encrypting your data, please try again");
+
+  // check if token is valid
+  [err, pwToken] = await utils.to(PwToken.findOne({ _id: req.body.tokenId, token: req.body.token }));
+  if (err || pwToken === null)
+    throw new Error("Invalid token, please try to request another one");
+
+  // update password and delete token
+  [err, user] = await utils.to(User.updateOne({ _id: pwToken._userId }, { $set: { password: hashPw } }));
+  if (err)
+    throw new Error("An error occurred while updating your password, please try again");
+  [err, pwToken] = await utils.to(PwToken.deleteOne({ _id: req.body.tokenId }));
+  if (err)
+    throw new Error("An error occurred while cleaning up your token, please try again");
+
+  req.flash("success", "Password successfully modified");
+  return res.status(200).redirect("/Account");
+} catch (err) {
+  console.log("ERROR RESETPW:", err);
+  req.flash("warning", err.message);
+  return res.status(400).redirect(`/Resetpw/${req.body.tokenId}/${req.body.token}`);
+}});
 
 router.post("/patch/name", vName, setUser, authUser, async (req, res) => {
 try {
@@ -145,7 +133,7 @@ try {
   if (nameExist)
     throw new Error("An account already exist with this username");
 
-  var [err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { name: name } }));
+  let [err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { name: name } }));
   if (err)
     throw new Error("An error occurred while updating your username, please try again");
 
@@ -159,6 +147,7 @@ try {
 
 router.post("/patch/email", vEmail, setUser, authUser, async (req, res) => {
 try {
+  let err, user, token;
   const vResult = validationResult(req);
   if (!vResult.isEmpty()) {
     vResult.errors.forEach(item => {
@@ -175,12 +164,12 @@ try {
   if (emailExist)
     throw new Error("An account already exist with this e-mail");
 
-  var [err, user] = await utils.to(
+  [err, user] = await utils.to(
   User.updateOne({ _id: id }, { $set: { email: newEmail, isVerified: false } }));
   if (err)
     throw new Error("An error occurred while updating your email, please try again");
 
-  var [err, token] = await utils.to(Token.updateOne({ _userId: id }, { $set: { token: vToken } }));
+  [err, token] = await utils.to(Token.updateOne({ _userId: id }, { $set: { token: vToken } }));
   if (err)
     throw new Error("An error occurred while updating your token, please try again");
       
@@ -212,7 +201,7 @@ try {
         cpassword = req.body.cpassword,
         password = req.body.password;
 
-  var [err, user] = await utils.to(User.findById(id));
+  let [err, user] = await utils.to(User.findById(id));
   if (err)
     throw new Error("An error occurred, please make sure you are logged in and try again");
 
@@ -225,7 +214,7 @@ try {
   if (!hashPw)
     throw new Error("An error occurred while encrypting your data, please try again");
 
-  var [err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { password: hashPw } }));
+  [err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { password: hashPw } }));
   if (err)
     throw new Error("An error occurred while updating your password, please try again");
     
@@ -262,11 +251,11 @@ try {
   rp(options).then(async data => {
     try {
       if (data.status != "OK") {
-        if (err)
-          throw new Error("We could not find your address, please make sure it is valid");
+        throw new Error("We could not find your address, please make sure it is valid");
       } else {
-        //check if delivery is doable using deliverer's API /////////////////
-        var [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+        let err, result, infos;
+        
+        [err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
         if (err)
           throw new Error("An error occurred while looking for your delivery informations, please retry");
 
@@ -286,7 +275,7 @@ try {
             instructions: req.body.instructions
           });
           // Save info to DB if no entry exist yet
-          var [err, result] = await utils.to(info.save());
+          [err, result] = await utils.to(info.save());
           if (err)
             throw new Error("An error occurred while updating your delivery informations, please try again");
           } else {
@@ -304,7 +293,7 @@ try {
               instructions: req.body.instructions
             };
             // Update if user already has an entry in DB
-            var [err, result] = await utils.to( DeliveryInfo.updateOne({ _userId: req.user._id }, { $set: obj }));
+            [err, result] = await utils.to( DeliveryInfo.updateOne({ _userId: req.user._id }, { $set: obj }));
             if (err)
               throw new Error("An error occurred while updating your delivery informations, please try again");
         }
@@ -343,7 +332,7 @@ try {
         else 
             throw new Error("We cannot find your country ISO code, please contact us if the error persist");
         return res.status(200).json({ error: false, countryCode: countryCode });
-      })
+      });
     } else {
       country = result.country;
       countryCode = countryList.findByName(toTitleCase(country));
@@ -362,9 +351,9 @@ try {
       else 
         throw new Error("We cannot find your country ISO code, please contact us if the error persist");
       return res.status(200).json({ error: false, countryCode: countryCode });
-  })}
+  });}
 } catch (err) {
-  console.log(err)
+  console.log(err);
   return res.status(400).json({ error: true, message: err.message });
 }});
 

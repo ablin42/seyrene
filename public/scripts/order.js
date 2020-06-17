@@ -4,7 +4,7 @@ function closeDialog () {
     setTimeout(() => {
       $("#alert-dialog").parent().remove();
       $("#alert-dialog").remove();
-    }, 300)
+    }, 300);
   }
   return ;
 }
@@ -20,20 +20,20 @@ async function confirmAction(orderId) {
     credentials: "include",
     mode: "same-origin"
   })
-  .then((res) => {return res.json()})
+  .then((res) => {return res.json();})
   .then(function(response) {
     if (response.error === false) {
-      console.log(response)
+      console.log(response);
     }
     else {
-      console.log("error:", response)
+      console.log("error:", response);
     }
     let alert = createAlertNode(response.msg);
     addAlert(alert, "#header");
   })  
   .catch((err) => {
     console.log(err);
-  })
+  });
   return ;
 }
 
@@ -55,7 +55,7 @@ async function cancelOrder(orderId) {
     setTimeout(() => {
       $("#alert-dialog").parent().css('background-color', 'rgba(17,17,17, 0.2)');
       $("#alert-dialog").parent().css('opacity', '1');
-    }, 100)
+    }, 100);
   }
   return ;
 }
@@ -67,6 +67,7 @@ async function infiniteOrders() {
       page = 1 + Math.floor(nbItem / 20),
       loader = $("#loader");
   loader.css("display","block");
+
   await fetch(`/api/order?page=${page}`)
   .then(function(response) {
       response.json().then(function(data) {
@@ -74,7 +75,7 @@ async function infiniteOrders() {
               if (data.orders.length > 0) {
                   data.orders.forEach(order => {
                       let id = order._id;
-                      console.log(id, $(`#${id}`))
+                      console.log(id, $(`#${id}`));
                       if ($(`#${id}`).length === 0) {
                           toAppend = `
                           <tr>
@@ -101,18 +102,18 @@ async function infiniteOrders() {
           let alert = createAlertNode(data.message, "warning");
           addAlert(alert, "#header");
       }
-      }) 
+      });
   })
   .catch((err) => {
       let alert = createAlertNode(err.message, "warning");
       addAlert(alert, "#header");
-  })
+  });
   loader.css("display","none");
 }
 
 $(window).scroll(function() {
-  val1 = Math.ceil($(window).scrollTop() + $(window).height());
-  val2 = $(document).height();
+  const val1 = Math.ceil($(window).scrollTop() + $(window).height());
+  const val2 = $(document).height();
   if (val1 >= val2) 
     infiniteOrders();
 });

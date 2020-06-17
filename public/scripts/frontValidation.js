@@ -4,15 +4,15 @@ function getInvalid(formId) {
         form = $(`#${formId}`),
         invalids = form.find(".invalid");
     
-    submit.removeAttribute("disabled")
+    submit.removeAttribute("disabled");
     if (invalids.length > 0)
-        submit.setAttribute("disabled", "")
+        submit.setAttribute("disabled", "");
     return ;
 }
 
 let Validate = {
     String: function(item, min, max = 10000000) {
-        console.log(item.value.length)
+        console.log(item.value.length);
         let inputId = item.id,
             spanInfo = document.getElementById(`i_${inputId}`),
             formId = item.form.id;
@@ -34,7 +34,7 @@ let Validate = {
         getInvalid(formId);
     },
     Email: function(email) {
-        let inputId = email.id
+        let inputId = email.id,
             spanInfo = document.getElementById(`i_${inputId}`),
             formId = email.form.id;
 
@@ -43,7 +43,7 @@ let Validate = {
             email.classList.add("invalid");
         }
         else if (email.value.length !== 0) {
-            if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value))
+            if (/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value))
             {
                 spanInfo.style.display = "none";
                 email.classList.remove("invalid");
@@ -86,7 +86,8 @@ let Validate = {
     Password2: function(password2) {
         let inputId = password2.id,
             spanInfo = document.getElementById(`i_${inputId}`),
-            formId = password2.form.id;
+            formId = password2.form.id,
+            password = document.getElementById(`password`);
 
         if (password2.value.length !== 0 && (password.value !== password2.value)) {
             spanInfo.style.display = "inline-block";
@@ -104,7 +105,7 @@ let Validate = {
         }
         getInvalid(formId);
     }
-}
+};
 
 function readURL(input) {
     if (input.files && input.files[0]) {

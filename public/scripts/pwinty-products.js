@@ -5,7 +5,7 @@ function closeAllSelect(elmnt) {
 
     for (i = 0; i < y.length; i++) {
         if (elmnt == y[i]) 
-            arrNo.push(i)
+            arrNo.push(i);
         else 
             y[i].classList.remove("select-arrow-active");
     }
@@ -24,24 +24,23 @@ async function checkSKU(SKU) {
         },
         body: JSON.stringify({skus: [SKU]})
       })
-      .then((res) => {return res.json()})
+      .then((res) => {return res.json();})
       .then((data) => {
         if (data.prices[0].price){
-          
             if (data.prices[0].price === 0) {
-                console.log(data.prices[0].sku)
+                console.log(data.prices[0].sku);
                 return 1;
             }
             return 0;
         }
         else {
-            console.log(data.prices[0].sku)
-            return 1
+            console.log(data.prices[0].sku);
+            return 1;
         }
       })
       .catch((err) => {
-        return 1
-      })
+        return 1;
+      });
 }
 
 async function checkIsDelivery(SKU) {
@@ -58,13 +57,12 @@ async function checkIsDelivery(SKU) {
         .then(res => {return res.json();})
         .then(async function(response) {
             if (response.error === true || response.response.length <= 0) {
-                console.log(`No delivery option for: ${SKU}`)
+                console.log(`No delivery option for: ${SKU}`);
                 return;
-            } else 
-                console.log("f")
+            }
         })
         .catch(err => {
-            console.log(`No delivery option for: ${SKU}`)
+            console.log(`No delivery option for: ${SKU}`);
             return;
         });
 }
@@ -78,11 +76,11 @@ function testSKU(category, subcategory) {
                 case "STR": {
                     Object.keys(CAN_sizes).forEach(singleSize => {
                         var SKU = "GLOBAL" + "-" + category + "-" + singleSize;
-                        var objArr = {SKU: SKU, error: 2}
-                        objArr.error = checkSKU(SKU)
-                        checkIsDelivery(SKU)
+                        var objArr = {SKU: SKU, error: 2};
+                        objArr.error = checkSKU(SKU);
+                        checkIsDelivery(SKU);
                         arr.push(objArr);
-                    })
+                    });
                 }
                 break;
         
@@ -91,35 +89,35 @@ function testSKU(category, subcategory) {
                     Object.keys(CAN_ROL_sizes).forEach(singleSize => {
                         Object.keys(CAN_substrate).forEach(singleSubstrate => { 
                             var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize;
-                            var objArr = {SKU: SKU, error: 2}
-                            objArr.error = checkSKU(SKU)
-                            checkIsDelivery(SKU)
+                            var objArr = {SKU: SKU, error: 2};
+                            objArr.error = checkSKU(SKU);
+                            checkIsDelivery(SKU);
                             arr.push(objArr);
-                        })
-                    })
+                        });
+                    });
                    
                     Object.keys(CAN_substrate).forEach(singleSubstrate => {
                         if (singleSubstrate !== "PC") {
                             Object.keys(CAN_ROL_sizes).forEach(singleSize => {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize + "-VAR";
-                                var objArr = {SKU: SKU, error: 2}
-                                objArr.error = checkSKU(SKU)
-                                checkIsDelivery(SKU)
+                                var objArr = {SKU: SKU, error: 2};
+                                objArr.error = checkSKU(SKU);
+                                checkIsDelivery(SKU);
                                 arr.push(objArr);
-                            })
+                            });
                         }
-                    })
+                    });
                 }
                 break;
         
                 case "FRA": {
                     Object.keys(CAN_sizes).forEach(singleSize => {
                         var SKU = "GLOBAL" + "-" + subcategory + "-" + category + "-" + singleSize;
-                        var objArr = {SKU: SKU, error: 2}
-                        objArr.error = checkSKU(SKU)
-                        checkIsDelivery(SKU)
+                        var objArr = {SKU: SKU, error: 2};
+                        objArr.error = checkSKU(SKU);
+                        checkIsDelivery(SKU);
                         arr.push(objArr);
-                    })
+                    });
                 }
                 break;
             }
@@ -130,12 +128,12 @@ function testSKU(category, subcategory) {
             Object.keys(PRINT_substrate).forEach(singleSubstrate => {
                 Object.keys(PRINT_sizes).forEach(singleSize => {
                     var SKU = "GLOBAL" + "-" + singleSubstrate + "-" + singleSize;
-                    var objArr = {SKU: SKU, error: 2}
-                    objArr.error = checkSKU(SKU)
-                    checkIsDelivery(SKU)
+                    var objArr = {SKU: SKU, error: 2};
+                    objArr.error = checkSKU(SKU);
+                    checkIsDelivery(SKU);
                     arr.push(objArr);
-                })
-            })
+                });
+            });
         }
         break;
 
@@ -147,14 +145,14 @@ function testSKU(category, subcategory) {
                             Object.keys(glazeType).forEach(singleGlaze => {
                                 Object.keys(substrateType).forEach(singleSubstrate => {
                                     var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
-                                    var objArr = {SKU: SKU, error: 2}
-                                    objArr.error = checkSKU(SKU)
-                                    checkIsDelivery(SKU)
+                                    var objArr = {SKU: SKU, error: 2};
+                                    objArr.error = checkSKU(SKU);
+                                    checkIsDelivery(SKU);
                                     arr.push(objArr);
-                                })
-                            })
-                        })
-                    })
+                                });
+                            });
+                        });
+                    });
                 }
                 break;
 
@@ -164,14 +162,14 @@ function testSKU(category, subcategory) {
                             Object.keys(glazeType).forEach(singleGlaze => {
                                 Object.keys(substrateType).forEach(singleSubstrate => {
                                     var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
-                                    var objArr = {SKU: SKU, error: 2}
-                                    objArr.error = checkSKU(SKU)
-                                    checkIsDelivery(SKU)
+                                    var objArr = {SKU: SKU, error: 2};
+                                    objArr.error = checkSKU(SKU);
+                                    checkIsDelivery(SKU);
                                     arr.push(objArr);
-                                })
-                            })
-                        })
-                    })
+                                });
+                            });
+                        });
+                    });
                 }
                 break;
 
@@ -180,13 +178,13 @@ function testSKU(category, subcategory) {
                         Object.keys(mountType).forEach(singleMount => {
                             Object.keys(substrateType).forEach(singleSubstrate => {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
-                                var objArr = {SKU: SKU, error: 2}
-                                objArr.error = checkSKU(SKU)
-                                checkIsDelivery(SKU)
+                                var objArr = {SKU: SKU, error: 2};
+                                objArr.error = checkSKU(SKU);
+                                checkIsDelivery(SKU);
                                 arr.push(objArr);
-                            })
-                        })
-                    })
+                            });
+                        });
+                    });
                 }
                 break;
 
@@ -195,13 +193,13 @@ function testSKU(category, subcategory) {
                         Object.keys(glazeType).forEach(singleGlaze => {
                             Object.keys(substrateType).forEach(singleSubstrate => {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleGlaze + "-" + singleSize;
-                                var objArr = {SKU: SKU, error: 2}
-                                objArr.error = checkSKU(SKU)
-                                checkIsDelivery(SKU)
+                                var objArr = {SKU: SKU, error: 2};
+                                objArr.error = checkSKU(SKU);
+                                checkIsDelivery(SKU);
                                 arr.push(objArr);
-                            })
-                        })
-                    })
+                            });
+                        });
+                    });
                 }
                 break;
 
@@ -209,12 +207,12 @@ function testSKU(category, subcategory) {
                     Object.keys(FRA_SUR_sizes).forEach(singleSize => {
                         Object.keys(substrateType).forEach(singleSubstrate => {
                             var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
-                            var objArr = {SKU: SKU, error: 2}
-                            objArr.error = checkSKU(SKU)
-                            checkIsDelivery(SKU)
+                            var objArr = {SKU: SKU, error: 2};
+                            objArr.error = checkSKU(SKU);
+                            checkIsDelivery(SKU);
                             arr.push(objArr);
-                        })
-                    })
+                        });
+                    });
                 }
                 break;
 
@@ -222,12 +220,12 @@ function testSKU(category, subcategory) {
                     Object.keys(FRA_SUR_sizes).forEach(singleSize => {
                         Object.keys(substrateType).forEach(singleSubstrate => {
                             var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
-                            var objArr = {SKU: SKU, error: 2}
-                            objArr.error = checkSKU(SKU)
-                            checkIsDelivery(SKU)
+                            var objArr = {SKU: SKU, error: 2};
+                            objArr.error = checkSKU(SKU);
+                            checkIsDelivery(SKU);
                             arr.push(objArr);
-                        })
-                    })
+                        });
+                    });
                 }
                 break;
 
@@ -236,34 +234,33 @@ function testSKU(category, subcategory) {
                         Object.keys(mountType).forEach(singleMount => {
                             Object.keys(substrateType).forEach(singleSubstrate => {
                                 var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
-                                var objArr = {SKU: SKU, error: 2}
-                                objArr.error = checkSKU(SKU)
-                                checkIsDelivery(SKU)
+                                var objArr = {SKU: SKU, error: 2};
+                                objArr.error = checkSKU(SKU);
+                                checkIsDelivery(SKU);
                                 arr.push(objArr);
-                            })
-                        })
-                    })
+                            });
+                        });
+                    });
                 }
                 break;
             }
         }
         break;
     }
-    
     //console.log(arr)
-};
+}
 
 function generateNewObject(arr) {
     let str = "";
 
     arr.forEach(item => {
-        let split = item.split("x");
-        aCm = Math.round(split[0] / 0.3937008)
-        bCm = Math.round(split[1] / 0.3937008)
+        const split = item.split("x");
+        const aCm = Math.round(split[0] / 0.3937008);
+        const bCm = Math.round(split[1] / 0.3937008);
 
         str += `"${item}": "${aCm}x${bCm}cm", `;
-    })
-    console.log(str)
+    });
+    console.log(str);
 }
 
 function filtersize() {
@@ -271,7 +268,7 @@ function filtersize() {
 
     Object.keys(CAN_ROL_sizes).forEach(size => {
         if (arr.length === 0)
-            arr.push(size)
+            arr.push(size);
         let split = size.split("x");
         let newNb = split[1] + "x" + split[0];
         let found = 0;
@@ -281,10 +278,10 @@ function filtersize() {
                 found = 1;
             if (index === (arr.length - 1) && found === 0)
                 arr.push(size);
-        })
-    })
+        });
+    });
 
-    console.log(arr)
+    console.log(arr);
     //generateNewObject(arr);
     return ;
 }
@@ -293,7 +290,7 @@ class PwintyObject {
     constructor(item) {
         this.SKU = "";
         this.category = item.value;
-        this.subcategory = ""
+        this.subcategory = "";
         this.attributes = {};
         this.width = $('img[alt="0slide"]')[0].naturalWidth;
         this.height = $('img[alt="0slide"]')[0].naturalHeight;
@@ -302,7 +299,7 @@ class PwintyObject {
 
         document.getElementById("subcategories").innerHTML = "";
         document.getElementById("attributes").innerHTML = "";
-        this.hidePricing()
+        this.hidePricing();
 
         let selection = ``;
         Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
@@ -347,14 +344,15 @@ class PwintyObject {
         }
         else {
             let index = 0;
+            let max;
             if (this.category !== "CAN") {
                 while (this.megapixel > DIMENSIONS_FRAMES[index].megapixel) 
                     index++;
-                var max = DIMENSIONS_FRAMES[index].max;
+                max = DIMENSIONS_FRAMES[index].max;
             } else {
                 while (this.megapixel > DIMENSIONS_CANVAS[index].megapixel) 
                     index++;
-                var max = DIMENSIONS_CANVAS[index].max;
+                max = DIMENSIONS_CANVAS[index].max;
             }
            
             if (maxDimension <= max) {
@@ -452,7 +450,7 @@ class PwintyObject {
                     s = this.parentNode.parentNode.getElementsByTagName("select")[0];
                     h = this.parentNode.previousSibling;
 
-                    Pwinty.updateAttribute(s, this.dataset.value)
+                    Pwinty.updateAttribute(s, this.dataset.value);
 
                     for (i = 0; i < s.length; i++) {
                         if (s.options[i].innerHTML == this.innerHTML) {
@@ -493,7 +491,7 @@ class PwintyObject {
 
     hideAttribute(attributeName) {
         let attributeItem = document.getElementById(attributeName);
-        attributeItem.parentNode.parentNode.setAttribute("style", "display: none")
+        attributeItem.parentNode.parentNode.setAttribute("style", "display: none");
         this.attributes[attributeName] = undefined;
     }
 
@@ -509,7 +507,7 @@ class PwintyObject {
         Object.keys(this.attributes).forEach(attribute => {
             if (this.attributes[attribute])
                 selectedAttributes++; 
-        })
+        });
 
         if (selectedAttributes >= nbAttributes)
             this.generateSku();
@@ -565,7 +563,7 @@ class PwintyObject {
             this.SKU += this.attributes["size"];
         }
 
-        console.log(this.SKU)
+        console.log(this.SKU);
         this.generatePricing();
     }
 
@@ -579,7 +577,7 @@ class PwintyObject {
             },
             body: JSON.stringify({items: [{SKU: this.SKU, quantity: 1}]})
         })
-        .then((res) => {return res.json()})
+        .then((res) => {return res.json();})
         .then((data) => {
             if (data.response.unitPriceIncludingTax){
                 if (data.response.unitPriceIncludingTax === 0)
@@ -594,7 +592,7 @@ class PwintyObject {
             this.hidePricing();
             let alert = createAlertNode(err.message, "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
             addAlert(alert, "#header");
-        })
+        });
     }
 
     displayPricing() {
@@ -693,7 +691,7 @@ class PwintyObject {
             }
         })
         .catch(err => {
-            console.log(err)
+            console.log(err);
             let alert = createAlertNode("An error occured while looking for your country, please refresh the page", "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
             addAlert(alert, "#header");
             return "FR";
@@ -702,7 +700,7 @@ class PwintyObject {
     }
 
     hidePricing() {document.getElementById("purchasebox").setAttribute("style", "display: none");}
-    printInfo() {console.log(this)}
+    printInfo() {console.log(this);}
 }
 
 let Pwinty;

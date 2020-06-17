@@ -9,9 +9,8 @@ module.exports = {
         return false;
     },
     nameExist: async function (name) {
-        if (await User.findOne({name: name})) {
-            return true
-        }
+        if (await User.findOne({name: name})) 
+            return true;
         return false;
     },
     to: function(promise) {
@@ -22,4 +21,4 @@ module.exports = {
             [pe(err)]
         );
     }
-}
+};

@@ -6,7 +6,7 @@ const DeliveryInfo = require("../../models/DeliveryInfo");
 const ROLE = {
   ADMIN: 'admin',
   BASIC: 'basic'
-}
+};
 
 async function setUser(req, res, next) {
   const userId = req.session._id;
@@ -20,8 +20,8 @@ async function setUser(req, res, next) {
     req.user = user;
     req.user.password = undefined;
   }
-/*
-  req.user = { 
+
+  /*req.user = { 
     role: 'admin',
     isVerified: true,
     _id: "5d810b9365761c0840e0de25",
@@ -31,7 +31,7 @@ async function setUser(req, res, next) {
     __v: 0,
     createdAt: "2019-09-28T20:27:37.382Z",
     updatedAt: "2020-06-10T23:25:09.803Z"
-  }*/
+  };*/
 
   next();
 }
@@ -62,7 +62,7 @@ function authRole(role) {
     }
 
     next();
-  }
+  };
 }
 
 async function setDelivery(req, res, next) {
@@ -90,7 +90,7 @@ function isDelivery(req, res, next) {
 }
 
 async function setOrder(req, res, next) {
-  const orderId = req.params.id
+  const orderId = req.params.id;
 
   var [err, order] = await utils.to(Order.findById(orderId));
   if (err || order == null) {
@@ -106,7 +106,7 @@ function canViewOrder(user, order) {
   return (
     user.role == ROLE.ADMIN ||
     order._userId == user._id
-  )
+  );
 }
 
 function authGetOrder(req, res, next) {
@@ -129,4 +129,4 @@ module.exports = {
   setOrder,
   canViewOrder,
   authGetOrder
-}
+};

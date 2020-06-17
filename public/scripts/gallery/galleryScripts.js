@@ -7,10 +7,10 @@ async function postGallery(e) {
         formData = new FormData(),
         tags = [];
     
-    for (i = 0; i < tagInput.length; i++)
+    for (let i = 0; i < tagInput.length; i++)
         tags.push(tagInput[i].textContent);
     
-    for (i = 0; i < img.files.length; i++) 
+    for (let i = 0; i < img.files.length; i++) 
         formData.append('img', img.files[i]);
  
     formData.append('title', title);
@@ -26,10 +26,10 @@ async function postGallery(e) {
     .then(data => {
         if (data.err) {
             let alert = createAlertNode(data.msg, "warning");
-            addAlert(alert, "#header")
+            addAlert(alert, "#header");
         } else 
-            window.location.href = data.url                
-    })
+            window.location.href = data.url ;               
+    });
 }
 
 async function patchGallery(e, galleryId) {
@@ -41,10 +41,10 @@ async function patchGallery(e, galleryId) {
         formData = new FormData(),
         tags = [];
         
-    for (i = 0; i < tagInput.length; i++)
+    for (let i = 0; i < tagInput.length; i++)
         tags.push(tagInput[i].textContent);
 
-    for (i = 0; i < img.files.length; i++) 
+    for (let i = 0; i < img.files.length; i++) 
         formData.append('img', img.files[i]);
 
     formData.append('title', title);
@@ -60,10 +60,10 @@ async function patchGallery(e, galleryId) {
     .then(data => {
     if (data.err) {
         let alert = createAlertNode(data.msg, "warning");
-        addAlert(alert, "#header")
+        addAlert(alert, "#header");
     } else 
-        window.location.href = data.url                
-    })
+        window.location.href = data.url;            
+    });
 }
 
 async function filterByTags(e) {
@@ -73,7 +73,7 @@ async function filterByTags(e) {
     
     if (tagInput.length > 0) {
         tags = "?t=";
-        for (i = 0; i < tagInput.length; i++)
+        for (let i = 0; i < tagInput.length; i++)
         {
             if (i + 1 ===  tagInput.length)
                 tags += tagInput[i].textContent;
@@ -94,12 +94,12 @@ function setMain(e, item) {
     })
     .then(response => response.json())
     .then(data => {
-    let type = "success"
+    let type = "success";
     if (data.err === true) 
         type = "warning";
     else {
         let divs = $(`.action-div`);
-        console.log(divs)
+        console.log(divs);
         for (let i = 0; i < divs.length; i++) {
             divs[i].setAttribute("style", "display: block");
         }
@@ -110,8 +110,8 @@ function setMain(e, item) {
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
             ${data.msg}
         </div>`;
-    addAlert(alertErr, "#header")
-   })
+    addAlert(alertErr, "#header");
+   });
 }
 
 function deleteImage(e, item) {
@@ -128,16 +128,17 @@ function deleteImage(e, item) {
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
             ${data.msg}
         </div>`;
-        addAlert(alertErr, "#header")
+        addAlert(alertErr, "#header");
     } else {
         $(`#${item.id.substr(3)}`).remove();
         $(`#sel${item.id.substr(3)}`).remove();
         item.remove();
+
         var alertSuccess = `
         <div id="alert" class="alert alert-success" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
             ${data.msg}
         </div>`;
-        addAlert(alertSuccess, "#header")      
-    }})
+        addAlert(alertSuccess, "#header");
+    }});
 }

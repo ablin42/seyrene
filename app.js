@@ -5,14 +5,11 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("express-flash");
-const fs = require('fs');
 const expressSanitizer = require("express-sanitizer");
 const filter = require("content-filter");
 require('dotenv').config();
 
 const { setUser } = require("./controllers/helpers/verifySession");
-const stripeSecret = process.env.STRIPE_SECRET;
-const stripePublic = process.env.STRIPE_PUBLIC;
 
 //Connect to DB
 mongoose.connect(
@@ -103,7 +100,6 @@ app.use("/api/stripe", stripeRoute);
 
 // Handles multer error
 app.use((err, req, res, next) => {
-  //////
   // treat as 404
   if (err.message && (~err.message.indexOf("not found") ||
       ~err.message.indexOf("Cast to ObjectId failed"))) {
@@ -111,7 +107,7 @@ app.use((err, req, res, next) => {
   }
   console.error(err.stack);
     
-  ///////////multer error
+  // multer error
   if (req.originalUrl.indexOf("/api/gallery/") != -1 || req.originalUrl.indexOf("/api/shop/") != -1 || req.originalUrl.indexOf("/api/front/") != -1)
     return res.status(500).json({ url: "/", msg: err.message, err: true });
 

@@ -7,7 +7,7 @@ async function postShop(e) {
         img = document.querySelector('#img'),
         formData = new FormData();
     
-    for (i = 0; i < img.files.length; i++) 
+    for (let i = 0; i < img.files.length; i++) 
         formData.append('img', img.files[i]);
 
     formData.append('title', title);
@@ -26,8 +26,8 @@ async function postShop(e) {
             let alert = createAlertNode(data.msg, "warning");
             addAlert(alert, "#header");
         } else 
-            window.location.href = data.url                
-    })
+            window.location.href = data.url    ;            
+    });
 }
 
 async function patchShop(e, shopId) {
@@ -39,7 +39,7 @@ async function patchShop(e, shopId) {
         img = document.querySelector('#img'),
         formData = new FormData();
    
-    for (i = 0; i < img.files.length; i++) 
+    for (let i = 0; i < img.files.length; i++) 
         formData.append('img', img.files[i]);
 
     formData.append('title', title);
@@ -58,8 +58,8 @@ async function patchShop(e, shopId) {
         let alert = createAlertNode(data.msg, "warning");
         addAlert(alert, "#header");
     } else 
-        window.location.href = data.url                
-    })
+        window.location.href = data.url    ;            
+    });
 }
 
 function setMain(e, item) {
@@ -70,12 +70,12 @@ function setMain(e, item) {
     })
     .then(response => response.json())
     .then(data => {
-        let type = "success"
+        let type = "success";
         if (data.err === true) 
             type = "warning";
         else {
             let divs = $(`.action-div`);
-            console.log(divs)
+            console.log(divs);
             for (let i = 0; i < divs.length; i++) {
                 divs[i].setAttribute("style", "display: block");
             }
@@ -87,7 +87,7 @@ function setMain(e, item) {
                 ${data.msg}
             </div>`;
     addAlert(alertErr, "#header");
-   })
+   });
 }
 
 function deleteImage(e, item) {
@@ -104,32 +104,33 @@ function deleteImage(e, item) {
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${data.msg}
             </div>`;
-            addAlert(alertErr, "#header")
+            addAlert(alertErr, "#header");
         } else {
             $(`#${item.id.substr(3)}`).remove();
             $(`#sel${item.id.substr(3)}`).remove();
             item.remove();
+
             var alertSuccess = `
             <div id="alert" class="alert alert-success" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${data.msg}
             </div>`;
             addAlert(alertSuccess, "#header"); 
-    }})
+    }});
 }
 
 function openTab(btn, tabName) {
     let tab = document.getElementsByClassName("tab");
     let buttons = document.getElementsByClassName("tab-btn");
 
-    for (let i = 0; i < buttons.length; i++) {
+    for (let i = 0; i < buttons.length; i++)
         buttons[i].classList.remove("active");
-    }
+    
     btn.classList.add("active");
 
-    for (let i = 0; i < tab.length; i++) {
+    for (let i = 0; i < tab.length; i++) 
       tab[i].style.display = "none";  
-    }
+
     document.getElementById(tabName).style.display = "grid";
     document.getElementById("infinitebtn").setAttribute("onclick", `infiniteShopItems("${tabName}");`);
     document.getElementById("infinitebtn").setAttribute("value", "Load More");

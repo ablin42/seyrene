@@ -3,7 +3,7 @@ const imageType = require('image-type');
 
 module.exports = {
     sanitizeFile: function (req, file, cb) {
-        console.log("IN HELPER")
+        console.log("IN HELPER");
         let fileExts = ['png', 'jpg', 'jpeg', 'gif'];
         let isAllowedExt = fileExts.includes(file.originalname.split('.')[1].toLowerCase());
         let isAllowedMimeType = file.mimetype.startsWith("image/");
@@ -16,39 +16,43 @@ module.exports = {
     multerErr: function (err) {
         try {
             if (err instanceof multer.MulterError) {
-                throw new Error(err.message)
+                throw new Error(err.message);
             } else if (err) {
-                throw new Error(err)
+                throw new Error(err);
             }
             else 
                 return {err: false};
-        } catch (err) {throw new Error(err.message)}
+        } catch (err) 
+        {throw new Error(err.message);}
     },
     parseTags: function (tags) {
         try {
             if (tags != undefined) {
-                var parsed = JSON.parse(tags);
-                trimmed = parsed.map((item) => {
+                let parsed = JSON.parse(tags);
+                let trimmed = parsed.map((item) => {
                     return item = item.trim();
-                })
+                });
+
                 return trimmed;
             }
         else 
             return [];
-        } catch (err) {throw new Error("An error occurred while parsing your tags, please try again")}
+        } catch (err) 
+        {throw new Error("An error occurred while parsing your tags, please try again");}
        
     },
     imgEncode: async function (file) {
         try {
             if (file != undefined) {
-                encode_image = file.buffer.toString('base64');
-                buffer = Buffer.from(encode_image, 'base64');
-                type = imageType(buffer);
+                let encode_image = file.buffer.toString('base64');
+                let buffer = Buffer.from(encode_image, 'base64');
+                let type = imageType(buffer);
                 if (type != null) {
                     let imgInfo = {
                             data: buffer,
                             contentType: file.mimetype
-                        }
+                    };
+
                     return imgInfo;
                 } else 
                     throw new Error("Something went wrong while encoding your file");
@@ -58,6 +62,4 @@ module.exports = {
             throw new Error(err.message);
         }
     }
-}
-
-
+};

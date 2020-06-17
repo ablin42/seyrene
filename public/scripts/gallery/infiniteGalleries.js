@@ -27,7 +27,7 @@ async function infiniteGalleries() {
 
                             gallery.tags.forEach(tag => {
                                 toAppend += ` <a href="/Galerie/Tags?t=${tag}">#${tag}</a>`;
-                            })
+                            });
                             toAppend += `   </div>
                                         <form action="/Galerie/${id}"><button class="blog-btn">Lire plus</button></form>
                                         </div></div>`;
@@ -48,19 +48,19 @@ async function infiniteGalleries() {
             let alert = createAlertNode(data.message, "warning");
             addAlert(alert, "#header");
         }
-        }) 
+        });
     })
     .catch((err) => {
         let alert = createAlertNode(err.message, "warning");
         addAlert(alert, "#header");
-    })
+    });
     loader.css("display","none");
 }
 
 $(window).scroll(function() {
-val1 = Math.ceil($(window).scrollTop() + $(window).height());
-val2 = $(document).height();
-if (val1 >= val2) {
-    infiniteGalleries();
-}
+    const val1 = Math.ceil($(window).scrollTop() + $(window).height());
+    const val2 = $(document).height();
+    if (val1 >= val2) {
+        infiniteGalleries();
+    }
 });

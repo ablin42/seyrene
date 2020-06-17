@@ -7,12 +7,13 @@ const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 const Gallery = require('../models/Gallery');
 const Shop = require('../models/Shop');
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('./helpers/verifySession');
+const { setUser, authUser, setOrder, authGetOrder } = require('./helpers/verifySession');
 const utils = require('./helpers/utils');
 require('dotenv').config();
 
 router.post('/create-intent', setUser, authUser, async (req, res) => { 
 try {
+    let err, item;
     let cart = new Cart(req.session.cart ? req.session.cart : {});
     let total = cart.price.totalIncludingTax; /////////////////////HERE
     let items = cart.generateArray();
@@ -20,11 +21,11 @@ try {
     if (total > 0) {
         for (let i = 0; i < items.length; i++) {
             if (items[i].attributes.isUnique) {
-                var [err, item] = await utils.to(Shop.findById(items[i].attributes._id));
+                [err, item] = await utils.to(Shop.findById(items[i].attributes._id));
                 if (err || item === null)
                     throw new Error("An error occurred while looking for an item you tried to purchase");
             } else {
-                var [err, item] = await utils.to(Gallery.findById(items[i].attributes._id));
+                [err, item] = await utils.to(Gallery.findById(items[i].attributes._id));
                 if (err || item === null)
                     throw new Error("An error occurred while looking for an item you tried to purchase");
             }
@@ -48,7 +49,7 @@ try {
                 },
                 body: {items: items, price: total, deliveryPrice: cart.price.shippingIncludingTax, user: req.user, chargeId: paymentIntent.id},
                 json: true
-            }
+            };
 
             let result = await rp(options);
             if (typeof result === "string") 
@@ -62,14 +63,14 @@ try {
         throw new Error("Your cart is empty!");
 } catch (err) {
     console.log("STRIPE CREATE INTENT ERROR:", err);
-    return res.status(200).json({error: true, message: err.message})
-}})
+    return res.status(200).json({error: true, message: err.message});
+}});
 
 router.post('/refund/:id', setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 try {
     let chargeId = req.body.chargeId;
 
-    var [err, order] = await utils.to(Order.findOne({chargeId: chargeId})); 
+    let [err, order] = await utils.to(Order.findOne({chargeId: chargeId})); 
     if (err || order === null)
         throw new Error("We couldn't find your order, please try again");
     
@@ -82,7 +83,7 @@ try {
     );
 } catch (err) {
     console.log("STRIPE REFUND ERROR:", err);
-    return res.status(200).json({error: true, message: err.message})
-}})
+    return res.status(200).json({error: true, message: err.message});
+}});
 
 module.exports = router;

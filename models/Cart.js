@@ -5,7 +5,7 @@ module.exports = function Cart(oldCart) {
     this.items = oldCart.items || {};
     this.totalQty = oldCart.totalQty || 0;
     this.totalPrice = oldCart.totalPrice || 0;
-    this.price = oldCart.price || {shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: 0, totalExcludingTax: 0}
+    this.price = oldCart.price || {shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: 0, totalExcludingTax: 0};
     this.uniquePriceTotal = oldCart.uniquePriceTotal || 0;
 
     this.add = function (item, id) {
@@ -21,7 +21,7 @@ module.exports = function Cart(oldCart) {
         this.price.totalIncludingTax += this.uniquePriceTotal;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[id].unitPrice) * 100) / 100).toFixed(2));
 
-        this.generateArray()
+        this.generateArray();
     };
 
     // don't need this function
@@ -48,7 +48,7 @@ module.exports = function Cart(oldCart) {
         storedItem.price = parseFloat((itemPrice * storedItem.qty).toFixed(2));
         this.totalQty = this.totalQty + qtyOffset;
         this.totalPrice = parseFloat((Math.round((this.totalPrice + priceOffset) * 100) / 100).toFixed(2));
-    }
+    };
     
     this.delete = function (item, id) {
         var storedItem = this.items[id];
@@ -69,16 +69,16 @@ module.exports = function Cart(oldCart) {
                 this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
             }
         }
-    }
+    };
 
     this.pwintyAdd = async function (item, data) {
         let storedItem = this.items[data.SKU];
-        let attributes = data.attributes
+        let attributes = data.attributes;
         attributes.SKU = data.SKU;
         let retData = {
             qty: 0,
             price: 0
-        }
+        };
 
         if (!storedItem) 
             storedItem = this.items[data.SKU] = {attributes: item, elements: [{attributes : attributes, qty: 1}], qty: 1, price: data.price, unitPrice: data.price}; 
@@ -103,16 +103,16 @@ module.exports = function Cart(oldCart) {
 
         await this.fetchPrice();
         return (retData);
-    }
+    };
 
     this.pwintyDelete = async function (data) {
         let storedItem = this.items[data.SKU];
-        let attributes = data.attributes
+        let attributes = data.attributes;
         attributes.SKU = data.SKU;
         let retData = {
             qty: 0,
             price: 0
-        }
+        };
         
         if (storedItem) {
             let unitPrice = storedItem.unitPrice;
@@ -139,16 +139,16 @@ module.exports = function Cart(oldCart) {
 
         await this.fetchPrice();
         return (retData);
-    }
+    };
 
     this.pwintyUpdate = async function (data, qty) {
         var storedItem = this.items[data.SKU];
-        let attributes = data.attributes
+        let attributes = data.attributes;
         attributes.SKU = data.SKU;
         let retData = {
             qty: qty,
             price: 0
-        }
+        };
 
         if (storedItem) {
             let unitPrice = storedItem.unitPrice;
@@ -181,16 +181,17 @@ module.exports = function Cart(oldCart) {
         
         await this.fetchPrice();
         return (retData);
-    }
+    };
 
     this.clearCart = function () {
         this.items = {};
         this.totalQty = 0;
         this.totalPrice = 0;
-    }
+    };
 
     this.generateArray = function () {
         let arr = [];
+
         for (let id in this.items) {
             arr.push(this.items[id]);
         }
@@ -209,7 +210,7 @@ module.exports = function Cart(oldCart) {
     this.fetchPrice = async function () {
         let items = this.generatePwintyArray();
         if (items.length <= 0)  {
-            this.price = {shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: this.uniquePriceTotal, totalExcludingTax: 0}
+            this.price = {shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: this.uniquePriceTotal, totalExcludingTax: 0};
             return;
         }
             
@@ -223,7 +224,8 @@ module.exports = function Cart(oldCart) {
             },
             body: {items: items},
             json: true
-        }
+        };
+
         let obj = await rp(options);
         if (obj.error === true || obj.response.length <= 0) {
             this.clearCart();
@@ -234,9 +236,9 @@ module.exports = function Cart(oldCart) {
                 shippingExcludingTax: parseFloat(obj.response.shippingPriceExcludingTax),
                 totalIncludingTax: parseFloat(obj.response.totalPriceIncludingTax) + this.uniquePriceTotal,
                 totalExcludingTax: parseFloat(obj.response.totalPriceExcludingTax)
-            }
+            };
         }
-    }
+    };
 
     this.fetchCountryCode = async function () {
         let options = {  
@@ -247,10 +249,11 @@ module.exports = function Cart(oldCart) {
             },
             credentials: "include",
             mode: "same-origin"
-        }
+        };
+
         let response = await rp(`${process.env.BASEURL}/api/user/countryCode/`, options);
         if (response.error === false)
             return response.countryCode;
         return "FR";
-    }
-}
+    };
+};
