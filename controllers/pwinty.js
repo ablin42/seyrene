@@ -11,7 +11,7 @@ const fx = new Money();
 fx.init();
 require('dotenv').config();
 
-var formatter = new Intl.NumberFormat("de-DE", {
+const formatter = new Intl.NumberFormat("de-DE", {
     style: "currency",
     currency: "EUR"
 });

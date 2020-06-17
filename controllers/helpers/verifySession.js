@@ -12,7 +12,7 @@ async function setUser(req, res, next) {
   const userId = req.session._id;
 
   if (userId) {
-    var [err, user] = await utils.to(User.findById(userId));
+    let [err, user] = await utils.to(User.findById(userId));
     if (err || user == null) {
       req.flash("warning", "Invalid User");
       return res.status(401).redirect("/Account");
@@ -69,7 +69,7 @@ async function setDelivery(req, res, next) {
   const userId = req.session._id;
 
   if (userId) {
-    var [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: userId }));
+    let [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: userId }));
     if (err) {
       req.flash("warning", "An error occured looking for your delivery address");
       return res.status(401).redirect("/User");
@@ -92,7 +92,7 @@ function isDelivery(req, res, next) {
 async function setOrder(req, res, next) {
   const orderId = req.params.id;
 
-  var [err, order] = await utils.to(Order.findById(orderId));
+  let [err, order] = await utils.to(Order.findById(orderId));
   if (err || order == null) {
     req.flash("warning", "Invalid Order");
     return res.status(404).redirect("/User");

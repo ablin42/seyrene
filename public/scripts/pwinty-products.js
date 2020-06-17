@@ -1,5 +1,5 @@
 function closeAllSelect(elmnt) {
-    var x, y, i, arrNo = [];
+    let x, y, i, arrNo = [];
     x = document.getElementsByClassName("select-items");
     y = document.getElementsByClassName("select-selected");
 
@@ -75,8 +75,8 @@ function testSKU(category, subcategory) {
             switch (subcategory) {
                 case "STR": {
                     Object.keys(CAN_sizes).forEach(singleSize => {
-                        var SKU = "GLOBAL" + "-" + category + "-" + singleSize;
-                        var objArr = {SKU: SKU, error: 2};
+                        let SKU = "GLOBAL" + "-" + category + "-" + singleSize;
+                        let objArr = {SKU: SKU, error: 2};
                         objArr.error = checkSKU(SKU);
                         checkIsDelivery(SKU);
                         arr.push(objArr);
@@ -88,8 +88,8 @@ function testSKU(category, subcategory) {
                     
                     Object.keys(CAN_ROL_sizes).forEach(singleSize => {
                         Object.keys(CAN_substrate).forEach(singleSubstrate => { 
-                            var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize;
-                            var objArr = {SKU: SKU, error: 2};
+                            let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize;
+                            let objArr = {SKU: SKU, error: 2};
                             objArr.error = checkSKU(SKU);
                             checkIsDelivery(SKU);
                             arr.push(objArr);
@@ -99,8 +99,8 @@ function testSKU(category, subcategory) {
                     Object.keys(CAN_substrate).forEach(singleSubstrate => {
                         if (singleSubstrate !== "PC") {
                             Object.keys(CAN_ROL_sizes).forEach(singleSize => {
-                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize + "-VAR";
-                                var objArr = {SKU: SKU, error: 2};
+                                let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleSize + "-VAR";
+                                let objArr = {SKU: SKU, error: 2};
                                 objArr.error = checkSKU(SKU);
                                 checkIsDelivery(SKU);
                                 arr.push(objArr);
@@ -112,8 +112,8 @@ function testSKU(category, subcategory) {
         
                 case "FRA": {
                     Object.keys(CAN_sizes).forEach(singleSize => {
-                        var SKU = "GLOBAL" + "-" + subcategory + "-" + category + "-" + singleSize;
-                        var objArr = {SKU: SKU, error: 2};
+                        let SKU = "GLOBAL" + "-" + subcategory + "-" + category + "-" + singleSize;
+                        let objArr = {SKU: SKU, error: 2};
                         objArr.error = checkSKU(SKU);
                         checkIsDelivery(SKU);
                         arr.push(objArr);
@@ -127,8 +127,8 @@ function testSKU(category, subcategory) {
         case "PRINT": {
             Object.keys(PRINT_substrate).forEach(singleSubstrate => {
                 Object.keys(PRINT_sizes).forEach(singleSize => {
-                    var SKU = "GLOBAL" + "-" + singleSubstrate + "-" + singleSize;
-                    var objArr = {SKU: SKU, error: 2};
+                    let SKU = "GLOBAL" + "-" + singleSubstrate + "-" + singleSize;
+                    let objArr = {SKU: SKU, error: 2};
                     objArr.error = checkSKU(SKU);
                     checkIsDelivery(SKU);
                     arr.push(objArr);
@@ -144,8 +144,8 @@ function testSKU(category, subcategory) {
                         Object.keys(mountType).forEach(singleMount => {
                             Object.keys(glazeType).forEach(singleGlaze => {
                                 Object.keys(substrateType).forEach(singleSubstrate => {
-                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
-                                    var objArr = {SKU: SKU, error: 2};
+                                    let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
+                                    let objArr = {SKU: SKU, error: 2};
                                     objArr.error = checkSKU(SKU);
                                     checkIsDelivery(SKU);
                                     arr.push(objArr);
@@ -161,8 +161,8 @@ function testSKU(category, subcategory) {
                         Object.keys(mountType).forEach(singleMount => {
                             Object.keys(glazeType).forEach(singleGlaze => {
                                 Object.keys(substrateType).forEach(singleSubstrate => {
-                                    var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
-                                    var objArr = {SKU: SKU, error: 2};
+                                    let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
+                                    let objArr = {SKU: SKU, error: 2};
                                     objArr.error = checkSKU(SKU);
                                     checkIsDelivery(SKU);
                                     arr.push(objArr);
@@ -177,8 +177,8 @@ function testSKU(category, subcategory) {
                     Object.keys(FRA_sizes).forEach(singleSize => {
                         Object.keys(mountType).forEach(singleMount => {
                             Object.keys(substrateType).forEach(singleSubstrate => {
-                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
-                                var objArr = {SKU: SKU, error: 2};
+                                let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
+                                let objArr = {SKU: SKU, error: 2};
                                 objArr.error = checkSKU(SKU);
                                 checkIsDelivery(SKU);
                                 arr.push(objArr);
@@ -192,8 +192,8 @@ function testSKU(category, subcategory) {
                     Object.keys(FRA_sizes).forEach(singleSize => {
                         Object.keys(glazeType).forEach(singleGlaze => {
                             Object.keys(substrateType).forEach(singleSubstrate => {
-                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleGlaze + "-" + singleSize;
-                                var objArr = {SKU: SKU, error: 2};
+                                let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleGlaze + "-" + singleSize;
+                                let objArr = {SKU: SKU, error: 2};
                                 objArr.error = checkSKU(SKU);
                                 checkIsDelivery(SKU);
                                 arr.push(objArr);
@@ -206,8 +206,8 @@ function testSKU(category, subcategory) {
                 case "SUR1": {
                     Object.keys(FRA_SUR_sizes).forEach(singleSize => {
                         Object.keys(substrateType).forEach(singleSubstrate => {
-                            var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
-                            var objArr = {SKU: SKU, error: 2};
+                            let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
+                            let objArr = {SKU: SKU, error: 2};
                             objArr.error = checkSKU(SKU);
                             checkIsDelivery(SKU);
                             arr.push(objArr);
@@ -219,8 +219,8 @@ function testSKU(category, subcategory) {
                 case "SUR2": {
                     Object.keys(FRA_SUR_sizes).forEach(singleSize => {
                         Object.keys(substrateType).forEach(singleSubstrate => {
-                            var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
-                            var objArr = {SKU: SKU, error: 2};
+                            let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-NM-" + singleSize;
+                            let objArr = {SKU: SKU, error: 2};
                             objArr.error = checkSKU(SKU);
                             checkIsDelivery(SKU);
                             arr.push(objArr);
@@ -233,8 +233,8 @@ function testSKU(category, subcategory) {
                     Object.keys(FRA_sizes).forEach(singleSize => {
                         Object.keys(mountType).forEach(singleMount => {
                             Object.keys(substrateType).forEach(singleSubstrate => {
-                                var SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
-                                var objArr = {SKU: SKU, error: 2};
+                                let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
+                                let objArr = {SKU: SKU, error: 2};
                                 objArr.error = checkSKU(SKU);
                                 checkIsDelivery(SKU);
                                 arr.push(objArr);
@@ -428,7 +428,7 @@ class PwintyObject {
     }
 
     selectScript() {
-        var x, i, j, selElmnt, a, b, c;
+        let x, i, j, selElmnt, a, b, c;
         x = document.getElementsByClassName("select-wrapper");
 
         for (i = 0; i < x.length; i++) {
@@ -446,7 +446,7 @@ class PwintyObject {
                 c.innerHTML = selElmnt.options[j].innerHTML;
 
                 c.addEventListener("click", function(e) {
-                    var y, i, k, s, h;
+                    let y, i, k, s, h;
                     s = this.parentNode.parentNode.getElementsByTagName("select")[0];
                     h = this.parentNode.previousSibling;
 

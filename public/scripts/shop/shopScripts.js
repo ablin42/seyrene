@@ -81,7 +81,7 @@ function setMain(e, item) {
             }
             $(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
         }
-        var alertErr = `
+        let alertErr = `
             <div id="alert" class="alert alert-${type}" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${data.msg}
@@ -99,7 +99,7 @@ function deleteImage(e, item) {
     .then(response => response.json())
     .then(data => {
         if (data.err === true) {
-            var alertErr = `
+            let alertErr = `
             <div id="alert" class="alert alert-warning" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${data.msg}
@@ -110,7 +110,7 @@ function deleteImage(e, item) {
             $(`#sel${item.id.substr(3)}`).remove();
             item.remove();
 
-            var alertSuccess = `
+            let alertSuccess = `
             <div id="alert" class="alert alert-success" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${data.msg}

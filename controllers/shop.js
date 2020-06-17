@@ -33,7 +33,7 @@ const upload = multer({
   }
 }).array("img");
 
-var formatter = new Intl.NumberFormat("de-DE", {
+const formatter = new Intl.NumberFormat("de-DE", {
   style: "currency",
   currency: "EUR"
 });
@@ -55,9 +55,11 @@ async function parsePrice(shopItems) {
       mainImgId: "",
       __v: shopItems[i].__v
     };
-    var [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
+
+    let [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
     if (err || img == null) 
       throw new Error(`An error occurred while fetching the shop images ${shopItems[i]._id}`);
+
     obj.mainImgId = img._id;
     arr.push(obj);
   }
@@ -234,7 +236,8 @@ try {
 router.get("/single/:id", setUser, async (req, res) => {
   try {
     let id = req.params.id;
-    var [err, result] = await utils.to(Shop.findById(id));
+    
+    let [err, result] = await utils.to(Shop.findById(id));
     if (err || result === null)
       throw new Error("An error occurred while fetching the shop item");
 

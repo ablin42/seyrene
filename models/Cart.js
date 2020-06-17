@@ -9,7 +9,7 @@ module.exports = function Cart(oldCart) {
     this.uniquePriceTotal = oldCart.uniquePriceTotal || 0;
 
     this.add = function (item, id) {
-        var storedItem = this.items[id];
+        let storedItem = this.items[id];
         if (!storedItem) 
             storedItem = this.items[id] = {attributes: item, qty: 0, price: 0, unitPrice: 0};
         this.items[id].unitPrice = parseFloat(storedItem.attributes.price);
@@ -26,7 +26,7 @@ module.exports = function Cart(oldCart) {
 
     // don't need this function
     this.update = function (item, id, qty) {
-        var storedItem = this.items[id];
+        let storedItem = this.items[id];
         if (!storedItem) //shouldnt need
             storedItem = this.items[id] = {item: item, qty: 0, price: 0}; //shouldnt need either
              
@@ -51,7 +51,7 @@ module.exports = function Cart(oldCart) {
     };
     
     this.delete = function (item, id) {
-        var storedItem = this.items[id];
+        let storedItem = this.items[id];
         if (storedItem) {
             let singlePrice = parseFloat((storedItem.price / storedItem.qty).toFixed(2));
             if (storedItem.qty === 1) {
@@ -142,7 +142,7 @@ module.exports = function Cart(oldCart) {
     };
 
     this.pwintyUpdate = async function (data, qty) {
-        var storedItem = this.items[data.SKU];
+        let storedItem = this.items[data.SKU];
         let attributes = data.attributes;
         attributes.SKU = data.SKU;
         let retData = {

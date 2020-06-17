@@ -51,7 +51,7 @@ app.use(
 );
 //-- Flash --//
 app.use(flash());
-var blacklist = ["$", "{", "&&", "||"];
+const blacklist = ["$", "{", "&&", "||"];
 app.use(
   filter({
     urlBlackList: blacklist,

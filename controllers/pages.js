@@ -31,8 +31,8 @@ const toTitleCase = (phrase) => {
   return parsed.join(' ');
 };
 
-//var formatter = new Intl.NumberFormat();
-var formatter = new Intl.NumberFormat("de-DE", {
+//const formatter = new Intl.NumberFormat();
+const formatter = new Intl.NumberFormat("de-DE", {
   style: "currency",
   currency: "EUR"
 });
@@ -124,8 +124,9 @@ try {
     let itemArr = cart.generateArray();
      
     itemArr.forEach(item => {
+      let items;
       if (item.attributes && item.attributes.isUnique) {
-        var items = {
+        items = {
           item: item.attributes,
           qty: item.qty,
           price: formatter.format(item.price).substr(2),
@@ -137,7 +138,7 @@ try {
       } else {
         item.elements.forEach(element => {
           if (element.attributes !== undefined) {
-            var items = {
+            items = {
               item: item.attributes, 
               attributes: element.attributes,
               stringifiedAttributes: JSON.stringify(element.attributes),
@@ -320,7 +321,7 @@ try {
     token: req.params.token
   };
 
-  var [err, pwToken] = await utils.to(PwToken.findOne({ _id: obj.tokenId, token: obj.token }));
+  let [err, pwToken] = await utils.to(PwToken.findOne({ _id: obj.tokenId, token: obj.token }));
   if (err)
     throw new Error("An error occurred while fetching the token, please try again");
   if (pwToken === null)
@@ -354,8 +355,9 @@ try {
   obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
   obj.products = [];
   obj.order.items.forEach(item => {
+    let items;
     if (item.attributes.isUnique) {
-      var items = {
+      items = {
         item: item.attributes,
         qty: item.qty,
         price: item.price,
@@ -367,7 +369,7 @@ try {
     } else {
       item.elements.forEach(element => {
         if (element.attributes !== undefined) {
-          var items = {
+          items = {
             item: item.attributes, 
             attributes: element.attributes,
             stringifiedAttributes: JSON.stringify(element.attributes),
@@ -537,8 +539,9 @@ try {
   obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
   obj.products = [];
   obj.order.items.forEach(item => {
+    let items;
     if (item.attributes.isUnique) {
-      var items = {
+      items = {
         item: item.attributes,
         qty: item.qty,
         price: item.price,
@@ -550,7 +553,7 @@ try {
     } else {
       item.elements.forEach(element => {
         if (element.attributes !== undefined) {
-          var items = {
+          items = {
             item: item.attributes, 
             attributes: element.attributes,
             stringifiedAttributes: JSON.stringify(element.attributes),
@@ -594,7 +597,7 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 try {
   let obj = { active: "Edit a gallery item" };
       
-  var [err, result] = await utils.to(Gallery.findOne({ _id: req.params.galleryId }));
+  let [err, result] = await utils.to(Gallery.findOne({ _id: req.params.galleryId }));
   if (err || !result)
     throw new Error("An error occurred while fetching the gallery item");
   obj.gallery = result;
@@ -626,7 +629,7 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 try {
   let obj = { active: "Edit a shop item", user: req.user };
 
-  var [err, result] = await utils.to(Shop.findOne({ _id: req.params.shopId }));
+  let [err, result] = await utils.to(Shop.findOne({ _id: req.params.shopId }));
   if (err || !result)
     throw new Error("An error occurred while fetching the shop item");
   obj.shop = result;
@@ -667,7 +670,7 @@ try {
     req.session.formData = undefined;
   }
 
-  var [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
+  let [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
   if (err)
     throw new Error("An error occurred while loading the blog, please try again");
   if (blog === null) 

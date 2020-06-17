@@ -7,7 +7,7 @@
     <div class="carousel-inner" role="listbox">
         <% if (locals.front) { %>
           <% i = 0; %>
-          <% for (var index = 0; index < 5; index++) { %>
+          <% for (let index = 0; index < 5; index++) { %>
               <% if (locals.front[index] && locals.front[index].null != true) { %>
                 <div class="carousel-item <% if(index == 0) { %>active<% } %>">
                   <a href="#expand"><img onclick="expand(this);" src="/api/front/image/<%= locals.front[index]._id %>" alt="<%= i %>slide"></a>
@@ -35,7 +35,7 @@
     <ol class="carousel-indicators">
         <% if (locals.front) { %>
           <% i = 0; %>
-          <% for (var index = 0; index < 5; index++) { %>
+          <% for (let index = 0; index < 5; index++) { %>
               <% if (locals.front[index] && locals.front[index].null != true) { %>
                 <li data-target="#carousel-thumb" data-slide-to="<%= i %>" <% if(index == 0) { %>class='active'<% } %>> 
                     <img class="d-block w-100" src="/api/front/image/<%= locals.front[index]._id %>" alt="..." class="img-fluid">

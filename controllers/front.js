@@ -87,7 +87,8 @@ try {
 router.get('/delete/:id', setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => { /////////////////////// HERE
 try {
     let id = req.params.id; //sanitize
-    var [err, front] = await utils.to(Front.findOneAndUpdate({ referenceId: id }, { $set: { null: true } }));
+
+    let [err, front] = await utils.to(Front.findOneAndUpdate({ referenceId: id }, { $set: { null: true } }));
     if (err)
         throw new Error("An error occurred while deleting the item, please try again");
     fs.unlink(front.path, (err) => {
@@ -105,7 +106,7 @@ router.get('/image/:id', setUser, async (req, res) => {
 try {
     let id = req.params.id;
 
-    var [err, result] = await utils.to(Front.findOne({'_id': id }));
+    let [err, result] = await utils.to(Front.findOne({'_id': id }));
     if (err) 
         throw new Error("An error occurred while fetching the image");
 

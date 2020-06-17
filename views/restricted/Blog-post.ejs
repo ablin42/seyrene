@@ -23,7 +23,7 @@
 </div>
 
 <script>
-    var toolbarOptions = [
+    const toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
         ['blockquote', 'code-block'],
         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
@@ -37,7 +37,7 @@
         ['clean']                                         // remove formatting button
     ];
 
-    var quill = new Quill('#editor', {
+    let quill = new Quill('#editor', {
         modules: {
             toolbar: toolbarOptions,
         },

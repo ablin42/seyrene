@@ -323,7 +323,7 @@ try {
   let countryCode = "";
 
   if (req.user) {
-    var [err, result] = await utils.to(DeliveryInfo.findOne({_userId: req.user._id}));
+    let [err, result] = await utils.to(DeliveryInfo.findOne({_userId: req.user._id}));
     if (err || result === null) {
       ipinfo.lookupIp(ip).then((response) => {
         countryCode = countryList.findByName(toTitleCase(response.country));

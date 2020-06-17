@@ -6,7 +6,7 @@ const Shop = require('../models/Shop');
 
 const { setUser } = require('./helpers/verifySession');
 require('dotenv/config');
-var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+const formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
 router.get('/add/:itemId', setUser, async (req, res) => {
 try {
@@ -75,7 +75,7 @@ try {
             if (err)
             return res.status(400).json({"error": true, "msg": "An error occurred while looking for the product"});
 
-            /*var [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
+            /*let [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
             if (err) 
                 throw new Error("An error occurred while fetching the image");*/
 

@@ -84,7 +84,7 @@ try {
   }
 
   // Check if email exists in DB
-  var [err, user] = await utils.to(User.findOne({ email: req.body.email }));
+  let [err, user] = await utils.to(User.findOne({ email: req.body.email }));
   if (err)
     throw new Error("An error occurred while looking for your user account, please try again");
   if (!user) 

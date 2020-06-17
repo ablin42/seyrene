@@ -15,7 +15,7 @@ const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require('.
 const utils = require('./helpers/utils');
 const mailer = require('./helpers/mailer');
 const format = require("date-format");
-var formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+const formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 require('dotenv').config();
 
 const toTitleCase = (phrase) => {
@@ -88,7 +88,8 @@ try {
 router.get('/:id', setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 try {
     let id = req.params.id;
-    var [err, result] = await utils.to(Order.findById(id));
+
+    let [err, result] = await utils.to(Order.findById(id));
     if (err)
         throw new Error("An error occurred while fetching your order");
     if (result === null)
@@ -306,8 +307,9 @@ try {
                 isPwinty = true;
         }
 
+        let response;
         if (isPwinty === false)
-            var response = await submitOrder(order, req);
+            response = await submitOrder(order, req);
         else 
             response = await createPwintyOrder(order, req);
         
@@ -535,7 +537,7 @@ try {
             if (data.status !== "OK") 
                 return res.status(200).json({error: true, message: "We could not validate your address, please make sure it is valid"});
             
-            var [err, order] = await utils.to(Order.findOneAndUpdate({_userId: req.user._id, chargeId: req.body.clientSecret, status: "awaitingStripePayment" }, {$set: {billing: req.body.billing}}));
+            let [err, order] = await utils.to(Order.findOneAndUpdate({_userId: req.user._id, chargeId: req.body.clientSecret, status: "awaitingStripePayment" }, {$set: {billing: req.body.billing}}));
             if (err || order === null)
                 throw new Error("An error occurred while registering your billing informations, please try again later");
             

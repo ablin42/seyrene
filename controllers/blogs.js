@@ -76,7 +76,7 @@ try {
   req.session.formData = {title: obj.title,content: obj.content};
 
   const blog = new Blog(obj);
-  var [err, savedBlog] = await utils.to(blog.save());
+  let [err, savedBlog] = await utils.to(blog.save());
   if (err) 
     throw new Error("An error occurred while posting your blog, please try again");
 
@@ -97,7 +97,7 @@ try {
     content: req.body.content
   };
 
-  var [err, patchedBlog] = await utils.to(Blog.updateOne({ _id: id },{$set: {title: req.body.title, content: req.body.content}}));
+  let [err, patchedBlog] = await utils.to(Blog.updateOne({ _id: id },{$set: {title: req.body.title, content: req.body.content}}));
   if (err)
     throw new Error("An error occurred while updating the blog, please try again");
 
@@ -114,7 +114,7 @@ router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (re
 try {
   let blogId = req.params.blogId;
 
-  var [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
+  let [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
   if (err)
     throw new Error("An error occurred while deleting the blog, please try again");
   

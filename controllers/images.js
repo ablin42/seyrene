@@ -10,7 +10,7 @@ router.get('/:id', setUser, async (req, res) => {
 try {
     let id = req.params.id;
 
-    var [err, result] = await utils.to(Image.findById(id));
+    let [err, result] = await utils.to(Image.findById(id));
     if (err) 
         throw new Error("An error occurred while fetching the image");
     if (result == null)
@@ -34,7 +34,7 @@ try {
     let id = req.params.itemId,
         itemType = req.params.itemType;
 
-    var [err, result] = await utils.to(Image.findOne({itemType: itemType, _itemId: id, isMain: true}));
+    let [err, result] = await utils.to(Image.findOne({itemType: itemType, _itemId: id, isMain: true}));
     if (err) 
         throw new Error("An error occurred while fetching the image");
     if (result == null)
@@ -117,7 +117,7 @@ try {
     let itemId = req.params.itemId,
         itemType = req.params.itemType;
         
-    var [err, result] = await utils.to(Image.find({itemType: itemType, _itemId: itemId}).sort({ isMain: -1 }));
+    let [err, result] = await utils.to(Image.find({itemType: itemType, _itemId: itemId}).sort({ isMain: -1 }));
     if (err) 
         throw new Error("An error occurred while fetching the image");
     //if (result == null || result.length < 1)

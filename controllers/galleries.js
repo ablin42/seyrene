@@ -50,13 +50,7 @@ async function fetchMainImg(galleries) {
       mainImgId: "",
       __v: galleries[i].__v
     };
-    var [err, img] = await utils.to(
-      Image.findOne({
-        _itemId: galleries[i]._id,
-        itemType: "Gallery",
-        isMain: true
-      })
-    );
+    let [err, img] = await utils.to(Image.findOne({_itemId: galleries[i]._id, itemType: "Gallery", isMain: true}));
     if (err || img == null)
       throw new Error("An error occurred while fetching the galleries images");
     obj.mainImgId = img._id;
@@ -72,9 +66,11 @@ router.get("/", setUser, async (req, res) => {
       limit: 6,
       sort: { date: -1 }
     };
-    var [err, result] = await utils.to(Gallery.paginate({}, options));
-    if (err) throw new Error("An error occurred while fetching galleries");
-    var galleries = result.docs;
+    let [err, result] = await utils.to(Gallery.paginate({}, options));
+    if (err) 
+      throw new Error("An error occurred while fetching galleries");
+
+    let galleries = result.docs;
     galleries = await fetchMainImg(galleries);
 
     return res.status(200).json(galleries);
@@ -96,10 +92,10 @@ router.get("/Tags", setUser, async (req, res) => {
     if (req.query.t) 
       var tagsArr = req.query.t.split(","); //sanitize
 
-    var [err, result] = await utils.to(Gallery.paginate({ tags: { $all: tagsArr } }, options));
+    let [err, result] = await utils.to(Gallery.paginate({ tags: { $all: tagsArr } }, options));
     if (err)
       throw new Error("An error occurred while fetching galleries item by tags");
-    var galleries = result.docs;
+    let galleries = result.docs;
     if (galleries.length == 0)
       throw new Error("No result found for the selected tags");
     galleries = await fetchMainImg(galleries);
@@ -238,7 +234,8 @@ try {
 router.get("/single/:id", setUser, async (req, res) => {
   try {
     let id = req.params.id;
-    var [err, result] = await utils.to(Gallery.findById(id));
+    
+    let [err, result] = await utils.to(Gallery.findById(id));
     if (err || result === null)
       throw new Error("An error occurred while fetching the gallery item");
 

@@ -43,7 +43,7 @@ function readURL(input) {
     let targetDeleteId = "#delete" + input.id.substr(6, 1);
     let targetUploadId = "#uploadbtn" + input.id.substr(6, 1);
     if (input.files && input.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
     
         reader.onload = function(e) {
             $(targetImgId).attr('src', e.target.result);

@@ -5,7 +5,7 @@
         <h1 class="single-title">Modifier les images de l'accueil</h1>
         <h5 class="text-center" style="color: var(--light-shade-p1)">*Pensez à utiliser des images au format paysage...</h5>
         <% if (locals.front) { %>
-            <% for (var index = 0; index < 5; index++) { %>
+            <% for (let index = 0; index < 5; index++) { %>
                 <% if (locals.front[index] && locals.front[index].null != true) { %>
                     <form class="col-10 offset-1 text-center front-form" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data" onsubmit="postFront(event, this);">
                         <div class="form-group" id="uploadGroup<%= index %>">

@@ -1,6 +1,6 @@
 function dismissAlert(closeBtn)
 {
-    var alert = closeBtn.parentElement,
+    let alert = closeBtn.parentElement,
         wrap = document.getElementById("alertwrapper");
     if (wrap)
         wrap.remove();
