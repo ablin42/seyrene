@@ -30,22 +30,20 @@
   let toAppend = "<%= locals.blogs.content %>";
   let contentHolder = document.getElementById("content-holder");
 
-  toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+  toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
   contentHolder.innerHTML = toAppend;
 
   contentHolder.querySelectorAll("img").forEach(item => {
     item.setAttribute("onclick", "expand(this)");
 
-    var link = document.createElement('a');
+    let link = document.createElement('a');
     link.innerHTML = item.outerHTML;
     link.setAttribute('href', '#expand');
     
     item.parentNode.insertBefore(link, item);
     item.remove();
   })
-</script>
 
-<script>
   $('#carousel-thumb').on('slide.bs.carousel', function (element) {
     $("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
     $(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");

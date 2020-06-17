@@ -2,8 +2,8 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    const stripePublicKey = '<%= locals.stripePublicKey %>';
-    const stripe = Stripe(stripePublicKey);
+  const stripePublicKey = '<%= locals.stripePublicKey %>';
+  const stripe = Stripe(stripePublicKey);
 </script>
 
 <div class="container container-single"> 
@@ -101,8 +101,9 @@
 </div>
   
 <script>
-    var orderId;
-    var clientSecret;
+    let orderId;
+    let clientSecret;
+
     fetch("/api/stripe/create-intent", {
       method: "POST",
       headers: {
@@ -110,14 +111,14 @@
       },
       body: []
     })
-    .then(function(result) {return result.json()})
+    .then(function(result) {return result.json();})
     .then(function(data) {
-      console.log(data)
+      console.log(data);
       if (data.error === true) {
         let alert = createAlertNode(data.message, "warning");
         addAlert(alert, "#header");
-        document.querySelector(".btn-pay").disabled = true
-        return ;
+        document.querySelector(".btn-pay").disabled = true;
+        return;
       }
       orderId = data.orderId;
       clientSecret = data.clientSecret;
@@ -176,14 +177,13 @@
         }
       })
       .then(function(result) {
-        console.log(result)
+        console.log(result);
         if (result.error) {
           let alert = createAlertNode(result.error.message, "warning");
           addAlert(alert, "#header");
-          return ;
+          return;
         } 
-        console.log(result, result.paymentIntent.id)
-
+        console.log(result, result.paymentIntent.id);
 
         fetch("/api/order/confirm", { //to remove once live using webhooks
           method: "POST",
@@ -197,7 +197,7 @@
           if (data.error === true) {
             let alert = createAlertNode(data.message);
             addAlert(alert, "#header");
-            return ;
+            return;
           }
         })
         setTimeout(function(){ window.location.href = `/api/cart/clear/${orderId}`; }, 2000);
@@ -234,7 +234,7 @@
       if (data.error === true) {
         let alert = createAlertNode(data.message, "warning");
         addAlert(alert, "#header");
-        return ;
+        return;
       } 
       let alert = createAlertNode("Billing information successfully saved!", "success");
       addAlert(alert, "#header");

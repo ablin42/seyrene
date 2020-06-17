@@ -1,130 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title><%= (locals.active) ? locals.active : '' %></title>
-    <!-- JQuery -->
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
-    ></script>
-    <!-- FontAwesome Icons -->
-    <script src="https://kit.fontawesome.com/ba18cbd714.js"></script>
-    <!-- Bootstrap -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
-    <!-- CUSTOM -->
-    <link rel="stylesheet" href="/style.css" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <title><%= (locals.active) ? locals.active : '' %></title>
+  <!-- JQuery -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- FontAwesome Icons -->
+  <script src="https://kit.fontawesome.com/ba18cbd714.js"></script>
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!-- CUSTOM -->
+  <link rel="stylesheet" href="/style.css" />
+  <!-- Quill RTE -->
+  <link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet"> 
+  <script src="https://cdn.quilljs.com/1.3.4/quill.js"></script>
 
-    <!-- Quill RTE -->
-    <link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet"> 
-    <script src="https://cdn.quilljs.com/1.3.4/quill.js"></script>
+  <script src="/scripts/tools.js"></script>
+  <script src="/scripts/alert.js"></script>
+</head>
 
-    <script src="/scripts/tools.js"></script>
-    <script src="/scripts/alert.js"></script>
-  </head>
+<body>
+  <header id="header">
+    <div class="hamburger">
+      <div class="line line1"></div>
+      <div class="line line2"></div>
+      <div class="line line3"></div>
+    </div>
 
-  <body>
-    <header id="header">
-      <div class="hamburger">
-        <div class="line line1"></div>
-        <div class="line line2"></div>
-        <div class="line line3"></div>
-      </div>
+    <nav class="navbar-container">
+      <nav class="navbar-custom">
+        <a href="/"><h1 class="logo name-header navbar-text">Maral</h1></a>
+        <ul class="nav-links">
+          <li>
+            <a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>" >À propos</a>
+          </li>
+          <li>
+            <a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>" >Galerie</a>
+          </li>
+          <li>
+            <a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>" >Boutique</a>
+          </li>
 
-      <nav class="navbar-container">
-        <nav class="navbar-custom">
-          <a href="/"><h1 class="logo name-header navbar-text">Maral</h1></a>
-          <ul class="nav-links">
+          <% if (!locals.user) { %>
             <li>
-              <a
-                href="/About"
-                class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>"
-                >À propos</a
-              >
+              <a href="/Account" class="navbar-text <%= (locals.active && locals.active == 'Account') ? 'active' : '' %>" >Connexion</a>
             </li>
+          <% } else { %>
             <li>
-              <a
-                href="/Galerie"
-                class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>"
-                >Galerie</a
-              >
+              <a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>" >Compte</a>
             </li>
-            <li>
-              <a
-                href="/Shop"
-                class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>"
-                >Boutique</a
-              >
-            </li>
-            <% if (!locals.user) { %>
-            <li>
-              <a
-                href="/Account"
-                class="navbar-text <%= (locals.active && locals.active == 'Account') ? 'active' : '' %>"
-                >Connexion</a
-              >
-            </li>
-            <% } else { %>
-            <li>
-              <a
-                href="/User"
-                class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>"
-                >Compte</a
-              >
-            </li>
+
             <% if (locals.user && locals.user.role === "admin") { %>
-            <li>
-              <a href="/Admin"class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>">ADMIN</a>
-            </li>
+              <li>
+                <a href="/Admin"class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>">ADMIN</a>
+              </li>
             <% } %>
+
             <li>
               <a href="/api/auth/logout" class="navbar-text">Déconnexion</a>
             </li>
-            <% } %>
-            <li id="cart-qty-li">
-              <a
-                href="/shopping-cart"
-                class="navbar-text <%= (locals.active && locals.active == 'Cart') ? 'active' : '' %>"
-                ><i class="fas fa-shopping-cart fa-2x"></i
-              ></a>
-            </li>
-            <span id="cartQty"
-              ><%= (locals.session.cart && locals.session.cart.totalQty) ?
-              locals.session.cart.totalQty : 0 %></span
-            >
-          </ul>
-        </nav>
+          <% } %>
+          <li id="cart-qty-li">
+            <a href="/shopping-cart" class="navbar-text <%= (locals.active && locals.active == 'Cart') ? 'active' : '' %>" ><i class="fas fa-shopping-cart fa-2x"></i></a>
+          </li>
+          <span id="cartQty"><%= (locals.session.cart && locals.session.cart.totalQty) ?locals.session.cart.totalQty : 0 %></span>
+        </ul>
       </nav>
-    </header>
-    <script src="/scripts/navbar.js"></script>
+    </nav>
+  </header>
 
-    <% if (messages){ %> <% Object.keys(messages).forEach(function (type) { %>
+  <% if (messages){ %> <% Object.keys(messages).forEach(function (type) { %>
     <% messages[type].forEach(function (message) { %>
-    <div id="alert" class="alert alert-<%= type %>" role="alert">
-      <button
-        type="button"
-        class="close"
-        data-dismiss="alert"
-        aria-label="Close"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <%= message %>
-    </div>
-    <% }) %> <% }) %> <% } %>
+      <div id="alert" class="alert alert-<%= type %>" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <%= message %>
+      </div>
+    <% }) %> 
+  <% }) %> <% } %>
   </body>
 </html>
+<script src="/scripts/navbar.js"></script>

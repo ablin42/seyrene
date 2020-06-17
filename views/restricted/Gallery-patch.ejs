@@ -1,7 +1,6 @@
 <% include ../partials/head %>
 
 <script src="/scripts/bootstrap-tagsinput.js"></script>
-
 <div class="container container-single"> 
     <div class="single-wrapper col-8 offset-2">
         <h1 class="single-title">Modifier un item de la galerie</h1>
@@ -51,14 +50,13 @@
 <script>
     let tagInput = $("#tagInput");
     let tags = "<%= locals.gallery.tags %>";
-    tags = tags.split(',')
+    tags = tags.split(',');
 
     tagInput.tagsinput('add', "");
-    for (i = 0; i < tags.length; i++)
+    for (let i = 0; i < tags.length; i++)
         tagInput.tagsinput('add', tags[i]);
 </script>
 <script src="/scripts/gallery/galleryScripts.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 </div>
-  
 <% include ../partials/footer %>

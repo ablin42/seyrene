@@ -58,15 +58,14 @@
 </div>
 
 <script>
-window.onload = function () {
-    for (i = 0; i < 5; i++) {
-        let src = $(`#image${i}`)[0].getAttribute("data-uploaded");
-        if (src == "true") {
-            $(`#uploadGroup${i}`).attr('style', "display: none");
-        } 
+    window.onload = function () {
+        for (let i = 0; i < 5; i++) {
+            let src = $(`#image${i}`)[0].getAttribute("data-uploaded");
+            if (src == "true") {
+                $(`#uploadGroup${i}`).attr('style', "display: none");
+            } 
+        }
     }
-}
 </script>
 <script src="/scripts/frontScripts.js"></script>
-  
 <% include ../partials/footer %>

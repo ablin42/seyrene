@@ -1,6 +1,7 @@
 <% include partials/head %>
 
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="/scripts/blog/infiniteBlogs.js"></script>
 <div class="container-with-menu container">
     <div class="row row-height">
       <div class="menu col-3">
@@ -104,7 +105,6 @@
 
       <div id="blog" class="tab col-9">
         <section class="blog-section">
-            <script src="/scripts/blog/infiniteBlogs.js"></script>
             <div class="container container-blog">
               <div class="col-10 offset-1 wrapper" id="container-blog">
                 <% if(locals.blogs){ %>
@@ -135,17 +135,19 @@
                         </div>
                       </div>
                       <% } %>
+
                       <script>
                         toAppend = "<%= locals.blogs[index].shortcontent %>";
-                        toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+                        toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
                         document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".content-holder").innerHTML = toAppend;
 
                         <% if (locals.blogs[index].thumbnail) { %>
                           toAppend = "<%= locals.blogs[index].thumbnail %>";
-                          toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+                          toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
                           document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".blog-overlay-wrapper").innerHTML += toAppend;
                         <% } %>
                       </script>
+
                   <% }) %>
                 <% } %>
               </div>
@@ -160,43 +162,5 @@
 </div>
 
 <script src="/scripts/frontValidation.js"></script>
-<script>
-  function submitContact(e) {
-    e.preventDefault();
-
-    const name = document.querySelector("#name").value;
-    const email = document.querySelector("#email").value;
-    const title = document.querySelector("#title").value;
-    const content = document.querySelector("#content").value;
-    const captcha = document.querySelector("#g-recaptcha-response").value;
-
-    fetch('/api/contact/', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({name: name, email: email, title: title, content: content, captcha: captcha})
-    })
-    .then((res) => res.json())
-    .then((response) => {
-      let alertType = "success";
-      if (response.error === true)
-        alertType = "warning"
-      else {
-        document.querySelector("#name").value = "";
-        document.querySelector("#email").value = "";
-        document.querySelector("#title").value = "";
-        document.querySelector("#content").value = "";
-      }
-
-      let alert = createAlertNode(response.message, alertType);
-      addAlert(alert, "#header");
-    })
-    .catch(err => {
-      let alert = createAlertNode(err.message, "danger");
-      addAlert(alert, "#header");
-    })
-  }
-</script>
+<script src="/scripts/submit-contact.js"></script>
 <% include partials/footer %>

@@ -134,10 +134,9 @@
             SKU: "<%= locals.products[index].attributes.SKU %>",
             price: parseFloat("<%= locals.products[index].unitPrice %>"),
             attributes: JSON.parse(`<%= locals.products[index].stringifiedAttributes %>`.replace(/&#34;/gi, "\""))
-        }
+        };
       </script>
     <% } %>
   <% }) %>
 <% } %>
-<script>console.log(PWINTY_DATA.length)</script>
 <% include partials/footer %>

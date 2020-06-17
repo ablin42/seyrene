@@ -50,21 +50,21 @@
 </a>
 
 <script>
-    function preventEnter(e, item) {
-      var keyCode = e.keyCode || e.which;
-      if (keyCode === 13) { 
-        e.preventDefault();
-        return false;
-      }
+  function preventEnter(e, item) {
+    let keyCode = e.keyCode || e.which;
+    if (keyCode === 13) { 
+      e.preventDefault();
+      return false;
     }
+  }
 
-    let tagInput = $("#tagInput");
-    let tags = "<%= locals.tags %>";
-    tags = tags.split(',')
+  let tagInput = $("#tagInput");
+  let tags = "<%= locals.tags %>";
+  tags = tags.split(',');
 
-    tagInput.tagsinput('add', "");
-    for (i = 0; i < tags.length; i++)
-      tagInput.tagsinput('add', tags[i]);
+  tagInput.tagsinput('add', "");
+  for (i = 0; i < tags.length; i++)
+    tagInput.tagsinput('add', tags[i]);
 </script>
 <script src="/scripts/gallery/galleryScripts.js"></script>
 <% include partials/footer %>

@@ -66,10 +66,7 @@
           <div class="overlay">
             <div class="overlay-panel overlay-left">
               <h1>Bienvenue!</h1>
-              <p>
-                Pour accéder à votre compte, connectez vous en cliquant sur ce
-                bouton
-              </p>
+              <p>Pour accéder à votre compte, connectez vous en cliquant sur ce bouton</p>
               <button class="ghost" id="signIn">Connexion</button>
             </div>
             <div class="overlay-panel overlay-right">
@@ -87,37 +84,13 @@
         <div class="box">
           <div class="section-heading mb-5">
             <h2>Récupération de mot de passe</h2>
-            <h6>
-              Nous vous enverrons un <b>mail</b> pour réinitaliser votre mot de
-              passe
-            </h6>
+            <h6>Nous vous enverrons un <b>mail</b> pour réinitaliser votre mot de passe</h6>
           </div>
-          <form
-            class="col-8 offset-2"
-            id="lostpw"
-            method="POST"
-            action="/api/user/lostpw"
-          >
-            <input
-              placeholder="Email"
-              class="form-control-test"
-              type="email"
-              id="email-reset"
-              name="email"
-              value="<% if (locals.email) { %><%= locals.email %><% } %>"
-              onkeyup="Validate.Email(this);"
-              required
-            />
-            <span id="i_email-reset" class="form-info"
-              >E-mail has to be valid</span
-            >
+          <form class="col-8 offset-2" id="lostpw" method="POST" action="/api/user/lostpw">
+            <input placeholder="Email" class="form-control-test" type="email" id="email-reset" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required/>
+            <span id="i_email-reset" class="form-info">E-mail has to be valid</span>
 
-            <input
-              type="submit"
-              class="logbtn"
-              value="Envoyer"
-              id="submit-lostpw"
-            />
+            <input type="submit" class="logbtn" value="Envoyer" id="submit-lostpw"/>
           </form>
         </div>
       </section>
@@ -125,58 +98,6 @@
   </div>
 </div>
 
-<script>
-  const signUpButton = document.getElementById("signUp");
-  const signInButton = document.getElementById("signIn");
-  const container = document.getElementById("container");
-
-  signUpButton.addEventListener("click", () => {
-    container.classList.add("right-panel-active");
-  });
-  signInButton.addEventListener("click", () => {
-    container.classList.remove("right-panel-active");
-  });
-
-  function submitRegister(e) {
-    e.preventDefault();
-
-    const name = document.querySelector("#name").value;
-    const email = document.querySelector("#email").value;
-    const password = document.querySelector("#password").value;
-    const password2 = document.querySelector("#password2").value;
-    const captcha = document.querySelector("#g-recaptcha-response").value;
-
-    fetch('/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({name: name, email: email, password: password, password2: password2, captcha: captcha})
-    })
-    .then((res) => res.json())
-    .then((response) => {
-      let alertType = "success";
-      if (response.error === true)
-        alertType = "warning"
-      else {
-        document.querySelector("#name").value = "";
-        document.querySelector("#email").value = "";
-        document.querySelector("#password").value = "";
-        document.querySelector("#password2").value = "";
-        signInButton.click();
-      }
-
-      let alert = createAlertNode(response.message, alertType);
-      addAlert(alert, "#header");
-    })
-    .catch(err => {
-      let alert = createAlertNode(err.message, "danger");
-      addAlert(alert, "#header");
-    })
-  }
-</script>
-
-
+<script src="/scripts/submit-register.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 <% include partials/footer %>
