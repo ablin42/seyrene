@@ -5,14 +5,15 @@ const fs = require("fs");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const Image = require("../models/Image");
 const utils = require("./helpers/utils");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 
 router.get("/:id", setUser, async (req, res) => {
 	try {
 		let id = req.params.id;
 
 		let [err, result] = await utils.to(Image.findById(id));
-		if (err) throw new Error("An error occurred while fetching the image");
-		if (result == null) throw new Error("No results were found");
+		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
+		if (result == null) throw new Error(ERROR_MESSAGE.noResult);
 
 		fs.readFile(result.path, function (err, data) {
 			if (err) return res.status(400).json({ error: true, message: "File couldn't be read" });
@@ -33,8 +34,8 @@ router.get("/main/:itemType/:itemId", setUser, async (req, res) => {
 			itemType = req.params.itemType;
 
 		let [err, result] = await utils.to(Image.findOne({ itemType: itemType, _itemId: id, isMain: true }));
-		if (err) throw new Error("An error occurred while fetching the image");
-		if (result == null) throw new Error("No results were found");
+		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
+		if (result == null) throw new Error(ERROR_MESSAGE.noResult);
 
 		fs.readFile(result.path, function (err, data) {
 			if (err) return res.status(400).json({ error: true, message: "File couldn't be read" });
@@ -58,10 +59,10 @@ router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADM
 		let [err, result] = await utils.to(
 			Image.updateMany({ _itemId: itemId, itemType: itemType, isMain: true }, { $set: { isMain: false } })
 		);
-		if (err) throw new Error("An error occurred while updating the main image");
+		if (err) throw new Error(ERROR_MESSAGE.updateImg);
 
 		[err, result] = await utils.to(Image.findOneAndUpdate({ _id: id }, { $set: { isMain: true } }));
-		if (err) throw new Error("An error occurred while updating the main image");
+		if (err) throw new Error(ERROR_MESSAGE.updateImg);
 
 		return res.status(200).json({ err: false, msg: "New main image successfully selected!" });
 	} catch (err) {
@@ -76,28 +77,27 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let err, find, result, deleted;
 
 		[err, find] = await utils.to(Image.findOne({ _id: id }));
-		if (err) throw new Error("We could not find your image, please try again");
+		if (err) throw new Error(ERROR_MESSAGE.noResult);
 
 		[err, result] = await utils.to(Image.deleteOne({ _id: id, isMain: false }));
 		if (result.n === 1) {
 			fs.unlink(find.path, err => {
-				if (err) throw new Error("An error occurred while deleting your image");
+				if (err) throw new Error(ERROR_MESSAGE.delImg);
 			});
 		}
 
-		if (err) throw new Error("An error occurred while deleting the image0");
+		if (err) throw new Error(ERROR_MESSAGE.delImg);
 
 		if (result.n === 0) {
 			if (find && find.itemType === "Blog") {
 				[err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
 				if (deleted.n === 1) {
 					fs.unlink(find.path, err => {
-						if (err) throw new Error("An error occurred while deleting your image");
+						if (err) throw new Error(ERROR_MESSAGE.delImg);
 					});
 				}
-				if (err) throw new Error("An error occurred while deleting the image2");
-			} else
-				throw new Error("You cannot delete the main image, delete the whole item or add a new image to replace the main image");
+				if (err) throw new Error(ERROR_MESSAGE.delImg);
+			} else throw new Error(ERROR_MESSAGE.mainImgDel);
 		}
 
 		return res.status(200).json({ err: false, msg: "Image was successfully deleted!" });
@@ -113,9 +113,9 @@ router.get("/:itemType/:itemId", setUser, async (req, res) => {
 			itemType = req.params.itemType;
 
 		let [err, result] = await utils.to(Image.find({ itemType: itemType, _itemId: itemId }).sort({ isMain: -1 }));
-		if (err) throw new Error("An error occurred while fetching the image");
+		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
 		//if (result == null || result.length < 1)
-		//  throw new Error("No results were found");
+		//  throw new Error(ERROR_MESSAGE.noResult);
 
 		return res.status(200).json(result);
 	} catch (err) {

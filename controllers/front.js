@@ -8,6 +8,7 @@ const Front = require("../models/Front");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -31,7 +32,7 @@ const upload = multer({
 router.get("/", setUser, async (req, res) => {
 	try {
 		let [err, result] = await utils.to(Front.find());
-		if (err) throw new Error("An error occurred while fetching fronts");
+		if (err) throw new Error(ERROR_MESSAGE.fetchFront);
 
 		return res.status(200).json(result);
 	} catch (err) {
@@ -48,7 +49,7 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 			let front = { null: false, referenceId: req.body.referenceId };
 
 			let [err, result] = await utils.to(Front.findOne({ referenceId: front.referenceId }));
-			if (err) throw new Error("Something went wrong while finding reference for your image");
+			if (err) throw new Error(ERROR_MESSAGE.referenceImg);
 
 			if (result === null) {
 				let newFront = new Front(front);
@@ -61,7 +62,7 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 				newFront.path = newpath;
 
 				[err, result] = await utils.to(newFront.save());
-				if (err) throw new Error("Something went wrong while uploading your image");
+				if (err) throw new Error(ERROR_MESSAGE.updateImg);
 			} else {
 				let oldpath = req.file.destination + req.file.filename;
 				let newpath = req.file.destination + result._id + path.extname(req.file.originalname);
@@ -74,10 +75,10 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 						{ $set: { null: false, path: newpath, mimetype: req.file.mimetype } }
 					)
 				);
-				if (err) throw new Error("Something went wrong while updating your image");
+				if (err) throw new Error(ERROR_MESSAGE.updateImg);
 			}
 			return res.status(200).json({ msg: "Image successfully uploaded!" });
-		} else throw new Error("Invalid reference, please try again");
+		} else throw new Error(ERROR_MESSAGE.referenceImg);
 	} catch (err) {
 		console.log("POST FRONT ERROR", err);
 		return res.status(400).json({ err: true, msg: err.message });
@@ -91,9 +92,9 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let id = req.params.id; //sanitize
 
 		let [err, front] = await utils.to(Front.findOneAndUpdate({ referenceId: id }, { $set: { null: true } }));
-		if (err) throw new Error("An error occurred while deleting the item, please try again");
+		if (err) throw new Error(ERROR_MESSAGE.delImg);
 		fs.unlink(front.path, err => {
-			if (err) throw new Error("An error occurred while deleting your image");
+			if (err) throw new Error(ERROR_MESSAGE.delImg);
 		});
 		return res.status(200).json({ msg: "Image successfully deleted!" });
 	} catch (err) {
@@ -108,10 +109,10 @@ router.get("/image/:id", setUser, async (req, res) => {
 		let id = req.params.id;
 
 		let [err, result] = await utils.to(Front.findOne({ _id: id }));
-		if (err) throw new Error("An error occurred while fetching the image");
+		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
 
 		fs.readFile(result.path, function (err, data) {
-			if (err) throw new Error("File couldn't be read");
+			if (err) throw new Error(ERROR_MESSAGE.readFile);
 			let contentType = { "Content-Type": result.mimetype };
 
 			res.writeHead(200, contentType);

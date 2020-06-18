@@ -5,6 +5,7 @@ const Gallery = require("../models/Gallery");
 const Shop = require("../models/Shop");
 
 const { setUser } = require("./helpers/verifySession");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv/config");
 const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 
@@ -128,7 +129,7 @@ router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 					return res.status(400).json({ error: true, msg: err.message });
 				}
 			});
-		} else throw new Error("Quantity for an item must be between 0 and 99");
+		} else throw new Error(ERROR_MESSAGE.updateQty);
 	} catch (err) {
 		console.log("UPDATE CART ERROR");
 		return res.status(400).json({ error: true, msg: err.message });

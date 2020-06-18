@@ -609,11 +609,10 @@ class PwintyObject {
 			})
 			.then(data => {
 				if (data.response.unitPriceIncludingTax) {
-					if (data.response.unitPriceIncludingTax === 0)
-						throw new Error("Something went wrong while searching this item in our catalog");
+					if (data.response.unitPriceIncludingTax === 0) throw new Error(ERROR_MESSAGE.notFoundCatalog);
 					this.price = data.response.unitPriceIncludingTax;
 					this.displayPricing();
-				} else throw new Error("Something went wrong while searching this item in our catalog");
+				} else throw new Error(ERROR_MESSAGE.notFoundCatalog);
 			})
 			.catch(err => {
 				this.hidePricing();

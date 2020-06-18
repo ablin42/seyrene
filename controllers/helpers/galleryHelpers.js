@@ -1,5 +1,6 @@
 const multer = require("multer");
 const imageType = require("image-type");
+const { ERROR_MESSAGE } = require("./errorMessages");
 
 module.exports = {
 	sanitizeFile: function (req, file, cb) {
@@ -33,10 +34,10 @@ module.exports = {
 				return trimmed;
 			} else return [];
 		} catch (err) {
-			throw new Error("An error occurred while parsing your tags, please try again");
+			throw new Error(ERROR_MESSAGE.parseTags);
 		}
-	},
-	imgEncode: async function (file) {
+	}
+	/*imgEncode: async function (file) {
 		try {
 			if (file != undefined) {
 				let encode_image = file.buffer.toString("base64");
@@ -54,5 +55,5 @@ module.exports = {
 		} catch (err) {
 			throw new Error(err.message);
 		}
-	}
+	}*/
 };

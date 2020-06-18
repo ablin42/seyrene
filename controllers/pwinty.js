@@ -7,6 +7,7 @@ const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession")
 const utils = require("./helpers/utils");
 const Order = require("../models/Order");
 const Money = require("money-exchange");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const fx = new Money();
 fx.init();
 require("dotenv").config();
@@ -240,31 +241,30 @@ router.post("/callback/status", async (req, res) => {
 		if (req.body.orderId && req.body.status) {
 			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
 			console.log(err, order);
-			if (err || order == null) throw new Error("An error occurred while finding the order");
+			if (err || order == null) throw new Error(ERROR_MESSAGE.noResult);
 
 			[err, order] = await utils.to(
 				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.status } })
 			);
 			console.log(err, order);
-			if (err || order == null) throw new Error("An error occurred while updating the order");
+			if (err || order == null) throw new Error(ERROR_MESSAGE.updateOrder);
 
 			// Send mails
 			let subject = `Updated Order #${order._id}`;
 			let content = `You order status has been updated, to see the order please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
 			if (await mailer("ablin@byom.de", subject, content))
 				//maral.canvas@gmail.com
-				throw new Error("An error occurred while trying to send the mail, please retry");
+				throw new Error(ERROR_MESSAGE.sendMail);
 
 			[err, user] = await utils.to(Order.findOne({ _userId: order._userId }));
 			console.log(err, user);
-			if (err || user == null) throw new Error("An error occurred while finding your user account, please try again later");
+			if (err || user == null) throw new Error(ERROR_MESSAGE.userNotFound);
 
 			content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
-			if (await mailer(user.email, subject, content))
-				throw new Error("An error occurred while trying to send the mail, please retry");
+			if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 			return res.status(200).send("OK");
-		} else throw new Error("Incorrect body data");
+		} else throw new Error(ERROR_MESSAGE.incorrectBody);
 	} catch (err) {
 		console.log("PWINTY CALLBACK ERROR:", err.message);
 		return res.status(200).json({ message: err.message });
@@ -409,7 +409,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 					console.log(err);
 					return res.status(200).json({ error: true, message: err.message });
 				});
-		} else throw new Error("We couldn't find the delivery price for this item, please try again");
+		} else throw new Error(ERROR_MESSAGE.noDeliveryPrice);
 	} catch (err) {
 		console.log("PWINTY PRICING ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });

@@ -12,6 +12,7 @@ const Image = require("../models/Image");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
 const storage = multer.diskStorage({
@@ -78,7 +79,7 @@ router.get("/", setUser, async (req, res) => {
 		if (req.query.tab === "print") query.isUnique = false;
 
 		let [err, result] = await utils.to(Shop.paginate(query, options));
-		if (err) throw new Error("An error occurred while fetching the shop items");
+		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		let shopItems = result.docs; //probably can remove img since we use id and api to load it
 
 		let ress = await parsePrice(shopItems);
@@ -101,7 +102,7 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 		}
 
 		let price = parseFloat(req.body.price);
-		if (isNaN(price)) throw new Error("Invalid price, please try again");
+		if (isNaN(price)) throw new Error(ERROR_MESSAGE.invalidPrice);
 		let formattedPrice = price.toFixed(2);
 
 		const obj = {
@@ -113,7 +114,7 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 
 		const shop = new Shop(obj);
 		[err, result] = await utils.to(shop.save());
-		if (err) throw new Error("Something went wrong while uploading your file");
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		for (let i = 0; i < req.files.length; i++) {
 			let isMain = false;
@@ -132,7 +133,7 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error("Something went wrong while uploading your image");
+			if (err) throw new Error(ERROR_MESSAGE.updateImg);
 		}
 
 		req.flash("success", "Item successfully uploaded!");
@@ -156,7 +157,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 
 		let id = req.params.id;
 		let price = parseFloat(req.body.price);
-		if (isNaN(price)) throw new Error("Invalid price, please try again");
+		if (isNaN(price)) throw new Error(ERROR_MESSAGE.invalidPrice);
 		let formattedPrice = price.toFixed(2);
 
 		const obj = {
@@ -167,7 +168,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 		}; // need to sanitize data
 
 		[err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
-		if (err) throw new Error("Something went wrong while updating your file");
+		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
 		for (let i = 0; i < req.files.length; i++) {
 			let image = new Image({
@@ -183,7 +184,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error("Something went wrong while uploading your image");
+			if (err) throw new Error(ERROR_MESSAGE.updateImg);
 		}
 
 		req.flash("success", "Item successfully updated!");
@@ -200,20 +201,20 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let id = req.params.id; //sanitize
 
 		let [err, shop] = await utils.to(Shop.deleteOne({ _id: id }));
-		if (err) throw new Error("An error occurred while deleting the item, please try again");
+		if (err) throw new Error(ERROR_MESSAGE.delError);
 
 		rp(`${process.env.BASEURL}/api/image/Shop/${id}`)
 			.then(async response => {
 				let parsed = JSON.parse(response);
 				for (let i = 0; i < parsed.length; i++) {
 					fs.unlink(parsed[i].path, err => {
-						if (err) throw new Error("An error occurred while deleting your image");
+						if (err) throw new Error(ERROR_MESSAGE.delImg);
 					});
 					await Image.deleteOne({ _id: parsed[i]._id });
 				}
 			})
 			.catch(err => {
-				throw new Error("An error occurred while fetching the images");
+				throw new Error(ERROR_MESSAGE.fetchImg);
 			});
 
 		req.flash("success", "Item successfully deleted!");
@@ -231,9 +232,9 @@ router.get("/single/:id", setUser, async (req, res) => {
 		let id = req.params.id;
 
 		let [err, result] = await utils.to(Shop.findById(id));
-		if (err || result === null) throw new Error("An error occurred while fetching the shop item");
+		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchImg);
 
-		result.img = undefined; //set it to this so it doesnt fuck rendering of response (buffer)
+		result.img = undefined;
 		return res.status(200).json(result);
 	} catch (err) {
 		console.log("SHOP SINGLE ERROR", err);

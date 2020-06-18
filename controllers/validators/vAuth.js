@@ -1,5 +1,6 @@
 const { body, sanitizeBody } = require("express-validator");
 const utils = require("../helpers/utils");
+const { ERROR_MESSAGE } = require("../helpers/errorMessages");
 
 module.exports.vRegister = [
 	sanitizeBody("name", "email").trim().stripLow(),
@@ -30,7 +31,7 @@ module.exports.vRegister = [
 		.matches(/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/)
 		.withMessage("Password must be atleast alphanumeric"),
 	body("password2").custom((value, { req }) => {
-		if (value !== req.body.password) throw new Error("Password confirmation does not match password");
+		if (value !== req.body.password) throw new Error(ERROR_MESSAGE.pwDontMatch);
 		return true;
 	})
 ];

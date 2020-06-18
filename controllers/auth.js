@@ -12,6 +12,7 @@ const User = require("../models/User");
 const Token = require("../models/VerificationToken");
 const { setUser, notLoggedUser, authUser } = require("./helpers/verifySession");
 const { checkCaptcha } = require("./helpers/captcha");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
 router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async (req, res) => {
@@ -27,12 +28,12 @@ router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async 
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error("Incorrect form input");
+			throw new Error(ERROR_MESSAGE.incorrectForm);
 		}
 
 		// Hash and salt pw
 		const hashPw = await bcrypt.hash(req.body.password, 10);
-		if (!hashPw) throw new Error("An error occurred while encrypting your data, please try again");
+		if (!hashPw) throw new Error(ERROR_MESSAGE.encryptError);
 
 		// Create User and validationToken objects
 		const user = new User({
@@ -49,16 +50,15 @@ router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async 
 
 		// Save User and validationToken to DB
 		[err, result] = await utils.to(user.save());
-		if (err) throw new Error("An error occurred while creating your account, please try again");
+		if (err) throw new Error(ERROR_MESSAGE.createAccount);
 
 		[err, result] = await utils.to(validationToken.save());
-		if (err) throw new Error("An error occurred while creating your confirmation token, please try again");
+		if (err) throw new Error(ERROR_MESSAGE.createToken);
 
 		// Send account confirmation mail to user
 		let subject = "Account Verification Token for Maral";
 		let content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
-		if (await mailer(user.email, subject, content))
-			throw new Error("An error occurred while trying to send the mail, please retry");
+		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		//req.flash("success", "Account created successfully, please check your emails to confirm your account");
 		return res
@@ -80,24 +80,24 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error("Incorrect form input");
+			throw new Error(ERROR_MESSAGE.incorrectForm);
 		}
 
 		// Check if email exists in DB
 		let [err, user] = await utils.to(User.findOne({ email: req.body.email }));
-		if (err) throw new Error("An error occurred while looking for your user account, please try again");
-		if (!user) throw new Error("Invalid credentials");
+		if (err) throw new Error(ERROR_MESSAGE.userNotFound);
+		if (!user) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
 		// Check if pw matches
 		const validPw = await bcrypt.compare(req.body.password, user.password);
-		if (!validPw) throw new Error("Invalid credentials");
+		if (!validPw) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
 		// Check if user is verified
 		if (!user.isVerified) {
 			request.post(`${process.env.BASEURL}/api/auth/resend`, { json: { email: req.body.email } }, err => {
-				if (err) throw new Error("An error occurred while sending your validation token, please try again");
+				if (err) throw new Error(ERROR_MESSAGE.sendToken);
 			});
-			throw new Error("Your account has not been verified. Please check your e-mails");
+			throw new Error(ERROR_MESSAGE.unverfiedAccount);
 		}
 
 		// Create session variable
@@ -117,7 +117,7 @@ router.get("/logout", setUser, authUser, (req, res) => {
 		// might want to delete token idk
 		// Kill session
 		req.session.destroy(function (err) {
-			if (err) throw new Error("An error occurred while logging you out, please try again if it didn't work");
+			if (err) throw new Error(ERROR_MESSAGE.logoutError);
 		});
 
 		return res.status(200).redirect("/");
@@ -135,15 +135,13 @@ router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
 		const receivedToken = req.params.token; //sanitiwe
 
 		[err, token] = await utils.to(Token.findOne({ token: receivedToken }));
-		if (err) throw new Error("An error occurred while looking for your token, please try again");
-		if (!token) throw new Error("We were unable to find a valid token. Your token may have expired");
+		if (err || !token) throw new Error(ERROR_MESSAGE.tokenNotFound);
 
 		// If we found a token, find a matching user
 		[err, user] = await utils.to(User.findOne({ _id: token._userId }));
-		if (err) throw new Error("An error occurred while looking for your user account, please try again");
-		if (!user) throw new Error("We were unable to find a user for this token");
+		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
-		if (user.isVerified) throw new Error("This user has already been verified");
+		if (user.isVerified) throw new Error(ERROR_MESSAGE.alreadyVerified);
 
 		// Verify and save the user
 		user.isVerified = true;
@@ -167,9 +165,8 @@ router.post("/resend", setUser, notLoggedUser, async (req, res) => {
 
 		[err, user] = await utils.to(User.findOne({ email: email }));
 		// Check if an user exist with this email and check if his account is verified
-		if (err) throw new Error("An error occurred while looking for you user account, please try again");
-		if (!user) throw new Error("We were unable to find a user with that email");
-		if (user.isVerified) throw new Error("This account has already been verified. Please log in");
+		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
+		if (user.isVerified) throw new Error(ERROR_MESSAGE.alreadyVerified);
 
 		// Create a verification token, save it, and send email
 		let vToken = crypto.randomBytes(16).toString("hex");
@@ -177,12 +174,11 @@ router.post("/resend", setUser, notLoggedUser, async (req, res) => {
 
 		// Save the token
 		[err, savedToken] = await utils.to(token.save());
-		if (err) throw new Error("An error occurred while saving your token, please try again");
+		if (err) throw new Error(ERROR_MESSAGE.saveToken);
 
 		let subject = "Account Verification Token for Maral";
 		let content = `Hello,\n\n Please verify your account by clicking the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
-		if (await mailer(user.email, subject, content))
-			throw new Error("An error occurred while sending your the email, please try again");
+		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		req.flash("info", `A verification email has been sent to ${user.email}`);
 		return res.status(200).redirect("/Account");

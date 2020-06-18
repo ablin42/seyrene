@@ -2,6 +2,7 @@ const utils = require("../helpers/utils");
 const Order = require("../../models/Order");
 const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
+const { ERROR_MESSAGE } = require("./errorMessages");
 
 const ROLE = {
 	ADMIN: "admin",
@@ -14,7 +15,7 @@ async function setUser(req, res, next) {
 	if (userId) {
 		let [err, user] = await utils.to(User.findById(userId));
 		if (err || user == null) {
-			req.flash("warning", "Invalid User");
+			req.flash("warning", ERROR_MESSAGE.invalidUser);
 			return res.status(401).redirect("/Account");
 		}
 		req.user = user;
@@ -38,7 +39,7 @@ async function setUser(req, res, next) {
 
 function authUser(req, res, next) {
 	if (req.user == null) {
-		req.flash("warning", "You need to be logged in");
+		req.flash("warning", ERROR_MESSAGE.logInNeeded);
 		return res.status(403).redirect("/Account");
 	}
 
@@ -47,7 +48,7 @@ function authUser(req, res, next) {
 
 function notLoggedUser(req, res, next) {
 	if (req.user != null) {
-		req.flash("warning", "You're already logged in");
+		req.flash("warning", ERROR_MESSAGE.alreadyLoggedIn);
 		return res.status(403).redirect("/");
 	}
 
@@ -57,7 +58,7 @@ function notLoggedUser(req, res, next) {
 function authRole(role) {
 	return (req, res, next) => {
 		if (req.user.role !== role) {
-			req.flash("warning", "Unauthorized. Contact your administrator if you think this is a mistake");
+			req.flash("warning", ERROR_MESSAGE.unauthorized);
 			return res.status(401).redirect("back");
 		}
 
@@ -71,7 +72,7 @@ async function setDelivery(req, res, next) {
 	if (userId) {
 		let [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: userId }));
 		if (err) {
-			req.flash("warning", "An error occured looking for your delivery address");
+			req.flash("warning", ERROR_MESSAGE.deliveryAddressNotFound);
 			return res.status(401).redirect("/User");
 		}
 		req.delivery = result;
@@ -82,7 +83,7 @@ async function setDelivery(req, res, next) {
 
 function isDelivery(req, res, next) {
 	if (req.delivery == null) {
-		req.flash("warning", "You need to set your delivery address");
+		req.flash("warning", ERROR_MESSAGE.unsetDeliveryAddress);
 		return res.status(403).redirect("/User");
 	}
 
@@ -94,7 +95,7 @@ async function setOrder(req, res, next) {
 
 	let [err, order] = await utils.to(Order.findById(orderId));
 	if (err || order == null) {
-		req.flash("warning", "Invalid Order");
+		req.flash("warning", ERROR_MESSAGE.invalidOrder);
 		return res.status(404).redirect("/User");
 	}
 	req.order = order;
@@ -108,7 +109,7 @@ function canViewOrder(user, order) {
 
 function authGetOrder(req, res, next) {
 	if (!canViewOrder(req.user, req.order)) {
-		req.flash("warning", "Unauthorized. Contact your administrator if you think this is a mistake");
+		req.flash("warning", ERROR_MESSAGE.unauthorized);
 		return res.status(401).redirect("/User");
 	}
 

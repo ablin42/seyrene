@@ -24,6 +24,7 @@ const Gallery = require("../models/Gallery");
 const DeliveryInfo = require("../models/DeliveryInfo");
 const PwToken = require("../models/PasswordToken");
 const Cart = require("../models/Cart");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 const stripePublic = process.env.STRIPE_PUBLIC;
 
@@ -72,7 +73,7 @@ router.get("/Galerie", setUser, async (req, res) => {
 
 		obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/`));
 		if (obj.galleries.error) throw new Error(obj.galleries.message);
-		if (obj.galleries.length === 0) throw new Error("Gallery is under maintenance, please come back later");
+		if (obj.galleries.length === 0) throw new Error(ERROR_MESSAGE.galleryMaintenance);
 
 		return res.status(200).render("galerie", obj);
 	} catch (err) {
@@ -175,7 +176,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 
 			let countryCode = country.findByName(toTitleCase(obj.delivery.country));
 			if (countryCode) countryCode = countryCode.code.iso2;
-			else throw new Error("We cannot find your country ISO code, please contact us if the error persist");
+			else throw new Error(ERROR_MESSAGE.countryCode);
 			let options = {
 				uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
 				method: "POST",
@@ -234,12 +235,12 @@ router.get("/User", setUser, authUser, async (req, res) => {
 		obj.delivery = false; /////////////////?
 
 		[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-		if (err) throw new Error("An error occurred while looking for your delivery informations, please retry");
+		if (err || !result) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 
 		if (result != null) obj.delivery = result;
 
 		[err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
-		if (err) throw new Error("An error occurred while looking for your orders informations, please retry");
+		if (err) throw new Error(ERROR_MESSAGE.fetchOrder);
 
 		if (orders != null) {
 			orders.forEach((order, index) => {
@@ -306,7 +307,7 @@ router.get("/Shop", setUser, async (req, res) => {
 
 		obj.print = JSON.parse(await rp(`${process.env.BASEURL}/api/shop?tab=print`));
 		if (obj.print.error) throw new Error(obj.print.message);
-		if (obj.original.length <= 1 && obj.print.length <= 1) throw new Error("Shop is under maintenance, please try again later");
+		if (obj.original.length <= 1 && obj.print.length <= 1) throw new Error(ERROR_MESSAGE.shopMaintenance);
 
 		return res.status(200).render("shop", obj);
 	} catch (err) {
@@ -325,8 +326,7 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 		};
 
 		let [err, pwToken] = await utils.to(PwToken.findOne({ _id: obj.tokenId, token: obj.token }));
-		if (err) throw new Error("An error occurred while fetching the token, please try again");
-		if (pwToken === null) throw new Error("Invalid token, please try to request another one here");
+		if (err || !pwToken) throw new Error(ERROR_MESSAGE.tokenNotFound);
 
 		return res.status(200).render("Resetpw", obj);
 	} catch (err) {
@@ -511,7 +511,7 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 		};
 
 		let result = await rp(options);
-		if (typeof result === "string") throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+		if (typeof result === "string") throw new Error(ERROR_MESSAGE.unauthorized);
 		if (result.error) throw new Error(result.message);
 		if (result.orders) obj.orders = result.orders;
 
@@ -607,7 +607,7 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 		let obj = { active: "Edit a gallery item" };
 
 		let [err, result] = await utils.to(Gallery.findOne({ _id: req.params.galleryId }));
-		if (err || !result) throw new Error("An error occurred while fetching the gallery item");
+		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.gallery = result;
 
 		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${req.params.galleryId}`));
@@ -638,7 +638,7 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 		let obj = { active: "Edit a shop item", user: req.user };
 
 		let [err, result] = await utils.to(Shop.findOne({ _id: req.params.shopId }));
-		if (err || !result) throw new Error("An error occurred while fetching the shop item");
+		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.shop = result;
 
 		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${req.params.shopId}`));
@@ -679,8 +679,7 @@ router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN),
 		}
 
 		let [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
-		if (err) throw new Error("An error occurred while loading the blog, please try again");
-		if (blog === null) throw new Error("No blog exists with this ID");
+		if (err || !blog) throw new Error(ERROR_MESSAGE.fetchError);
 
 		obj.blogContent = blog;
 		obj._id = req.params.blogId;

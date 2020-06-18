@@ -1,3 +1,5 @@
+const { ERROR_MESSAGE } = require("../../controllers/helpers/errorMessages");
+
 let PWINTY_DATA = [];
 const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",
@@ -204,7 +206,7 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 					let alert = createAlertNode(err.message, "danger");
 					addAlert(alert, "#header");
 				});
-		} else throw new Error("Invalid item reference, please fresh the page");
+		} else throw new Error(ERROR_MESSAGE.invalidReference);
 	} catch (err) {
 		let alert = createAlertNode(err.message, "warning");
 		addAlert(alert, "#header");
@@ -267,7 +269,7 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 					let alert = createAlertNode(response.msg, alertType);
 					addAlert(alert, "#header");
 				});
-		} else throw new Error("Invalid item reference, please fresh the page");
+		} else throw new Error(ERROR_MESSAGE.invalidReference);
 	} catch (err) {
 		let alert = createAlertNode(err.message, "warning");
 		addAlert(alert, "#header");
@@ -336,8 +338,8 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 						let alert = createAlertNode(err.message, "danger");
 						addAlert(alert, "#header");
 					});
-			} else throw new Error("The <b>quantity</b> has to be a positive integer");
-		} else throw new Error("The <b>quantity</b> you entered is invalid");
+			} else throw new Error(ERROR_MESSAGE.qtyInteger);
+		} else throw new Error(ERROR_MESSAGE.invalidQty);
 	} catch (err) {
 		item.value = 1;
 		let alert = createAlertNode(err.message, "warning");

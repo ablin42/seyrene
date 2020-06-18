@@ -12,6 +12,7 @@ const Image = require("../models/Image");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
 const storage = multer.diskStorage({
@@ -50,7 +51,7 @@ async function fetchMainImg(galleries) {
 			__v: galleries[i].__v
 		};
 		let [err, img] = await utils.to(Image.findOne({ _itemId: galleries[i]._id, itemType: "Gallery", isMain: true }));
-		if (err || img == null) throw new Error("An error occurred while fetching the galleries images");
+		if (err || img == null) throw new Error(ERROR_MESSAGE.fetchImg);
 		obj.mainImgId = img._id;
 		arr.push(obj);
 	}
@@ -65,7 +66,7 @@ router.get("/", setUser, async (req, res) => {
 			sort: { date: -1 }
 		};
 		let [err, result] = await utils.to(Gallery.paginate({}, options));
-		if (err) throw new Error("An error occurred while fetching galleries");
+		if (err) throw new Error(ERROR_MESSAGE.fetchGallery);
 
 		let galleries = result.docs;
 		galleries = await fetchMainImg(galleries);
@@ -89,9 +90,9 @@ router.get("/Tags", setUser, async (req, res) => {
 		if (req.query.t) var tagsArr = req.query.t.split(","); //sanitize
 
 		let [err, result] = await utils.to(Gallery.paginate({ tags: { $all: tagsArr } }, options));
-		if (err) throw new Error("An error occurred while fetching galleries item by tags");
+		if (err) throw new Error(ERROR_MESSAGE.fetchGallery);
 		let galleries = result.docs;
-		if (galleries.length == 0) throw new Error("No result found for the selected tags");
+		if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
 		galleries = await fetchMainImg(galleries);
 		console.log(galleries);
 		return res.status(200).json(galleries);
@@ -116,8 +117,8 @@ router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 		obj.tags = gHelpers.parseTags(req.body.tags);
 
 		const gallery = new Gallery(obj);
-		[err, result] = await utils.to(gallery.save());
-		if (err) throw new Error("Something went wrong while uploading your file");
+		[err, result] = await utils.to(gallery.save(ERROR_MESSAGE.saveGallery));
+		if (err) throw new Error();
 
 		for (let i = 0; i < req.files.length; i++) {
 			let isMain = false;
@@ -135,16 +136,14 @@ router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error("Something went wrong while uploading your image");
+			if (err) throw new Error(ERROR_MESSAGE.updateImg);
 		}
 
 		req.flash("success", "Item successfully uploaded! Remember to select your favorite main image");
-		return res
-			.status(200)
-			.json({
-				url: `/Admin/Galerie/Patch/${result._id}`,
-				msg: "Item successfully uploaded! Remember to select your favorite main image"
-			});
+		return res.status(200).json({
+			url: `/Admin/Galerie/Patch/${result._id}`,
+			msg: "Item successfully uploaded! Remember to select your favorite main image"
+		});
 	} catch (err) {
 		console.log("POST GALLERY ERROR", err);
 		return res.status(400).json({ url: "/", msg: err.message, err: true });
@@ -180,11 +179,11 @@ router.post("/patch/:id", upload, vGallery, setUser, authUser, authRole(ROLE.ADM
 			});
 
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error("Something went wrong while uploading your image");
+			if (err) throw new Error(ERROR_MESSAGE.updateImg);
 		}
 
 		[err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
-		if (err) throw new Error("Something went wrong while updating your file");
+		if (err) throw new Error(ERROR_MESSAGE.saveGallery);
 
 		req.flash("success", "Item successfully updated!");
 		return res.status(200).json({ url: "/Galerie", msg: "Item successfully updated!" });
@@ -200,20 +199,20 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let id = req.params.id; //sanitize
 
 		let [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
-		if (err) throw new Error("An error occurred while deleting the item, please try again");
+		if (err) throw new Error(ERROR_MESSAGE.delGallery);
 
 		rp(`${process.env.BASEURL}/api/image/Gallery/${id}`)
 			.then(async response => {
 				let parsed = JSON.parse(response);
 				for (let i = 0; i < parsed.length; i++) {
 					fs.unlink(parsed[i].path, err => {
-						if (err) throw new Error("An error occurred while deleting your image");
+						if (err) throw new Error(ERROR_MESSAGE.deleteImg);
 					});
 					await Image.deleteOne({ _id: parsed[i]._id });
 				}
 			})
 			.catch(err => {
-				throw new Error("An error occurred while fetching the images");
+				throw new Error(ERROR_MESSAGE.fetchImg);
 			});
 
 		req.flash("success", "Item successfully deleted!");
@@ -231,7 +230,7 @@ router.get("/single/:id", setUser, async (req, res) => {
 		let id = req.params.id;
 
 		let [err, result] = await utils.to(Gallery.findById(id));
-		if (err || result === null) throw new Error("An error occurred while fetching the gallery item");
+		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchGallery);
 
 		return res.status(200).json(result);
 	} catch (err) {

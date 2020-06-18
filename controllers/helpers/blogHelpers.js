@@ -2,13 +2,14 @@ const format = require("date-format");
 const utils = require("../helpers/utils");
 const Blog = require("../../models/Blog");
 const User = require("../../models/User");
+const { ERROR_MESSAGE } = require("./errorMessages");
 
 module.exports = {
 	getName: async function (authorId) {
 		let err, user;
 
 		[err, user] = await utils.to(User.findById(authorId));
-		if (err) throw new Error("An error occurred while looking for author's name");
+		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 		return user.name;
 	},
 	objBlog: async function (item) {
@@ -45,7 +46,7 @@ module.exports = {
 		let err, query, blogsParsed;
 
 		[err, query] = await utils.to(Blog.paginate({}, options));
-		if (err) throw new Error("An error occurred while fetching blogs");
+		if (err) throw new Error(ERROR_MESSAGE.fetchBlog);
 		const blogs = query.docs;
 		blogsParsed = await this.parseBlogs(blogs);
 

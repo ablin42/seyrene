@@ -9,6 +9,7 @@ const Gallery = require("../models/Gallery");
 const Shop = require("../models/Shop");
 const { setUser, authUser, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
+const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
 router.post("/create-intent", setUser, authUser, async (req, res) => {
@@ -22,10 +23,10 @@ router.post("/create-intent", setUser, authUser, async (req, res) => {
 			for (let i = 0; i < items.length; i++) {
 				if (items[i].attributes.isUnique) {
 					[err, item] = await utils.to(Shop.findById(items[i].attributes._id));
-					if (err || item === null) throw new Error("An error occurred while looking for an item you tried to purchase");
+					if (err || item === null) throw new Error(ERROR_MESSAGE.itemNotFound);
 				} else {
 					[err, item] = await utils.to(Gallery.findById(items[i].attributes._id));
-					if (err || item === null) throw new Error("An error occurred while looking for an item you tried to purchase");
+					if (err || item === null) throw new Error(ERROR_MESSAGE.itemNotFound);
 				}
 			}
 
@@ -66,7 +67,7 @@ router.post("/create-intent", setUser, authUser, async (req, res) => {
 					return res.status(200).send({ error: false, clientSecret: paymentIntent.client_secret, orderId: result._id });
 				}
 			);
-		} else throw new Error("Your cart is empty!");
+		} else throw new Error(ERROR_MESSAGE.emptyCart);
 	} catch (err) {
 		console.log("STRIPE CREATE INTENT ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
@@ -78,7 +79,7 @@ router.post("/refund/:id", setUser, authUser, setOrder, authGetOrder, async (req
 		let chargeId = req.body.chargeId;
 
 		let [err, order] = await utils.to(Order.findOne({ chargeId: chargeId }));
-		if (err || order === null) throw new Error("We couldn't find your order, please try again");
+		if (err || order === null) throw new Error(ERROR_MESSAGE.noResult);
 
 		stripe.refunds.create({ payment_intent: chargeId }, (err, refund) => {
 			if (err) return res.status(200).json({ error: true, message: err.raw.message });

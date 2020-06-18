@@ -1,4 +1,5 @@
 let rp = require("request-promise");
+const { ERROR_MESSAGE } = require("../controllers/helpers/errorMessages");
 require("dotenv").config();
 
 module.exports = function Cart(oldCart) {
@@ -243,7 +244,7 @@ module.exports = function Cart(oldCart) {
 		let obj = await rp(options);
 		if (obj.error === true || obj.response.length <= 0) {
 			this.clearCart();
-			throw new Error("Sorry, there are no shipment options available to the selected destination for these products");
+			throw new Error(ERROR_MESSAGE.noShipment);
 		} else {
 			this.price = {
 				shippingIncludingTax: parseFloat(obj.response.shippingPriceIncludingTax),
