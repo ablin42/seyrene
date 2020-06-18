@@ -30,6 +30,9 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-unused-vars": 1,
+        "require-atomic-updates": 1,
+        "no-undef": 1
     }
 }
