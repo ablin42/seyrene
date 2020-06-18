@@ -13,13 +13,12 @@ function submitContact(e) {
 			"Accept": "application/json, text/plain, */*",
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify({name: name, email: email, title: title, content: content, captcha: captcha})
+		body: JSON.stringify({ name: name, email: email, title: title, content: content, captcha: captcha })
 	})
-		.then((res) => res.json())
-		.then((response) => {
+		.then(res => res.json())
+		.then(response => {
 			let alertType = "success";
-			if (response.error === true)
-				alertType = "warning";
+			if (response.error === true) alertType = "warning";
 			else {
 				document.querySelector("#name").value = "";
 				document.querySelector("#email").value = "";

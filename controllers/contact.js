@@ -33,10 +33,10 @@ router.post("/", vContact, setUser, checkCaptcha, async (req, res) => {
 		if (await mailer("ablin@byom.de", subject, content))
 			throw new Error("An error occurred while trying to send the mail, please retry");
 
-		return res.status(200).json({error: false, message: "Email sent! We will answer as soon as we can"});
+		return res.status(200).json({ error: false, message: "Email sent! We will answer as soon as we can" });
 	} catch (err) {
 		console.log("ERROR CONTACT:", err);
-		return res.status(200).json({error: true, message: err.message});
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 

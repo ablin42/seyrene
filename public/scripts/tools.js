@@ -14,7 +14,7 @@ function openTab(e, item, tabName) {
 	document.getElementById(tabName).style.display = "flex";
 }
 
-function expand(image){
+function expand(image) {
 	let expand = $("#expandImg");
 	if (expand) {
 		expand.src = image.src;

@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 require("dotenv/config");
 
-module.exports =  async function sendValidationMail(email, subject, text) {
+module.exports = async function sendValidationMail(email, subject, text) {
 	let transporter = nodemailer.createTransport({
 		service: "gmail",
 		auth: {
@@ -17,7 +17,7 @@ module.exports =  async function sendValidationMail(email, subject, text) {
 		text: text
 	};
 
-	transporter.sendMail(mailOptions, (err) => {
+	transporter.sendMail(mailOptions, err => {
 		if (err) {
 			console.log("MAILING ERROR:", err);
 			return true;

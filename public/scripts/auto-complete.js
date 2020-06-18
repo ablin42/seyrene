@@ -1,3 +1,4 @@
+/* eslint-disable */
 // https://developers.google.com/maps/documentation/javascript/places-autocomplete
 var placeSearch, autocomplete;
 var componentForm = {

@@ -1,22 +1,18 @@
-function dismissAlert(closeBtn)
-{
+function dismissAlert(closeBtn) {
 	let alert = closeBtn.parentElement,
 		wrap = document.getElementById("alertwrapper");
-	if (wrap)
-		wrap.remove();
+	if (wrap) wrap.remove();
 	alert.remove();
 }
 
-function addAlert(alert, where)
-{
+function addAlert(alert, where) {
 	let node = document.createElement("div"),
 		alertDiv = document.getElementById("alert"),
 		wrap = document.getElementById("alertwrapper");
 
 	node.setAttribute("id", "alertwrapper");
-	if (alertDiv){
-		if (wrap) 
-			wrap.remove();
+	if (alertDiv) {
+		if (wrap) wrap.remove();
 		alertDiv.remove();
 	}
 	node.innerHTML += alert;

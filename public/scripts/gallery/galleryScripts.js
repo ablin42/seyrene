@@ -6,17 +6,15 @@ async function postGallery(e) {
 		img = document.querySelector("#img"),
 		formData = new FormData(),
 		tags = [];
-    
-	for (let i = 0; i < tagInput.length; i++)
-		tags.push(tagInput[i].textContent);
-    
-	for (let i = 0; i < img.files.length; i++) 
-		formData.append("img", img.files[i]);
- 
+
+	for (let i = 0; i < tagInput.length; i++) tags.push(tagInput[i].textContent);
+
+	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[i]);
+
 	formData.append("title", title);
 	formData.append("content", content);
 	formData.append("tags", JSON.stringify(tags));
-    
+
 	fetch("/api/gallery/post", {
 		method: "post",
 		mode: "same-origin",
@@ -27,8 +25,7 @@ async function postGallery(e) {
 			if (data.err) {
 				let alert = createAlertNode(data.msg, "warning");
 				addAlert(alert, "#header");
-			} else 
-				window.location.href = data.url ;               
+			} else window.location.href = data.url;
 		});
 }
 
@@ -40,17 +37,15 @@ async function patchGallery(e, galleryId) {
 		img = document.querySelector("#img"),
 		formData = new FormData(),
 		tags = [];
-        
-	for (let i = 0; i < tagInput.length; i++)
-		tags.push(tagInput[i].textContent);
 
-	for (let i = 0; i < img.files.length; i++) 
-		formData.append("img", img.files[i]);
+	for (let i = 0; i < tagInput.length; i++) tags.push(tagInput[i].textContent);
+
+	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[i]);
 
 	formData.append("title", title);
 	formData.append("content", content);
 	formData.append("tags", JSON.stringify(tags));
-        
+
 	fetch(`/api/gallery/patch/${galleryId}`, {
 		method: "post",
 		mode: "same-origin",
@@ -61,8 +56,7 @@ async function patchGallery(e, galleryId) {
 			if (data.err) {
 				let alert = createAlertNode(data.msg, "warning");
 				addAlert(alert, "#header");
-			} else 
-				window.location.href = data.url;            
+			} else window.location.href = data.url;
 		});
 }
 
@@ -70,21 +64,17 @@ async function filterByTags(e) {
 	e.preventDefault();
 	let tagInput = document.getElementsByClassName("label-info"),
 		tags = "";
-    
+
 	if (tagInput.length > 0) {
 		tags = "?t=";
-		for (let i = 0; i < tagInput.length; i++)
-		{
-			if (i + 1 ===  tagInput.length)
-				tags += tagInput[i].textContent;
-			else
-				tags += tagInput[i].textContent + ",";
+		for (let i = 0; i < tagInput.length; i++) {
+			if (i + 1 === tagInput.length) tags += tagInput[i].textContent;
+			else tags += tagInput[i].textContent + ",";
 		}
 	}
 
 	window.location.href = `/Galerie/Tags${tags}`;
 }
-
 
 function setMain(e, item) {
 	e.preventDefault();
@@ -95,8 +85,7 @@ function setMain(e, item) {
 		.then(response => response.json())
 		.then(data => {
 			let type = "success";
-			if (data.err === true) 
-				type = "warning";
+			if (data.err === true) type = "warning";
 			else {
 				let divs = $(".action-div");
 				console.log(divs);
@@ -140,5 +129,6 @@ function deleteImage(e, item) {
             ${data.msg}
         </div>`;
 				addAlert(alertSuccess, "#header");
-			}});
+			}
+		});
 }

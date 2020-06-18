@@ -7,23 +7,23 @@ const session = require("express-session");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
 const filter = require("content-filter");
-require('dotenv').config();
+require("dotenv").config();
 
 const { setUser } = require("./controllers/helpers/verifySession");
 
 //Connect to DB
 mongoose.connect(
-  process.env.DB_CONNECTION,
-  {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true
-  },
-  err => {
-    if (err) throw err;
-    console.log("Connected to database");
-  }
+	process.env.DB_CONNECTION,
+	{
+		useNewUrlParser: true,
+		useCreateIndex: true,
+		useFindAndModify: false,
+		useUnifiedTopology: true
+	},
+	err => {
+		if (err) throw err;
+		console.log("Connected to database");
+	}
 );
 
 // Express
@@ -35,38 +35,38 @@ app.use(express.static(__dirname + "/public"));
 // Parse app/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
 // Parse app/json
-app.use(bodyParser.json({limit: 100000000}));
+app.use(bodyParser.json({ limit: 100000000 }));
 //-- Cross origin --//
 app.use(cors());
 //-- Cookie parser --//
 app.use(cookieParser());
 //-- Express Session --//
 app.use(
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 180 * 60 * 1000 } //, sameSite: 'none', secure: true}, // 180 = 3mn
-  })
+	session({
+		secret: "keyboard cat",
+		resave: false,
+		saveUninitialized: true,
+		cookie: { maxAge: 180 * 60 * 1000 } //, sameSite: 'none', secure: true}, // 180 = 3mn
+	})
 );
 //-- Flash --//
 app.use(flash());
 const blacklist = ["$", "{", "&&", "||"];
 app.use(
-  filter({
-    urlBlackList: blacklist,
-    bodyBlackList: blacklist,
-    bodyMessage: "A forbidden expression has been found in your data",
-    urlMessage: "A forbidden expression has been found in your data",
-    dispatchToErrorHandler: true
-  })
+	filter({
+		urlBlackList: blacklist,
+		bodyBlackList: blacklist,
+		bodyMessage: "A forbidden expression has been found in your data",
+		urlMessage: "A forbidden expression has been found in your data",
+		dispatchToErrorHandler: true
+	})
 );
 // Mount express-sanitizer middleware here
 app.use(expressSanitizer());
 
 app.use((req, res, next) => {
-  res.locals.session = req.session;
-  next();
+	res.locals.session = req.session;
+	next();
 });
 
 // Routes
@@ -100,31 +100,32 @@ app.use("/api/stripe", stripeRoute);
 
 // Handles multer error
 app.use((err, req, res, next) => {
-  // treat as 404
-  if (err.message && (~err.message.indexOf("not found") ||
-      ~err.message.indexOf("Cast to ObjectId failed"))) {
-    return next();
-  }
-  console.error(err.stack);
-    
-  // multer error
-  if (req.originalUrl.indexOf("/api/gallery/") != -1 || req.originalUrl.indexOf("/api/shop/") != -1 || req.originalUrl.indexOf("/api/front/") != -1)
-    return res.status(500).json({ url: "/", msg: err.message, err: true });
+	// treat as 404
+	if (err.message && (~err.message.indexOf("not found") || ~err.message.indexOf("Cast to ObjectId failed"))) {
+		return next();
+	}
+	console.error(err.stack);
 
-  if (err.message)
-    req.flash("warning", err.message);
-  return res.status(500).redirect("back");
+	// multer error
+	if (
+		req.originalUrl.indexOf("/api/gallery/") != -1 ||
+		req.originalUrl.indexOf("/api/shop/") != -1 ||
+		req.originalUrl.indexOf("/api/front/") != -1
+	)
+		return res.status(500).json({ url: "/", msg: err.message, err: true });
+
+	if (err.message) req.flash("warning", err.message);
+	return res.status(500).redirect("back");
 });
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
 
 app.get("*", setUser, (req, res) => {
-  let obj = { active: "404" };
-  if (req.user)
-    obj.user = req.user;
+	let obj = { active: "404" };
+	if (req.user) obj.user = req.user;
 
-  return res.status(404).render("404", obj);
+	return res.status(404).render("404", obj);
 });
 
 const port = process.env.PORT || 8089;

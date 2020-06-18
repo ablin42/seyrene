@@ -6,15 +6,13 @@ async function infiniteTags() {
 		parsedURL = new URL(window.location.href),
 		tagsParam = parsedURL.searchParams.get("t");
 
-	loader.css("display","block");
-	if (tagsParam)
-		urlToFetch += `&t=${tagsParam}`;
-	else 
-		urlToFetch = `/api/gallery?page=${page}`;
+	loader.css("display", "block");
+	if (tagsParam) urlToFetch += `&t=${tagsParam}`;
+	else urlToFetch = `/api/gallery?page=${page}`;
 
 	await fetch(urlToFetch)
-		.then(function(response) {
-			response.json().then(function(data) {
+		.then(function (response) {
+			response.json().then(function (data) {
 				if (!data.error) {
 					if (data.length > 0) {
 						data.forEach(gallery => {
@@ -32,7 +30,7 @@ async function infiniteTags() {
                             <div class="blog-overlay">
                                 <h4><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h4>
                                 <div class="gallery-tags mt-5">`;
-    
+
 								gallery.tags.forEach(tag => {
 									toAppend += ` <a href="/Galerie/Tags?t=${tag}">#${tag}</a>`;
 								});
@@ -57,15 +55,15 @@ async function infiniteTags() {
 					addAlert(alert, "#header");
 				}
 			});
-		})   
-		.catch((err) => {
+		})
+		.catch(err => {
 			let alert = createAlertNode(err.message, "warning");
 			addAlert(alert, "#header");
 		});
-	loader.css("display","none");
+	loader.css("display", "none");
 }
 
-$(window).scroll(function() {
+$(window).scroll(function () {
 	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
 	const val2 = $(document).height();
 	if (val1 >= val2) {

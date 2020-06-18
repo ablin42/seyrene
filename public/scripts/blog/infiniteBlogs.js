@@ -4,8 +4,8 @@ async function infiniteBlogs() {
 		loader = $("#loader");
 	loader.css("display", "block");
 	await fetch(`/api/blog?page=${page}`)
-		.then(function(response) {
-			response.json().then(function(data) {
+		.then(function (response) {
+			response.json().then(function (data) {
 				if (!data.error) {
 					if (data.length > 0) {
 						data.forEach(blog => {
@@ -49,8 +49,7 @@ async function infiniteBlogs() {
 								$("#infinitebtn").attr("onclick", "");
 							}
 						});
-					}
-					else {
+					} else {
 						$("#infinitebtn").val("Nothing more to load");
 						$("#infinitebtn").attr("disabled");
 						$("#infinitebtn").attr("onclick", "");
@@ -68,7 +67,7 @@ async function infiniteBlogs() {
 	loader.css("display", "none");
 }
 
-$(window).scroll(function() {
+$(window).scroll(function () {
 	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
 	const val2 = $(document).height();
 	if (val1 >= val2) {

@@ -24,8 +24,7 @@ async function formatBlogData(blogs) {
 			author: blogs[i].author,
 			__v: blogs[i].__v
 		};
-		if (images && images.length > 1)
-			obj.thumbnail = images[0];
+		if (images && images.length > 1) obj.thumbnail = images[0];
 		arr.push(obj);
 	}
 	return arr;
@@ -53,11 +52,9 @@ router.get("/", setUser, async (req, res) => {
 router.get("/single/:blogId", setUser, async (req, res) => {
 	try {
 		let [err, blog] = await utils.to(Blog.findById(req.params.blogId));
-		if (err)
-			throw new Error("An error occurred while fetching the blog's data, please try again");
+		if (err) throw new Error("An error occurred while fetching the blog's data, please try again");
 
-		if (blog === null) 
-			throw new Error("No blog post exist with this ID");
+		if (blog === null) throw new Error("No blog post exist with this ID");
 		blog = await bHelpers.parseBlogs(blog, true);
 
 		return res.status(200).json(blog);
@@ -70,17 +67,17 @@ router.get("/single/:blogId", setUser, async (req, res) => {
 // post a blog
 router.post("/", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res) => {
 	try {
-		const obj = { //sanitize
+		const obj = {
+			//sanitize
 			authorId: req.user._id,
 			title: req.body.title,
 			content: req.body.content
 		};
-		req.session.formData = {title: obj.title,content: obj.content};
+		req.session.formData = { title: obj.title, content: obj.content };
 
 		const blog = new Blog(obj);
 		let [err, savedBlog] = await utils.to(blog.save());
-		if (err) 
-			throw new Error("An error occurred while posting your blog, please try again");
+		if (err) throw new Error("An error occurred while posting your blog, please try again");
 
 		req.flash("success", "Post successfully uploaded");
 		return res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);
@@ -100,9 +97,10 @@ router.post("/patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), vBlog, as
 			content: req.body.content
 		};
 
-		let [err, patchedBlog] = await utils.to(Blog.updateOne({ _id: id },{$set: {title: req.body.title, content: req.body.content}}));
-		if (err)
-			throw new Error("An error occurred while updating the blog, please try again");
+		let [err, patchedBlog] = await utils.to(
+			Blog.updateOne({ _id: id }, { $set: { title: req.body.title, content: req.body.content } })
+		);
+		if (err) throw new Error("An error occurred while updating the blog, please try again");
 
 		req.flash("success", "Post corrigé avec succès");
 		return res.status(200).redirect(`/Blog/${req.params.blogId}`);
@@ -119,9 +117,8 @@ router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (re
 		let blogId = req.params.blogId;
 
 		let [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
-		if (err)
-			throw new Error("An error occurred while deleting the blog, please try again");
-  
+		if (err) throw new Error("An error occurred while deleting the blog, please try again");
+
 		req.flash("success", "Item successfully deleted!");
 		return res.status(200).redirect("/About");
 	} catch (err) {

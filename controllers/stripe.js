@@ -11,7 +11,7 @@ const { setUser, authUser, setOrder, authGetOrder } = require("./helpers/verifyS
 const utils = require("./helpers/utils");
 require("dotenv").config();
 
-router.post("/create-intent", setUser, authUser, async (req, res) => { 
+router.post("/create-intent", setUser, authUser, async (req, res) => {
 	try {
 		let err, item;
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -22,48 +22,54 @@ router.post("/create-intent", setUser, authUser, async (req, res) => {
 			for (let i = 0; i < items.length; i++) {
 				if (items[i].attributes.isUnique) {
 					[err, item] = await utils.to(Shop.findById(items[i].attributes._id));
-					if (err || item === null)
-						throw new Error("An error occurred while looking for an item you tried to purchase");
+					if (err || item === null) throw new Error("An error occurred while looking for an item you tried to purchase");
 				} else {
 					[err, item] = await utils.to(Gallery.findById(items[i].attributes._id));
-					if (err || item === null)
-						throw new Error("An error occurred while looking for an item you tried to purchase");
+					if (err || item === null) throw new Error("An error occurred while looking for an item you tried to purchase");
 				}
 			}
 
-			stripe.paymentIntents.create({
-				amount: Math.round(total * 100), ///////////////////////add delivery price here (and taxes)
-				currency: "eur",
-				description: "Charging for purchase @ maral",
-			}, async (err, paymentIntent) => {
-				if (err) 
-					return res.status(200).send({error: true, message: err.message});
+			stripe.paymentIntents.create(
+				{
+					amount: Math.round(total * 100), ///////////////////////add delivery price here (and taxes)
+					currency: "eur",
+					description: "Charging for purchase @ maral"
+				},
+				async (err, paymentIntent) => {
+					if (err) return res.status(200).send({ error: true, message: err.message });
 
-				let options = {
-					uri: `${process.env.BASEURL}/api/order/initialize`,
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"Accept": "application/json",
-						"cookie": req.headers.cookie
-					},
-					body: {items: items, price: total, deliveryPrice: cart.price.shippingIncludingTax, user: req.user, chargeId: paymentIntent.id},
-					json: true
-				};
+					let options = {
+						uri: `${process.env.BASEURL}/api/order/initialize`,
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Accept": "application/json",
+							"cookie": req.headers.cookie
+						},
+						body: {
+							items: items,
+							price: total,
+							deliveryPrice: cart.price.shippingIncludingTax,
+							user: req.user,
+							chargeId: paymentIntent.id
+						},
+						json: true
+					};
 
-				let result = await rp(options);
-				if (typeof result === "string") 
-					return res.status(200).send({error: true, message: "Unauthorized. Contact your administrator if you think this is a mistake"});
-				if (result.err) 
-					return res.status(200).send({error: true, message: result.message});
+					let result = await rp(options);
+					if (typeof result === "string")
+						return res
+							.status(200)
+							.send({ error: true, message: "Unauthorized. Contact your administrator if you think this is a mistake" });
+					if (result.err) return res.status(200).send({ error: true, message: result.message });
 
-				return res.status(200).send({error: false, clientSecret: paymentIntent.client_secret, orderId: result._id});
-			});
-		} else
-			throw new Error("Your cart is empty!");
+					return res.status(200).send({ error: false, clientSecret: paymentIntent.client_secret, orderId: result._id });
+				}
+			);
+		} else throw new Error("Your cart is empty!");
 	} catch (err) {
 		console.log("STRIPE CREATE INTENT ERROR:", err);
-		return res.status(200).json({error: true, message: err.message});
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
@@ -71,20 +77,16 @@ router.post("/refund/:id", setUser, authUser, setOrder, authGetOrder, async (req
 	try {
 		let chargeId = req.body.chargeId;
 
-		let [err, order] = await utils.to(Order.findOne({chargeId: chargeId})); 
-		if (err || order === null)
-			throw new Error("We couldn't find your order, please try again");
-    
-		stripe.refunds.create({payment_intent: chargeId},
-			(err, refund) => {
-				if (err)
-					return res.status(200).json({error: true, message: err.raw.message});
-				return res.status(200).json({error: false, data: refund});
-			}
-		);
+		let [err, order] = await utils.to(Order.findOne({ chargeId: chargeId }));
+		if (err || order === null) throw new Error("We couldn't find your order, please try again");
+
+		stripe.refunds.create({ payment_intent: chargeId }, (err, refund) => {
+			if (err) return res.status(200).json({ error: true, message: err.raw.message });
+			return res.status(200).json({ error: false, data: refund });
+		});
 	} catch (err) {
 		console.log("STRIPE REFUND ERROR:", err);
-		return res.status(200).json({error: true, message: err.message});
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 

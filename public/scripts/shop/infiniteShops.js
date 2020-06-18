@@ -5,8 +5,8 @@ async function infiniteShopItems(tab) {
 		url = `/api/shop?page=${page}&tab=${tab}`;
 	loader.css("display", "block");
 	await fetch(url)
-		.then(function(response) {
-			response.json().then(function(data) {
+		.then(function (response) {
+			response.json().then(function (data) {
 				if (!data.error) {
 					if (data.length > 0) {
 						data.forEach(shop => {
@@ -62,13 +62,12 @@ async function infiniteShopItems(tab) {
 	loader.css("display", "none");
 }
 
-$(window).scroll(function() {
+$(window).scroll(function () {
 	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
 	const val2 = $(document).height();
 	let tab = "original";
-  
-	if (document.getElementById("infinitebtn").getAttribute("onclick").indexOf("original") === -1)
-		tab = "print";
+
+	if (document.getElementById("infinitebtn").getAttribute("onclick").indexOf("original") === -1) tab = "print";
 	if (val1 >= val2) {
 		infiniteShopItems(tab);
 	}

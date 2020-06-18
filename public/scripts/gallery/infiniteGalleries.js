@@ -2,10 +2,10 @@ async function infiniteGalleries() {
 	let nbItem = $(".expandable-card").length,
 		page = 1 + Math.floor(nbItem / 6),
 		loader = $("#loader");
-	loader.css("display","block");
+	loader.css("display", "block");
 	await fetch(`/api/gallery?page=${page}`)
-		.then(function(response) {
-			response.json().then(function(data) {
+		.then(function (response) {
+			response.json().then(function (data) {
 				if (!data.error) {
 					if (data.length > 0) {
 						data.forEach(gallery => {
@@ -50,14 +50,14 @@ async function infiniteGalleries() {
 				}
 			});
 		})
-		.catch((err) => {
+		.catch(err => {
 			let alert = createAlertNode(err.message, "warning");
 			addAlert(alert, "#header");
 		});
-	loader.css("display","none");
+	loader.css("display", "none");
 }
 
-$(window).scroll(function() {
+$(window).scroll(function () {
 	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
 	const val2 = $(document).height();
 	if (val1 >= val2) {

@@ -1,4 +1,4 @@
-function closeDialog () {
+function closeDialog() {
 	if ($("#alert-dialog").length !== 0) {
 		$("#alert-dialog").parent().css("opacity", 0);
 		setTimeout(() => {
@@ -6,11 +6,11 @@ function closeDialog () {
 			$("#alert-dialog").remove();
 		}, 300);
 	}
-	return ;
+	return;
 }
 
 async function confirmAction(orderId) {
-	closeDialog ();
+	closeDialog();
 	await fetch(`/api/order/cancel/${orderId}`, {
 		method: "GET",
 		headers: {
@@ -20,25 +20,26 @@ async function confirmAction(orderId) {
 		credentials: "include",
 		mode: "same-origin"
 	})
-		.then((res) => {return res.json();})
-		.then(function(response) {
+		.then(res => {
+			return res.json();
+		})
+		.then(function (response) {
 			if (response.error === false) {
 				console.log(response);
-			}
-			else {
+			} else {
 				console.log("error:", response);
 			}
 			let alert = createAlertNode(response.msg);
 			addAlert(alert, "#header");
-		})  
-		.catch((err) => {
+		})
+		.catch(err => {
 			console.log(err);
 		});
-	return ;
+	return;
 }
 
 function abortAction() {
-	closeDialog ();
+	closeDialog();
 	return;
 }
 
@@ -51,26 +52,25 @@ async function cancelOrder(orderId) {
                         <button class="tab-btn" onclick="confirmAction('${orderId}')">CONFIRM</button><button class="tab-btn" onclick="abortAction()">ABORT</button> \
                       </div>`);
 		$("#alert-dialog").wrap("<div onclick=\"closeDialog()\" class=\"dialog-wrapper\"></div>");
-    
+
 		setTimeout(() => {
 			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");
 			$("#alert-dialog").parent().css("opacity", "1");
 		}, 100);
 	}
-	return ;
+	return;
 }
 
 async function infiniteOrders() {
-	if ($("#container-admin-orders").length === 0)
-		return ;
+	if ($("#container-admin-orders").length === 0) return;
 	let nbItem = $("tbody tr").length,
 		page = 1 + Math.floor(nbItem / 20),
 		loader = $("#loader");
-	loader.css("display","block");
+	loader.css("display", "block");
 
 	await fetch(`/api/order?page=${page}`)
-		.then(function(response) {
-			response.json().then(function(data) {
+		.then(function (response) {
+			response.json().then(function (data) {
 				if (!data.error) {
 					if (data.orders.length > 0) {
 						data.orders.forEach(order => {
@@ -85,7 +85,7 @@ async function infiniteOrders() {
                             <td class="name-grid">${order.firstname[0]}. ${order.lastname}</td>
                             <td class="id-grid"><a id="${order._id}" href="/Admin/Order/${order._id}">#${order._id}</a></td>
                           </tr>`;
-                          
+
 								$("#container-admin-orders").append(toAppend);
 							} else {
 								$("#infinitebtn").val("Nothing more to load");
@@ -104,16 +104,15 @@ async function infiniteOrders() {
 				}
 			});
 		})
-		.catch((err) => {
+		.catch(err => {
 			let alert = createAlertNode(err.message, "warning");
 			addAlert(alert, "#header");
 		});
-	loader.css("display","none");
+	loader.css("display", "none");
 }
 
-$(window).scroll(function() {
+$(window).scroll(function () {
 	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
 	const val2 = $(document).height();
-	if (val1 >= val2) 
-		infiniteOrders();
+	if (val1 >= val2) infiniteOrders();
 });

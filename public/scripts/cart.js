@@ -4,7 +4,7 @@ const formatter = new Intl.NumberFormat("de-DE", {
 	currency: "EUR"
 });
 
-function cooldownBtn (caller, time) {
+function cooldownBtn(caller, time) {
 	caller.disabled = true;
 	caller.style.pointerEvents = "none";
 	setTimeout(() => {
@@ -13,7 +13,7 @@ function cooldownBtn (caller, time) {
 	}, time);
 }
 
-function handleEmptiness () {
+function handleEmptiness() {
 	$(".payment-div").attr("style", "display: none");
 	$("#alertEmpty").attr("style", "display: inline-block");
 	$("#cart-row-header").attr("style", "display: none");
@@ -68,7 +68,7 @@ async function cartAdd(itemId, caller) {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Accept: "application/json"
+			"Accept": "application/json"
 		},
 		credentials: "include",
 		mode: "same-origin"
@@ -76,7 +76,7 @@ async function cartAdd(itemId, caller) {
 		.then(res => {
 			return res.json();
 		})
-		.then(function(response) {
+		.then(function (response) {
 			let alertType = "info";
 			if (response.error === false) {
 				let totalQty = response.cart.totalQty;
@@ -94,8 +94,7 @@ async function cartAdd(itemId, caller) {
           document.getElementById("total-qty").innerText = totalQty;
         }*/
 				document.getElementById("cartQty").innerText = totalQty;
-			} else 
-				alertType = "warning";
+			} else alertType = "warning";
 			let alert = createAlertNode(response.msg, alertType);
 			addAlert(alert, "#header");
 		})
@@ -107,13 +106,14 @@ async function cartAdd(itemId, caller) {
 	return;
 }
 
-async function cartDel(itemId, caller) { ///////////////////////////always delete since max qty is 1
+async function cartDel(itemId, caller) {
+	///////////////////////////always delete since max qty is 1
 	cooldownBtn(caller, 1500);
 	await fetch(`/api/cart/del/${itemId}`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Accept: "application/json"
+			"Accept": "application/json"
 		},
 		credentials: "include",
 		mode: "same-origin"
@@ -121,15 +121,14 @@ async function cartDel(itemId, caller) { ///////////////////////////always delet
 		.then(res => {
 			return res.json();
 		})
-		.then(function(response) {
+		.then(function (response) {
 			let alertType = "info";
 			if (response.error === false) {
 				let totalQty = response.cart.totalQty;
-				let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".");////////////////////////////////fetch total price including tax (delivery)
+				let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", "."); ////////////////////////////////fetch total price including tax (delivery)
 				let rowId = document.getElementById(itemId);
 
-				if (totalQty === 0) 
-					handleEmptiness();
+				if (totalQty === 0) handleEmptiness();
 
 				if (!rowId.classList.contains("card")) {
 					if (response.cart.items[itemId]) {
@@ -172,14 +171,16 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Accept: "application/json"
+					"Accept": "application/json"
 				},
-				body: JSON.stringify({SKU, price, attributes}),
+				body: JSON.stringify({ SKU, price, attributes }),
 				credentials: "include",
 				mode: "same-origin"
 			})
-				.then(res => {return res.json();})
-				.then(function(response) {
+				.then(res => {
+					return res.json();
+				})
+				.then(function (response) {
 					console.log(response);
 					let alertType = "success";
 					if (response.error === false) {
@@ -195,8 +196,7 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 							document.getElementById("total-qty").innerText = totalQty;
 						}
 						document.getElementById("cartQty").innerText = totalQty;
-					} else 
-						alertType = "warning";
+					} else alertType = "warning";
 					let alert = createAlertNode(response.msg, alertType);
 					addAlert(alert, "#header");
 				})
@@ -204,12 +204,12 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 					let alert = createAlertNode(err.message, "danger");
 					addAlert(alert, "#header");
 				});
-		} else 
-			throw new Error("Invalid item reference, please fresh the page");
+		} else throw new Error("Invalid item reference, please fresh the page");
 	} catch (err) {
 		let alert = createAlertNode(err.message, "warning");
 		addAlert(alert, "#header");
-	}}
+	}
+}
 
 async function pwintyCartDel(itemId, referenceId, caller) {
 	try {
@@ -224,14 +224,16 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Accept: "application/json"
+					"Accept": "application/json"
 				},
-				body: JSON.stringify({SKU, price, attributes}),
+				body: JSON.stringify({ SKU, price, attributes }),
 				credentials: "include",
 				mode: "same-origin"
 			})
-				.then(res => {return res.json();})
-				.then(function(response) {
+				.then(res => {
+					return res.json();
+				})
+				.then(function (response) {
 					let alertType = "warning";
 					if (response.error === false) {
 						let totalQty = response.cart.totalQty;
@@ -239,21 +241,16 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 						let deliveryPrice = response.cart.price.shippingIncludingTax;
 						let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
-						if (deliveryPrice === 0)
-							deliveryPrice = "FREE";
-						else 
-							deliveryPrice = formatter.format( response.cart.price.shippingIncludingTax).replace(",", ".");
+						if (deliveryPrice === 0) deliveryPrice = "FREE";
+						else deliveryPrice = formatter.format(response.cart.price.shippingIncludingTax).replace(",", ".");
 
-						if (totalQty === 0) 
-							handleEmptiness();
+						if (totalQty === 0) handleEmptiness();
 
 						if (response.cart.items[SKU]) {
-							if (response.item.qty === 0)
-								rowId.remove();
+							if (response.item.qty === 0) rowId.remove();
 							$(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
 							rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(",", ".");
-						} else 
-							rowId.remove();
+						} else rowId.remove();
 
 						document.getElementById("total-price").innerText = totalPrice;
 						document.getElementById("delivery-price").innerText = deliveryPrice;
@@ -270,12 +267,12 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 					let alert = createAlertNode(response.msg, alertType);
 					addAlert(alert, "#header");
 				});
-		} else 
-			throw new Error("Invalid item reference, please fresh the page");
+		} else throw new Error("Invalid item reference, please fresh the page");
 	} catch (err) {
 		let alert = createAlertNode(err.message, "warning");
 		addAlert(alert, "#header");
-	}}
+	}
+}
 
 async function pwintyUpdateValue(e, item, itemId, referenceId) {
 	try {
@@ -291,41 +288,40 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						Accept: "application/json"
+						"Accept": "application/json"
 					},
-					body: JSON.stringify({SKU, price, attributes}),
+					body: JSON.stringify({ SKU, price, attributes }),
 					credentials: "include",
 					mode: "same-origin"
-				}
-				)
-					.then(res => {return res.json();})
-					.then(function(response) {
+				})
+					.then(res => {
+						return res.json();
+					})
+					.then(function (response) {
 						let alertType = "info";
 						if (response.error === false) {
 							let totalQty = response.cart.totalQty;
 							let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".");
 							let rowId = document.getElementById(`${itemId}-${referenceId}`);
 							let deliveryPrice = response.cart.price.shippingIncludingTax;
-  
-							if (deliveryPrice === 0)
-								deliveryPrice = "FREE";
-							else 
-								deliveryPrice = formatter.format( response.cart.price.shippingIncludingTax).replace(",", ".");
 
-							if (totalQty === 0) 
-								handleEmptiness();
+							if (deliveryPrice === 0) deliveryPrice = "FREE";
+							else deliveryPrice = formatter.format(response.cart.price.shippingIncludingTax).replace(",", ".");
+
+							if (totalQty === 0) handleEmptiness();
 
 							document.getElementById("total-price").innerText = totalPrice;
 							document.getElementById("delivery-price").innerText = deliveryPrice;
 							document.getElementById("total-qty").innerText = totalQty;
 							document.getElementById("cartQty").innerText = totalQty;
 
-							if (qty === 0) 
-								document.getElementById(`${itemId}-${referenceId}`).remove();
+							if (qty === 0) document.getElementById(`${itemId}-${referenceId}`).remove();
 							else {
 								if (!rowId.classList.contains("card")) {
-									item.value = response.item.qty;// useless??
-									rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(",", ".");
+									item.value = response.item.qty; // useless??
+									rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter
+										.format(response.item.price)
+										.replace(",", ".");
 								}
 							}
 						} else {
@@ -340,12 +336,11 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 						let alert = createAlertNode(err.message, "danger");
 						addAlert(alert, "#header");
 					});
-			} else
-				throw new Error("The <b>quantity</b> has to be a positive integer");
-		} else 
-			throw new Error("The <b>quantity</b> you entered is invalid");
+			} else throw new Error("The <b>quantity</b> has to be a positive integer");
+		} else throw new Error("The <b>quantity</b> you entered is invalid");
 	} catch (err) {
 		item.value = 1;
 		let alert = createAlertNode(err.message, "warning");
 		addAlert(alert, "#header");
-	}}
+	}
+}

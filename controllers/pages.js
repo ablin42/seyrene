@@ -4,7 +4,17 @@ const format = require("date-format");
 const country = require("country-list-js");
 const router = express.Router();
 
-const { ROLE, setUser, notLoggedUser, authUser, authRole, setDelivery, isDelivery, setOrder, authGetOrder } = require("./helpers/verifySession");
+const {
+	ROLE,
+	setUser,
+	notLoggedUser,
+	authUser,
+	authRole,
+	setDelivery,
+	isDelivery,
+	setOrder,
+	authGetOrder
+} = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Blog = require("../models/Blog");
 const User = require("../models/User");
@@ -17,17 +27,16 @@ const Cart = require("../models/Cart");
 require("dotenv").config();
 const stripePublic = process.env.STRIPE_PUBLIC;
 
-const toTitleCase = (phrase) => {
+const toTitleCase = phrase => {
 	let arr = phrase.toLowerCase().split(" ");
 	let parsed = [];
-  
+
 	arr.forEach(item => {
 		let obj = item.charAt(0).toUpperCase() + item.slice(1);
-		if (item === "and")
-			obj = "and";
+		if (item === "and") obj = "and";
 		parsed.push(obj);
 	});
-  
+
 	return parsed.join(" ");
 };
 
@@ -41,15 +50,13 @@ const formatter = new Intl.NumberFormat("de-DE", {
 
 router.get("/", setUser, async (req, res) => {
 	try {
-		let obj = { active: "Home"};
+		let obj = { active: "Home" };
 
-		if (req.user) 
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		obj.front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
-		if (obj.front.length <= 0) 
-			obj.front = undefined;
-   
+		if (obj.front.length <= 0) obj.front = undefined;
+
 		return res.status(200).render("home", obj);
 	} catch (err) {
 		console.log("HOME ROUTE ERROR", err);
@@ -59,17 +66,14 @@ router.get("/", setUser, async (req, res) => {
 
 router.get("/Galerie", setUser, async (req, res) => {
 	try {
-		let obj = {active: "Galerie",};
+		let obj = { active: "Galerie" };
 
-		if (req.user) 
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/`));
-		if (obj.galleries.error) 
-			throw new Error(obj.galleries.message);
-		if (obj.galleries.length === 0)
-			throw new Error("Gallery is under maintenance, please come back later");
-   
+		if (obj.galleries.error) throw new Error(obj.galleries.message);
+		if (obj.galleries.length === 0) throw new Error("Gallery is under maintenance, please come back later");
+
 		return res.status(200).render("galerie", obj);
 	} catch (err) {
 		console.log("GALLERY ROUTE ERROR", err);
@@ -80,10 +84,9 @@ router.get("/Galerie", setUser, async (req, res) => {
 
 router.get("/Galerie/Tags", setUser, async (req, res) => {
 	try {
-		let obj = {active: "Tags search"};
+		let obj = { active: "Tags search" };
 
-		if (req.user) 
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		let url = `${process.env.BASEURL}/api/gallery/`;
 		if (req.query.t) {
@@ -92,12 +95,11 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 		}
 
 		obj.galleries = JSON.parse(await rp(url));
-		if (obj.galleries.error) 
-			throw new Error(obj.galleries.message);
+		if (obj.galleries.error) throw new Error(obj.galleries.message);
 
 		return res.status(200).render("tags", obj);
 	} catch (err) {
-		let obj = {active: "Tags search"};
+		let obj = { active: "Tags search" };
 		if (req.query.t) {
 			obj.error = true;
 			obj.tags = req.query.t;
@@ -125,7 +127,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 			let cart = new Cart(req.session.cart);
 			obj.products = [];
 			let itemArr = cart.generateArray();
-     
+
 			itemArr.forEach(item => {
 				let items;
 				if (item.attributes && item.attributes.isUnique) {
@@ -142,21 +144,27 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 					item.elements.forEach(element => {
 						if (element.attributes !== undefined) {
 							items = {
-								item: item.attributes, 
+								item: item.attributes,
 								attributes: element.attributes,
 								stringifiedAttributes: JSON.stringify(element.attributes),
 								qty: element.qty,
 								unitPrice: item.unitPrice,
 								price: formatter.format(item.unitPrice * element.qty).substr(2),
-								shortcontent: item.attributes.content.substr(0, 128), 
-								shorttitle: item.attributes.title.substr(0, 64), 
+								shortcontent: item.attributes.content.substr(0, 128),
+								shorttitle: item.attributes.title.substr(0, 64),
 								details: ""
 							};
 							let details = "";
-							Object.keys(element.attributes).forEach((attribute) => {
-								details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
+							Object.keys(element.attributes).forEach(attribute => {
+								details +=
+									attribute.charAt(0).toUpperCase() +
+									attribute.slice(1) +
+									": " +
+									element.attributes[attribute].charAt(0).toUpperCase() +
+									element.attributes[attribute].slice(1) +
+									" / ";
 							});
-							items.details = details.substr(0, (details.length - 3));
+							items.details = details.substr(0, details.length - 3);
 							obj.products.push(items);
 						}
 					});
@@ -166,10 +174,8 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 			obj.totalQty = cart.totalQty;
 
 			let countryCode = country.findByName(toTitleCase(obj.delivery.country));
-			if (countryCode)
-				countryCode = countryCode.code.iso2;
-			else 
-				throw new Error("We cannot find your country ISO code, please contact us if the error persist");
+			if (countryCode) countryCode = countryCode.code.iso2;
+			else throw new Error("We cannot find your country ISO code, please contact us if the error persist");
 			let options = {
 				uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
 				method: "POST",
@@ -177,13 +183,12 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 					"Content-Type": "application/json",
 					"Accept": "application/json"
 				},
-				body: {items: cart.generatePwintyArray()},
+				body: { items: cart.generatePwintyArray() },
 				json: true
 			};
 
 			obj.deliveryPrice = await rp(options);
-			if (obj.deliveryPrice.error) 
-				throw new Error(obj.deliveryPrice.message);
+			if (obj.deliveryPrice.error) throw new Error(obj.deliveryPrice.message);
 			//parse and format price
 		}
 		return res.status(200).render("cart", obj);
@@ -206,11 +211,9 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, async (req, r
 		if (req.session.cart) {
 			let cart = new Cart(req.session.cart);
 
-			if (cart.totalPrice === 0)
-				return res.status(400).redirect("/shopping-cart");
+			if (cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 			obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-		} else
-			return res.status(400).redirect("/shopping-cart");
+		} else return res.status(400).redirect("/shopping-cart");
 
 		return res.status(200).render("payment", obj);
 	} catch (err) {
@@ -231,15 +234,12 @@ router.get("/User", setUser, authUser, async (req, res) => {
 		obj.delivery = false; /////////////////?
 
 		[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-		if (err)
-			throw new Error("An error occurred while looking for your delivery informations, please retry");
+		if (err) throw new Error("An error occurred while looking for your delivery informations, please retry");
 
-		if (result != null) 
-			obj.delivery = result;
+		if (result != null) obj.delivery = result;
 
 		[err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
-		if (err)
-			throw new Error("An error occurred while looking for your orders informations, please retry");
+		if (err) throw new Error("An error occurred while looking for your orders informations, please retry");
 
 		if (orders != null) {
 			orders.forEach((order, index) => {
@@ -261,12 +261,10 @@ router.get("/About", setUser, async (req, res) => {
 	try {
 		let obj = { active: "About" };
 
-		if (req.user)
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		obj.blogs = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/`)); //maybe better save in object check error and if no error -> store value in obj.blogs
-		if (obj.blogs.error) 
-			throw new Error(obj.blogs.message);
+		if (obj.blogs.error) throw new Error(obj.blogs.message);
 
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
@@ -301,18 +299,14 @@ router.get("/Shop", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Shop" };
 
-		if (req.user)
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		obj.original = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/`)); //same as /About
-		if (obj.original.error) 
-			throw new Error(obj.original.message);
+		if (obj.original.error) throw new Error(obj.original.message);
 
 		obj.print = JSON.parse(await rp(`${process.env.BASEURL}/api/shop?tab=print`));
-		if (obj.print.error) 
-			throw new Error(obj.print.message);
-		if (obj.original.length <= 1 && obj.print.length <= 1)
-			throw new Error("Shop is under maintenance, please try again later");
+		if (obj.print.error) throw new Error(obj.print.message);
+		if (obj.original.length <= 1 && obj.print.length <= 1) throw new Error("Shop is under maintenance, please try again later");
 
 		return res.status(200).render("shop", obj);
 	} catch (err) {
@@ -331,12 +325,10 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 		};
 
 		let [err, pwToken] = await utils.to(PwToken.findOne({ _id: obj.tokenId, token: obj.token }));
-		if (err)
-			throw new Error("An error occurred while fetching the token, please try again");
-		if (pwToken === null)
-			throw new Error("Invalid token, please try to request another one here");
+		if (err) throw new Error("An error occurred while fetching the token, please try again");
+		if (pwToken === null) throw new Error("Invalid token, please try to request another one here");
 
-		return res.status(200).render("Resetpw", obj); 
+		return res.status(200).render("Resetpw", obj);
 	} catch (err) {
 		console.log("RESETPW ROUTE ERROR", err);
 		req.flash("warning", err.message);
@@ -354,13 +346,12 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 		let options = {
 			method: "GET",
 			uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
-			headers: {cookie: req.headers.cookie},
+			headers: { cookie: req.headers.cookie },
 			json: true
 		};
-    
+
 		obj.order = await rp(options); //same as /About
-		if (obj.order.error) 
-			throw new Error(obj.order.message);
+		if (obj.order.error) throw new Error(obj.order.message);
 
 		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
 		obj.products = [];
@@ -380,21 +371,27 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 				item.elements.forEach(element => {
 					if (element.attributes !== undefined) {
 						items = {
-							item: item.attributes, 
+							item: item.attributes,
 							attributes: element.attributes,
 							stringifiedAttributes: JSON.stringify(element.attributes),
 							qty: element.qty,
 							unitPrice: item.unitPrice,
 							price: formatter.format(item.unitPrice * element.qty).substr(2),
-							shortcontent: item.attributes.content.substr(0, 128), 
-							shorttitle: item.attributes.title.substr(0, 64), 
+							shortcontent: item.attributes.content.substr(0, 128),
+							shorttitle: item.attributes.title.substr(0, 64),
 							details: ""
 						};
 						let details = "";
-						Object.keys(element.attributes).forEach((attribute) => {
-							details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
+						Object.keys(element.attributes).forEach(attribute => {
+							details +=
+								attribute.charAt(0).toUpperCase() +
+								attribute.slice(1) +
+								": " +
+								element.attributes[attribute].charAt(0).toUpperCase() +
+								element.attributes[attribute].slice(1) +
+								" / ";
 						});
-						items.details = details.substr(0, (details.length - 3));
+						items.details = details.substr(0, details.length - 3);
 						obj.products.push(items);
 					}
 				});
@@ -412,18 +409,15 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 router.get("/Galerie/:id", setUser, async (req, res) => {
 	try {
 		let id = req.params.id;
-		let obj = {active: "Galerie"};
+		let obj = { active: "Galerie" };
 
-		if (req.user)
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/single/${id}`)); // like /About
-		if (obj.galleries.error) 
-			throw new Error(obj.galleries.message);
+		if (obj.galleries.error) throw new Error(obj.galleries.message);
 
 		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${id}`)); // like /About
-		if (obj.img.error) 
-			throw new Error(obj.img.error);
+		if (obj.img.error) throw new Error(obj.img.error);
 
 		return res.status(200).render("single/galerie-single", obj);
 	} catch (err) {
@@ -436,19 +430,16 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 router.get("/Shop/:id", setUser, async (req, res) => {
 	try {
 		let id = req.params.id;
-		let obj = {active: "Shop"};
+		let obj = { active: "Shop" };
 
-		if (req.user)
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		obj.shopItem = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/single/${id}`)); // like /About
-		if (obj.shopItem.error) 
-			throw new Error(obj.shopItem.message);
+		if (obj.shopItem.error) throw new Error(obj.shopItem.message);
 		obj.shopItem.price = formatter.format(obj.shopItem.price).substr(2);
 
 		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${id}`)); // like /About
-		if (obj.img.error) 
-			throw new Error(obj.img.error);
+		if (obj.img.error) throw new Error(obj.img.error);
 
 		return res.status(200).render("single/shop-single", obj);
 	} catch (err) {
@@ -463,12 +454,10 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 		let id = req.params.id;
 		let obj = { active: "Blog" };
 
-		if (req.user)
-			obj.user = req.user;
+		if (req.user) obj.user = req.user;
 
 		obj.blogs = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/single/${id}`)); // like /About
-		if (obj.blogs.error) 
-			throw new Error(obj.blogs.message);
+		if (obj.blogs.error) throw new Error(obj.blogs.message);
 
 		return res.status(200).render("single/blog-single", obj);
 	} catch (err) {
@@ -498,8 +487,7 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		let obj = { active: "Update Homepage", user: req.user };
 
 		obj.front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`)); // like /About
-		if (obj.front.length <= 0) 
-			obj.front = undefined;
+		if (obj.front.length <= 0) obj.front = undefined;
 
 		return res.status(200).render("restricted/front-post", obj);
 	} catch (err) {
@@ -523,12 +511,9 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 		};
 
 		let result = await rp(options);
-		if (typeof result === "string") 
-			throw new Error("Unauthorized. Contact your administrator if you think this is a mistake"); 
-		if (result.error) 
-			throw new Error(result.message);
-		if (result.orders) 
-			obj.orders = result.orders;
+		if (typeof result === "string") throw new Error("Unauthorized. Contact your administrator if you think this is a mistake");
+		if (result.error) throw new Error(result.message);
+		if (result.orders) obj.orders = result.orders;
 
 		return res.status(200).render("restricted/orders", obj);
 	} catch (err) {
@@ -541,17 +526,16 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Order recap", user: req.user };
-  
+
 		let options = {
 			method: "GET",
 			uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
-			headers: {cookie: req.headers.cookie},
+			headers: { cookie: req.headers.cookie },
 			json: true
 		};
-    
+
 		obj.order = await rp(options); //same as /About
-		if (obj.order.error) 
-			throw new Error(obj.order.message);
+		if (obj.order.error) throw new Error(obj.order.message);
 
 		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
 		obj.products = [];
@@ -571,21 +555,27 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (r
 				item.elements.forEach(element => {
 					if (element.attributes !== undefined) {
 						items = {
-							item: item.attributes, 
+							item: item.attributes,
 							attributes: element.attributes,
 							stringifiedAttributes: JSON.stringify(element.attributes),
 							qty: element.qty,
 							unitPrice: item.unitPrice,
 							price: formatter.format(item.unitPrice * element.qty).substr(2),
-							shortcontent: item.attributes.content.substr(0, 128), 
-							shorttitle: item.attributes.title.substr(0, 64), 
+							shortcontent: item.attributes.content.substr(0, 128),
+							shorttitle: item.attributes.title.substr(0, 64),
 							details: ""
 						};
 						let details = "";
-						Object.keys(element.attributes).forEach((attribute) => {
-							details += attribute.charAt(0).toUpperCase() + attribute.slice(1) + ": " + element.attributes[attribute].charAt(0).toUpperCase() + element.attributes[attribute].slice(1) + " / ";
+						Object.keys(element.attributes).forEach(attribute => {
+							details +=
+								attribute.charAt(0).toUpperCase() +
+								attribute.slice(1) +
+								": " +
+								element.attributes[attribute].charAt(0).toUpperCase() +
+								element.attributes[attribute].slice(1) +
+								" / ";
 						});
-						items.details = details.substr(0, (details.length - 3));
+						items.details = details.substr(0, details.length - 3);
 						obj.products.push(items);
 					}
 				});
@@ -603,7 +593,7 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (r
 router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Post a gallery item", user: req.user };
-    
+
 		return res.status(200).render("restricted/gallery-post", obj);
 	} catch (err) {
 		console.log("GALLERY POST ROUTE ERROR", err);
@@ -615,18 +605,15 @@ router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async
 router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Edit a gallery item" };
-      
+
 		let [err, result] = await utils.to(Gallery.findOne({ _id: req.params.galleryId }));
-		if (err || !result)
-			throw new Error("An error occurred while fetching the gallery item");
+		if (err || !result) throw new Error("An error occurred while fetching the gallery item");
 		obj.gallery = result;
 
 		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${req.params.galleryId}`));
-		if (obj.img.error) 
-			throw new Error(obj.img.error);
+		if (obj.img.error) throw new Error(obj.img.error);
 
 		return res.status(200).render("restricted/gallery-patch", obj);
-
 	} catch (err) {
 		console.log("GALLERY PATCH ROUTE ERROR", err);
 		req.flash("warning", err.message);
@@ -651,13 +638,11 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 		let obj = { active: "Edit a shop item", user: req.user };
 
 		let [err, result] = await utils.to(Shop.findOne({ _id: req.params.shopId }));
-		if (err || !result)
-			throw new Error("An error occurred while fetching the shop item");
+		if (err || !result) throw new Error("An error occurred while fetching the shop item");
 		obj.shop = result;
 
 		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${req.params.shopId}`));
-		if (obj.img.error) 
-			throw new Error(obj.img.error);
+		if (obj.img.error) throw new Error(obj.img.error);
 
 		return res.status(200).render("restricted/shop-patch", obj);
 	} catch (err) {
@@ -686,7 +671,7 @@ router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 
 router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = {active: "Edit a blog", user: req.user};
+		let obj = { active: "Edit a blog", user: req.user };
 
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
@@ -694,14 +679,12 @@ router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN),
 		}
 
 		let [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
-		if (err)
-			throw new Error("An error occurred while loading the blog, please try again");
-		if (blog === null) 
-			throw new Error("No blog exists with this ID");
+		if (err) throw new Error("An error occurred while loading the blog, please try again");
+		if (blog === null) throw new Error("No blog exists with this ID");
 
 		obj.blogContent = blog;
 		obj._id = req.params.blogId;
-     
+
 		return res.status(200).render("restricted/blog-patch", obj);
 	} catch (err) {
 		console.log("BLOG PATCH ROUTE ERROR", err);

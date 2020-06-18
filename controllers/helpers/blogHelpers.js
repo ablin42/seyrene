@@ -6,10 +6,9 @@ const User = require("../../models/User");
 module.exports = {
 	getName: async function (authorId) {
 		let err, user;
-		
+
 		[err, user] = await utils.to(User.findById(authorId));
-		if (err)
-			throw new Error("An error occurred while looking for author's name");
+		if (err) throw new Error("An error occurred while looking for author's name");
 		return user.name;
 	},
 	objBlog: async function (item) {
@@ -39,18 +38,17 @@ module.exports = {
 			let obj = await this.objBlog(blogs);
 			return obj;
 		}
-       
+
 		return blogsParsed;
 	},
 	getBlogs: async function (options) {
 		let err, query, blogsParsed;
-        
+
 		[err, query] = await utils.to(Blog.paginate({}, options));
-		if (err)
-			throw new Error("An error occurred while fetching blogs");
+		if (err) throw new Error("An error occurred while fetching blogs");
 		const blogs = query.docs;
 		blogsParsed = await this.parseBlogs(blogs);
-    
+
 		return blogsParsed;
 	}
 };

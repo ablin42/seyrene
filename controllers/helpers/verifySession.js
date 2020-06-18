@@ -42,7 +42,7 @@ function authUser(req, res, next) {
 		return res.status(403).redirect("/Account");
 	}
 
-	next ();
+	next();
 }
 
 function notLoggedUser(req, res, next) {
@@ -51,7 +51,7 @@ function notLoggedUser(req, res, next) {
 		return res.status(403).redirect("/");
 	}
 
-	next ();
+	next();
 }
 
 function authRole(role) {
@@ -86,7 +86,7 @@ function isDelivery(req, res, next) {
 		return res.status(403).redirect("/User");
 	}
 
-	next ();
+	next();
 }
 
 async function setOrder(req, res, next) {
@@ -97,16 +97,13 @@ async function setOrder(req, res, next) {
 		req.flash("warning", "Invalid Order");
 		return res.status(404).redirect("/User");
 	}
-	req.order = order; 
+	req.order = order;
 
 	next();
 }
 
 function canViewOrder(user, order) {
-	return (
-		user.role == ROLE.ADMIN ||
-    order._userId == user._id
-	);
+	return user.role == ROLE.ADMIN || order._userId == user._id;
 }
 
 function authGetOrder(req, res, next) {

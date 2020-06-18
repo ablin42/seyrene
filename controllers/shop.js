@@ -28,7 +28,7 @@ const upload = multer({
 	limits: {
 		fileSize: 100000000
 	},
-	fileFilter: function(req, file, cb) {
+	fileFilter: function (req, file, cb) {
 		gHelpers.sanitizeFile(req, file, cb);
 	}
 }).array("img");
@@ -56,9 +56,8 @@ async function parsePrice(shopItems) {
 			__v: shopItems[i].__v
 		};
 
-		let [err, img] = await utils.to(Image.findOne({_itemId: shopItems[i]._id, itemType: "Shop", isMain: true}));
-		if (err || img == null) 
-			throw new Error(`An error occurred while fetching the shop images ${shopItems[i]._id}`);
+		let [err, img] = await utils.to(Image.findOne({ _itemId: shopItems[i]._id, itemType: "Shop", isMain: true }));
+		if (err || img == null) throw new Error(`An error occurred while fetching the shop images ${shopItems[i]._id}`);
 
 		obj.mainImgId = img._id;
 		arr.push(obj);
@@ -76,14 +75,12 @@ router.get("/", setUser, async (req, res) => {
 		};
 		let query = { isUnique: true, soldOut: false };
 
-		if (req.query.tab === "print") 
-			query.isUnique = false;
+		if (req.query.tab === "print") query.isUnique = false;
 
 		let [err, result] = await utils.to(Shop.paginate(query, options));
-		if (err) 
-			throw new Error("An error occurred while fetching the shop items");
+		if (err) throw new Error("An error occurred while fetching the shop items");
 		let shopItems = result.docs; //probably can remove img since we use id and api to load it
-    
+
 		let ress = await parsePrice(shopItems);
 		return res.status(200).json(ress);
 	} catch (err) {
@@ -102,10 +99,9 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 				throw new Error(item.msg);
 			});
 		}
-    
+
 		let price = parseFloat(req.body.price);
-		if (isNaN(price)) 
-			throw new Error("Invalid price, please try again");
+		if (isNaN(price)) throw new Error("Invalid price, please try again");
 		let formattedPrice = price.toFixed(2);
 
 		const obj = {
@@ -117,14 +113,12 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 
 		const shop = new Shop(obj);
 		[err, result] = await utils.to(shop.save());
-		if (err)
-			throw new Error("Something went wrong while uploading your file");
+		if (err) throw new Error("Something went wrong while uploading your file");
 
 		for (let i = 0; i < req.files.length; i++) {
 			let isMain = false;
-			if (i === 0) 
-				isMain = true;
-        
+			if (i === 0) isMain = true;
+
 			let image = new Image({
 				_itemId: result._id,
 				itemType: "Shop",
@@ -133,18 +127,16 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 			});
 			let oldpath = req.files[i].destination + req.files[i].filename;
 			let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
-			fs.rename(oldpath, newpath, (err) => {
-				if (err)
-					throw new Error(err);
+			fs.rename(oldpath, newpath, err => {
+				if (err) throw new Error(err);
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err)
-				throw new Error("Something went wrong while uploading your image");
+			if (err) throw new Error("Something went wrong while uploading your image");
 		}
 
 		req.flash("success", "Item successfully uploaded!");
-		return res.status(200).json({url: `/Admin/Shop/Patch/${result._id}`, msg: "Item successfully uploaded!"});
+		return res.status(200).json({ url: `/Admin/Shop/Patch/${result._id}`, msg: "Item successfully uploaded!" });
 	} catch (err) {
 		console.log("POST SHOP ERROR", err);
 		return res.status(400).json({ url: "/", msg: err.message, err: true });
@@ -161,13 +153,12 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 				throw new Error(item.msg);
 			});
 		}
-      
+
 		let id = req.params.id;
 		let price = parseFloat(req.body.price);
-		if (isNaN(price)) 
-			throw new Error("Invalid price, please try again");
+		if (isNaN(price)) throw new Error("Invalid price, please try again");
 		let formattedPrice = price.toFixed(2);
-      
+
 		const obj = {
 			title: req.body.title,
 			content: req.body.content,
@@ -176,8 +167,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 		}; // need to sanitize data
 
 		[err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
-		if (err) 
-			throw new Error("Something went wrong while updating your file");
+		if (err) throw new Error("Something went wrong while updating your file");
 
 		for (let i = 0; i < req.files.length; i++) {
 			let image = new Image({
@@ -188,14 +178,12 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 			});
 			let oldpath = req.files[i].destination + req.files[i].filename;
 			let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
-			fs.rename(oldpath, newpath, (err) => {
-				if (err)
-					throw new Error(err);
+			fs.rename(oldpath, newpath, err => {
+				if (err) throw new Error(err);
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err)
-				throw new Error("Something went wrong while uploading your image");
+			if (err) throw new Error("Something went wrong while uploading your image");
 		}
 
 		req.flash("success", "Item successfully updated!");
@@ -212,20 +200,19 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let id = req.params.id; //sanitize
 
 		let [err, shop] = await utils.to(Shop.deleteOne({ _id: id }));
-		if (err)
-			throw new Error("An error occurred while deleting the item, please try again");
+		if (err) throw new Error("An error occurred while deleting the item, please try again");
 
 		rp(`${process.env.BASEURL}/api/image/Shop/${id}`)
-			.then(async (response) => {
+			.then(async response => {
 				let parsed = JSON.parse(response);
 				for (let i = 0; i < parsed.length; i++) {
-					fs.unlink(parsed[i].path, (err) => {
+					fs.unlink(parsed[i].path, err => {
 						if (err) throw new Error("An error occurred while deleting your image");
 					});
 					await Image.deleteOne({ _id: parsed[i]._id });
 				}
 			})
-			.catch((err) => {
+			.catch(err => {
 				throw new Error("An error occurred while fetching the images");
 			});
 
@@ -242,10 +229,9 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 router.get("/single/:id", setUser, async (req, res) => {
 	try {
 		let id = req.params.id;
-    
+
 		let [err, result] = await utils.to(Shop.findById(id));
-		if (err || result === null)
-			throw new Error("An error occurred while fetching the shop item");
+		if (err || result === null) throw new Error("An error occurred while fetching the shop item");
 
 		result.img = undefined; //set it to this so it doesnt fuck rendering of response (buffer)
 		return res.status(200).json(result);
