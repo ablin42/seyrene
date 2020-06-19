@@ -77,7 +77,8 @@ const ERROR_MESSAGE = {
 	notFoundCatalog: "Something went wrong while searching this item in our catalog",
 	invalidReference: "Invalid item reference, please fresh the page",
 	qtyInteger: "The <b>quantity</b> has to be a positive integer",
-	invalidQty: "The <b>quantity</b> you entered is invalid"
+	invalidQty: "The <b>quantity</b> you entered is invalid",
+	missingBilling: "You need to fill in your billing informations"
 };
 
 module.exports = {

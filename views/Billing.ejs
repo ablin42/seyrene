@@ -1,0 +1,67 @@
+<% include partials/head %>
+
+<script src="/scripts/shop/billing.js"></script>
+
+<div class="container container-single">
+	<div class="single-wrapper">
+		<div class="billing-wrapper col-6 offset-3">
+			<h1>Billing address</h1>
+			<form id="deliveryform" method="POST" action="" onsubmit="return saveBilling(event);">
+				<div class="row">
+					<div class="col-md-6">
+						<label class="control-label">Nom</label>
+						<input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<%= locals.billing.lastname %>" onkeyup="Validate.String(this, 2, 128);" required />
+						<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
+					</div>
+					<div class="col-md-6">
+						<label class="control-label">Prénom</label>
+						<input class="form-control" id="firstname" name="firstname" placeholder="John" value="<%= locals.billing.firstname %>" onkeyup="Validate.String(this, 2, 128);" required />
+						<span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
+					</div>
+				</div>
+
+				<label class="control-label">Adresse</label>
+				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" class="form-control" value="<%= locals.billing.fulltext_address %>" required />
+
+				<div id="address">
+					<div class="row">
+						<div class="col-md-12">
+							<label class="control-label">Route</label>
+							<input class="form-control" id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<%= locals.billing.route %>" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label">Ville</label>
+							<input class="form-control field" id="locality" name="city" placeholder="Paris" value="<%= locals.billing.city %>" required />
+						</div>
+						<div class="col-md-6">
+							<label class="control-label">Région</label>
+							<input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<%= locals.billing.state %>" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label">Code Postal</label>
+							<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<%= locals.billing.postal_code %>" required />
+						</div>
+						<div class="col-md-6">
+							<label class="control-label">Pays</label>
+							<input class="form-control" id="country" name="country" placeholder="France" value="<%= locals.billing.country %>" required />
+						</div>
+					</div>
+					<div class="row mt-4">
+						<div class="col-6 offset-3">
+							<input type="submit" class="logbtn" value="Enregistrer" id="submit-deliveryform" />
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI&libraries=places&callback=initAutocomplete" async defer></script>
+<script src="scripts/auto-complete.js"></script>
+<script src="/scripts/frontValidation.js"></script>
+<% include partials/footer %>

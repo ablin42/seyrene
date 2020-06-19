@@ -116,6 +116,31 @@ function authGetOrder(req, res, next) {
 	next();
 }
 
+function setBilling(req, res, next) {
+	const billing = req.body.billing;
+
+	if (!billing) {
+		//reset req.sess.bill?
+		//check with api?
+		req.flash("warning", "agliglou");
+		return res.status(404).redirect("/shopping-cart");
+	}
+	req.session.billing = billing;
+
+	next();
+}
+
+function checkBilling(req, res, next) {
+	const billing = req.session.billing;
+
+	if (!billing) {
+		req.flash("warning", ERROR_MESSAGE.missingBilling);
+		return res.status(404).redirect("/Billing");
+	}
+
+	next();
+}
+
 module.exports = {
 	ROLE,
 	setUser,
@@ -126,5 +151,7 @@ module.exports = {
 	isDelivery,
 	setOrder,
 	canViewOrder,
-	authGetOrder
+	authGetOrder,
+	setBilling,
+	checkBilling
 };

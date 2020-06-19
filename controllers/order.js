@@ -11,7 +11,16 @@ const Purchase = require("../models/PurchaseData");
 const User = require("../models/User");
 const Shop = require("../models/Shop");
 const DeliveryInfo = require("../models/DeliveryInfo");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const {
+	ROLE,
+	setUser,
+	authUser,
+	authRole,
+	setOrder,
+	authGetOrder,
+	setBilling,
+	checkBilling
+} = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const mailer = require("./helpers/mailer");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
@@ -335,6 +344,7 @@ router.post("/initialize", setUser, authUser, async (req, res) => {
 			items: req.body.items,
 			price: req.body.price,
 			deliveryPrice: req.body.deliveryPrice,
+			billing: req.body.billing,
 			status: "awaitingStripePayment",
 			firstname: infos.firstname,
 			lastname: infos.lastname,
@@ -419,10 +429,10 @@ async function refundStripe(req, chargeId, orderId) {
 router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
 		let err, order, item, user;
-		let orderId = req.params.id;
+		const orderId = req.params.id;
 
 		console.log("cancel route");
-		[err, order] = await utils.to(Order.findById(req.params.id));
+		[err, order] = await utils.to(Order.findById(orderId));
 		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchOrder);
 
 		switch (order.status) {
@@ -497,40 +507,29 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 	}
 });
 
-router.post("/billing/save", vDelivery, setUser, authUser, async (req, res) => {
+router.post("/billing/save", vDelivery, setUser, authUser, setBilling, async (req, res) => {
 	try {
-		if (req.body.billing && req.body.clientSecret) {
-			const vResult = validationResult(req.body.billing);
-			if (!vResult.isEmpty()) {
-				vResult.errors.forEach(item => {
-					req.flash("info", item.msg);
-				});
-				throw new Error(ERROR_MESSAGE.incorrectForm);
-			}
-			let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
-			let encoded_address = encodeURI(req.body.billing.fulltext_address);
-			let options = {
-				uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
-				json: true
-			};
-
-			rp(options).then(async data => {
-				if (data.status !== "OK")
-					return res
-						.status(200)
-						.json({ error: true, message: "We could not validate your address, please make sure it is valid" });
-
-				let [err, order] = await utils.to(
-					Order.findOneAndUpdate(
-						{ _userId: req.user._id, chargeId: req.body.clientSecret, status: "awaitingStripePayment" },
-						{ $set: { billing: req.body.billing } }
-					)
-				);
-				if (err || order === null) throw new Error(ERROR_MESSAGE.saveBilling);
-
-				return res.status(200).json({ error: false });
+		const vResult = validationResult(req.body.billing);
+		if (!vResult.isEmpty()) {
+			vResult.errors.forEach(item => {
+				req.flash("info", item.msg);
 			});
-		} else throw new Error(ERROR_MESSAGE.missingInfo);
+			throw new Error(ERROR_MESSAGE.incorrectForm);
+		}
+
+		let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
+		let encoded_address = encodeURI(req.body.billing.fulltext_address);
+		let options = {
+			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
+			json: true
+		};
+
+		rp(options).then(async data => {
+			if (data.status !== "OK")
+				return res.status(200).json({ error: true, message: "We could not validate your address, please make sure it is valid" });
+
+			return res.status(200).json({ error: false });
+		});
 	} catch (err) {
 		console.log("SAVE BILLING ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });

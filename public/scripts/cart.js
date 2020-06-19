@@ -1,5 +1,3 @@
-const { ERROR_MESSAGE } = require("../../controllers/helpers/errorMessages");
-
 let PWINTY_DATA = [];
 const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",

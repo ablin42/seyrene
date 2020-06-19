@@ -1,142 +1,181 @@
 <% include partials/head %>
 
 <script src="/scripts/cart.js"></script>
-<div class="container container-single"> 
-  <div class="single-wrapper">
-    <div class="col-10 offset-1">
-      <div class="text-center">
-        <b class="alertEmpty text-center" id="alertEmpty" <% if (locals.totalPrice != 0) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
-      </div>
-      <% if(locals.products){ %>
-        <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
-          <div class="cart-row" id="cart-row-header">
-            <span class="cart-item cart-header cart-column">ITEM</span>
-            <span class="cart-quantity cart-header cart-column">QUANTITÉ</span>
-            <span class="cart-price cart-header cart-column">PRIX</span>
-          </div>
-        <% } %>
+<div class="container container-single">
+	<div class="single-wrapper">
+		<div class="col-10 offset-1">
+			<div class="text-center">
+				<b class="alertEmpty text-center" id="alertEmpty" <% if (locals.totalPrice !="0" ) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
+			</div>
+			<% if(locals.products){ %> <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
+			<div class="cart-row" id="cart-row-header">
+				<span class="cart-item cart-header cart-column">ITEM</span>
+				<span class="cart-quantity cart-header cart-column">QUANTITÉ</span>
+				<span class="cart-price cart-header cart-column">PRIX</span>
+			</div>
+			<% } %> <% Object.keys(locals.products).forEach(function (index) { %>
+			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].item.isUnique) { %>-<%= index %><% } %>">
+				<div class="cart-item cart-column">
+					<% if (locals.products[index].item.isUnique === true) { %>
+					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
+					<% } else { %>
+					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
+					<% } %>
+					<div class="cart-title-description">
+						<h4 class="cart-item-title"><b><%= locals.products[index].shorttitle %>...</b></h4>
+						<p class="cart-item-description"><%= locals.products[index].shortcontent %>...</p>
+						<p><%= locals.products[index].details %></p>
+					</div>
+				</div>
 
-        <% Object.keys(locals.products).forEach(function (index) { %>
-          <div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].item.isUnique) { %>-<%= index %><% } %>">
-            <div class="cart-item cart-column">
-              <% if (locals.products[index].item.isUnique === true) { %>
-                <img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
-              <% } else { %>
-                <img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>">
-              <% } %>
-              <div class="cart-title-description">
-                <h4 class="cart-item-title"><b><%= locals.products[index].shorttitle %>...</b></h4>
-                <p class="cart-item-description"><%= locals.products[index].shortcontent %>...</p>
-                <p><%= locals.products[index].details %></p>
-              </div>
-            </div>
-                
-            <div class="cart-quantity cart-column">
-              <% if (locals.products[index].item.isUnique === true) { %>
-                <i class="fas fa-minus fa-2x qty-update" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
-                <input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly>
-                <i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
-              <% } else { %>
-                <i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
-                <input id="qty-<%= locals.products[index].item._id %>-<%= index %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" onchange="pwintyUpdateValue(event, this, '<%= locals.products[index].item._id %>', '<%= index %>')">
-                <i class="fas fa-plus fa-2x qty-update" min="0" onclick="pwintyCartAdd('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
-              <% } %>
-            </div>
+				<div class="cart-quantity cart-column">
+					<% if (locals.products[index].item.isUnique === true) { %>
+					<i class="fas fa-minus fa-2x qty-update" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
+					<input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly />
+					<i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
+					<% } else { %>
+					<i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
+					<input
+						id="qty-<%= locals.products[index].item._id %>-<%= index %>"
+						class="cart-item-qty form-control"
+						value="<%= locals.products[index].qty %>"
+						name="cart-item-qty"
+						title="Numbers only"
+						onchange="pwintyUpdateValue(event, this, '<%= locals.products[index].item._id %>', '<%= index %>')"
+					/>
+					<i class="fas fa-plus fa-2x qty-update" min="0" onclick="pwintyCartAdd('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
+					<% } %>
+				</div>
 
-            <div class="cart-price cart-column">
-              <p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
-              <% if (locals.products[index].item.isUnique !== true) { %>
-                <p class="cart-item-unitprice"><b><%= locals.products[index].unitPrice %>€/Unité</b></p>
-              <% } %>
-            </div>
-        </div>
-        <% }) %>
-      <% } %>
+				<div class="cart-price cart-column">
+					<p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
+					<% if (locals.products[index].item.isUnique !== true) { %>
+					<p class="cart-item-unitprice"><b><%= locals.products[index].unitPrice %>€/Unité</b></p>
+					<% } %>
+				</div>
+			</div>
+			<% }) %> <% } %>
 
-        <div class="panel-heading">
-          <h2 class="panel-title">Informations pour la livraison</h2>
-            <h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <label class="control-label">Nom</label>
-            <input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>" onkeyup="Validate.String(this, 2, 128);" required>
-            <span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
-          </div>
-          <div class="col-md-6">
-            <label class="control-label">Prénom</label>
-            <input class="form-control" id="firstname" name="firstname" placeholder="John" value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>" onkeyup="Validate.String(this, 2, 128);" required>
-            <span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
-          </div>
-        </div>
+			<div class="panel-heading">
+				<h2 class="panel-title">Informations pour la livraison</h2>
+				<h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<label class="control-label">Nom</label>
+					<input
+						class="form-control"
+						id="lastname"
+						name="lastname"
+						placeholder="Doe"
+						value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>"
+						onkeyup="Validate.String(this, 2, 128);"
+						required
+					/>
+					<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
+				</div>
+				<div class="col-md-6">
+					<label class="control-label">Prénom</label>
+					<input
+						class="form-control"
+						id="firstname"
+						name="firstname"
+						placeholder="John"
+						value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>"
+						onkeyup="Validate.String(this, 2, 128);"
+						required
+					/>
+					<span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
+				</div>
+			</div>
 
-        <label class="control-label">Adresse</label>        
-        <input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" class="form-control" value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>" required>
-          
-        <div id="address">
-          <div class="row">
-            <div class="col-md-12">
-              <label class="control-label">Route</label>
-              <input class="form-control" id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label class="control-label">Ville</label>
-              <input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" required>
-            </div>
-            <div class="col-md-6"> 
-              <label class="control-label">Région</label>
-              <input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label class="control-label">Code Postal</label>
-              <input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" required>
-            </div>
-            <div class="col-md-6">
-              <label class="control-label">Pays</label>
-              <input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required>
-            </div>
-          </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col-md-6">
-            <textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
-          </div>
+			<label class="control-label">Adresse</label>
+			<input
+				id="autocomplete"
+				name="fulltext_address"
+				placeholder="Enter your address"
+				onFocus="geolocate()"
+				class="form-control"
+				value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>"
+				required
+			/>
 
-      <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
-        <div class="col-md-6 offset-3 mt-4">
-          <div class="payment-div p-3">
-            <% if (locals.deliveryPrice.response.shippingPriceIncludingTax) { %>
-              <span id="delivery-price-span">shipping(with tax): <b id="delivery-price"> <%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b></span>
-            <% } else { %>
-              <span id="delivery-price-span">shipping(with tax): <b id="delivery-price">FREE</b></span>
-            <% } %>
-            <br />
-            <span id="total-price-span">PRIX TOTAL(with tax): <b id="total-price"><%= locals.totalPrice %>€</b></span><br />
-            <span id="total-qty-span">QUANTITÉ TOTALE: <b id="total-qty"><%= locals.totalQty %></b></span>
-            <a href="/Payment" class="linkbtn"><button class="btn-purchase" type="button" id="purchase">Continuer</button></a>
-          </div>
-        </div>
-      <% } %>
-      </div>
-    </div>
-  </div>
+			<div id="address">
+				<div class="row">
+					<div class="col-md-12">
+						<label class="control-label">Route</label>
+						<input
+							class="form-control"
+							id="route"
+							placeholder="13 rue de Clignancourt"
+							name="street_name"
+							value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>"
+							required
+						/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label class="control-label">Ville</label>
+						<input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" required />
+					</div>
+					<div class="col-md-6">
+						<label class="control-label">Région</label>
+						<input
+							class="form-control"
+							id="administrative_area_level_1"
+							name="state"
+							placeholder="Île-de-France"
+							value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>"
+							required
+						/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label class="control-label">Code Postal</label>
+						<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" required />
+					</div>
+					<div class="col-md-6">
+						<label class="control-label">Pays</label>
+						<input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
+					</div>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col-md-6">
+					<textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly>
+          <% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea
+					>
+				</div>
+
+				<% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
+				<div class="col-md-6 offset-3 mt-4">
+					<div class="payment-div p-3">
+						<% if (locals.deliveryPrice.response.shippingPriceIncludingTax) { %>
+						<span id="delivery-price-span">shipping(with tax): <b id="delivery-price"> <%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b></span>
+						<% } else { %>
+						<span id="delivery-price-span">shipping(with tax): <b id="delivery-price">FREE</b></span>
+						<% } %>
+						<br />
+						<span id="total-price-span">PRIX TOTAL(with tax): <b id="total-price"><%= locals.totalPrice %>€</b></span
+						><br />
+						<span id="total-qty-span">QUANTITÉ TOTALE: <b id="total-qty"><%= locals.totalQty %></b></span>
+						<a href="/Billing" class="linkbtn"><button class="btn-purchase" type="button" id="purchase">Continuer</button></a>
+					</div>
+				</div>
+				<% } %>
+			</div>
+		</div>
+	</div>
 </div>
 
-<% if(locals.products){ %>
-  <% Object.keys(locals.products).forEach(function (index) { %>
-    <% if (locals.products[index].item.isUnique !== true) { %>
-       <script>
-        PWINTY_DATA["<%= index %>"] = {
-            SKU: "<%= locals.products[index].attributes.SKU %>",
-            price: parseFloat("<%= locals.products[index].unitPrice %>"),
-            attributes: JSON.parse(`<%= locals.products[index].stringifiedAttributes %>`.replace(/&#34;/gi, "\""))
-        };
-      </script>
-    <% } %>
-  <% }) %>
-<% } %>
-<% include partials/footer %>
+<% if(locals.products){ %> <% Object.keys(locals.products).forEach(function (index) { %> <% if (locals.products[index].item.isUnique !== true) { %>
+<script>
+	PWINTY_DATA["<%= index %>"] = {
+		SKU: "<%= locals.products[index].attributes.SKU %>",
+		price: parseFloat("<%= locals.products[index].unitPrice %>"),
+		attributes: JSON.parse(`<%= locals.products[index].stringifiedAttributes %>`.replace(/&#34;/gi, '"'))
+	};
+</script>
+<% } %> <% }) %> <% } %> <% include partials/footer %>

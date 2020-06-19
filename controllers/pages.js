@@ -13,7 +13,8 @@ const {
 	setDelivery,
 	isDelivery,
 	setOrder,
-	authGetOrder
+	authGetOrder,
+	checkBilling
 } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Blog = require("../models/Blog");
@@ -200,7 +201,34 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 	}
 });
 
-router.get("/Payment", setUser, authUser, setDelivery, isDelivery, async (req, res) => {
+router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, res) => {
+	try {
+		let obj = {
+			active: "Billing",
+			stripePublicKey: stripePublic,
+			totalPrice: 0,
+			user: req.user,
+			billing: {}
+		};
+
+		if (req.session.billing) obj.billing = req.session.billing;
+
+		if (req.session.cart) {
+			let cart = new Cart(req.session.cart);
+
+			if (cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
+			obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
+		} else return res.status(400).redirect("/shopping-cart");
+
+		return res.status(200).render("billing", obj);
+	} catch (err) {
+		console.log("BILLING ROUTE ERROR", err);
+		req.flash("warning", err.message);
+		return res.status(400).redirect("/");
+	}
+});
+
+router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling, async (req, res) => {
 	try {
 		let obj = {
 			active: "Payment",

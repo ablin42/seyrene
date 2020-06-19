@@ -7,12 +7,12 @@ const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const Gallery = require("../models/Gallery");
 const Shop = require("../models/Shop");
-const { setUser, authUser, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { setUser, authUser, setOrder, authGetOrder, checkBilling } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
-router.post("/create-intent", setUser, authUser, async (req, res) => {
+router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) => {
 	try {
 		let err, item;
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -52,7 +52,8 @@ router.post("/create-intent", setUser, authUser, async (req, res) => {
 							price: total,
 							deliveryPrice: cart.price.shippingIncludingTax,
 							user: req.user,
-							chargeId: paymentIntent.id
+							chargeId: paymentIntent.id,
+							billing: req.session.billing
 						},
 						json: true
 					};
