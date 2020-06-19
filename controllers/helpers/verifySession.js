@@ -122,7 +122,7 @@ function setBilling(req, res, next) {
 	if (!billing) {
 		//reset req.sess.bill?
 		//check with api?
-		req.flash("warning", "agliglou");
+		req.flash("warning", ERROR_MESSAGE.missingBilling);
 		return res.status(404).redirect("/shopping-cart");
 	}
 	req.session.billing = billing;

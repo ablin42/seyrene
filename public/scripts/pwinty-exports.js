@@ -1,4 +1,5 @@
 const substrateType = {
+	fullname: "Paper Type",
 	BAP: "Budget Art Paper",
 	CPP: "Classic Poster Paper",
 	CPWP: "Cold Press Watercolour Paper",
@@ -11,6 +12,7 @@ const substrateType = {
 };
 
 const substrateTypeCLA = {
+	fullname: "Paper Type",
 	BAP: "Budget Art Paper",
 	CPP: "Classic Poster Paper",
 	CPWP: "Cold Press Watercolour Paper",
@@ -21,11 +23,12 @@ const substrateTypeCLA = {
 	SAP: "Smooth Art Paper"
 };
 
-const mountType = { MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" };
+const mountType = { fullname: "Mount Type", MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" };
 
-const glazeType = { ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" };
+const glazeType = { fullname: "Glaze", ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" };
 
 const FRA_sizes = {
+	"fullname": "Size",
 	"20x20": "20x20cm",
 	"20x30": "20x30cm",
 	"A4": "21x29.7cm",
@@ -57,6 +60,7 @@ const FRA_sizes = {
 };
 
 const FRA_SUR_sizes = {
+	"fullname": "Size",
 	"21x29": "A4",
 	"29x42": "A3",
 	"42x59": "A2",
@@ -64,11 +68,13 @@ const FRA_SUR_sizes = {
 };
 
 const PRINT_substrate = {
+	fullname: "Paper Type",
 	FAP: "Enhanced Matte Art Paper",
 	HGE: "Hahnemühle German Etching"
 };
 
 const PRINT_sizes = {
+	"fullname": "Size",
 	"6x4": "15x10cm",
 	"6x6": "15x15cm",
 	"8x8": "20x20cm",
@@ -109,6 +115,7 @@ const PRINT_sizes = {
 };
 
 const CAN_substrate = {
+	fullname: "Canvas Type",
 	PC: "Polycanvas",
 	SC: "Standard Canvas",
 	HMC: "Hahnemühle Monet Canvas" //MC: "Metallic Canvas" (too much errors)
@@ -116,6 +123,7 @@ const CAN_substrate = {
 
 //Stretched/Framed canvas (GLOBAL)
 const CAN_sizes = {
+	"fullname": "Size",
 	"8x8": "20x20cm",
 	"8x10": "20x25cm",
 	"8x12": "20x30cm",
@@ -142,6 +150,7 @@ const CAN_sizes = {
 };
 
 const CAN_ROL_sizes = {
+	"fullname": "Size",
 	"8x8": "20x20cm",
 	"8x10": "20x25cm",
 	"8x12": "20x30cm",
@@ -694,50 +703,57 @@ const PWINTY_ITEMS = {
 	FRA: {
 		sharedAttributes: {},
 		BOX: {
-			mountType: { MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
-			glaze: { ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" },
-			frameColour: { Black: "Black", Brown: "Brown", White: "White", Natural: "Natural" },
-			mountColour: { "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
+			fullname: "Box Framed Print",
+			mountType: { fullname: "Mount Type", MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
+			glaze: { fullname: "Glaze", ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" },
+			frameColour: { fullname: "Frame Color", Black: "Black", Brown: "Brown", White: "White", Natural: "Natural" },
+			mountColour: { "fullname": "Mount Color", "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
 			size: FRA_sizes,
 			substrateType: substrateType
 		},
 		CLA: {
-			mountType: { MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
-			glaze: { ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" },
-			frameColour: { Black: "Black", Brown: "Brown", White: "White", Natural: "Natural", Silver: "Silver", Gold: "Gold" },
-			mountColour: { "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
+			fullname: "Classic Framed Print",
+			mountType: { fullname: "Mount Type", MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
+			glaze: { fullname: "Glaze", ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" },
+			frameColour: { fullname: "Frame Color", Black: "Black", Brown: "Brown", White: "White", Natural: "Natural", Silver: "Silver", Gold: "Gold" },
+			mountColour: { "fullname": "Mount Color", "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
 			size: FRA_sizes,
 			substrateType: substrateTypeCLA
 		},
 		GLO: {
-			mountType: { MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
-			glaze: { ACRY: "Acrylic / Perspex" },
-			frameColour: { Black: "Black", White: "White" },
-			mountColour: { "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
+			fullname: "Gloss Framed Print",
+			mountType: { fullname: "Mount Type", MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
+			glaze: { fullname: "Glaze", ACRY: "Acrylic / Perspex" },
+			frameColour: { fullname: "Frame Color", Black: "Black", White: "White" },
+			mountColour: { "fullname": "Mount Color", "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
 			size: FRA_sizes,
 			substrateType: substrateType
 		},
 		SPACE: {
-			glaze: { ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" },
-			frameColour: { Black: "Black", White: "White" },
+			fullname: "Spacer Framed Print",
+			glaze: { fullname: "Glaze", ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" },
+			frameColour: { fullname: "Frame Color", Black: "Black", White: "White" },
 			size: FRA_sizes,
 			substrateType: substrateType
 		},
 		SUR1: {
-			frameColour: { Black: "Black", White: "White" },
+			fullname: "Surface Framed Print (1)",
+			frameColour: { fullname: "Frame Color", Black: "Black", White: "White" },
 			size: FRA_SUR_sizes,
 			substrateType: substrateType
 		},
 		SUR2: {
-			frameColour: { Black: "Black", White: "White" },
+			fullname: "Surface Framed Print (2)",
+			frameColour: { fullname: "Frame Color", Black: "Black", White: "White" },
 			size: FRA_SUR_sizes,
 			substrateType: substrateType
 		},
 		SWO: {
-			mountType: { MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
-			glaze: { ACRY: "Acrylic / Perspex" },
-			frameColour: { Black: "Black", White: "White" },
-			mountColour: { "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
+			fullname: "Swoop Framed Print",
+			mountType: { fullname: "Mount Type", MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
+			glaze: { fullname: "Glaze", ACRY: "Acrylic / Perspex" },
+			frameColour: { fullname: "Frame Color", Black: "Black", White: "White" },
+			mountColour: { "fullname": "Mount Color", "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
 			size: FRA_sizes,
 			substrateType: substrateType
 		}
@@ -747,7 +763,9 @@ const PWINTY_ITEMS = {
 			size: PRINT_sizes,
 			substrateType: PRINT_substrate
 		},
-		GLOBAL: {}
+		GLOBAL: {
+			fullname: "Fine Art Print"
+		}
 	},
 
 	/*ok so the attributes for framed prints and framed canvases would be framecolour (valid options for global frames are black, white and natural) and for stretched canvases there would be wrap (valid option are image, mirror, black and white)*/
@@ -756,8 +774,9 @@ const PWINTY_ITEMS = {
 		sharedAttributes: {},
 		FRA: {
 			//frameColour only exist in black apparently // Global frames come in mounted/matted or non-mounted/non-matted options
+			fullname: "Framed Canvas",
 			size: CAN_sizes,
-			wrap: { Black: "Black", White: "White", ImageWrap: "Image Wrap", MirrorWrap: "Mirror Wrap" } //not sure this belong here
+			wrap: { fullname: "Canvas Wrap", Black: "Black", White: "White", ImageWrap: "Image Wrap", MirrorWrap: "Mirror Wrap" } //not sure this belong here
 		},
 		/*"ROL": { //glaze only for -VAR
             "size": CAN_ROL_sizes,
@@ -766,8 +785,9 @@ const PWINTY_ITEMS = {
         },*/
 		STR: {
 			//edge always 38mm, size in SKU, substrate globalized to SC
+			fullname: "Stretched Canvas",
 			size: CAN_sizes,
-			wrap: { Black: "Black", White: "White", ImageWrap: "Image Wrap", MirrorWrap: "Mirror Wrap" }
+			wrap: { fullname: "Canvas Wrap", Black: "Black", White: "White", ImageWrap: "Image Wrap", MirrorWrap: "Mirror Wrap" }
 		}
 	}
 };
