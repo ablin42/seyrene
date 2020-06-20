@@ -5,14 +5,20 @@
 	<div class="container-single">
 		<div class="text-center mb-4">
 			<button class="tab-btn active" onclick="openTab(this, 'framed')">Framed Painting</button>
-			<button class="tab-btn" onclick="openTab(this, 'print')">Fine Art Print</button>
+			<button class="tab-btn" onclick="openTab(this, 'fap')">Fine Art Print</button>
 			<button class="tab-btn" onclick="openTab(this, 'canvas')">Canvas</button>
 		</div>
 		<div class="single-wrapper" style="background-color: white;">
 			<!--var(--brand-blue-p2);-->
 			<div class="catalog-category tab" id="framed">
-                <h1 class="single-title">Framed Painting</h1>
-                
+				<h1 class="single-title">Framed prints</h1>
+				<h4>Handmade by Guild-recognised framers</h4>
+
+				<p>
+					Each framed print is handmade in the UK by our team of specialist picture framers. All picture frames are made to order; individually created from a range of popular mouldings and finished
+					with your choice of paper, mount and glaze. We offer six standard frame types, as well as a wide range of custom framing and finishing options
+				</p>
+
 				<div class="text-center mb-4">
 					<button class="cat-btn tab-btn active" onclick="openSubCategory(this, 'box')">Box</button>
 					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'classic')">Classic</button>
@@ -20,31 +26,35 @@
 					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'spacer')">Spacer</button>
 					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'sur')">Surface</button>
 					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'swoop')">Swoop</button>
-                </div>
-                
+				</div>
+
 				<div class="catalog-subcategory" id="box">
 					<h2>Box</h2>
 					<h4>A modern design adding depth to your pictures</h4>
 					<p>
 						Our box frame is milled from solid ash, hand-stained by our team and finished with a specialist wax to accentuate the grain. The frame has a box profile measuring 20mm (front face) by 33mm
 						(depth from wall). Available in black, white, brown or natural.
-                    </p>
-                    
+					</p>
+
 					<div>
 						<img src="/img/framed-box-cut.png" />
-						<p>
-							Highlights Classic deep frame Solid ash with hand-stained finish Custom mount, cut perfectly to your image Delivered fully strung ready for hanging Available in sizes ranging from 10x8"
-							to 44x32" Mount colours Our standard mounts are available at depths of 1.4mm, 2.0mm or 3.2mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour
-							or fade with age.
-						</p>
+						<h2>Highlights</h2>
+						<ul>
+							<li>Classic deep frame</li>
+							<li>Solid ash with hand-stained finish</li>
+							<li>Custom mount, cut perfectly to your image</li>
+							<li>Delivered fully strung ready for hanging</li>
+							<li>Available in multiple sizes</li>
+						</ul>
+
 						<div class="catalog-colors">
+							<h4>Mount colours</h4>
 							<p>
-								Mount colours Our standard mounts are available at depths of 1.4mm, 2.0mm or 3.2mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade
-								with age.
+								Our standard mounts are available at depths of 1.4mm or 2.0mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade with age.
 							</p>
 							<ul class="mounts">
 								<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">Snow white</span></li>
-								<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Hayseed</span></li>
+								<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
 								<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
 							</ul>
 						</div>
@@ -61,30 +71,36 @@
 						<img class="w-100" src="/img/framed-box-4.jpg" />
 						<span>Solid ash frame</span>
 					</div>
-                </div>
-                
+				</div>
+
 				<div class="catalog-subcategory" id="classic" style="display: none;">
 					<h2>Classic</h2>
 					<h4>Our most popular picture frame</h4>
 					<p>
 						Created from high-quality wood, milled with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall).
 						Available in black, white, brown, silver, gold or natural.
-                    </p>
-                    
+					</p>
+
 					<div>
 						<img src="/img/framed-box-cut.png" />
-						<p>
-							Highlights Eternally popular simple, elegant design Custom mount, cut perfectly to your image Delivered fully strung, ready for hanging Choice of colours, including gilts Available in
-							sizes ranging from 10x8" to 44x32"
-						</p>
+
+						<h2>Highlights</h2>
+						<ul>
+							<li>Eternally popular simple, elegant design</li>
+							<li>Custom mount, cut perfectly to your image</li>
+							<li>Delivered fully strung ready for hanging</li>
+							<li>Choice of colours, including gilts</li>
+							<li>Available in multiple sizes</li>
+						</ul>
+
 						<div class="catalog-colors">
+							<h4>Mount colours</h4>
 							<p>
-								Mount colours Our standard mounts are available at depths of 1.4mm, 2.0mm or 3.2mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade
-								with age.
+								Our standard mounts are available at depths of 1.4mm or 2.0mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade with age.
 							</p>
 							<ul class="mounts">
 								<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">Snow white</span></li>
-								<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Hayseed</span></li>
+								<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
 								<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
 							</ul>
 						</div>
@@ -100,32 +116,34 @@
 
 						<img class="w-100" src="/img/framed-cla-4.jpg" />
 						<span>Classic frame with a snow white mount</span>
-                    </div>
-                </div>
+					</div>
+				</div>
 
-                <div class="catalog-subcategory" id="gloss" style="display: none;">
-                    <h2>Gloss</h2>
-                    <h4>Full-bleed pictures with a thin stylish profile</h4>
+				<div class="catalog-subcategory" id="gloss" style="display: none;">
+					<h2>Gloss</h2>
+					<h4>Full-bleed pictures with a thin stylish profile</h4>
 					<p>
 						The Gloss frame has a high-shine, lacquered finish creating a highly sophisticated look. The profile has a subtle curve and measures 39mm wide (front face) by 25mm deep (depth from wall).
-                        Available in black or white.
-                    </p>
-                    
+						Available in black or white.
+					</p>
+
 					<div>
 						<img src="/img/framed-glo-cut.png" />
-						<p>
-                            Highlights
-                            High-quality finish suited to luxury interiors
-                            Perfect for colour and black & white photography
-                            Delivered fully strung, ready for hanging
-                            Available in sizes ranging from 10x8" to 44x32"
-						</p>
+
+						<h2>Highlights</h2>
+						<ul>
+							<li>High-quality finish suited to luxury interiors</li>
+							<li>Perfect for colour and black & white photography</li>
+							<li>Delivered fully strung, ready for hanging</li>
+							<li>Available in multiple sizes</li>
+						</ul>
+						<!-- these are not put on prodigi page
 						<div class="catalog-colors">
 							<ul class="mounts">
 								<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
 								<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
 							</ul>
-						</div>
+						</div>-->
 
 						<img class="w-100" src="/img/framed-glo-1.jpg" />
 						<span>Our gloss frame in white</span>
@@ -138,25 +156,27 @@
 
 						<img class="w-100" src="/img/framed-glo-4.jpg" />
 						<span>The gloss frame is also available with a full-bleed/no-mount option</span>
-                    </div>
-                </div>
-                <div class="catalog-subcategory" id="spacer" style="display: none;">
-                    <h2>Spacer</h2>
-                	<h4>A contemporary twist on the traditional box frame</h4>
+					</div>
+				</div>
+				<div class="catalog-subcategory" id="spacer" style="display: none;">
+					<h2>Spacer</h2>
+					<h4>A contemporary twist on the traditional box frame</h4>
 					<p>
-                        The Spacer frame has a deep fillet to create additional depth for displaying artworks or photographs. Prints are typically back-mounted, rather than a traditional front mount, creating a modern contemporary look.
-                        The Spacer uses our solid ash box frame which has a box profile measuring 20mm (front face) by 33mm (depth from wall).
-                        Available in black, white, brown or natural.
+						The Spacer frame has a deep fillet to create additional depth for displaying artworks or photographs. Prints are typically back-mounted, rather than a traditional front mount, creating a
+						modern contemporary look. The Spacer uses our solid ash box frame which has a box profile measuring 20mm (front face) by 33mm (depth from wall). Available in black or white.
 					</p>
 					<div>
 						<img src="/img/framed-spa-cut.png" />
-						<p>	
-                            Highlights
-                            Contemporary finish suited to back mounted prints
-                            Solid Ash with hand stained finish
-                            Delivered fully strung, ready for hanging
-                            Available in sizes ranging from 10x8" to 44x32"
-						</p>
+
+						<h2>Highlights</h2>
+						<ul>
+							<li>Contemporary finish suited to back mounted prints</li>
+							<li>Solid Ash with hand stained finish</li>
+							<li>Delivered fully strung, ready for hanging</li>
+							<li>Available in multiple sizes</li>
+						</ul>
+
+						<!-- these are not put on prodigi page
 						<div class="catalog-colors">
 							<ul class="mounts">
 								<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
@@ -164,7 +184,7 @@
                                 <li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
                                 <li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Brown</span></li>
 							</ul>
-						</div>
+						</div>-->
 
 						<img class="w-100" src="/img/framed-spa-1.jpg" />
 						<span>Our white spacer frame</span>
@@ -177,31 +197,33 @@
 
 						<img class="w-100" src="/img/framed-spa-4.jpg" />
 						<span>Our spacer frame is 33mm deep</span>
-                    </div>
-                </div>
-                <div class="catalog-subcategory" id="sur" style="display: none;">
-                    <h2>Surface (1)</h2>
-                    <h4>Full-bleed pictures with a thin stylish profile</h4>
+					</div>
+				</div>
+				<div class="catalog-subcategory" id="sur" style="display: none;">
+					<h2>Surface</h2>
+					<h4>Full-bleed pictures with a thin stylish profile</h4>
 					<p>
 						The Surface frame provides a subtle, contemporary surround. The frame is very thin, has a smooth satin texture and comes unglazed, with the image front mounted flush to the surface edge.
-                        Measures 5mm wide (front face) by 30mm or 50mm deep (depth from wall).
-                        Available in black or white.
+						Measures 5mm wide (front face) by 30mm or 50mm deep (depth from wall). Available in black or white.
 					</p>
 					<div>
 						<img src="/img/framed-sur-cut.png" />
-						<p>
-							Highlights
-                            Exceptional value
-                            Solid pine with a smooth satin finish
-                            Delivered fully strung, ready for hanging
-                            Available in sizes ranging from 10x8" to 44x32"
-						</p>
+
+						<h2>Highlights</h2>
+						<ul>
+							<li>Exceptional value</li>
+							<li>Solid pine with a smooth satin finish</li>
+							<li>Delivered fully strung, ready for hanging</li>
+							<li>Available in multiple sizes</li>
+						</ul>
+
+						<!-- these are not put on prodigi page
 						<div class="catalog-colors">
 							<ul class="mounts">
 								<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
 								<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
 							</ul>
-						</div>
+						</div>-->
 
 						<img class="w-100" src="/img/framed-sur-1.jpg" />
 						<span>Our white surface frame</span>
@@ -214,34 +236,35 @@
 
 						<img class="w-100" src="/img/framed-sur-4.jpg" />
 						<span>The image is front-mounted with no glazing</span>
-                    </div>
-                </div>
-                <div class="catalog-subcategory" id="swoop" style="display: none;">
-                    <h2>Swoop</h2>
-                	<h4>Curved profile draws attention to your image</h4>
+					</div>
+				</div>
+				<div class="catalog-subcategory" id="swoop" style="display: none;">
+					<h2>Swoop</h2>
+					<h4>Curved profile draws attention to your image</h4>
 					<p>
-                        A solid pine frame with a decorative curved profile and a smooth, satin finish. The Swoop is solid, shapely and creates real impact. Measures 45mm wide (front face) by 32mm deep (depth from wall).
-                        Available in black or white.
+						A solid pine frame with a decorative curved profile and a smooth, satin finish. The Swoop is solid, shapely and creates real impact. Measures 45mm wide (front face) by 32mm deep (depth
+						from wall). Available in black or white.
 					</p>
 					<div>
 						<img src="/img/framed-swo-cut.png" />
-						<p>
-							Highlights
-                            Flush surface mount
-                            Matt, gloss or satin laminated finish for added protection
-                            Lightweight and robust
-                            Choice of depths
-                            Delivered fully strung, ready for hanging
-                            Available in sizes ranging from 10x8" to 44x32"
-						</p>
+
+						<h2>Highlights</h2>
+						<ul>
+							<li>Flush surface mount</li>
+							<li>Matt, gloss or satin laminated finish for added protection</li>
+							<li>Lightweight and robust</li>
+							<li>Delivered fully strung, ready for hanging</li>
+							<li>Available in multiple sizes</li>
+						</ul>
+
 						<div class="catalog-colors">
 							<p>
-								Mount colours Our standard mounts are available at depths of 1.4mm, 2.0mm or 3.2mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade
-								with age.
+								Mount colours Our standard mounts are available at depths of 1.4mm or 2.0mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade with
+								age.
 							</p>
 							<ul class="mounts">
-                                <li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
-                                <li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Hayseed</span></li>
+								<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
+								<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
 								<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
 							</ul>
 						</div>
@@ -257,144 +280,115 @@
 
 						<img class="w-100" src="/img/framed-swo-4.jpg" />
 						<span>Our swoop framed print in black</span>
-                    </div>
-                </div>
+					</div>
 				</div>
+			</div>
 
-				<div class="catalog-category tab" id="print" style="display: none;">
-					<h1 class="single-title">Fine Art Prints</h1>
-					<div class="catalog-subcategory">
-                        <h2>Fine art prints</h2>
-                        <h4>A complete range of specialist fine art papers</h4>
-                    </div>
-                    <p>
-                        Printing is at the heart of everything we do and every product we create.
-                        We support a full range of branded and non-branded papers covering many different weights, finishes and price points.
-                        Each fine art print substrate is individually profiled for our printers, ensuring fantastically accurate and consistent reproductions.
-                        Colour profiles for each paper type can be downloaded for those wishing to soft-proof images. Colour management is a core principle of the Prodigi Promise, guaranteeing you always receive the best-quality prints.
-                    </p>
+			<div class="catalog-category tab" id="fap" style="display: none;">
+				<h1 class="single-title">Fine Art Prints</h1>
 
-                    <div>
-                        <h4>Budget fine art papers</h4>
+				<h4>A complete range of specialist art and photographic papers.</h4>
 
-                        <img src="/img/fine-art-1.jpg" />
-                        <span>19mm framed canvas</span>
-                        <p>
-                            Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                            The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                            Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                        </p>
-                        
-                        <img src="/img/fine-art-2.jpg" />
-                        <span>19mm framed canvas</span>
-                        <p>
-                            Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                            The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                            Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                        </p>
+				<p>
+					Each framed print is handmade in the UK by our team of specialist picture framers. All picture frames are made to order; individually created from a range of popular mouldings and finished
+					with your choice of paper, mount and glaze. We offer six standard frame types, as well as a wide range of custom framing and finishing options
+				</p>
 
-                        <img src="/img/fine-art-3.jpg" />
-                        <span>19mm framed canvas</span>
-                        <p>
-                            Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                            The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                            Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                        </p>
+				<div class="catalog-subcategory">
+					<div>
+						<h4>Budget fine art papers</h4>
 
-                        <img src="/img/fine-art-4.jpg" />
-                        <span>19mm framed canvas</span>
-                        <p>
-                            Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                            The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                            Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                        </p>
+						<img src="/img/fine-art-2.jpg" />
+						<span>Enhanced Matte Art</span>
+						<p>
+							A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour graphics
+							or illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+						</p>
 
-                        <img src="/img/fine-art-5.jpg" />
-                        <span>19mm framed canvas</span>
-                        <p>
-                            Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                            The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                            Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                        </p>
+						<h4>Premium fine art papers</h4>
 
-                        <img src="/img/fine-art-6.jpg" />
-                        <span>19mm framed canvas</span>
-                        <p>
-                            Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                            The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                            Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                        </p>
+						<img src="/img/fine-art-7.jpg" />
+						<span>Hahnemühle German Etching</span>
+						<p>
+							A heavy-duty paper with a more textured finish than Photorag (HPR), the velvety matt surface is optimised for high-contrast prints and works brilliantly for limited editions. The paper
+							has a warm white hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
+						</p>
+					</div>
 
-                        <h4>Premium fine art papers</h4>
-
-                        <img src="/img/fine-art-7.jpg" />
-                        <span>19mm framed canvas</span>
-                        <p>
-                            Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                            The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                            Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                        </p>
-                    </div>
-
-                    <img src="/img/fine-art-8.jpg" />
-                    <span>Prodigi fine art</span>
-
+					<img class="w-100" src="/img/fine-art-8.jpg" />
+					<span>Prodigi fine art</span>
 				</div>
 
 				<div class="catalog-category tab" id="canvas" style="display: none;">
 					<h1 class="single-title">Canvas</h1>
+					<h4>Handmade by canvas craftsmen</h4>
+					<p>
+						Our enduringly popular fine art canvases transform any image into a beautiful work of art. Each canvas is produced using a 12-colour giclée fine art printing process and hand finished by
+						one of the UK’s most experienced canvas framing teams.
+					</p>
 					<div class="text-center mb-4">
 						<button class="cat-btn tab-btn active" onclick="openSubCategory(this, 'framed-canvas')">Framed</button>
 						<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'stretched')">Stretched</button>
-                    </div>
-                    
+					</div>
+
 					<div class="catalog-subcategory" id="framed-canvas">
-                        <h2>Framed</h2>
-                        <h4>Transform a standard canvas into a special work of art</h4>
-                        <p>
-                            A stretched canvas comes with an internal frame created using specialist canvas stretcher bars. In addition, a framed canvas has a traditional picture frame added around the outside edge of the canvas.
-                            The simple addition of a wooden picture frame creates a completely new form of wall art; quite distinct to a standard stretched canvas.
-                            We have a selection of different framing options for both our 19mm and 38mm stretched canvases.
-                        </p>
+						<h2>Framed</h2>
+						<h4>Transform a standard canvas into a special work of art</h4>
+						<p>
+							A stretched canvas comes with an internal frame created using specialist canvas stretcher bars. In addition, a framed canvas has a traditional picture frame added around the outside edge
+							of the canvas. The simple addition of a wooden picture frame creates a completely new form of wall art; quite distinct to a standard stretched canvas. We have a selection of different
+							framing options for both our 19mm and 38mm stretched canvases.
+						</p>
 
-                        <div>
-                            <img src="/img/canvas-framed-1.jpg" />
-                            <span>19mm framed canvas</span>
-                            <p>
-                                Our 19mm canvas frames can be finished with any of the Classic or Box range of frames.
-                                The Classic is our most popular picture frame and comes with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural.
-                                Our Box frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
-                            </p>
-                            
-                            <img src="/img/canvas-framed-2.jpg" />
-                            <span>38mm framed canvas</span>
-                            <p>
-                                Adding a solid wooden float frame to our standard 38mm canvas creates a unique and original work of art. The thin frame sits approximately 5mm from the edge of the canvas helping create a floating border. Highly recommended for photography and images that make a real statement.
-                                The canvas float frame is available in black, white or brown.
-                            </p>
-                        </div>
+						<div>
+							<img src="/img/canvas-framed-1.jpg" />
+							<span>19mm framed canvas</span>
+							<p>
+								Our 19mm canvas frames can be finished with any of the Classic or Box range of frames. The Classic is our most popular picture frame and comes with simple clean lines and presented
+								with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall) and is available in black, white, brown, silver, gold or natural. Our Box
+								frame is milled from solid ash, measuring 20mm (front face) by 33mm (depth from wall) and comes in your choice of black, white, brown or natural.
+							</p>
 
-                        <div>
-                            <img src="/img/canvas-framed-3.jpg" />
-                            <h4>Polycanvas</h4>
-                            <p>
-                                A matte, bright white, fine textured 100% polyester inkjet canvas that is ideal for volume canvas art where pricing is key and where only a subtle textured finish is required. Strong, yet easy to stretch and fold without cracking.
-                            </p>
+							<img src="/img/canvas-framed-2.jpg" />
+							<span>38mm framed canvas</span>
+							<p>
+								Adding a solid wooden float frame to our standard 38mm canvas creates a unique and original work of art. The thin frame sits approximately 5mm from the edge of the canvas helping
+								create a floating border. Highly recommended for photography and images that make a real statement. The canvas float frame is available in black, white or brown.
+							</p>
+						</div>
 
-                            <img src="/img/canvas-framed-4.jpg" />
-                            <h4>Standard Canvas</h4>
-                            <p>Our standard canvas is a finely textured artist-grade cotton substrate which consistently reproduces image details with outstanding clarity and detail. Our most popular canvas and superior to many more expensive branded alternatives.</p>
+						<div>
+							<img src="/img/canvas-framed-3.jpg" />
+							<h4>Polycanvas</h4>
+							<p>
+								A matte, bright white, fine textured 100% polyester inkjet canvas that is ideal for volume canvas art where pricing is key and where only a subtle textured finish is required. Strong,
+								yet easy to stretch and fold without cracking.
+							</p>
 
-                            <img src="/img/canvas-framed-5.jpg" />
-                            <h4>Hahnemühle Monet canvas</h4>
-                            <p>A white, 100% cotton canvas meeting the highest standards regarding density, colour gamut, colour graduation and image sharpness. A premium branded options that is perfect for digital art, black & white and colour photography as well as limited edition prints.</p>
+							<img src="/img/canvas-framed-4.jpg" />
+							<h4>Standard Canvas</h4>
+							<p>
+								Our standard canvas is a finely textured artist-grade cotton substrate which consistently reproduces image details with outstanding clarity and detail. Our most popular canvas and
+								superior to many more expensive branded alternatives.
+							</p>
 
-                            <img src="/img/canvas-framed-6.jpg" />
-                            <h4>Metallic canvas</h4>
-                            <p>Our unique Metallic Canvas creates amazing effects that are unlike anything you've ever seen from a canvas print. The finish is silver metallic; created with a unique blend of pearlescent materials. The canvas material works brilliantly with both colour images — supporting a very wide colour gamut — as well as black and white. Black and white photography in particular "pops" like no other surface. This is simply the highest quality pearlescent canvas available.</p>
-                        </div>
-                    
-                        <img class="w-100" src="/img/canvas-framed-7.jpg" />
+							<img src="/img/canvas-framed-5.jpg" />
+							<h4>Hahnemühle Monet canvas</h4>
+							<p>
+								A white, 100% cotton canvas meeting the highest standards regarding density, colour gamut, colour graduation and image sharpness. A premium branded options that is perfect for digital
+								art, black & white and colour photography as well as limited edition prints.
+							</p>
+
+							<img src="/img/canvas-framed-6.jpg" />
+							<h4>Metallic canvas</h4>
+							<p>
+								Our unique Metallic Canvas creates amazing effects that are unlike anything you've ever seen from a canvas print. The finish is silver metallic; created with a unique blend of
+								pearlescent materials. The canvas material works brilliantly with both colour images — supporting a very wide colour gamut — as well as black and white. Black and white photography in
+								particular "pops" like no other surface. This is simply the highest quality pearlescent canvas available.
+							</p>
+						</div>
+
+						<img class="w-100" src="/img/canvas-framed-7.jpg" />
 						<span>An example of our float frame with a 38mm-deep canvas</span>
 
 						<img class="w-100" src="/img/canvas-framed-8.jpg" />
@@ -405,100 +399,122 @@
 
 						<img class="w-100" src="/img/canvas-framed-10.jpg" />
 						<span>On a 19mm canvas, the frame is flush to the front side</span>
-                    </div>
+					</div>
 
-                    <div class="catalog-subcategory" id="stretched" style="display: none;">
-                        <h2>Stretched</h2>
-                        <h4>Superior canvas prints designed for trade and retail</h4>
-                        <p>
-                            Each stretched canvas begins with a 12-colour giclée print produced from one of three individually curated substrates. We then make a custom wooden frame - in any size needed up to a maximum of 3 metres - and stretch the rolled canvas print over it.
-                            The stretched canvas print is then hand finished by one of the UK’s most experienced canvas framing teams; ensuring each corner fold is perfectly smooth, tight and that all fixing staples are covered with special protective tape.
-                        </p>
+					<div class="catalog-subcategory" id="stretched" style="display: none;">
+						<h2>Stretched</h2>
+						<h4>Superior canvas prints designed for trade and retail</h4>
+						<p>
+							Each stretched canvas begins with a 12-colour giclée print produced from one of three individually curated substrates. We then make a custom wooden frame - in any size needed up to a
+							maximum of 3 metres - and stretch the rolled canvas print over it. The stretched canvas print is then hand finished by one of the UK’s most experienced canvas framing teams; ensuring
+							each corner fold is perfectly smooth, tight and that all fixing staples are covered with special protective tape.
+						</p>
 
-                        <div>
-                            <div class="highlight">
-                                Highlights
-                                Pro-lab print process with 100+ year colour guarantee
-                                Choice of four different canvas print media
-                                Choice of three canvas frame depths: 19mm, 38mm or 44mm
-                                Four canvas edge finishing options (black, white, image wrap, mirror wrap)
-                                Professional artist stretcher bars milled from the finest quality European kiln-dried knotless pine
-                                Tensioning 'wedges' and finger joints
-                                Handmade by some of the UK’s most experienced canvas framers
-                            </div>
+						<div>
+							<h2>Highlights</h2>
+							<ul>
+								<li>Pro-lab print process with 100+ year colour guarantee</li>
+								<li>Choice of four different canvas print media</li>
+								<li>Choice of three canvas frame depths: 19mm, 38mm or 44mm</li>
+								<li>Four canvas edge finishing options (black, white, image wrap, mirror wrap)</li>
+								<li>Professional artist stretcher bars milled from the finest quality European kiln-dried knotless pine</li>
+								<li>Tensioning 'wedges' and finger joints</li>
+								<li>Handmade by some of the UK’s most experienced canvas framers</li>
+							</ul>
 
-                            <div>
-                                <h2>Canvas Stretcher Bars</h2>
-                                <h1>European knotless pine canvas frames</h1>
-                                <p>
-                                    The thickness of your canvas stretcher bar determines how far the canvas print will stand off the wall.
-                                    You can choose from 19mm, 38mm or 44mm European knotless pine canvas frames (i.e. the internal stretcher bars around which the canvas is stretched)
-                                </p>
+							<div>
+								<h2>Canvas Stretcher Bars</h2>
+								<h1>European knotless pine canvas frames</h1>
+								<p>
+									The thickness of your canvas stretcher bar determines how far the canvas print will stand off the wall. You can choose from 19mm, 38mm or 44mm European knotless pine canvas frames
+									(i.e. the internal stretcher bars around which the canvas is stretched)
+								</p>
 
-                                <img src="/img/canvas-stretched-1.jpg" />
-                                <span>19mm</span>
+								<img src="/img/canvas-stretched-1.jpg" />
+								<span>19mm</span>
 
-                                <img src="/img/canvas-stretched-2.jpg" />
-                                <span>38mm</span>
+								<img src="/img/canvas-stretched-2.jpg" />
+								<span>38mm</span>
 
-                                <img src="/img/canvas-stretched-3.jpg" />
-                                <span>44mm</span>
+								<img src="/img/canvas-stretched-3.jpg" />
+								<span>44mm</span>
 
-                                <p>
-                                    Each canvas frame is milled with a curved profile; minimising contact with the face of the canvas; preventing unsightly impression marks and surface cracking.
-                                    We use finger-jointed canvas frames which create corner tension helping resist warping. For larger sizes, we add wooden 'wedges' to each corner; ensuring the canvas surface remains taut and allowing easy re-stretching in future years.
-                                </p>
-                            </div>
-                            
-                        </div>
+								<p>
+									Each canvas frame is milled with a curved profile; minimising contact with the face of the canvas; preventing unsightly impression marks and surface cracking. We use finger-jointed
+									canvas frames which create corner tension helping resist warping. For larger sizes, we add wooden 'wedges' to each corner; ensuring the canvas surface remains taut and allowing easy
+									re-stretching in future years.
+								</p>
+							</div>
+						</div>
 
-                        <div>
-                            <img src="/img/canvas-framed-3.jpg" />
-                            <h4>Polycanvas</h4>
-                            <p>
-                                A matte, bright white, fine textured 100% polyester inkjet canvas that is ideal for volume canvas art where pricing is key and where only a subtle textured finish is required. Strong, yet easy to stretch and fold without cracking.
-                            </p>
+						<div>
+							<h2>Canvas Substrate</h2>
+							<h4>Choose the perfect canvas substrate for your budget</h4>
 
-                            <img src="/img/canvas-framed-4.jpg" />
-                            <h4>Standard Canvas</h4>
-                            <p>Our standard canvas is a finely textured artist-grade cotton substrate which consistently reproduces image details with outstanding clarity and detail. Our most popular canvas and superior to many more expensive branded alternatives.</p>
+							<img src="/img/canvas-framed-3.jpg" />
+							<h4>Polycanvas</h4>
+							<p>
+								A matte, bright white, fine textured 100% polyester inkjet canvas that is ideal for volume canvas art where pricing is key and where only a subtle textured finish is required. Strong,
+								yet easy to stretch and fold without cracking.
+							</p>
 
-                            <img src="/img/canvas-framed-5.jpg" />
-                            <h4>Hahnemühle Monet canvas</h4>
-                            <p>A white, 100% cotton canvas meeting the highest standards regarding density, colour gamut, colour graduation and image sharpness. A premium branded options that is perfect for digital art, black & white and colour photography as well as limited edition prints.</p>
+							<img src="/img/canvas-framed-4.jpg" />
+							<h4>Standard Canvas</h4>
+							<p>
+								Our standard canvas is a finely textured artist-grade cotton substrate which consistently reproduces image details with outstanding clarity and detail. Our most popular canvas and
+								superior to many more expensive branded alternatives.
+							</p>
 
-                            <img src="/img/canvas-framed-6.jpg" />
-                            <h4>Metallic canvas</h4>
-                            <p>Our unique Metallic Canvas creates amazing effects that are unlike anything you've ever seen from a canvas print. The finish is silver metallic; created with a unique blend of pearlescent materials. The canvas material works brilliantly with both colour images — supporting a very wide colour gamut — as well as black and white. Black and white photography in particular "pops" like no other surface. This is simply the highest quality pearlescent canvas available.</p>
-                        </div>
+							<img src="/img/canvas-framed-5.jpg" />
+							<h4>Hahnemühle Monet canvas</h4>
+							<p>
+								A white, 100% cotton canvas meeting the highest standards regarding density, colour gamut, colour graduation and image sharpness. A premium branded options that is perfect for digital
+								art, black & white and colour photography as well as limited edition prints.
+							</p>
 
-                        <div>
-                            <img src="/img/canvas-stretched-4.jpg" />
-                            <span>White edge
-                                Also called museum wrap.</span>
-                            
-                            <img src="/img/canvas-stretched-5.jpg" />
-                            <span>Black edge</span>
-                            
-                            <img src="/img/canvas-stretched-6.jpg" />
-                            <span>Image wrap
-                    Image wraps around the sides of the frame. Also called gallery wrap.</span>
-                        
-                            <img src="/img/canvas-stretched-7.jpg" />
-                            <span>Mirror wrap
-                        Image edge reflected on the sides; entire image appears on the front.</span>
-                        </div>
+							<img src="/img/canvas-framed-6.jpg" />
+							<h4>Metallic canvas</h4>
+							<p>
+								Our unique Metallic Canvas creates amazing effects that are unlike anything you've ever seen from a canvas print. The finish is silver metallic; created with a unique blend of
+								pearlescent materials. The canvas material works brilliantly with both colour images — supporting a very wide colour gamut — as well as black and white. Black and white photography in
+								particular "pops" like no other surface. This is simply the highest quality pearlescent canvas available.
+							</p>
+						</div>
 
-                        <img class="w-100" src="/img/canvas-stretched-8.jpg" />
-                        <span>Image-wrap canvas</span>
-                        
-                        <img class="w-100" src="/img/canvas-stretched-9.jpg" />
-                        <span>Professional artist stretcher bars</span>
-                        
-                        <img class="w-100" src="/img/canvas-stretched-10.jpg" />
+						<div>
+							<h2>Canvas finishes</h2>
+							<h4>A choice of edge profile</h4>
+							<img src="/img/canvas-stretched-4.jpg" />
+							<span>White edge Also called museum wrap.</span>
+
+							<img src="/img/canvas-stretched-5.jpg" />
+							<span>Black edge</span>
+
+							<img src="/img/canvas-stretched-6.jpg" />
+							<span>Image wrap Image wraps around the sides of the frame. Also called gallery wrap.</span>
+
+							<img src="/img/canvas-stretched-7.jpg" />
+							<span>Mirror wrap Image edge reflected on the sides; entire image appears on the front.</span>
+
+							<h2>Canvas coatings</h2>
+							<h4>Preserve the integrity of your print</h4>
+
+							<p>
+								All our canvas prints can be finished with a matt or gloss varnish coating. Varnishes help to preserve the integrity of your canvas image, protecting against airborne dirt/dust, sun
+								fade, abrasions and fingerprints
+							</p>
+						</div>
+
+						<img class="w-100" src="/img/canvas-stretched-8.jpg" />
+						<span>Image-wrap canvas</span>
+
+						<img class="w-100" src="/img/canvas-stretched-9.jpg" />
+						<span>Professional artist stretcher bars</span>
+
+						<img class="w-100" src="/img/canvas-stretched-10.jpg" />
 						<span>Stretched canvases are available in 19, 38 or 44mm depths</span>
-                    
-                        <img class="w-100" src="/img/canvas-stretched-11.jpg" />
+
+						<img class="w-100" src="/img/canvas-stretched-11.jpg" />
 						<span>Tensioning wedges and finger joints</span>
 
 						<img class="w-100" src="/img/canvas-stretched-12.jpg" />
@@ -509,7 +525,7 @@
 
 						<img class="w-100" src="/img/canvas-stretched-14.jpg" />
 						<span>Examples of image and black edge wraps</span>
-                    </div>
+					</div>
 				</div>
 
 				<!--
@@ -526,43 +542,43 @@
 				<div class="catalog-attribute">Size</div>
 				<div class="catalog-attribute">Canvas Wrap</div>
 			</div>-->
-			</>
+			</div>
 		</div>
 	</div>
-
-	<a class="lightbox-close" href="#close">
-		<div class="lightbox-target" id="expand">
-			<% if(locals) { %><!--xdddddddddddddddddddddddddddddddddd-->
-			<img id="expandImg" src="http://localhost:8089/api/front/image/5e27c591733be959345877b5" />
-			<% } %>
-		</div>
-	</a>
-
-	<script>
-		function openTab(btn, tabName) {
-			let tab = document.getElementsByClassName("tab");
-			let buttons = document.getElementsByClassName("tab-btn");
-
-			for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-
-			btn.classList.add("active");
-
-			for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
-
-			document.getElementById(tabName).style.display = "grid";
-		}
-
-		function openSubCategory(btn, tabName) {
-			let tab = document.getElementsByClassName("catalog-subcategory");
-			let buttons = document.getElementsByClassName("cat-btn");
-
-			for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-			btn.classList.add("active");
-
-			for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
-
-			document.getElementById(tabName).style.display = "grid";
-		}
-	</script>
-	<% include partials/footer %>
 </div>
+
+<a class="lightbox-close" href="#close">
+	<div class="lightbox-target" id="expand">
+		<% if(locals) { %><!--xdddddddddddddddddddddddddddddddddd-->
+		<img id="expandImg" src="http://localhost:8089/api/front/image/5e27c591733be959345877b5" />
+		<% } %>
+	</div>
+</a>
+
+<script>
+	function openTab(btn, tabName) {
+		let tab = document.getElementsByClassName("tab");
+		let buttons = document.getElementsByClassName("tab-btn");
+
+		for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
+
+		btn.classList.add("active");
+
+		for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
+
+		document.getElementById(tabName).style.display = "grid";
+	}
+
+	function openSubCategory(btn, tabName) {
+		let tab = document.getElementsByClassName("catalog-subcategory");
+		let buttons = document.getElementsByClassName("cat-btn");
+
+		for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
+		btn.classList.add("active");
+
+		for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
+
+		document.getElementById(tabName).style.display = "grid";
+	}
+</script>
+<% include partials/footer %>

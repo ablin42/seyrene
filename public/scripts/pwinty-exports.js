@@ -715,7 +715,15 @@ const PWINTY_ITEMS = {
 			fullname: "Classic Framed Print",
 			mountType: { fullname: "Mount Type", MOUNT1: "1.4mm", MOUNT2: "2.0mm", NM: "NO MOUNT" },
 			glaze: { fullname: "Glaze", ACRY: "Acrylic / Perspex", GLA: "Float Glass", TRU: "Tru View Museum Glass" },
-			frameColour: { fullname: "Frame Color", Black: "Black", Brown: "Brown", White: "White", Natural: "Natural", Silver: "Silver", Gold: "Gold" },
+			frameColour: {
+				fullname: "Frame Color",
+				Black: "Black",
+				Brown: "Brown",
+				White: "White",
+				Natural: "Natural",
+				Silver: "Silver",
+				Gold: "Gold"
+			},
 			mountColour: { "fullname": "Mount Color", "Snow White": "Snow White", "Off-White": "Off-White", "Black": "Black" },
 			size: FRA_sizes,
 			substrateType: substrateTypeCLA
@@ -736,15 +744,10 @@ const PWINTY_ITEMS = {
 			size: FRA_sizes,
 			substrateType: substrateType
 		},
-		SUR1: {
-			fullname: "Surface Framed Print (1)",
+		SUR: {
+			fullname: "Surface Framed Print",
 			frameColour: { fullname: "Frame Color", Black: "Black", White: "White" },
-			size: FRA_SUR_sizes,
-			substrateType: substrateType
-		},
-		SUR2: {
-			fullname: "Surface Framed Print (2)",
-			frameColour: { fullname: "Frame Color", Black: "Black", White: "White" },
+			depth: { fullname: "Depth from wall", 1: "30mm", 2: "50mm" },
 			size: FRA_SUR_sizes,
 			substrateType: substrateType
 		},

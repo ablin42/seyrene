@@ -153,7 +153,18 @@ function testSKU(category, subcategory) {
 						Object.keys(mountType).forEach(singleMount => {
 							Object.keys(glazeType).forEach(singleGlaze => {
 								Object.keys(substrateType).forEach(singleSubstrate => {
-									let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
+									let SKU =
+												category +
+												"-" +
+												subcategory +
+												"-" +
+												singleSubstrate +
+												"-" +
+												singleMount +
+												"-" +
+												singleGlaze +
+												"-" +
+												singleSize;
 									let objArr = { SKU: SKU, error: 2 };
 									objArr.error = checkSKU(SKU);
 									checkIsDelivery(SKU);
@@ -171,7 +182,18 @@ function testSKU(category, subcategory) {
 						Object.keys(mountType).forEach(singleMount => {
 							Object.keys(glazeType).forEach(singleGlaze => {
 								Object.keys(substrateType).forEach(singleSubstrate => {
-									let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + singleGlaze + "-" + singleSize;
+									let SKU =
+												category +
+												"-" +
+												subcategory +
+												"-" +
+												singleSubstrate +
+												"-" +
+												singleMount +
+												"-" +
+												singleGlaze +
+												"-" +
+												singleSize;
 									let objArr = { SKU: SKU, error: 2 };
 									objArr.error = checkSKU(SKU);
 									checkIsDelivery(SKU);
@@ -188,7 +210,8 @@ function testSKU(category, subcategory) {
 					Object.keys(FRA_sizes).forEach(singleSize => {
 						Object.keys(mountType).forEach(singleMount => {
 							Object.keys(substrateType).forEach(singleSubstrate => {
-								let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
+								let SKU =
+											category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
 								let objArr = { SKU: SKU, error: 2 };
 								objArr.error = checkSKU(SKU);
 								checkIsDelivery(SKU);
@@ -248,7 +271,8 @@ function testSKU(category, subcategory) {
 					Object.keys(FRA_sizes).forEach(singleSize => {
 						Object.keys(mountType).forEach(singleMount => {
 							Object.keys(substrateType).forEach(singleSubstrate => {
-								let SKU = category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
+								let SKU =
+											category + "-" + subcategory + "-" + singleSubstrate + "-" + singleMount + "-" + "ACRY" + "-" + singleSize;
 								let objArr = { SKU: SKU, error: 2 };
 								objArr.error = checkSKU(SKU);
 								checkIsDelivery(SKU);
@@ -318,7 +342,9 @@ class PwintyObject {
 			let subcategoryRadio = `<label for="${subcategory}">
                                     <div class="sku-item unselectable">
                                         <p>${PWINTY_ITEMS[this.category][subcategory].fullname}</p>
-                                        <input data-category="${this.category}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="Pwinty.loadSubCategory(this)">
+                                        <input data-category="${
+	this.category
+}" name="pwinty-subcategory" id="${subcategory}" value="${subcategory}" type="radio" onclick="Pwinty.loadSubCategory(this)">
                                     </div>
                                 </label>`;
 			if (subcategory !== "sharedAttributes") selection += subcategoryRadio;
@@ -385,7 +411,9 @@ class PwintyObject {
 
 			let attributeSelect = `<label for="${attribute}">
                                     <div class="sku-item unselectable select-list">
-                                        <p>${PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].fullname}</p>
+                                        <p>${
+	PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute].fullname
+}</p>
                                         <div class="select-wrapper">
                                         <select data-attribute="${attribute}" name="${attribute}" id="${attribute}">
                                             <option disabled selected>Pick one</option>`;
@@ -393,7 +421,9 @@ class PwintyObject {
 			Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute]).forEach((option, i) => {
 				if (option !== "size") {
 					if (option !== "fullname")
-						attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
+						attributeSelect += `<option value="${
+							Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]
+						}">\
 												${Object.values(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}</option>`;
 				} else {
 					attributeSelect = this.checkSize(attributeSelect, "sharedAttributes", i);
@@ -419,7 +449,9 @@ class PwintyObject {
 				Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute]).forEach((option, i) => {
 					if (option !== "size") {
 						if (option !== "fullname")
-							attributeSelect += `<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}">\
+							attributeSelect += `<option value="${
+								Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]
+							}">\
 												${Object.values(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}</option>`;
 					} else {
 						attributeSelect = this.checkSize(attributeSelect, this.subcategory, i);
@@ -541,6 +573,9 @@ class PwintyObject {
 		this.SKU = "";
 		if (this.category === "FRA") {
 			this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"] + "-";
+			if (this.attributes["depth"])
+				this.SKU =
+					this.category + "-" + this.subcategory + this.attributes["depth"] + "-" + this.attributes["substrateType"] + "-";
 
 			if (this.attributes["mountType"]) this.SKU += this.attributes["mountType"] + "-";
 			else if (this.category === "FRA" && !this.attributes["mountType"]) this.SKU += "NM" + "-";
@@ -548,7 +583,8 @@ class PwintyObject {
 			this.SKU += this.attributes["size"];
 		} else if (this.category === "CAN") {
 			if (this.subcategory === "ROL") {
-				this.SKU += this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"] + "-" + this.attributes["size"];
+				this.SKU +=
+					this.category + "-" + this.subcategory + "-" + this.attributes["substrateType"] + "-" + this.attributes["size"];
 				if (this.attributes["glaze"] && this.attributes["glaze"] !== "NONE") this.SKU += "-VAR";
 			} else {
 				this.SKU = "GLOBAL" + "-";
@@ -586,7 +622,11 @@ class PwintyObject {
 			})
 			.catch(err => {
 				this.hidePricing();
-				let alert = createAlertNode(err.message, "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+				let alert = createAlertNode(
+					err.message,
+					"warning",
+					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+				);
 				addAlert(alert, "#header");
 			});
 	}
@@ -627,7 +667,11 @@ class PwintyObject {
 			})
 			.then(async function (response) {
 				if (response.error === true || response.response.length <= 0) {
-					let alert = createAlertNode("Sorry, there are no shipment options available to the selected destination for these products", "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+					let alert = createAlertNode(
+						"Sorry, there are no shipment options available to the selected destination for these products",
+						"warning",
+						"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+					);
 					addAlert(alert, "#header");
 					return;
 				} else {
@@ -651,17 +695,29 @@ class PwintyObject {
 								document.getElementById("cartQty").innerText = totalQty;
 							} else alertType = "warning";
 
-							let alert = createAlertNode(response.msg, alertType, "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+							let alert = createAlertNode(
+								response.msg,
+								alertType,
+								"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+							);
 							addAlert(alert, "#header");
 						})
 						.catch(err => {
-							let alert = createAlertNode(response.msg, alertType, "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+							let alert = createAlertNode(
+								response.msg,
+								alertType,
+								"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+							);
 							addAlert(alert, "#header");
 						});
 				}
 			})
 			.catch(err => {
-				let alert = createAlertNode("Sorry, there are no shipment options available to the selected destination for these products", alertType, "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+				let alert = createAlertNode(
+					"Sorry, there are no shipment options available to the selected destination for these products",
+					alertType,
+					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+				);
 				addAlert(alert, "#header");
 			});
 
@@ -684,14 +740,22 @@ class PwintyObject {
 			.then(function (response) {
 				if (response.error === false) return response.countryCode;
 				else {
-					let alert = createAlertNode(response.message, "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+					let alert = createAlertNode(
+						response.message,
+						"warning",
+						"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+					);
 					addAlert(alert, "#header");
 					return "FR";
 				}
 			})
 			.catch(err => {
 				console.log(err);
-				let alert = createAlertNode("An error occured while looking for your country, please refresh the page", "warning", "position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);");
+				let alert = createAlertNode(
+					"An error occured while looking for your country, please refresh the page",
+					"warning",
+					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+				);
 				addAlert(alert, "#header");
 				return "FR";
 			});

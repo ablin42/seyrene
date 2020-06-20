@@ -464,7 +464,22 @@ router.get("/Catalog", setUser, async (req, res) => {
 
 		return res.status(200).render("catalog", obj);
 	} catch (err) {
-		console.log("GALLERY SINGLE ROUTE ERROR", err);
+		console.log("CATALOG ROUTE ERROR", err);
+		req.flash("warning", err.message);
+		return res.status(400).redirect("/Galerie");
+	}
+});
+
+router.get("/CGU", setUser, async (req, res) => {
+	try {
+		let id = req.params.id;
+		let obj = { active: "CGU" };
+
+		if (req.user) obj.user = req.user;
+
+		return res.status(200).render("cgu", obj);
+	} catch (err) {
+		console.log("CGU ROUTE ERROR", err);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}
