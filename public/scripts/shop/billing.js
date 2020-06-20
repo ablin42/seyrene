@@ -28,8 +28,6 @@ function saveBilling(e) {
 				addAlert(alert, "#header");
 				return;
 			}
-			let alert = createAlertNode("Billing information successfully saved!", "success");
-			addAlert(alert, "#header");
 			window.location.href = "/Payment";
 		});
 }

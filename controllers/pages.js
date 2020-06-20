@@ -455,6 +455,21 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 	}
 });
 
+router.get("/Catalog", setUser, async (req, res) => {
+	try {
+		let id = req.params.id;
+		let obj = { active: "Catalog" };
+
+		if (req.user) obj.user = req.user;
+
+		return res.status(200).render("catalog", obj);
+	} catch (err) {
+		console.log("GALLERY SINGLE ROUTE ERROR", err);
+		req.flash("warning", err.message);
+		return res.status(400).redirect("/Galerie");
+	}
+});
+
 router.get("/Shop/:id", setUser, async (req, res) => {
 	try {
 		let id = req.params.id;

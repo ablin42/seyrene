@@ -46,20 +46,22 @@
 						<li>
 							<a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>">À propos</a>
 						</li>
+
 						<li>
-							<a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>"
-								>Galerie</a
-							>
+							<a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>">Galerie</a>
 						</li>
+
+						<li>
+							<a href="/Catalog" class="navbar-text <%= (locals.active && locals.active == 'Catalog') ? 'active' : '' %>">Catalogue</a>
+						</li>
+
 						<li>
 							<a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>">Boutique</a>
 						</li>
 
 						<% if (!locals.user) { %>
 						<li>
-							<a href="/Account" class="navbar-text <%= (locals.active && locals.active == 'Account') ? 'active' : '' %>"
-								>Connexion</a
-							>
+							<a href="/Account" class="navbar-text <%= (locals.active && locals.active == 'Account') ? 'active' : '' %>">Connexion</a>
 						</li>
 						<% } else { %>
 						<li>
@@ -77,13 +79,9 @@
 						</li>
 						<% } %>
 						<li id="cart-qty-li">
-							<a href="/shopping-cart" class="navbar-text <%= (locals.active && locals.active == 'Cart') ? 'active' : '' %>"
-								><i class="fas fa-shopping-cart fa-2x"></i
-							></a>
+							<a href="/shopping-cart" class="navbar-text <%= (locals.active && locals.active == 'Cart') ? 'active' : '' %>"><i class="fas fa-shopping-cart fa-2x"></i></a>
 						</li>
-						<span id="cartQty"
-							><%= (locals.session.cart && locals.session.cart.totalQty) ?locals.session.cart.totalQty : 0 %></span
-						>
+						<span id="cartQty"><%= (locals.session.cart && locals.session.cart.totalQty) ?locals.session.cart.totalQty : 0 %></span>
 					</ul>
 				</nav>
 			</nav>

@@ -528,6 +528,7 @@ router.post("/billing/save", vDelivery, setUser, authUser, setBilling, async (re
 			if (data.status !== "OK")
 				return res.status(200).json({ error: true, message: "We could not validate your address, please make sure it is valid" });
 
+			req.flash("success", "Billing information successfully saved");
 			return res.status(200).json({ error: false });
 		});
 	} catch (err) {
