@@ -247,7 +247,7 @@ router.post("/callback/status", async (req, res) => {
 				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.status } })
 			);
 			console.log(err, order);
-			if (err || order == null) throw new Error(ERROR_MESSAGE.updateOrder);
+			if (err || order == null) throw new Error(ERROR_MESSAGE.updateError);
 
 			// Send mails
 			let subject = `Updated Order #${order._id}`;
@@ -264,7 +264,7 @@ router.post("/callback/status", async (req, res) => {
 			if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 			return res.status(200).send("OK");
-		} else throw new Error(ERROR_MESSAGE.incorrectBody);
+		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
 		console.log("PWINTY CALLBACK ERROR:", err.message);
 		return res.status(200).json({ message: err.message });
@@ -409,7 +409,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 					console.log(err);
 					return res.status(200).json({ error: true, message: err.message });
 				});
-		} else throw new Error(ERROR_MESSAGE.noDeliveryPrice);
+		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
 		console.log("PWINTY PRICING ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });

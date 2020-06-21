@@ -204,7 +204,7 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 					let alert = createAlertNode(err.message, "danger");
 					addAlert(alert, "#header");
 				});
-		} else throw new Error(ERROR_MESSAGE.invalidReference);
+		} else throw new Error(ERROR_MESSAGE.itemNotFound);
 	} catch (err) {
 		let alert = createAlertNode(err.message, "warning");
 		addAlert(alert, "#header");
@@ -267,7 +267,7 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 					let alert = createAlertNode(response.msg, alertType);
 					addAlert(alert, "#header");
 				});
-		} else throw new Error(ERROR_MESSAGE.invalidReference);
+		} else throw new Error(ERROR_MESSAGE.itemNotFound);
 	} catch (err) {
 		let alert = createAlertNode(err.message, "warning");
 		addAlert(alert, "#header");
@@ -336,8 +336,8 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 						let alert = createAlertNode(err.message, "danger");
 						addAlert(alert, "#header");
 					});
-			} else throw new Error(ERROR_MESSAGE.qtyInteger);
-		} else throw new Error(ERROR_MESSAGE.invalidQty);
+			} else throw new Error(ERROR_MESSAGE.updateQty);
+		} else throw new Error(ERROR_MESSAGE.updateQty);
 	} catch (err) {
 		item.value = 1;
 		let alert = createAlertNode(err.message, "warning");

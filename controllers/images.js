@@ -59,10 +59,10 @@ router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADM
 		let [err, result] = await utils.to(
 			Image.updateMany({ _itemId: itemId, itemType: itemType, isMain: true }, { $set: { isMain: false } })
 		);
-		if (err) throw new Error(ERROR_MESSAGE.updateImg);
+		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
 		[err, result] = await utils.to(Image.findOneAndUpdate({ _id: id }, { $set: { isMain: true } }));
-		if (err) throw new Error(ERROR_MESSAGE.updateImg);
+		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
 		return res.status(200).json({ err: false, msg: "New main image successfully selected!" });
 	} catch (err) {
@@ -80,16 +80,16 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		if (err) throw new Error(ERROR_MESSAGE.noResult);
 
 		[err, result] = await utils.to(Image.deleteOne({ _id: id, isMain: false }));
+		if (err) throw new Error(ERROR_MESSAGE.delImg);
 		if (result.n === 1) {
 			fs.unlink(find.path, err => {
 				if (err) throw new Error(ERROR_MESSAGE.delImg);
 			});
 		}
 
-		if (err) throw new Error(ERROR_MESSAGE.delImg);
-
 		if (result.n === 0) {
 			if (find && find.itemType === "Blog") {
+				// check later but i think this is never entered!!!!!!
 				[err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
 				if (deleted.n === 1) {
 					fs.unlink(find.path, err => {

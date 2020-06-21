@@ -32,7 +32,7 @@ const upload = multer({
 router.get("/", setUser, async (req, res) => {
 	try {
 		let [err, result] = await utils.to(Front.find());
-		if (err) throw new Error(ERROR_MESSAGE.fetchFront);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
 		return res.status(200).json(result);
 	} catch (err) {
@@ -49,7 +49,7 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 			let front = { null: false, referenceId: req.body.referenceId };
 
 			let [err, result] = await utils.to(Front.findOne({ referenceId: front.referenceId }));
-			if (err) throw new Error(ERROR_MESSAGE.referenceImg);
+			if (err) throw new Error(ERROR_MESSAGE.serverError);
 
 			if (result === null) {
 				let newFront = new Front(front);
@@ -62,7 +62,7 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 				newFront.path = newpath;
 
 				[err, result] = await utils.to(newFront.save());
-				if (err) throw new Error(ERROR_MESSAGE.updateImg);
+				if (err) throw new Error(ERROR_MESSAGE.updateError);
 			} else {
 				let oldpath = req.file.destination + req.file.filename;
 				let newpath = req.file.destination + result._id + path.extname(req.file.originalname);
@@ -75,10 +75,10 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 						{ $set: { null: false, path: newpath, mimetype: req.file.mimetype } }
 					)
 				);
-				if (err) throw new Error(ERROR_MESSAGE.updateImg);
+				if (err) throw new Error(ERROR_MESSAGE.updateError);
 			}
 			return res.status(200).json({ msg: "Image successfully uploaded!" });
-		} else throw new Error(ERROR_MESSAGE.referenceImg);
+		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
 		console.log("POST FRONT ERROR", err);
 		return res.status(400).json({ err: true, msg: err.message });

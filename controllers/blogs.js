@@ -53,9 +53,9 @@ router.get("/", setUser, async (req, res) => {
 router.get("/single/:blogId", setUser, async (req, res) => {
 	try {
 		let [err, blog] = await utils.to(Blog.findById(req.params.blogId));
-		if (err) throw new Error(ERROR_MESSAGE.fetchBlog);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
-		if (blog === null) throw new Error(ERROR_MESSAGE.blogNotFound);
+		if (blog === null) throw new Error(ERROR_MESSAGE.noResult);
 		blog = await bHelpers.parseBlogs(blog, true);
 
 		return res.status(200).json(blog);
@@ -78,7 +78,7 @@ router.post("/", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res
 
 		const blog = new Blog(obj);
 		let [err, savedBlog] = await utils.to(blog.save());
-		if (err) throw new Error(ERROR_MESSAGE.saveBlog);
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		req.flash("success", "Post successfully uploaded");
 		return res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);
@@ -101,7 +101,7 @@ router.post("/patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), vBlog, as
 		let [err, patchedBlog] = await utils.to(
 			Blog.updateOne({ _id: id }, { $set: { title: req.body.title, content: req.body.content } })
 		);
-		if (err) throw new Error(ERROR_MESSAGE.saveBlog);
+		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
 		req.flash("success", "Post corrigé avec succès");
 		return res.status(200).redirect(`/Blog/${req.params.blogId}`);
@@ -118,7 +118,7 @@ router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (re
 		let blogId = req.params.blogId;
 
 		let [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
-		if (err) throw new Error(ERROR_MESSAGE.delBlog);
+		if (err) throw new Error(ERROR_MESSAGE.delError);
 
 		req.flash("success", "Item successfully deleted!");
 		return res.status(200).redirect("/About");

@@ -28,12 +28,12 @@ router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async 
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		// Hash and salt pw
 		const hashPw = await bcrypt.hash(req.body.password, 10);
-		if (!hashPw) throw new Error(ERROR_MESSAGE.encryptError);
+		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
 
 		// Create User and validationToken objects
 		const user = new User({
@@ -53,7 +53,7 @@ router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async 
 		if (err) throw new Error(ERROR_MESSAGE.createAccount);
 
 		[err, result] = await utils.to(validationToken.save());
-		if (err) throw new Error(ERROR_MESSAGE.createToken);
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		// Send account confirmation mail to user
 		let subject = "Account Verification Token for Maral";
@@ -80,7 +80,7 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		// Check if email exists in DB
@@ -95,9 +95,9 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 		// Check if user is verified
 		if (!user.isVerified) {
 			request.post(`${process.env.BASEURL}/api/auth/resend`, { json: { email: req.body.email } }, err => {
-				if (err) throw new Error(ERROR_MESSAGE.sendToken);
+				if (err) throw new Error(ERROR_MESSAGE.serverError);
 			});
-			throw new Error(ERROR_MESSAGE.unverfiedAccount);
+			throw new Error(ERROR_MESSAGE.unverifiedAccount);
 		}
 
 		// Create session variable
@@ -115,9 +115,8 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 router.get("/logout", setUser, authUser, (req, res) => {
 	try {
 		// might want to delete token idk
-		// Kill session
 		req.session.destroy(function (err) {
-			if (err) throw new Error(ERROR_MESSAGE.logoutError);
+			if (err) throw new Error(ERROR_MESSAGE.serverError);
 		});
 
 		return res.status(200).redirect("/");
@@ -174,7 +173,7 @@ router.post("/resend", setUser, notLoggedUser, async (req, res) => {
 
 		// Save the token
 		[err, savedToken] = await utils.to(token.save());
-		if (err) throw new Error(ERROR_MESSAGE.saveToken);
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		let subject = "Account Verification Token for Maral";
 		let content = `Hello,\n\n Please verify your account by clicking the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;

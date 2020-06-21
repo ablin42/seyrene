@@ -27,7 +27,7 @@ router.post("/", vContact, setUser, checkCaptcha, async (req, res) => {
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		//maral.canvas@gmail.com

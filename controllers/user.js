@@ -39,7 +39,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		[err, user] = await utils.to(User.findOne({ email: req.body.email })); //sanitize
@@ -52,10 +52,10 @@ router.post("/lostpw", vLostPw, async (req, res) => {
 		if (pwToken === null) {
 			pwToken = new PwToken({ _userId: user._id, token: token });
 			[err, result] = await utils.to(pwToken.save());
-			if (err) throw new Error(ERROR_MESSAGE.saveToken);
+			if (err) throw new Error(ERROR_MESSAGE.saveError);
 		} else {
 			[err, result] = await utils.to(PwToken.updateOne({ _userId: user._id }, { $set: { token: token } }));
-			if (err) throw new Error(ERROR_MESSAGE.saveToken);
+			if (err) throw new Error(ERROR_MESSAGE.saveError);
 		}
 
 		const subject = "Password Reset Token for Maral",
@@ -80,12 +80,12 @@ router.post("/resetpw", vPassword, async (req, res) => {
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		// hash and salt pw
 		const hashPw = await bcrypt.hash(req.body.password, 10);
-		if (!hashPw) throw new Error(ERROR_MESSAGE.encryptError);
+		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
 
 		// check if token is valid
 		[err, pwToken] = await utils.to(PwToken.findOne({ _id: req.body.tokenId, token: req.body.token }));
@@ -93,9 +93,9 @@ router.post("/resetpw", vPassword, async (req, res) => {
 
 		// update password and delete token
 		[err, user] = await utils.to(User.updateOne({ _id: pwToken._userId }, { $set: { password: hashPw } }));
-		if (err) throw new Error(ERROR_MESSAGE.pwUpdate);
+		if (err) throw new Error(ERROR_MESSAGE.userUpdate);
 		[err, pwToken] = await utils.to(PwToken.deleteOne({ _id: req.body.tokenId }));
-		if (err) throw new Error(ERROR_MESSAGE.delToken);
+		if (err) throw new Error(ERROR_MESSAGE.serverError);
 
 		req.flash("success", "Password successfully modified");
 		return res.status(200).redirect("/Account");
@@ -114,17 +114,17 @@ router.post("/patch/name", vName, setUser, authUser, async (req, res) => {
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		const name = req.body.name,
 			id = req.user._id; //sanitize
 
 		const nameExist = await utils.nameExist(name);
-		if (nameExist) throw new Error(use);
+		if (nameExist) throw new Error(ERROR_MESSAGE.userNameTaken);
 
 		let [err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { name: name } }));
-		if (err) throw new Error(ERROR_MESSAGE.saveUserName);
+		if (err) throw new Error(ERROR_MESSAGE.userUpdate);
 
 		req.flash("success", "Username successfully modified");
 		return res.status(200).redirect("/User");
@@ -143,7 +143,7 @@ router.post("/patch/email", vEmail, setUser, authUser, async (req, res) => {
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		const newEmail = req.body.email, //sanitize
@@ -151,13 +151,13 @@ router.post("/patch/email", vEmail, setUser, authUser, async (req, res) => {
 			vToken = crypto.randomBytes(16).toString("hex");
 
 		const emailExist = await utils.emailExist(newEmail);
-		if (emailExist) throw new Error(ERROR_MESSAGE.saveEmail);
+		if (emailExist) throw new Error(ERROR_MESSAGE.emailTaken);
 
 		[err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { email: newEmail, isVerified: false } }));
-		if (err) throw new Error(ERROR_MESSAGE.saveEmail);
+		if (err) throw new Error(ERROR_MESSAGE.userUpdate);
 
 		[err, token] = await utils.to(Token.updateOne({ _userId: id }, { $set: { token: vToken } }));
-		if (err) throw new Error(ERROR_MESSAGE.saveToken);
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		//send mail
 		let subject = "Account Verification Token for Maral",
@@ -180,7 +180,7 @@ router.post("/patch/password", vPassword, setUser, authUser, async (req, res) =>
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		const id = req.user._id,
@@ -188,17 +188,17 @@ router.post("/patch/password", vPassword, setUser, authUser, async (req, res) =>
 			password = req.body.password;
 
 		let [err, user] = await utils.to(User.findById(id));
-		if (err) throw new Error(ERROR_MESSAGE.invalidUser);
+		if (err) throw new Error(ERROR_MESSAGE.userNotFound);
 
 		const validPw = await bcrypt.compare(cpassword, user.password);
-		if (!validPw) throw new Error(ERROR_MESSAGE.pwError);
+		if (!validPw) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
 		// Hash and salt pw
 		const hashPw = await bcrypt.hash(password, 10);
-		if (!hashPw) throw new Error(ERROR_MESSAGE.encryptError);
+		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
 
 		[err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { password: hashPw } }));
-		if (err) throw new Error(ERROR_MESSAGE.pwUpdate);
+		if (err) throw new Error(ERROR_MESSAGE.userUpdate);
 
 		req.flash("success", "Password successfully modified");
 		return res.status(200).redirect("/User");
@@ -216,7 +216,7 @@ router.post("/patch/delivery-info", vDelivery, setUser, authUser, async (req, re
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
@@ -257,7 +257,7 @@ router.post("/patch/delivery-info", vDelivery, setUser, authUser, async (req, re
 						});
 						// Save info to DB if no entry exist yet
 						[err, result] = await utils.to(info.save());
-						if (err) throw new Error(ERROR_MESSAGE.updateDelivery);
+						if (err) throw new Error(ERROR_MESSAGE.updateError);
 					} else {
 						let obj = {
 							firstname: req.body.firstname,

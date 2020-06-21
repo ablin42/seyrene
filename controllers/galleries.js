@@ -66,7 +66,7 @@ router.get("/", setUser, async (req, res) => {
 			sort: { date: -1 }
 		};
 		let [err, result] = await utils.to(Gallery.paginate({}, options));
-		if (err) throw new Error(ERROR_MESSAGE.fetchGallery);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let galleries = result.docs;
 		galleries = await fetchMainImg(galleries);
@@ -90,9 +90,11 @@ router.get("/Tags", setUser, async (req, res) => {
 		if (req.query.t) var tagsArr = req.query.t.split(","); //sanitize
 
 		let [err, result] = await utils.to(Gallery.paginate({ tags: { $all: tagsArr } }, options));
-		if (err) throw new Error(ERROR_MESSAGE.fetchGallery);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
+
 		let galleries = result.docs;
 		if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
+
 		galleries = await fetchMainImg(galleries);
 		console.log(galleries);
 		return res.status(200).json(galleries);
@@ -117,7 +119,7 @@ router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 		obj.tags = gHelpers.parseTags(req.body.tags);
 
 		const gallery = new Gallery(obj);
-		[err, result] = await utils.to(gallery.save(ERROR_MESSAGE.saveGallery));
+		[err, result] = await utils.to(gallery.save(ERROR_MESSAGE.saveError));
 		if (err) throw new Error();
 
 		for (let i = 0; i < req.files.length; i++) {
@@ -136,7 +138,7 @@ router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error(ERROR_MESSAGE.updateImg);
+			if (err) throw new Error(ERROR_MESSAGE.saveError);
 		}
 
 		req.flash("success", "Item successfully uploaded! Remember to select your favorite main image");
@@ -179,11 +181,11 @@ router.post("/patch/:id", upload, vGallery, setUser, authUser, authRole(ROLE.ADM
 			});
 
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error(ERROR_MESSAGE.updateImg);
+			if (err) throw new Error(ERROR_MESSAGE.updateError);
 		}
 
 		[err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
-		if (err) throw new Error(ERROR_MESSAGE.saveGallery);
+		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
 		req.flash("success", "Item successfully updated!");
 		return res.status(200).json({ url: "/Galerie", msg: "Item successfully updated!" });
@@ -199,7 +201,7 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let id = req.params.id; //sanitize
 
 		let [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
-		if (err) throw new Error(ERROR_MESSAGE.delGallery);
+		if (err) throw new Error(ERROR_MESSAGE.delError);
 
 		rp(`${process.env.BASEURL}/api/image/Gallery/${id}`)
 			.then(async response => {
@@ -230,7 +232,7 @@ router.get("/single/:id", setUser, async (req, res) => {
 		let id = req.params.id;
 
 		let [err, result] = await utils.to(Gallery.findById(id));
-		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchGallery);
+		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		return res.status(200).json(result);
 	} catch (err) {

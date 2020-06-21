@@ -72,7 +72,7 @@ router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 		};
 
 		let [err, result] = await utils.to(Order.paginate({}, options));
-		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchOrder);
+		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let orders = [];
 		result.docs.forEach(order => {
@@ -99,7 +99,7 @@ router.get("/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) =
 		let id = req.params.id;
 
 		let [err, result] = await utils.to(Order.findById(id));
-		if (err) throw new Error(ERROR_MESSAGE.fetchOrder);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 		if (result === null) throw new Error(ERROR_MESSAGE.noResult);
 
 		result.price = formatter.format(result.price).substr(2);
@@ -291,7 +291,7 @@ async function savePurchaseData(req, order, response) {
 	});
 
 	[err, purchaseDataResponse] = await utils.to(purchaseData.save());
-	if (err || response == null) throw new Error(ERROR_MESSAGE.savePurchase);
+	if (err || response == null) throw new Error(ERROR_MESSAGE.saveError);
 
 	return purchaseData;
 }
@@ -304,14 +304,14 @@ router.post("/confirm", setUser, authUser, async (req, res) => {
 		if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) {
 			//make sure its sent by webhook
 			[err, order] = await utils.to(Order.findOne({ chargeId: req.body.data.object.id, status: "awaitingStripePayment" }));
-			if (err || order === null) throw new Error(ERROR_MESSAGE.fetchOrder);
+			if (err || order === null) throw new Error(ERROR_MESSAGE.fetchError);
 
 			let isPwinty = false;
 			for (let index = 0; index < order.items.length; index++) {
 				[err, item] = await utils.to(
 					Shop.findOneAndUpdate({ _id: order.items[index].attributes._id, isUnique: true }, { $set: { soldOut: true } })
 				);
-				if (err) throw new Error(ERROR_MESSAGE.delShop);
+				if (err) throw new Error(ERROR_MESSAGE.serverError);
 				if (!order.items[index].attributes.isUnique) isPwinty = true;
 			}
 
@@ -333,10 +333,10 @@ router.post("/initialize", setUser, authUser, async (req, res) => {
 		let err, infos, response, deletedOrder;
 
 		[err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-		if (err) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
+		if (err || !infos) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 
 		[err, deletedOrder] = await utils.to(Order.findOneAndDelete({ _userId: req.user._id, status: "awaitingStripePayment" }));
-		if (err) throw new Error(ERROR_MESSAGE.delOrder);
+		if (err) throw new Error(ERROR_MESSAGE.serverError);
 
 		const order = new Order({
 			_userId: req.user._id,
@@ -360,7 +360,7 @@ router.post("/initialize", setUser, authUser, async (req, res) => {
 		});
 
 		[err, response] = await utils.to(order.save());
-		if (err || response == null) throw new Error(ERROR_MESSAGE.createToken);
+		if (err || response == null) throw new Error(ERROR_MESSAGE.saveError);
 
 		return res.status(200).json(response);
 	} catch (err) {
@@ -375,15 +375,15 @@ router.post("/update", setUser, authUser, authRole(ROLE.ADMIN), async (req, res)
 		let newStatus = req.body.status;
 		let order, user, err;
 
-		if (newStatus !== "Completed" && newStatus !== "Submitted") throw new Error(ERROR_MESSAGE.invalidParam);
+		if (newStatus !== "Completed" && newStatus !== "Submitted") throw new Error(ERROR_MESSAGE.incorrectInput);
 
 		[err, order] = await utils.to(Order.findOne({ _id: req.body.orderId }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchOrder);
+		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
-		if (order.status === "Cancelled") throw new Error(ERROR_MESSAGE.alreadyCancelled);
+		if (order.status === "Cancelled") throw new Error(ERROR_MESSAGE.badOrderStatus);
 
 		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: req.body.orderId }, { $set: { status: newStatus } }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.updateOrder);
+		if (err || order == null) throw new Error(ERROR_MESSAGE.updateError);
 
 		// Send mails
 		let subject = `Updated Order #${order._id}`;
@@ -433,26 +433,20 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 
 		console.log("cancel route");
 		[err, order] = await utils.to(Order.findById(orderId));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchOrder);
+		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
-		switch (order.status) {
-		case "Cancelled":
-			throw new Error(ERROR_MESSAGE.orderCancelled);
-		case "Completed":
-			throw new Error(ERROR_MESSAGE.orderCompleted);
-		case "awaitingStripePayment":
-			throw new Error(ERROR_MESSAGE.orderFinalized);
-		}
+		if (order.status === "Cancelled" || order.status === "Completed" || order.status === "awaitingStripePayment")
+			throw new Error(ERROR_MESSAGE.badOrderStatus);
 
 		[err, order] = await utils.to(Order.findOne({ _id: req.params.id }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchOrder);
+		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let isPwinty = false;
 		for (let index = 0; index < order.items.length; index++) {
 			[err, item] = await utils.to(
 				Shop.findOneAndUpdate({ _id: order.items[index].attributes._id, isUnique: true }, { $set: { soldOut: false } })
 			);
-			if (err) throw new Error(ERROR_MESSAGE.delShop);
+			if (err) throw new Error(ERROR_MESSAGE.serverError);
 			if (!order.items[index].attributes.isUnique) isPwinty = true;
 		}
 
@@ -484,7 +478,7 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 		}
 
 		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: req.params.id }, { $set: { status: "Cancelled" } }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchOrder);
+		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		// Send mails
 		let subject = `Cancelled Order #${order._id}`;
@@ -514,7 +508,7 @@ router.post("/billing/save", vDelivery, setUser, authUser, setBilling, async (re
 			vResult.errors.forEach(item => {
 				req.flash("info", item.msg);
 			});
-			throw new Error(ERROR_MESSAGE.incorrectForm);
+			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
 		let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";

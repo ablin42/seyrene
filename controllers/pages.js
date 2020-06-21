@@ -74,7 +74,7 @@ router.get("/Galerie", setUser, async (req, res) => {
 
 		obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/`));
 		if (obj.galleries.error) throw new Error(obj.galleries.message);
-		if (obj.galleries.length === 0) throw new Error(ERROR_MESSAGE.galleryMaintenance);
+		if (obj.galleries.length === 0) throw new Error(ERROR_MESSAGE.pageEmpty);
 
 		return res.status(200).render("galerie", obj);
 	} catch (err) {
@@ -268,7 +268,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 		if (result != null) obj.delivery = result;
 
 		[err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
-		if (err) throw new Error(ERROR_MESSAGE.fetchOrder);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
 		if (orders != null) {
 			orders.forEach((order, index) => {
@@ -335,7 +335,7 @@ router.get("/Shop", setUser, async (req, res) => {
 
 		obj.print = JSON.parse(await rp(`${process.env.BASEURL}/api/shop?tab=print`));
 		if (obj.print.error) throw new Error(obj.print.message);
-		if (obj.original.length <= 1 && obj.print.length <= 1) throw new Error(ERROR_MESSAGE.shopMaintenance);
+		if (obj.original.length <= 1 && obj.print.length <= 1) throw new Error(ERROR_MESSAGE.pageEmpty);
 
 		return res.status(200).render("shop", obj);
 	} catch (err) {

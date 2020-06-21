@@ -46,7 +46,7 @@ module.exports = {
 		let err, query, blogsParsed;
 
 		[err, query] = await utils.to(Blog.paginate({}, options));
-		if (err) throw new Error(ERROR_MESSAGE.fetchBlog);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 		const blogs = query.docs;
 		blogsParsed = await this.parseBlogs(blogs);
 

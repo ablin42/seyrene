@@ -102,7 +102,7 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 		}
 
 		let price = parseFloat(req.body.price);
-		if (isNaN(price)) throw new Error(ERROR_MESSAGE.invalidPrice);
+		if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
 		let formattedPrice = price.toFixed(2);
 
 		const obj = {
@@ -133,7 +133,7 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error(ERROR_MESSAGE.updateImg);
+			if (err) throw new Error(ERROR_MESSAGE.updateError);
 		}
 
 		req.flash("success", "Item successfully uploaded!");
@@ -157,7 +157,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 
 		let id = req.params.id;
 		let price = parseFloat(req.body.price);
-		if (isNaN(price)) throw new Error(ERROR_MESSAGE.invalidPrice);
+		if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
 		let formattedPrice = price.toFixed(2);
 
 		const obj = {
@@ -184,7 +184,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 			});
 			image.path = newpath;
 			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error(ERROR_MESSAGE.updateImg);
+			if (err) throw new Error(ERROR_MESSAGE.updateError);
 		}
 
 		req.flash("success", "Item successfully updated!");

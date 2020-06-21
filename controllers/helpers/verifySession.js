@@ -15,24 +15,24 @@ async function setUser(req, res, next) {
 	if (userId) {
 		let [err, user] = await utils.to(User.findById(userId));
 		if (err || user == null) {
-			req.flash("warning", ERROR_MESSAGE.invalidUser);
+			req.flash("warning", ERROR_MESSAGE.userNotFound);
 			return res.status(401).redirect("/Account");
 		}
 		req.user = user;
 		req.user.password = undefined;
 	}
 
-	/*req.user = { 
-    role: 'admin',
-    isVerified: true,
-    _id: "5d810b9365761c0840e0de25",
-    name: 'harbinger',
-    email: 'ablin42@byom.de',
-    date: "2019-09-17T16:36:35.586Z",
-    __v: 0,
-    createdAt: "2019-09-28T20:27:37.382Z",
-    updatedAt: "2020-06-10T23:25:09.803Z"
-  };*/
+	req.user = {
+		role: "admin",
+		isVerified: true,
+		_id: "5d810b9365761c0840e0de25",
+		name: "harbinger",
+		email: "ablin42@byom.de",
+		date: "2019-09-17T16:36:35.586Z",
+		__v: 0,
+		createdAt: "2019-09-28T20:27:37.382Z",
+		updatedAt: "2020-06-10T23:25:09.803Z"
+	};
 
 	next();
 }
@@ -71,7 +71,7 @@ async function setDelivery(req, res, next) {
 
 	if (userId) {
 		let [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: userId }));
-		if (err) {
+		if (err || !result) {
 			req.flash("warning", ERROR_MESSAGE.deliveryAddressNotFound);
 			return res.status(401).redirect("/User");
 		}
@@ -95,7 +95,7 @@ async function setOrder(req, res, next) {
 
 	let [err, order] = await utils.to(Order.findById(orderId));
 	if (err || order == null) {
-		req.flash("warning", ERROR_MESSAGE.invalidOrder);
+		req.flash("warning", ERROR_MESSAGE.noResult);
 		return res.status(404).redirect("/User");
 	}
 	req.order = order;

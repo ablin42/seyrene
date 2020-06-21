@@ -34,7 +34,7 @@ module.exports = {
 				return trimmed;
 			} else return [];
 		} catch (err) {
-			throw new Error(ERROR_MESSAGE.parseTags);
+			throw new Error(ERROR_MESSAGE.serverError);
 		}
 	}
 	/*imgEncode: async function (file) {
