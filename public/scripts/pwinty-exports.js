@@ -1,25 +1,25 @@
 const substrateType = {
 	fullname: "Paper Type",
 	BAP: "Budget Art Paper",
-	CPP: "Classic Poster Paper",
+	//CPP: "Classic Poster Paper", (not found)
 	CPWP: "Cold Press Watercolour Paper",
 	EMA: "Enhanced Matte Art Paper",
-	HFAP: "Hahnemühle Fine Art Paper",
+	//HFAP: "Hahnemühle Fine Art Pearl", (for photo)
 	HGE: "Hahnemühle German Etching",
 	MFA: "Museum Fine Art Paper",
-	MG: "Metallic Gloss",
+	//MG: "Metallic Gloss", (for photo)
 	SAP: "Smooth Art Paper"
 };
 
 const substrateTypeCLA = {
 	fullname: "Paper Type",
 	BAP: "Budget Art Paper",
-	CPP: "Classic Poster Paper",
+	//CPP: "Classic Poster Paper", (not found)
 	CPWP: "Cold Press Watercolour Paper",
-	HFAP: "Hahnemühle Fine Art Paper",
+	//HFAP: "Hahnemühle Fine Art Pearl", (for photo)
 	HGE: "Hahnemühle German Etching",
 	MFA: "Museum Fine Art Paper",
-	MG: "Metallic Gloss",
+	//MG: "Metallic Gloss", (for photo)
 	SAP: "Smooth Art Paper"
 };
 
