@@ -398,7 +398,7 @@ router.post("/update", setUser, authUser, authRole(ROLE.ADMIN), async (req, res)
 		content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-		req.flash("success", "Order updated");
+		req.flash("success", ERROR_MESSAGE.orderUpdated);
 		return res.status(200).redirect(url);
 	} catch (err) {
 		let url = req.header("Referer") || "/Admin/Orders";
@@ -494,10 +494,10 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		console.log("cancelled order");
-		return res.status(200).json({ err: false, msg: "Your order was successfully cancelled" });
+		return res.status(200).json({ err: false, message: ERROR_MESSAGE.cancelOrderSuccess });
 	} catch (err) {
 		console.log("CANCEL ORDER ERROR:", err);
-		return res.status(200).json({ err: true, msg: err.message });
+		return res.status(200).json({ err: true, message: err.message });
 	}
 });
 
@@ -519,10 +519,9 @@ router.post("/billing/save", vDelivery, setUser, authUser, setBilling, async (re
 		};
 
 		rp(options).then(async data => {
-			if (data.status !== "OK")
-				return res.status(200).json({ error: true, message: "We could not validate your address, please make sure it is valid" });
+			if (data.status !== "OK") return res.status(200).json({ error: true, message: ERROR_MESSAGE.deliveryAddressNotFound });
 
-			req.flash("success", "Billing information successfully saved");
+			req.flash("success", ERROR_MESSAGE.savedBilling);
 			return res.status(200).json({ error: false });
 		});
 	} catch (err) {

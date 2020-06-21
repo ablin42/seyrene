@@ -48,7 +48,7 @@ function checkoutCaller(isLogged, isDelivery) {
             }
           } else {
             console.log("Something went wrong while fetching your cart items!");
-            throw new Error(data.msg);
+            throw new Error(data.message);
           }
         })
         .catch(err => {
@@ -95,7 +95,7 @@ async function cartAdd(itemId, caller) {
         }*/
 				document.getElementById("cartQty").innerText = totalQty;
 			} else alertType = "warning";
-			let alert = createAlertNode(response.msg, alertType);
+			let alert = createAlertNode(response.message, alertType);
 			addAlert(alert, "#header");
 		})
 		.catch(err => {
@@ -197,7 +197,7 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 						}
 						document.getElementById("cartQty").innerText = totalQty;
 					} else alertType = "warning";
-					let alert = createAlertNode(response.msg, alertType);
+					let alert = createAlertNode(response.message, alertType);
 					addAlert(alert, "#header");
 				})
 				.catch(err => {
@@ -260,11 +260,11 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 						console.log("error:", response);
 						alertType = "warning";
 					}
-					let alert = createAlertNode(response.msg, alertType);
+					let alert = createAlertNode(response.message, alertType);
 					addAlert(alert, "#header");
 				})
 				.catch(err => {
-					let alert = createAlertNode(response.msg, alertType);
+					let alert = createAlertNode(response.message, alertType);
 					addAlert(alert, "#header");
 				});
 		} else throw new Error(ERROR_MESSAGE.itemNotFound);
@@ -328,7 +328,7 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 							console.log("API answered with error:", response);
 							alertType = "warning";
 						}
-						let alert = createAlertNode(response.msg, alertType);
+						let alert = createAlertNode(response.message, alertType);
 						addAlert(alert, "#header");
 					})
 					.catch(err => {

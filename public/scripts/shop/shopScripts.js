@@ -22,7 +22,7 @@ async function postShop(e) {
 		.then(response => response.json())
 		.then(data => {
 			if (data.err) {
-				let alert = createAlertNode(data.msg, "warning");
+				let alert = createAlertNode(data.message, "warning");
 				addAlert(alert, "#header");
 			} else window.location.href = data.url;
 		});
@@ -52,7 +52,7 @@ async function patchShop(e, shopId) {
 		.then(response => response.json())
 		.then(data => {
 			if (data.err) {
-				let alert = createAlertNode(data.msg, "warning");
+				let alert = createAlertNode(data.message, "warning");
 				addAlert(alert, "#header");
 			} else window.location.href = data.url;
 		});
@@ -79,7 +79,7 @@ function setMain(e, item) {
 			let alertErr = `
             <div id="alert" class="alert alert-${type}" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
+                ${data.message}
             </div>`;
 			addAlert(alertErr, "#header");
 		});
@@ -97,7 +97,7 @@ function deleteImage(e, item) {
 				let alertErr = `
             <div id="alert" class="alert alert-warning" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.msg}
+                ${data.message}
             </div>`;
 				addAlert(alertErr, "#header");
 			} else {
@@ -108,25 +108,9 @@ function deleteImage(e, item) {
 				let alertSuccess = `
 				<div id="alert" class="alert alert-success" role="alert">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-					${data.msg}
+					${data.message}
 				</div>`;
 				addAlert(alertSuccess, "#header");
 			}
 		});
-}
-
-function openTab(btn, tabName) {
-	let tab = document.getElementsByClassName("tab");
-	let buttons = document.getElementsByClassName("tab-btn");
-
-	for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-
-	btn.classList.add("active");
-
-	for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
-
-	document.getElementById(tabName).style.display = "grid";
-	document.getElementById("infinitebtn").setAttribute("onclick", `infiniteShopItems("${tabName}");`);
-	document.getElementById("infinitebtn").setAttribute("value", "Load More");
-	document.getElementById("infinitebtn").removeAttribute("disabled");
 }

@@ -112,7 +112,7 @@ app.use((err, req, res, next) => {
 		req.originalUrl.indexOf("/api/shop/") != -1 ||
 		req.originalUrl.indexOf("/api/front/") != -1
 	)
-		return res.status(500).json({ url: "/", msg: err.message, err: true });
+		return res.status(500).json({ url: "/", message: err.message, err: true });
 
 	if (err.message) req.flash("warning", err.message);
 	return res.status(500).redirect("back");

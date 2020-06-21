@@ -5,6 +5,7 @@ const ERROR_MESSAGE = {
 	readFile: "File couldn't be read",
 	incorrectInput: "Incorrect input",
 	pageEmpty: "This page is under maintenance, please come back later",
+	failedCaptcha: "Failed captcha verification, please try again",
 
 	//User
 	logInNeeded: "You need to be logged in",
@@ -38,7 +39,7 @@ const ERROR_MESSAGE = {
 	saveError: "Something went wrong while saving the item(s)/data",
 
 	//Not found
-	deliveryAddressNotFound: "An error occured looking for your delivery address",
+	deliveryAddressNotFound: "An error occured looking for your address",
 	tokenNotFound: "An error occurred while looking for your token, please try again",
 	itemNotFound: "An error occurred while looking for an item you tried to purchase",
 	notFoundCatalog: "This item is not available in this format, please try another one",
@@ -53,7 +54,30 @@ const ERROR_MESSAGE = {
 	cancelOrder: "We could not cancel your order, please try again later",
 	badOrderStatus: "Your order status does not allow it to be cancelled",
 	submitOrder: "An error occurred while submitting your order, please try again later",
-	emptyCart: "Your cart is empty!"
+	emptyCart: "Your cart is empty!",
+	addTwiceUnique: "You can't buy an unique painting more than once!",
+
+	addedToCart: "Item added to cart",
+	removedFromCart: "Item removed from cart",
+	qtyUpdated: "Item quantity updated",
+	cancelOrderSuccess: "Your order was successfully cancelled",
+
+	orderUpdated: "La commande a bien été mise à jour",
+	itemUploaded: "L'item a bien été enregistré/mis à jour",
+	itemUploadedSelectMain: "L'item a bien été enregistré, n'oubliez pas de choisir une image principale",
+	itemDeleted: "L'item a bien été supprimé",
+	accountCreated: "Account created successfully, please check your emails to confirm your account",
+	sentEmail: "Email sent! We will answer as soon as we can",
+	loggedIn: "Logged in successfully!",
+	verified: "Your account has been verified. Please log in",
+
+	lostpwEmail: "An e-mail was sent to your address, please follow the link we sent you",
+	updatedPw: "Password successfully modified",
+	updatedUsername: "Username successfully modified",
+	updatedEmail: "Email successfully modified, please confirm your new e-mail by clicking on the link we sent you",
+	savedBilling: "Billing information successfully saved",
+	updatedDelivery: "Delivery informations successfully updated",
+	placedOrder: "Purchase successful, your order has been placed!"
 };
 
 module.exports = {

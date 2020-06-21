@@ -303,7 +303,7 @@ router.get("/About", setUser, async (req, res) => {
 		return res.status(200).render("about", obj);
 	} catch (err) {
 		console.log("ABOUT ROUTE ERROR", err);
-		req.flash("warning", "An error occurred, please try again");
+		req.flash("warning", ERROR_MESSAGE.serverError);
 		return res.status(400).redirect("/");
 	}
 });
@@ -319,7 +319,7 @@ router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 		return res.status(200).render("account", obj);
 	} catch (err) {
 		console.log("ACCOUNT ROUTE ERROR", err);
-		req.flash("warning", "An error occurred, please try again");
+		req.flash("warning", ERROR_MESSAGE.serverError);
 		return res.status(400).redirect("/");
 	}
 });

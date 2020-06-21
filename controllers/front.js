@@ -43,7 +43,6 @@ router.get("/", setUser, async (req, res) => {
 
 //sanitize input
 router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	//vgallery
 	try {
 		if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
 			let front = { null: false, referenceId: req.body.referenceId };
@@ -77,11 +76,11 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 				);
 				if (err) throw new Error(ERROR_MESSAGE.updateError);
 			}
-			return res.status(200).json({ msg: "Image successfully uploaded!" });
+			return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemUploaded });
 		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
 		console.log("POST FRONT ERROR", err);
-		return res.status(400).json({ err: true, msg: err.message });
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -96,10 +95,10 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		fs.unlink(front.path, err => {
 			if (err) throw new Error(ERROR_MESSAGE.delImg);
 		});
-		return res.status(200).json({ msg: "Image successfully deleted!" });
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {
 		console.log("DELETE FRONT ERROR", err);
-		return res.status(400).json({ err: true, msg: err.message });
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 

@@ -15,13 +15,13 @@ router.get("/add/:itemId", setUser, async (req, res) => {
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 
 		Shop.findById(productId, (err, product) => {
-			if (err) return res.status(400).json({ error: true, msg: "An error occurred while looking for the product" });
+			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.serverError });
 			if (product.isUnique === true) {
 				let arr = cart.generateArray();
 				for (let i = 0; i < arr.length; i++) {
 					if (arr[i].attributes._id == product._id) {
 						//elements: [{attributes : attributes}]
-						return res.status(200).json({ error: true, msg: "You can't buy an unique painting more than once!" });
+						return res.status(200).json({ error: true, message: ERROR_MESSAGE.addTwiceUnique });
 					}
 				}
 			}
@@ -32,11 +32,11 @@ router.get("/add/:itemId", setUser, async (req, res) => {
 			cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
 			cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
-			return res.status(200).json({ error: false, msg: "Item added to cart", cart: cartCpy });
+			return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: cartCpy });
 		});
 	} catch (err) {
 		console.log("ADD TO CART ERROR");
-		return res.status(400).json({ error: true, msg: err.message });
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -46,24 +46,24 @@ router.get("/del/:itemId", setUser, async (req, res) => {
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 
 		Shop.findById(productId, (err, product) => {
-			if (err) return res.status(400).json({ error: true, msg: "An error occurred while looking for the product" });
+			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.serverError });
 			cart.delete(product, product.id);
 			req.session.cart = cart;
 			let cartCpy = JSON.parse(JSON.stringify(cart));
 			cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
 			if (cartCpy.items[productId]) cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
-			return res.status(200).json({ error: false, msg: "Item removed from cart", cart: cartCpy });
+			return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: cartCpy });
 		});
 	} catch (err) {
 		console.log("DELETE FROM CART ERROR");
-		return res.status(400).json({ error: true, msg: err.message });
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
 router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 	try {
-		let productId = req.params.itemId; //for now is shop id, but will make it later image id
+		let productId = req.params.itemId;
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 		let data = {
 			SKU: req.body.SKU,
@@ -73,11 +73,7 @@ router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 
 		Gallery.findById(productId, async (err, product) => {
 			try {
-				if (err) return res.status(400).json({ error: true, msg: "An error occurred while looking for the product" });
-
-				/*let [err, image] = await utils.to(Image.findOne({isMain: true, itemType: "Shop", _itemId: product._id}));
-            if (err) 
-                throw new Error("An error occurred while fetching the image");*/
+				if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.serverError });
 
 				let item = await cart.pwintyAdd(product, data);
 				req.session.cart = cart;
@@ -86,14 +82,14 @@ router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 				cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
 				if (cartCpy.items[data.SKU]) cartCpy.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
-				return res.status(200).json({ error: false, msg: "Item added to cart", cart: cartCpy, item: item }); //send curr item qty/price?
+				return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: cartCpy, item: item });
 			} catch (err) {
-				return res.status(400).json({ error: true, msg: err.message });
+				return res.status(400).json({ error: true, message: err.message });
 			}
 		});
 	} catch (err) {
 		console.log("ADD TO CART ERROR");
-		return res.status(400).json({ error: true, msg: err.message });
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -111,8 +107,7 @@ router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 		if (Number.isInteger(newQty) && newQty >= 0 && newQty <= 99) {
 			Gallery.findById(productId, async (err, product) => {
 				try {
-					if (err || !product)
-						return res.status(400).json({ error: true, msg: "An error occurred while looking for the product" });
+					if (err || !product) return res.status(400).json({ error: true, message: ERROR_MESSAGE.serverError });
 
 					let item = await cart.pwintyUpdate(data, newQty);
 					item.price = formatter.format(item.price).substr(2);
@@ -122,17 +117,17 @@ router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 					if (cartCpy.items[productId])
 						cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
-					let msg = "Item quantity updated";
-					if (newQty == 0) msg = "Item removed from cart";
-					return res.status(200).json({ error: false, msg: msg, cart: cartCpy, item: item });
+					let message = ERROR_MESSAGE.qtyUpdated;
+					if (newQty == 0) message = ERROR_MESSAGE.removedFromCart;
+					return res.status(200).json({ error: false, message: message, cart: cartCpy, item: item });
 				} catch (err) {
-					return res.status(400).json({ error: true, msg: err.message });
+					return res.status(400).json({ error: true, message: err.message });
 				}
 			});
 		} else throw new Error(ERROR_MESSAGE.updateQty);
 	} catch (err) {
 		console.log("UPDATE CART ERROR");
-		return res.status(400).json({ error: true, msg: err.message });
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -148,7 +143,7 @@ router.post("/del/pwinty/:itemId", setUser, async (req, res) => {
 
 		Gallery.findById(productId, async err => {
 			try {
-				if (err) return res.status(400).json({ error: true, msg: "An error occurred while looking for the product" });
+				if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.serverError });
 
 				let item = await cart.pwintyDelete(data);
 				req.session.cart = cart;
@@ -156,15 +151,15 @@ router.post("/del/pwinty/:itemId", setUser, async (req, res) => {
 				cartCpy.totalPrice = formatter.format(cart.totalPrice).substr(2);
 				if (cartCpy.items[data.SKU]) cartCpy.items[data.SKU].price = formatter.format(cartCpy.items[data.SKU].price).substr(2);
 
-				return res.status(200).json({ error: false, msg: "Item removed from cart", cart: cartCpy, item: item });
+				return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: cartCpy, item: item });
 			} catch (err) {
 				console.log(err);
-				return res.status(400).json({ error: true, msg: err.message });
+				return res.status(400).json({ error: true, message: err.message });
 			}
 		});
 	} catch (err) {
 		console.log("DELETE FROM CART ERROR");
-		return res.status(400).json({ error: true, msg: err.message });
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -173,7 +168,7 @@ router.get("/clear/:id", setUser, async (req, res) => {
 		let cart = new Cart({});
 		cart.clearCart();
 		req.session.cart = cart;
-		req.flash("success", "Purchase successful, your order has been placed!");
+		req.flash("success", ERROR_MESSAGE.placedOrder);
 
 		return res.status(200).redirect(`/Order/${req.params.id}`);
 	} catch (err) {
@@ -197,7 +192,7 @@ try {
     return res.status(400).json({"err": false, "total": total})
 } catch (err) {
     console.log("TOTAL PRICE CART ERROR");
-    return res.status(400).json({"err": true, "msg": err.message})
+    return res.status(400).json({err: true, message: err.message})
 }})*/
 
 module.exports = router;

@@ -60,13 +60,9 @@ router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async 
 		let content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-		//req.flash("success", "Account created successfully, please check your emails to confirm your account");
-		return res
-			.status(200)
-			.json({ error: false, message: "Account created successfully, please check your emails to confirm your account" });
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.accountCreated });
 	} catch (err) {
 		console.log("ERROR REGISTER:", err);
-		//req.flash("warning", err.message);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -103,7 +99,7 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 		// Create session variable
 		req.session._id = user._id;
 
-		req.flash("success", "Logged in successfully!");
+		req.flash("success", ERROR_MESSAGE.loggedIn);
 		return res.redirect("/");
 	} catch (err) {
 		console.log("ERROR LOGIN:", err);
@@ -147,7 +143,7 @@ router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
 		[err, user] = await utils.to(user.save());
 		if (err) throw new Error(err.message);
 
-		req.flash("success", "Your account has been verified. Please log in.");
+		req.flash("success", ERROR_MESSAGE.verified);
 		return res.status(200).redirect("/Account");
 	} catch (err) {
 		console.log("ERROR CONFIRMATION TOKEN:", err);

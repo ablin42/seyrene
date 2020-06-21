@@ -696,7 +696,7 @@ class PwintyObject {
 							} else alertType = "warning";
 
 							let alert = createAlertNode(
-								response.msg,
+								response.message,
 								alertType,
 								"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
 							);
@@ -704,7 +704,7 @@ class PwintyObject {
 						})
 						.catch(err => {
 							let alert = createAlertNode(
-								response.msg,
+								response.message,
 								alertType,
 								"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
 							);

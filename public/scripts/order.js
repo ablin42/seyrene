@@ -29,7 +29,7 @@ async function confirmAction(orderId) {
 			} else {
 				console.log("error:", response);
 			}
-			let alert = createAlertNode(response.msg);
+			let alert = createAlertNode(response.message);
 			addAlert(alert, "#header");
 		})
 		.catch(err => {

@@ -59,10 +59,7 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 					};
 
 					let result = await rp(options);
-					if (typeof result === "string")
-						return res
-							.status(200)
-							.send({ error: true, message: "Unauthorized. Contact your administrator if you think this is a mistake" });
+					if (typeof result === "string") return res.status(200).send({ error: true, message: ERROR_MESSAGE.unauthorized });
 					if (result.err) return res.status(200).send({ error: true, message: result.message });
 
 					return res.status(200).send({ error: false, clientSecret: paymentIntent.client_secret, orderId: result._id });

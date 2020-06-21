@@ -63,7 +63,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
 
 		if (await mailer(req.body.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-		req.flash("success", "An e-mail was sent to your address, please follow the link we sent you");
+		req.flash("success", ERROR_MESSAGE.lostpwEmail);
 		return res.status(200).redirect("/");
 	} catch (err) {
 		console.log("ERROR LOSTPW:", err);
@@ -97,7 +97,7 @@ router.post("/resetpw", vPassword, async (req, res) => {
 		[err, pwToken] = await utils.to(PwToken.deleteOne({ _id: req.body.tokenId }));
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
 
-		req.flash("success", "Password successfully modified");
+		req.flash("success", ERROR_MESSAGE.updatedPw);
 		return res.status(200).redirect("/Account");
 	} catch (err) {
 		console.log("ERROR RESETPW:", err);
@@ -126,7 +126,7 @@ router.post("/patch/name", vName, setUser, authUser, async (req, res) => {
 		let [err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { name: name } }));
 		if (err) throw new Error(ERROR_MESSAGE.userUpdate);
 
-		req.flash("success", "Username successfully modified");
+		req.flash("success", ERROR_MESSAGE.updatedUsername);
 		return res.status(200).redirect("/User");
 	} catch (err) {
 		console.log("ERROR PATCHING NAME:", err);
@@ -164,7 +164,7 @@ router.post("/patch/email", vEmail, setUser, authUser, async (req, res) => {
 			content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
 		if (await mailer(newEmail, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-		req.flash("success", "Email successfully modified, please confirm your new e-mail by clicking on the link we sent you");
+		req.flash("success", ERROR_MESSAGE.updatedEmail);
 		return res.status(200).redirect("/User");
 	} catch (err) {
 		console.log("ERROR PATCHING EMAIL:", err);
@@ -200,7 +200,7 @@ router.post("/patch/password", vPassword, setUser, authUser, async (req, res) =>
 		[err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { password: hashPw } }));
 		if (err) throw new Error(ERROR_MESSAGE.userUpdate);
 
-		req.flash("success", "Password successfully modified");
+		req.flash("success", ERROR_MESSAGE.updatedPw);
 		return res.status(200).redirect("/User");
 	} catch (err) {
 		console.log("ERROR PATCHING PASSWORD:", err);
@@ -277,7 +277,7 @@ router.post("/patch/delivery-info", vDelivery, setUser, authUser, async (req, re
 						if (err || !result) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 					}
 
-					req.flash("success", "Delivery informations successfully updated");
+					req.flash("success", ERROR_MESSAGE.updatedDelivery);
 					res.status(200).redirect("/User");
 				}
 			} catch (err) {

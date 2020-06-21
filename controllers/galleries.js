@@ -141,14 +141,14 @@ router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 			if (err) throw new Error(ERROR_MESSAGE.saveError);
 		}
 
-		req.flash("success", "Item successfully uploaded! Remember to select your favorite main image");
+		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain); //zda
 		return res.status(200).json({
 			url: `/Admin/Galerie/Patch/${result._id}`,
-			msg: "Item successfully uploaded! Remember to select your favorite main image"
+			message: ERROR_MESSAGE.itemUploadedSelectMain //zda
 		});
 	} catch (err) {
 		console.log("POST GALLERY ERROR", err);
-		return res.status(400).json({ url: "/", msg: err.message, err: true });
+		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
 
@@ -187,11 +187,11 @@ router.post("/patch/:id", upload, vGallery, setUser, authUser, authRole(ROLE.ADM
 		[err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
-		req.flash("success", "Item successfully updated!");
-		return res.status(200).json({ url: "/Galerie", msg: "Item successfully updated!" });
+		req.flash("success", ERROR_MESSAGE.itemUploaded);
+		return res.status(200).json({ url: "/Galerie", message: ERROR_MESSAGE.itemUploaded });
 	} catch (err) {
 		console.log("PATCH GALLERY ERROR", err);
-		return res.status(400).json({ url: "/", msg: err.message, err: true });
+		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
 
@@ -217,7 +217,7 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 				throw new Error(ERROR_MESSAGE.fetchImg);
 			});
 
-		req.flash("success", "Item successfully deleted!");
+		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/Galerie");
 	} catch (err) {
 		console.log("DELETE GALLERY ERROR", err);

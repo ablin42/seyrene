@@ -16,7 +16,7 @@ router.get("/:id", setUser, async (req, res) => {
 		if (result == null) throw new Error(ERROR_MESSAGE.noResult);
 
 		fs.readFile(result.path, function (err, data) {
-			if (err) return res.status(400).json({ error: true, message: "File couldn't be read" });
+			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.readFile });
 			let contentType = { "Content-Type": result.mimetype };
 
 			res.writeHead(200, contentType);
@@ -38,7 +38,7 @@ router.get("/main/:itemType/:itemId", setUser, async (req, res) => {
 		if (result == null) throw new Error(ERROR_MESSAGE.noResult);
 
 		fs.readFile(result.path, function (err, data) {
-			if (err) return res.status(400).json({ error: true, message: "File couldn't be read" });
+			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.readFile });
 			let contentType = { "Content-Type": result.mimetype };
 			res.writeHead(200, contentType);
 			res.status(200).end(data);
@@ -64,10 +64,10 @@ router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADM
 		[err, result] = await utils.to(Image.findOneAndUpdate({ _id: id }, { $set: { isMain: true } }));
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
-		return res.status(200).json({ err: false, msg: "New main image successfully selected!" });
+		return res.status(200).json({ err: false, message: "Nouvelle image principale définie" });
 	} catch (err) {
 		console.log("IMAGE SELECT MAIN ERROR", err);
-		return res.status(400).json({ err: true, msg: err.message });
+		return res.status(400).json({ err: true, message: err.message });
 	}
 });
 
@@ -100,10 +100,10 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 			} else throw new Error(ERROR_MESSAGE.mainImgDel);
 		}
 
-		return res.status(200).json({ err: false, msg: "Image was successfully deleted!" });
+		return res.status(200).json({ err: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {
 		console.log("IMAGE DELETE ERROR", err);
-		return res.status(400).json({ err: true, msg: err.message });
+		return res.status(400).json({ err: true, message: err.message });
 	}
 });
 

@@ -133,11 +133,12 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 			if (err) throw new Error(ERROR_MESSAGE.updateError);
 		}
 
-		req.flash("success", "Item successfully uploaded!");
-		return res.status(200).json({ url: `/Admin/Shop/Patch/${result._id}`, msg: "Item successfully uploaded!" });
+		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain); //double
+		return res.status(200).json({ url: `/Admin/Shop/Patch/${result._id}`, message: ERROR_MESSAGE.itemUploadedSelectMain }); //double
 	} catch (err) {
+		//double
 		console.log("POST SHOP ERROR", err);
-		return res.status(400).json({ url: "/", msg: err.message, err: true });
+		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
 
@@ -184,11 +185,11 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 			if (err) throw new Error(ERROR_MESSAGE.updateError);
 		}
 
-		req.flash("success", "Item successfully updated!");
-		return res.status(200).json({ url: "/Shop", msg: "Item successfully updated!" });
+		req.flash("success", ERROR_MESSAGE.itemUploaded); //double
+		return res.status(200).json({ url: "/Shop", message: ERROR_MESSAGE.itemUploaded }); //double
 	} catch (err) {
 		console.log("PATCH SHOP ERROR", err);
-		return res.status(400).json({ url: "/", msg: err.message, err: true });
+		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
 
@@ -214,7 +215,7 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 				throw new Error(ERROR_MESSAGE.fetchImg);
 			});
 
-		req.flash("success", "Item successfully deleted!");
+		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/Shop");
 	} catch (err) {
 		console.log("DELETE SHOP ERROR", err);

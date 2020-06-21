@@ -33,7 +33,7 @@ router.post("/", vContact, setUser, checkCaptcha, async (req, res) => {
 		//maral.canvas@gmail.com
 		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-		return res.status(200).json({ error: false, message: "Email sent! We will answer as soon as we can" });
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.sentEmail });
 	} catch (err) {
 		console.log("ERROR CONTACT:", err);
 		return res.status(200).json({ error: true, message: err.message });

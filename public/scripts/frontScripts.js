@@ -17,16 +17,16 @@ function deleteImage(item, e) {
 		})
 			.then(response => response.json())
 			.then(data => {
-				if (data.err) {
-					let alert = createAlertNode(data.msg, "warning");
+				if (data.error === true) {
+					let alert = createAlertNode(data.message, "warning");
 					addAlert(alert, "#header");
 				} else {
-					let alert = createAlertNode(data.msg, "success");
+					let alert = createAlertNode(data.message, "success");
 					addAlert(alert, "#header");
 				}
 			});
 	} else {
-		let alert = createAlertNode(" Image was successfully deleted!", "success");
+		let alert = createAlertNode("L'item a bien été supprimé!", "success");
 		addAlert(alert, "#header");
 	}
 }
@@ -70,11 +70,11 @@ async function postFront(e, form) {
 	})
 		.then(response => response.json())
 		.then(data => {
-			if (data.err) {
-				let alert = createAlertNode(data.msg, "warning");
+			if (data.error === true) {
+				let alert = createAlertNode(data.message, "warning");
 				addAlert(alert, "#header");
 			} else {
-				let alert = createAlertNode(data.msg, "success");
+				let alert = createAlertNode(data.message, "success");
 				addAlert(alert, "#header");
 			}
 		});

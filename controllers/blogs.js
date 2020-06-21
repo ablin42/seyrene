@@ -80,7 +80,7 @@ router.post("/", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res
 		let [err, savedBlog] = await utils.to(blog.save());
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
-		req.flash("success", "Post successfully uploaded");
+		req.flash("success", ERROR_MESSAGE.itemUploaded);
 		return res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);
 	} catch (err) {
 		console.log("POST BLOG ERROR", err);
@@ -103,7 +103,7 @@ router.post("/patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), vBlog, as
 		);
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
-		req.flash("success", "Post corrigé avec succès");
+		req.flash("success", ERROR_MESSAGE.itemUploaded);
 		return res.status(200).redirect(`/Blog/${req.params.blogId}`);
 	} catch (err) {
 		console.log("PATCH BLOG ERROR", err);
@@ -120,7 +120,7 @@ router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (re
 		let [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
 		if (err) throw new Error(ERROR_MESSAGE.delError);
 
-		req.flash("success", "Item successfully deleted!");
+		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/About");
 	} catch (err) {
 		console.log("DELETE BLOG ERROR", err);
