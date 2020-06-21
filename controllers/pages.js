@@ -333,10 +333,6 @@ router.get("/Shop", setUser, async (req, res) => {
 		obj.original = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/`)); //same as /About
 		if (obj.original.error) throw new Error(obj.original.message);
 
-		obj.print = JSON.parse(await rp(`${process.env.BASEURL}/api/shop?tab=print`));
-		if (obj.print.error) throw new Error(obj.print.message);
-		if (obj.original.length <= 1 && obj.print.length <= 1) throw new Error(ERROR_MESSAGE.pageEmpty);
-
 		return res.status(200).render("shop", obj);
 	} catch (err) {
 		console.log("SHOP ROUTE ERROR", err);

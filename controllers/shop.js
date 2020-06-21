@@ -74,11 +74,8 @@ router.get("/", setUser, async (req, res) => {
 			limit: 3,
 			sort: { date: -1 }
 		};
-		let query = { isUnique: true, soldOut: false };
 
-		if (req.query.tab === "print") query.isUnique = false;
-
-		let [err, result] = await utils.to(Shop.paginate(query, options));
+		let [err, result] = await utils.to(Shop.paginate({ isUnique: true, soldOut: false }, options));
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		let shopItems = result.docs; //probably can remove img since we use id and api to load it
 
@@ -108,7 +105,7 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 		const obj = {
 			title: req.body.title,
 			content: req.body.content,
-			isUnique: req.body.isUnique,
+			isUnique: true,
 			price: formattedPrice
 		}; // need to sanitize data
 
@@ -163,7 +160,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 		const obj = {
 			title: req.body.title,
 			content: req.body.content,
-			isUnique: req.body.isUnique,
+			isUnique: true,
 			price: formattedPrice
 		}; // need to sanitize data
 

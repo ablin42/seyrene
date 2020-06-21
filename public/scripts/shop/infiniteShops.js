@@ -1,10 +1,10 @@
-async function infiniteShopItems(tab) {
-	let nbItem = $(`#${tab} > .card`).length,
+async function infiniteShopItems(tb) {
+	let nbItem = $("#original > .card").length,
 		page = 1 + Math.floor(nbItem / 3),
-		loader = $("#loader"),
-		url = `/api/shop?page=${page}&tab=${tab}`;
+		loader = $("#loader");
 	loader.css("display", "block");
-	await fetch(url)
+
+	await fetch(`/api/shop?page=${page}`)
 		.then(function (response) {
 			response.json().then(function (data) {
 				if (!data.error) {
@@ -38,7 +38,7 @@ async function infiniteShopItems(tab) {
 
 								div.innerHTML = toAppend;
 								id++;
-								$(`#${tab}`).append(div);
+								$("#original").append(div);
 							} else {
 								$("#infinitebtn").val("Nothing more to load");
 								$("#infinitebtn").attr("disabled");
@@ -50,8 +50,6 @@ async function infiniteShopItems(tab) {
 						$("#infinitebtn").attr("disabled");
 						$("#infinitebtn").attr("onclick", "");
 					}
-					let alert = createAlertNode(data.message, "warning");
-					addAlert(alert, "#header");
 				}
 			});
 		})
@@ -65,10 +63,8 @@ async function infiniteShopItems(tab) {
 $(window).scroll(function () {
 	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
 	const val2 = $(document).height();
-	let tab = "original";
 
-	if (document.getElementById("infinitebtn").getAttribute("onclick").indexOf("original") === -1) tab = "print";
 	if (val1 >= val2) {
-		infiniteShopItems(tab);
+		infiniteShopItems();
 	}
 });

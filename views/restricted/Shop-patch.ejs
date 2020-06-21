@@ -22,11 +22,6 @@
                 <input placeholder="35.50 (au centième d'euro près)" class="form-control" type="number" min="1" id="price" name="price" value="<%= locals.shop.price %>" step=".01" required>
             </div>
 
-            <div class="form-group text-center">
-                <label class="control-label">Cochez si l'exemplaire est unique</label><br />
-                <input type="checkbox" name="isUnique" id="isUnique" <% if (locals.shop.isUnique) { %> checked <% } %>>
-            </div>
-
             <div class="form-group">
                 <div class="form-group text-center">
                     <label for="img" id="imglabel" class="filebtn">Choisir des images</label>
