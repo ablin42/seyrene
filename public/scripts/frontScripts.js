@@ -1,3 +1,5 @@
+const { ERROR_MESSAGE } = require("../../controllers/helpers/errorMessages");
+
 function deleteImage(item, e) {
 	e.preventDefault();
 	let imageItemId = "image" + item.id.substr(6, 1);
@@ -26,7 +28,7 @@ function deleteImage(item, e) {
 				}
 			});
 	} else {
-		let alert = createAlertNode("L'item a bien été supprimé!", "success");
+		let alert = createAlertNode(ERROR_MESSAGE.itemDeleted, "success");
 		addAlert(alert, "#header");
 	}
 }

@@ -1,3 +1,5 @@
+const { ERROR_MESSAGE } = require("../../controllers/helpers/errorMessages");
+
 function closeAllSelect(elmnt) {
 	let x,
 		y,
@@ -714,7 +716,7 @@ class PwintyObject {
 			})
 			.catch(err => {
 				let alert = createAlertNode(
-					"Sorry, there are no shipment options available to the selected destination for these products",
+					ERROR_MESSAGE.noShipment,
 					alertType,
 					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
 				);
@@ -752,7 +754,7 @@ class PwintyObject {
 			.catch(err => {
 				console.log(err);
 				let alert = createAlertNode(
-					"An error occured while looking for your country, please refresh the page",
+					ERROR_MESSAGE.countryCode,
 					"warning",
 					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
 				);
