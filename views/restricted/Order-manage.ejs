@@ -23,6 +23,7 @@
               <select class="form-control" name="status" id="selectStatus" <% if (locals.order.status === "Cancelled" || locals.order.status === "Completed") {%> disabled readonly <% } %>>
                 <% if (locals.order.status == "awaitingPayment") { %><option <% if (locals.order.status === "awaitingPayment") {%> selected disabled <% } %> value="awaitingPayment">awaitingPayment</option><% } %>
                 <% if (locals.order.status == "awaitingStripePayment") { %><option <% if (locals.order.status === "awaitingStripePayment") {%> selected disabled <% } %> value="awaitingStripePayment">awaitingStripePayment</option><% } %>
+                <% if (locals.order.status == "awaitingApproval") { %><option <% if (locals.order.status === "awaitingApproval") {%> selected disabled <% } %> value="awaitingApproval">awaitingApproval</option><% } %>
                 <option <% if (locals.order.status === "Submitted") {%> selected disabled <% } %> value="Submitted">Submitted</option>
                 <option <% if (locals.order.status === "Completed") {%> selected disabled <% } %> value="Completed">Completed</option>
                 <% if (locals.order.status == "Cancelled") { %><option <% if (locals.order.status === "Cancelled") {%> selected disabled <% } %> <% if (locals.order.status != "NotYetSubmitted") {%> disabled <% } %> value="Cancelled">Cancelled</option><% } %>
@@ -37,6 +38,9 @@
           
           <% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
             <i style="color:red; cursor: pointer" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
+          <% } %>
+            <% if (locals.order.status === "awaitingApproval" ) { %>
+            <i style="color:green; cursor: pointer" onclick="approveOrder('<%= locals.order._id %>')" class="far fa-times-circle">APPROUVER LA COMMANDE</i><br />
           <% } %>
         <hr />
       </div>

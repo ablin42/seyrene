@@ -375,6 +375,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 
 			rp(options)
 				.then(response => {
+					console.log(response);
 					let found = 0;
 					response.shipmentOptions.forEach(shipmentOption => {
 						if (shipmentOption.isAvailable && shipmentOption.shippingMethod === "Standard") {

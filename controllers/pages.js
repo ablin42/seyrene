@@ -577,6 +577,32 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 	}
 });
 
+router.get("/Admin/OrdersApproval", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		let obj = { active: "Admin Orders", user: req.user };
+
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/order?approval=true`,
+			headers: {
+				cookie: req.headers.cookie
+			},
+			json: true
+		};
+
+		let result = await rp(options);
+		if (typeof result === "string") throw new Error(ERROR_MESSAGE.unauthorized);
+		if (result.error) throw new Error(result.message);
+		if (result.orders) obj.orders = result.orders;
+
+		return res.status(200).render("restricted/ordernotapproved", obj);
+	} catch (err) {
+		console.log("ADMIN ROUTE ERROR", err);
+		req.flash("warning", err.message);
+		return res.status(400).redirect("/Admin");
+	}
+});
+
 router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Order recap", user: req.user };

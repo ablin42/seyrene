@@ -9,9 +9,14 @@ function closeDialog() {
 	return;
 }
 
-async function confirmDelete(orderId) {
+function abortAction() {
 	closeDialog();
-	await fetch(`/api/order/cancel/${orderId}`, {
+	return;
+}
+
+async function confirmApproval(orderId) {
+	closeDialog();
+	await fetch(`/api/order/approve/${orderId}`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
@@ -36,58 +41,6 @@ async function confirmDelete(orderId) {
 	return;
 }
 
-function abortAction() {
-	closeDialog();
-	return;
-}
-
-async function confirmApproval(orderId) {
-	closeDialog();
-	await fetch(`/api/order/approve/${orderId}`, {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-			"Accept": "application/json"
-		},
-		credentials: "include",
-		mode: "same-origin"
-	})
-		.then(res => {
-			return res.json();
-		})
-		.then(function (response) {
-			if (response.error === false) {
-				console.log(response);
-			} else {
-				console.log("error:", response);
-			}
-			let alert = createAlertNode(response.message, "success");
-			addAlert(alert, "#header");
-		})
-		.catch(err => {
-			console.log(err);
-		});
-	return;
-}
-
-async function cancelOrder(orderId) {
-	console.log("CANCEL ORDER:", orderId);
-
-	if ($("#alert-dialog").length === 0) {
-		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
-                        <h3>CANCEL the order?</h3><span>This action is irreversible, are you sure?</span> \
-                        <button class="tab-btn" onclick="confirmDelete('${orderId}')">CONFIRM</button><button class="tab-btn" onclick="abortAction()">ABORT</button> \
-                      </div>`);
-		$("#alert-dialog").wrap("<div onclick=\"closeDialog()\" class=\"dialog-wrapper\"></div>");
-
-		setTimeout(() => {
-			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");
-			$("#alert-dialog").parent().css("opacity", "1");
-		}, 100);
-	}
-	return;
-}
-
 async function approveOrder(orderId) {
 	console.log("APPROVE ORDER:", orderId);
 
@@ -106,14 +59,14 @@ async function approveOrder(orderId) {
 	return;
 }
 
-async function infiniteOrders() {
+async function infiniteApprovalOrders() {
 	if ($("#container-admin-orders").length === 0) return;
 	let nbItem = $("tbody tr").length,
 		page = 1 + Math.floor(nbItem / 20),
 		loader = $("#loader");
 	loader.css("display", "block");
 
-	await fetch(`/api/order?page=${page}`)
+	await fetch(`/api/order?page=${page}&approval=true`)
 		.then(function (response) {
 			response.json().then(function (data) {
 				if (!data.error) {
@@ -159,5 +112,5 @@ async function infiniteOrders() {
 $(window).scroll(function () {
 	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
 	const val2 = $(document).height();
-	if (val1 >= val2) infiniteOrders();
+	if (val1 >= val2) infiniteApprovalOrders();
 });

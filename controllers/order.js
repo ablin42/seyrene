@@ -71,7 +71,10 @@ router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 			sort: { date: -1 }
 		};
 
-		let [err, result] = await utils.to(Order.paginate({}, options));
+		let query = {};
+		if (req.query.approval && req.query.approval === "true") query.status = "awaitingApproval";
+
+		let [err, result] = await utils.to(Order.paginate(query, options));
 		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let orders = [];
@@ -206,7 +209,7 @@ async function createPwintyOrder(order, req) {
 					//////////////////////////////////////
 					options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}`;
 					response = await rp(options);
-					console.log(response, "xX");
+					console.log(response);
 
 					console.log("order is valid");
 					options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/submit`;
@@ -220,10 +223,7 @@ async function createPwintyOrder(order, req) {
 						console.log("submitted order");
 
 						let [err, orderResponse] = await utils.to(
-							Order.findOneAndUpdate(
-								{ chargeId: req.body.data.object.id, status: "awaitingStripePayment" },
-								{ $set: { pwintyOrderId: pwintyOrderId } }
-							)
+							Order.findOneAndUpdate({ _id: order._id }, { $set: { pwintyOrderId: pwintyOrderId } })
 						);
 						if (err || orderResponse === null) throw new Error(ERROR_MESSAGE.submitOrder);
 
@@ -238,16 +238,13 @@ async function createPwintyOrder(order, req) {
 	} else throw new Error(`Something went wrong while creating the order: ${response.errordata.statusTxt}`);
 }
 
-async function submitOrder(orderx, req) {
-	let err, order, user;
+async function submitOrder(order, req) {
+	let err, response, user;
 
-	[err, order] = await utils.to(
-		Order.findOneAndUpdate(
-			{ chargeId: req.body.data.object.id, status: "awaitingStripePayment" },
-			{ $set: { status: "Submitted" } }
-		)
+	[err, response] = await utils.to(
+		Order.findOneAndUpdate({ _id: order._id, status: "awaitingApproval" }, { $set: { status: "Submitted" } })
 	);
-	if (err || order === null) throw new Error(ERROR_MESSAGE.submitOrder);
+	if (err || response === null) throw new Error(ERROR_MESSAGE.submitOrder);
 
 	// Send mails
 	let subject = `New Order #${order._id}`;
@@ -269,7 +266,7 @@ async function savePurchaseData(req, order, response) {
 	let shippingAddress = [];
 	let err, purchaseDataResponse, user, delivery;
 
-	if (response.pwintyOrderId) pwintyOrderId = response.pwintyOrderId;
+	if (response && response.pwintyOrderId) pwintyOrderId = response.pwintyOrderId;
 
 	[err, delivery] = await utils.to(DeliveryInfo.findOne({ _userId: order._userId }));
 	if (err || delivery === null) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
@@ -291,19 +288,25 @@ async function savePurchaseData(req, order, response) {
 	});
 
 	[err, purchaseDataResponse] = await utils.to(purchaseData.save());
-	if (err || response == null) throw new Error(ERROR_MESSAGE.saveError);
+	if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 	return purchaseData;
 }
 
 router.post("/confirm", setUser, authUser, async (req, res) => {
+	//triggered when payment succeeded
 	try {
 		/////////////// once this is triggered, wait 24h then proceed if no fraud webhook/refund events occurred
 		let err, order, item;
 
 		if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) {
 			//make sure its sent by webhook
-			[err, order] = await utils.to(Order.findOne({ chargeId: req.body.data.object.id, status: "awaitingStripePayment" }));
+			[err, order] = await utils.to(
+				Order.findOneAndUpdate(
+					{ chargeId: req.body.data.object.id, status: "awaitingStripePayment" },
+					{ $set: { status: "awaitingApproval" } }
+				)
+			);
 			if (err || order === null) throw new Error(ERROR_MESSAGE.fetchError);
 
 			let isPwinty = false;
@@ -315,13 +318,15 @@ router.post("/confirm", setUser, authUser, async (req, res) => {
 				if (!order.items[index].attributes.isUnique) isPwinty = true;
 			}
 
+			//below v
+
 			let response;
-			if (isPwinty === false) response = await submitOrder(order, req);
-			else response = await createPwintyOrder(order, req);
+			//if (isPwinty === false) response = await submitOrder(req);
+			//else response = await createPwintyOrder(order, req);
 
 			await savePurchaseData(req, order, response);
 		}
-		return res.status(200).send("OK");
+		return res.status(200).send("OK"); //////////////////////
 	} catch (err) {
 		console.log("CONFIRMING ORDER ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
@@ -406,6 +411,31 @@ router.post("/update", setUser, authUser, authRole(ROLE.ADMIN), async (req, res)
 
 		req.flash("warning", err.message);
 		return res.status(200).redirect(url);
+	}
+});
+
+router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		const orderId = req.params.id;
+		let err, order;
+		///////change status
+		//user functions
+		[err, order] = await utils.to(Order.findOne({ _id: orderId, status: "awaitingApproval" }));
+		if (err || order === null) throw new Error(ERROR_MESSAGE.fetchError);
+
+		let isPwinty = false;
+		for (let index = 0; index < order.items.length; index++) {
+			if (!order.items[index].attributes.isUnique) isPwinty = true;
+		}
+
+		let response;
+		if (isPwinty === false) response = await submitOrder(order, req);
+		else response = await createPwintyOrder(order, req);
+
+		return res.status(200).json({ err: false, message: "Order was approved and sent into production" });
+	} catch (err) {
+		console.log("APPROVING ORDER ERROR:", err);
+		return res.status(200).json({ err: true, message: err.message });
 	}
 });
 
