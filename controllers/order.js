@@ -72,7 +72,7 @@ router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 		};
 
 		let query = {};
-		if (req.query.approval && req.query.approval === "true") query.status = "awaitingApproval";
+		if (req.query.tab && req.query.tab === "approval") query.status = "awaitingApproval";
 
 		let [err, result] = await utils.to(Order.paginate(query, options));
 		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchError);

@@ -567,35 +567,15 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 		let result = await rp(options);
 		if (typeof result === "string") throw new Error(ERROR_MESSAGE.unauthorized);
 		if (result.error) throw new Error(result.message);
-		if (result.orders) obj.orders = result.orders;
+		if (result.orders) obj.all = result.orders;
 
-		return res.status(200).render("restricted/orders", obj);
-	} catch (err) {
-		console.log("ADMIN ROUTE ERROR", err);
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/Admin");
-	}
-});
-
-router.get("/Admin/OrdersApproval", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	try {
-		let obj = { active: "Admin Orders", user: req.user };
-
-		let options = {
-			method: "GET",
-			uri: `${process.env.BASEURL}/api/order?approval=true`,
-			headers: {
-				cookie: req.headers.cookie
-			},
-			json: true
-		};
-
-		let result = await rp(options);
+		options.uri = `${process.env.BASEURL}/api/order?tab=approval`;
+		result = await rp(options);
 		if (typeof result === "string") throw new Error(ERROR_MESSAGE.unauthorized);
 		if (result.error) throw new Error(result.message);
-		if (result.orders) obj.orders = result.orders;
+		if (result.orders) obj.approval = result.orders;
 
-		return res.status(200).render("restricted/ordernotapproved", obj);
+		return res.status(200).render("restricted/orders", obj);
 	} catch (err) {
 		console.log("ADMIN ROUTE ERROR", err);
 		req.flash("warning", err.message);
