@@ -118,7 +118,7 @@ router.post("/patch/name", vName, setUser, authUser, async (req, res) => {
 		}
 
 		const name = req.body.name,
-			id = req.user._id; //sanitize
+			id = sanitize(req.user._id);
 
 		const nameExist = await utils.nameExist(name);
 		if (nameExist) throw new Error(ERROR_MESSAGE.userNameTaken);
@@ -146,7 +146,7 @@ router.post("/patch/email", vEmail, setUser, authUser, async (req, res) => {
 			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
-		const newEmail = req.body.email, //sanitize
+		const newEmail = req.body.email,
 			id = req.user._id,
 			vToken = crypto.randomBytes(16).toString("hex");
 

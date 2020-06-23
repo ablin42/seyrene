@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+const sanitize = require("mongo-sanitize");
 
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const Image = require("../models/Image");
@@ -9,7 +10,7 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 
 router.get("/:id", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Image.findById(id));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
@@ -30,8 +31,8 @@ router.get("/:id", setUser, async (req, res) => {
 
 router.get("/main/:itemType/:itemId", setUser, async (req, res) => {
 	try {
-		let id = req.params.itemId,
-			itemType = req.params.itemType;
+		let id = sanitize(req.params.itemId),
+			itemType = sanitize(req.params.itemType);
 
 		let [err, result] = await utils.to(Image.findOne({ itemType: itemType, _itemId: id, isMain: true }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
@@ -51,9 +52,9 @@ router.get("/main/:itemType/:itemId", setUser, async (req, res) => {
 
 router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let id = req.params.id;
-		let itemType = req.params.itemType;
-		let itemId = req.params.itemId;
+		let id = sanitize(req.params.id);
+		let itemType = sanitize(req.params.itemType);
+		let itemId = sanitize(req.params.itemId);
 
 		//set old main to false, set new one to true
 		let [err, result] = await utils.to(
@@ -73,7 +74,7 @@ router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADM
 
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let err, find, result, deleted;
 
 		[err, find] = await utils.to(Image.findOne({ _id: id }));
@@ -109,8 +110,8 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 
 router.get("/:itemType/:itemId", setUser, async (req, res) => {
 	try {
-		let itemId = req.params.itemId,
-			itemType = req.params.itemType;
+		let itemId = sanitize(req.params.itemId),
+			itemType = sanitize(req.params.itemType);
 
 		let [err, result] = await utils.to(Image.find({ itemType: itemType, _itemId: itemId }).sort({ isMain: -1 }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);

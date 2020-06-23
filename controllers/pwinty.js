@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const rp = require("request-promise");
+const sanitize = require("mongo-sanitize");
 
 const mailer = require("./helpers/mailer");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
@@ -21,7 +22,6 @@ const API_URL = "https://sandbox.pwinty.com";
 const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
 const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
 router.get("/orders", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	//useless route
 	try {
 		let limit = req.query.limit || 100;
 		let start = req.query.start || 0;
@@ -80,7 +80,7 @@ router.post("/orders/create", setUser, authUser, async (req, res) => {
 
 router.get("/orders/:id", setUser, authUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let options = {
 			method: "GET",
 			uri: `${API_URL}/v3.0/Orders/${id}`,
@@ -108,7 +108,7 @@ router.get("/orders/:id", setUser, authUser, async (req, res) => {
 
 router.get("/orders/:id/status", setUser, authUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let options = {
 			method: "GET",
 			uri: `${API_URL}/v3.0/Orders/${id}/SubmissionStatus`,
@@ -136,7 +136,7 @@ router.get("/orders/:id/status", setUser, authUser, async (req, res) => {
 router.post("/orders/:id/submit", setUser, authUser, async (req, res) => {
 	//might need setOrder canview
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let options = {
 			method: "POST",
 			uri: `${API_URL}/v3.0/Orders/${id}/status`,
@@ -167,7 +167,7 @@ router.post("/orders/:id/submit", setUser, authUser, async (req, res) => {
 /*
 router.get("/orders/:id/images", setUser, authUser, async (req, res) => { //maybe unused route
 try {
-    let id = req.params.id;
+    let id = sanitize(req.params.id);
     let options = {
         method: 'POST',
         uri : `${API_URL}/v3.0/orders/${id}/images`,
@@ -203,9 +203,8 @@ try {
 }});*/
 
 router.post("/orders/:id/images/batch", setUser, authUser, async (req, res) => {
-	//POST
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let options = {
 			method: "POST",
 			uri: `${API_URL}/v3.0/orders/${id}/images/batch`,
@@ -310,7 +309,7 @@ router.get("/countries", setUser, async (req, res) => {
 /* CATALOGUE */
 router.post("/countries/:countryCode", setUser, async (req, res) => {
 	try {
-		let countryCode = req.params.countryCode;
+		let countryCode = sanitize(req.params.countryCode);
 		let options = {
 			method: "POST",
 			uri: `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/prices`,
@@ -341,7 +340,7 @@ router.post("/countries/:countryCode", setUser, async (req, res) => {
 
 router.post("/pricing/:countryCode", setUser, async (req, res) => {
 	try {
-		let countryCode = req.params.countryCode;
+		let countryCode = sanitize(req.params.countryCode);
 		let items = [];
 
 		if (req.body.items) {

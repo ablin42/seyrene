@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { vBlog } = require("./validators/vBlog");
+const sanitize = require("mongo-sanitize");
 
 const Blog = require("../models/Blog");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
@@ -29,7 +30,7 @@ router.get("/", setUser, async (req, res) => {
 // get a blog object
 router.get("/single/:blogId", setUser, async (req, res) => {
 	try {
-		const blogId = req.params.blogId;
+		const blogId = sanitize(req.params.blogId);
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 
 		let [err, blog] = await utils.to(Blog.findById(blogId));
@@ -71,7 +72,7 @@ router.post("/", vBlog, setUser, authUser, authRole(ROLE.ADMIN), async (req, res
 // patch a blog
 router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let blogId = req.params.blogId;
+		let blogId = sanitize(req.params.blogId);
 		req.session.formData = {
 			title: req.body.title,
 			content: req.body.content
@@ -83,18 +84,18 @@ router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), as
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
 		req.flash("success", ERROR_MESSAGE.itemUploaded);
-		return res.status(200).redirect(`/Blog/${req.params.blogId}`);
+		return res.status(200).redirect(`/Blog/${blogId}`);
 	} catch (err) {
 		console.log("PATCH BLOG ERROR", err);
 		req.flash("warning", err.message);
-		return res.status(400).redirect(`/Admin/Blog/Patch/${req.params.blogId}`);
+		return res.status(400).redirect(`/Admin/Blog/Patch/${blogId}`);
 	}
 });
 
 // delete a blog
 router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let blogId = req.params.blogId;
+		let blogId = sanitize(req.params.blogId);
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.delError);
 
 		let [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));

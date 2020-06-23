@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const request = require("request");
+const sanitize = require("mongo-sanitize");
 const { validationResult } = require("express-validator");
 const { vRegister, vLogin, vResend } = require("./validators/vAuth");
 
@@ -127,7 +128,7 @@ router.get("/logout", setUser, authUser, (req, res) => {
 router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, token, user;
-		const receivedToken = req.params.token;
+		const receivedToken = sanitize(req.params.token);
 		if (typeof receivedToken !== "string") throw new Error(ERROR_MESSAGE.tokenNotFound);
 
 		[err, token] = await utils.to(Token.findOne({ token: receivedToken }));

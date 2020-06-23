@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
+const sanitize = require("mongo-sanitize");
 const filter = require("content-filter");
 require("dotenv").config();
 
@@ -49,6 +50,7 @@ app.use(
 		cookie: { maxAge: 180 * 60 * 1000 } //, sameSite: 'none', secure: true}, // 180 = 3mn
 	})
 );
+
 //-- Flash --//
 app.use(flash());
 /*const blacklist = ["$", "{", "&&", "||"];
@@ -66,6 +68,13 @@ app.use(expressSanitizer());
 
 app.use((req, res, next) => {
 	res.locals.session = req.session;
+	next();
+});
+
+app.use((req, res, next) => {
+	req.body = sanitize(req.body);
+	req.query = sanitize(req.query);
+
 	next();
 });
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { validationResult } = require("express-validator");
+const sanitize = require("mongo-sanitize");
 //const {vOrder} = require('./validators/vShop');//vOrder
 const { vDelivery } = require("./validators/vUser");
 const rp = require("request-promise");
@@ -99,7 +100,7 @@ router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 
 router.get("/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Order.findById(id));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
@@ -416,10 +417,9 @@ router.post("/update", setUser, authUser, authRole(ROLE.ADMIN), async (req, res)
 
 router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		const orderId = req.params.id;
+		const orderId = sanitize(req.params.id);
 		let err, order;
-		///////change status
-		//user functions
+
 		[err, order] = await utils.to(Order.findOne({ _id: orderId, status: "awaitingApproval" }));
 		if (err || order === null) throw new Error(ERROR_MESSAGE.fetchError);
 
@@ -459,7 +459,7 @@ async function refundStripe(req, chargeId, orderId) {
 router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
 		let err, order, item, user;
-		const orderId = req.params.id;
+		const orderId = sanitize(req.params.id);
 
 		console.log("cancel route");
 		[err, order] = await utils.to(Order.findById(orderId));
@@ -468,7 +468,7 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 		if (order.status === "Cancelled" || order.status === "Completed" || order.status === "awaitingStripePayment")
 			throw new Error(ERROR_MESSAGE.badOrderStatus);
 
-		[err, order] = await utils.to(Order.findOne({ _id: req.params.id }));
+		[err, order] = await utils.to(Order.findOne({ _id: orderId }));
 		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let isPwinty = false;
@@ -507,7 +507,7 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 			} else throw new Error(ERROR_MESSAGE.fetchStatus);
 		}
 
-		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: req.params.id }, { $set: { status: "Cancelled" } }));
+		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: orderId }, { $set: { status: "Cancelled" } }));
 		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		// Send mails

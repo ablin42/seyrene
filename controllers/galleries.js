@@ -6,6 +6,7 @@ const { vGallery } = require("./validators/vGallery");
 const path = require("path");
 const fs = require("fs");
 const rp = require("request-promise");
+const sanitize = require("mongo-sanitize");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
@@ -87,7 +88,7 @@ router.get("/Tags", setUser, async (req, res) => {
 		};
 		console.log("this is to make sure i notice if there is a problem with tags parameter");
 
-		if (req.query.t) var tagsArr = req.query.t.split(","); //sanitize
+		if (req.query.t) var tagsArr = req.query.t.split(",");
 
 		let [err, result] = await utils.to(Gallery.paginate({ tags: { $all: tagsArr } }, options));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
@@ -104,7 +105,6 @@ router.get("/Tags", setUser, async (req, res) => {
 	}
 });
 
-//sanitize input
 router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let err, result, savedImage;
@@ -114,7 +114,7 @@ router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 				throw new Error(item.msg);
 			});
 		}
-		const obj = { title: req.body.title, content: req.body.content }; // need to sanitize data
+		const obj = { title: req.body.title, content: req.body.content };
 
 		obj.tags = gHelpers.parseTags(req.body.tags);
 
@@ -152,7 +152,6 @@ router.post("/post", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 	}
 });
 
-//sanitize :id (and input)
 router.post("/patch/:id", upload, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let err, savedImage, result;
@@ -162,8 +161,8 @@ router.post("/patch/:id", upload, vGallery, setUser, authUser, authRole(ROLE.ADM
 				throw new Error(item.msg);
 			});
 		}
-		let id = req.params.id;
-		const obj = { title: req.body.title, content: req.body.content }; // need to sanitize data
+		let id = sanitize(req.params.id);
+		const obj = { title: req.body.title, content: req.body.content };
 		obj.tags = gHelpers.parseTags(req.body.tags);
 
 		for (let i = 0; i < req.files.length; i++) {
@@ -195,10 +194,10 @@ router.post("/patch/:id", upload, vGallery, setUser, authUser, authRole(ROLE.ADM
 	}
 });
 
-//delete item using its id + sanitize :id
+//delete item using its id
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let id = req.params.id; //sanitize
+		let id = sanitize(req.params.id);
 
 		let [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
 		if (err) throw new Error(ERROR_MESSAGE.delError);
@@ -226,10 +225,9 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 	}
 });
 
-//sanitize :id
 router.get("/single/:id", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Gallery.findById(id));
 		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchError);

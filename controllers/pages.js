@@ -3,6 +3,7 @@ const rp = require("request-promise");
 const format = require("date-format");
 const country = require("country-list-js");
 const router = express.Router();
+const sanitize = require("mongo-sanitize");
 
 const {
 	ROLE,
@@ -344,8 +345,8 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 	try {
 		let obj = {
 			active: "Reset password",
-			tokenId: req.params.tokenId, //sanitize
-			token: req.params.token
+			tokenId: sanitize(req.params.tokenId),
+			token: sanitize(req.params.token)
 		};
 
 		let [err, pwToken] = await utils.to(PwToken.findOne({ _id: obj.tokenId, token: obj.token }));
@@ -365,10 +366,11 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
 		let obj = { active: "Order recap", user: req.user };
+		const orderId = sanitize(req.params.id);
 
 		let options = {
 			method: "GET",
-			uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
+			uri: `${process.env.BASEURL}/api/order/${orderId}`,
 			headers: { cookie: req.headers.cookie },
 			json: true
 		};
@@ -431,7 +433,7 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 
 router.get("/Galerie/:id", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let obj = { active: "Galerie" };
 
 		if (req.user) obj.user = req.user;
@@ -452,7 +454,6 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 
 router.get("/Catalog", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
 		let obj = { active: "Catalog" };
 
 		if (req.user) obj.user = req.user;
@@ -480,7 +481,7 @@ router.get("/CGU", setUser, async (req, res) => {
 
 router.get("/Shop/:id", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let obj = { active: "Shop" };
 
 		if (req.user) obj.user = req.user;
@@ -503,7 +504,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 router.get("/Blog/:id", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Blog" };
-		const blogId = req.params.id;
+		const blogId = sanitize(req.params.id);
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 		if (req.user) obj.user = req.user;
 
@@ -584,10 +585,11 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Order recap", user: req.user };
+		const orderId = sanitize(req.params.id);
 
 		let options = {
 			method: "GET",
-			uri: `${process.env.BASEURL}/api/order/${req.params.id}`,
+			uri: `${process.env.BASEURL}/api/order/${orderId}`,
 			headers: { cookie: req.headers.cookie },
 			json: true
 		};
@@ -663,12 +665,13 @@ router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async
 router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Edit a gallery item" };
+		const galleryId = sanitize(req.params.galleryId);
 
-		let [err, result] = await utils.to(Gallery.findOne({ _id: req.params.galleryId }));
+		let [err, result] = await utils.to(Gallery.findOne({ _id: galleryId }));
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.gallery = result;
 
-		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${req.params.galleryId}`));
+		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${galleryId}`));
 		if (obj.img.error) throw new Error(obj.img.error);
 
 		return res.status(200).render("restricted/gallery-patch", obj);
@@ -694,12 +697,13 @@ router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Edit a shop item", user: req.user };
+		const shopId = sanitize(req.params.shopId);
 
-		let [err, result] = await utils.to(Shop.findOne({ _id: req.params.shopId }));
+		let [err, result] = await utils.to(Shop.findOne({ _id: shopId }));
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.shop = result;
 
-		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${req.params.shopId}`));
+		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${shopId}`));
 		if (obj.img.error) throw new Error(obj.img.error);
 
 		return res.status(200).render("restricted/shop-patch", obj);
@@ -730,11 +734,12 @@ router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Edit a blog", user: req.user };
-		const blogId = req.params.blogId;
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
 			req.session.formData = undefined;
 		}
+
+		const blogId = sanitize(req.params.blogId);
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 
 		let [err, blog] = await utils.to(Blog.findOne({ _id: blogId }));

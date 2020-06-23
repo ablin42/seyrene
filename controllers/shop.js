@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const { validationResult } = require("express-validator");
 const { vShop } = require("./validators/vShop");
+const sanitize = require("mongo-sanitize");
 const path = require("path");
 const fs = require("fs");
 const rp = require("request-promise");
@@ -87,7 +88,6 @@ router.get("/", setUser, async (req, res) => {
 	}
 });
 
-//sanitize input
 router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let err, result, savedImage;
@@ -107,7 +107,7 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 			content: req.body.content,
 			isUnique: true,
 			price: formattedPrice
-		}; // need to sanitize data
+		};
 
 		const shop = new Shop(obj);
 		[err, result] = await utils.to(shop.save());
@@ -142,7 +142,6 @@ router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 	}
 });
 
-//sanitize :id (and input)
 router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let err, result, savedImage;
@@ -153,7 +152,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 			});
 		}
 
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 		let price = parseFloat(req.body.price);
 		if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
 		let formattedPrice = price.toFixed(2);
@@ -163,7 +162,7 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 			content: req.body.content,
 			isUnique: true,
 			price: formattedPrice
-		}; // need to sanitize data
+		};
 
 		[err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
@@ -193,10 +192,9 @@ router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN)
 	}
 });
 
-//delete item using its id + sanitize :id
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let id = req.params.id; //sanitize
+		let id = sanitize(req.params.id);
 
 		let [err, shop] = await utils.to(Shop.deleteOne({ _id: id }));
 		if (err) throw new Error(ERROR_MESSAGE.delError);
@@ -224,10 +222,9 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 	}
 });
 
-//sanitize :id
 router.get("/single/:id", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Shop.findById(id));
 		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchImg);

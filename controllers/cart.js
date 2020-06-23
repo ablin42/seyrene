@@ -1,4 +1,5 @@
 const express = require("express");
+const sanitize = require("mongo-sanitize");
 const router = express.Router();
 const Cart = require("../models/Cart");
 const Gallery = require("../models/Gallery");
@@ -11,7 +12,7 @@ const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: 
 
 router.get("/add/:itemId", setUser, async (req, res) => {
 	try {
-		let productId = req.params.itemId;
+		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 
 		Shop.findById(productId, (err, product) => {
@@ -42,7 +43,7 @@ router.get("/add/:itemId", setUser, async (req, res) => {
 
 router.get("/del/:itemId", setUser, async (req, res) => {
 	try {
-		let productId = req.params.itemId;
+		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 
 		Shop.findById(productId, (err, product) => {
@@ -63,7 +64,7 @@ router.get("/del/:itemId", setUser, async (req, res) => {
 
 router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 	try {
-		let productId = req.params.itemId;
+		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 		let data = {
 			SKU: req.body.SKU,
@@ -95,8 +96,8 @@ router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 
 router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 	try {
-		let productId = req.params.itemId;
-		let newQty = parseInt(req.params.qty); //sanitize
+		let productId = sanitize(req.params.itemId);
+		let newQty = parseInt(sanitize(req.params.qty));
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 		let data = {
 			SKU: req.body.SKU,
@@ -133,7 +134,7 @@ router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 
 router.post("/del/pwinty/:itemId", setUser, async (req, res) => {
 	try {
-		let productId = req.params.itemId;
+		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 		let data = {
 			SKU: req.body.SKU,
@@ -166,11 +167,12 @@ router.post("/del/pwinty/:itemId", setUser, async (req, res) => {
 router.get("/clear/:id", setUser, async (req, res) => {
 	try {
 		let cart = new Cart({});
+		const id = sanitize(req.params.id);
 		cart.clearCart();
 		req.session.cart = cart;
 		req.flash("success", ERROR_MESSAGE.placedOrder);
 
-		return res.status(200).redirect(`/Order/${req.params.id}`);
+		return res.status(200).redirect(`/Order/${id}`);
 	} catch (err) {
 		console.log("CLEAR CART ERROR");
 		req.flash("warning", err.message);
@@ -184,7 +186,7 @@ try {
     let total = 0;   
 
     if (req.session.cart) 
-        total = req.session.cart.totalPrice; ///////////////WTF IS THIS
+        total = req.session.cart.totalPrice;
 
     console.log(total, req.session.cart.totalPrice)
 

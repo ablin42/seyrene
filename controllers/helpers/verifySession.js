@@ -1,4 +1,5 @@
 const utils = require("../helpers/utils");
+const sanitize = require("mongo-sanitize");
 const Order = require("../../models/Order");
 const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
@@ -22,7 +23,7 @@ async function setUser(req, res, next) {
 		req.user.password = undefined;
 	}
 
-	req.user = {
+	/*req.user = {
 		role: "admin",
 		isVerified: true,
 		_id: "5d810b9365761c0840e0de25",
@@ -32,7 +33,7 @@ async function setUser(req, res, next) {
 		__v: 0,
 		createdAt: "2019-09-28T20:27:37.382Z",
 		updatedAt: "2020-06-10T23:25:09.803Z"
-	};
+	};*/
 
 	next();
 }
@@ -91,7 +92,7 @@ function isDelivery(req, res, next) {
 }
 
 async function setOrder(req, res, next) {
-	const orderId = req.params.id;
+	const orderId = sanitize(req.params.id);
 
 	let [err, order] = await utils.to(Order.findById(orderId));
 	if (err || order == null) {

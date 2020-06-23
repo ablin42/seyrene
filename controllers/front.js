@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const sanitize = require("mongo-sanitize");
 
 const Front = require("../models/Front");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
@@ -41,7 +42,6 @@ router.get("/", setUser, async (req, res) => {
 	}
 });
 
-//sanitize input
 router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
@@ -84,11 +84,10 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 	}
 });
 
-//delete item using its id + sanitize :id
+//delete item using its id
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	/////////////////////// HERE
 	try {
-		let id = req.params.id; //sanitize
+		let id = sanitize(req.params.id);
 
 		let [err, front] = await utils.to(Front.findOneAndUpdate({ referenceId: id }, { $set: { null: true } }));
 		if (err) throw new Error(ERROR_MESSAGE.delImg);
@@ -102,10 +101,9 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 	}
 });
 
-//sanitize :id
 router.get("/image/:id", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
+		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Front.findOne({ _id: id }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
