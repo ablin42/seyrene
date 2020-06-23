@@ -53,15 +53,15 @@ const formatter = new Intl.NumberFormat("de-DE", {
 router.get("/", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Home" };
-
 		if (req.user) obj.user = req.user;
 
-		obj.front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
-		if (obj.front.length <= 0) obj.front = undefined;
+		let front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
+		if (front.error === false) obj.front = front.data;
+		else throw new Error(front.message);
 
 		return res.status(200).render("home", obj);
 	} catch (err) {
-		console.log("HOME ROUTE ERROR", err);
+		console.log("HOME ROUTE ERROR", err.message);
 		return res.status(400).render("home");
 	}
 });
@@ -289,16 +289,15 @@ router.get("/User", setUser, authUser, async (req, res) => {
 router.get("/About", setUser, async (req, res) => {
 	try {
 		let obj = { active: "About" };
-
 		if (req.user) obj.user = req.user;
-
-		obj.blogs = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/`)); //maybe better save in object check error and if no error -> store value in obj.blogs
-		if (obj.blogs.error) throw new Error(obj.blogs.message);
-
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
 			req.session.formData = undefined;
 		}
+
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/`));
+		if (response.error === false) obj.blogs = response.blogs;
+		else throw new Error(response.message);
 
 		return res.status(200).render("about", obj);
 	} catch (err) {
@@ -468,9 +467,7 @@ router.get("/Catalog", setUser, async (req, res) => {
 
 router.get("/CGU", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
 		let obj = { active: "CGU" };
-
 		if (req.user) obj.user = req.user;
 
 		return res.status(200).render("cgu", obj);
@@ -505,13 +502,14 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 
 router.get("/Blog/:id", setUser, async (req, res) => {
 	try {
-		let id = req.params.id;
 		let obj = { active: "Blog" };
-
+		const blogId = req.params.id;
+		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 		if (req.user) obj.user = req.user;
 
-		obj.blogs = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/single/${id}`)); // like /About
-		if (obj.blogs.error) throw new Error(obj.blogs.message);
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/single/${blogId}`));
+		if (response.error === false) obj.blog = response.blog;
+		else throw new Error(response.message);
 
 		return res.status(200).render("single/blog-single", obj);
 	} catch (err) {
@@ -732,17 +730,16 @@ router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Edit a blog", user: req.user };
-
+		const blogId = req.params.blogId;
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
 			req.session.formData = undefined;
 		}
+		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 
-		let [err, blog] = await utils.to(Blog.findOne({ _id: req.params.blogId }));
+		let [err, blog] = await utils.to(Blog.findOne({ _id: blogId }));
 		if (err || !blog) throw new Error(ERROR_MESSAGE.fetchError);
-
-		obj.blogContent = blog;
-		obj._id = req.params.blogId;
+		obj.blog = blog;
 
 		return res.status(200).render("restricted/blog-patch", obj);
 	} catch (err) {

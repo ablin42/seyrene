@@ -1,4 +1,4 @@
-const { body, sanitizeBody } = require("express-validator");
+const { body, sanitizeBody, sanitizeParam } = require("express-validator");
 const utils = require("../helpers/utils");
 const { ERROR_MESSAGE } = require("../helpers/errorMessages");
 
@@ -18,6 +18,7 @@ module.exports.vRegister = [
 		.isEmail()
 		.withMessage("Email must be valid")
 		.bail()
+		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
 		.withMessage("Email must be 256 characters max")
 		.custom(value => {
@@ -42,10 +43,25 @@ module.exports.vLogin = [
 		.isEmail()
 		.withMessage("Email must be valid")
 		.bail()
+		.normalizeEmail()
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
 				if (!email) return Promise.reject("Invalid credentials");
 			});
 		}),
-	body("password").isLength({ min: 1, max: 256 }).withMessage("Password must be 256 characters max and not empty")
+	body("password").isString().isLength({ min: 1, max: 256 }).withMessage("Password must be 256 characters max and not empty")
+];
+
+module.exports.vResend = [
+	sanitizeBody("email").trim().stripLow(),
+	body("email")
+		.isEmail()
+		.withMessage("Email must be valid")
+		.bail()
+		.normalizeEmail()
+		.custom(value => {
+			return utils.emailExist(value).then(email => {
+				if (!email) return Promise.reject("Invalid credentials");
+			});
+		})
 ];

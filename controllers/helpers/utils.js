@@ -3,9 +3,8 @@ const pe = require("parse-error");
 
 module.exports = {
 	emailExist: async function emailExist(email) {
-		if (await User.findOne({ email: email })) {
-			return true;
-		}
+		if (await User.findOne({ email: email })) return true;
+
 		return false;
 	},
 	nameExist: async function (name) {

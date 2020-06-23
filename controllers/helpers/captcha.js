@@ -6,12 +6,11 @@ async function checkCaptcha(req, res, next) {
 
 	if (!captcha) return res.status(200).json({ error: true, message: ERROR_MESSAGE.failedCaptcha });
 
-	const secretKey = "6Ld8MaUZAAAAAJOHua_oEH4mVX0P2ATrfacoxIgM";
+	const secretKey = process.env.CAPTCHA_SECRET;
 	const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${req.body.captcha}&remoteip=${req.connection.remoteAddress}`;
 
 	rp(verifyUrl, (err, response, body) => {
 		body = JSON.parse(body);
-
 		if (body.success && !body.success) return res.status(200).json({ error: true, message: ERROR_MESSAGE.failedCaptcha });
 
 		next();

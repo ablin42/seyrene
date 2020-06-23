@@ -121,7 +121,6 @@ const CAN_substrate = {
 	HMC: "Hahnemühle Monet Canvas" //MC: "Metallic Canvas" (too much errors)
 };
 
-//Stretched/Framed canvas (GLOBAL)
 const CAN_sizes = {
 	"fullname": "Size",
 	"8x8": "20x20cm",
@@ -771,7 +770,6 @@ const PWINTY_ITEMS = {
 		}
 	},
 
-	/*ok so the attributes for framed prints and framed canvases would be framecolour (valid options for global frames are black, white and natural) and for stretched canvases there would be wrap (valid option are image, mirror, black and white)*/
 	CAN: {
 		//sizing: ResizeToProductImageSize
 		sharedAttributes: {},
@@ -795,15 +793,15 @@ const PWINTY_ITEMS = {
 	}
 };
 
-let A_FORMAT = [
+const A_FORMAT = [
 	{ code: "A4", size: "21x29.7" },
 	{ code: "A3", size: "29.7x42" },
 	{ code: "A2", size: "42x59.4" },
 	{ code: "A1", size: "59.4x84.1" },
 	{ code: "A0", size: "84.1x118.9" }
-]; //CONST?
+];
 
-let DIMENSIONS_FRAMES = [
+const DIMENSIONS_FRAMES = [
 	{ megapixel: 300000, max: 20.3 },
 	{ megapixel: 500000, max: 30.5 },
 	{ megapixel: 1800000, max: 40.65 },
@@ -813,7 +811,7 @@ let DIMENSIONS_FRAMES = [
 	{ megapixel: 7400000, max: 101.6 }
 ];
 
-let DIMENSIONS_CANVAS = [
+const DIMENSIONS_CANVAS = [
 	{ megapixel: 300000, max: 30.5 },
 	{ megapixel: 500000, max: 40.65 },
 	{ megapixel: 1800000, max: 50.8 },

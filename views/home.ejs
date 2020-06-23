@@ -15,6 +15,10 @@
                   <% i = i + 1; %>
               <% } %>
           <% } %>
+        <% } else { %>
+          <div class="text-center m-5 p-5" style="background: white">
+            <h1>Home page is under maintenance, please come back later</h1>
+          </div>
         <% } %>
     </div>
     <!--/.Slides-->
@@ -50,7 +54,7 @@
 
 <a class="lightbox-close" href="#close">
   <div class="lightbox-target" id="expand">
-    <img id="expandImg" src="/api/front/image/<%= locals.front[0]._id %>"/>
+    <img id="expandImg" src=""/>
   </div>
 </a>
 

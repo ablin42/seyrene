@@ -11,7 +11,6 @@ function getInvalid(formId) {
 
 let Validate = {
 	String: function (item, min, max = 10000000) {
-		console.log(item.value.length);
 		let inputId = item.id,
 			spanInfo = document.getElementById(`i_${inputId}`),
 			formId = item.form.id;

@@ -8,29 +8,6 @@ const bHelpers = require("./helpers/blogHelpers");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 
-async function formatBlogData(blogs) {
-	let arr = [];
-	for (let i = 0; i < blogs.length; i++) {
-		let images = blogs[i].content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/);
-		let obj = {
-			_id: blogs[i]._id,
-			title: blogs[i].title,
-			content: blogs[i].content,
-			shorttitle: blogs[i].title.substr(0, 128),
-			shortcontent: blogs[i].content.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "").substr(0, 512),
-			thumbnail: images,
-			date: blogs[i].date,
-			createdAt: blogs[i].createdAt,
-			updatedAt: blogs[i].updatedAt,
-			author: blogs[i].author,
-			__v: blogs[i].__v
-		};
-		if (images && images.length > 1) obj.thumbnail = images[0];
-		arr.push(obj);
-	}
-	return arr;
-}
-
 //blog pagination
 router.get("/", setUser, async (req, res) => {
 	try {
@@ -40,9 +17,9 @@ router.get("/", setUser, async (req, res) => {
 			sort: { date: -1 }
 		};
 		let result = await bHelpers.getBlogs(options);
-		result = await formatBlogData(result);
+		result = await bHelpers.formatBlogData(result);
 
-		return res.status(200).json(result);
+		return res.status(200).json({ error: false, blogs: result });
 	} catch (err) {
 		console.log("BLOG FETCH ERROR", err);
 		return res.status(200).json({ error: true, message: err.message });
@@ -52,13 +29,16 @@ router.get("/", setUser, async (req, res) => {
 // get a blog object
 router.get("/single/:blogId", setUser, async (req, res) => {
 	try {
-		let [err, blog] = await utils.to(Blog.findById(req.params.blogId));
+		const blogId = req.params.blogId;
+		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
+
+		let [err, blog] = await utils.to(Blog.findById(blogId));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
 		if (blog === null) throw new Error(ERROR_MESSAGE.noResult);
 		blog = await bHelpers.parseBlogs(blog, true);
 
-		return res.status(200).json(blog);
+		return res.status(200).json({ error: false, blog: blog });
 	} catch (err) {
 		console.log("ERROR FETCHING A BLOG:", err);
 		return res.status(200).json({ error: true, message: err.message });
@@ -66,10 +46,9 @@ router.get("/single/:blogId", setUser, async (req, res) => {
 });
 
 // post a blog
-router.post("/", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res) => {
+router.post("/", vBlog, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		const obj = {
-			//sanitize
 			authorId: req.user._id,
 			title: req.body.title,
 			content: req.body.content
@@ -81,7 +60,7 @@ router.post("/", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		req.flash("success", ERROR_MESSAGE.itemUploaded);
-		return res.status(200).redirect(`/Admin/Blog/Patch/${blog._id}`);
+		return res.status(200).redirect(`/Blog/${blog._id}`);
 	} catch (err) {
 		console.log("POST BLOG ERROR", err);
 		req.flash("warning", err.message);
@@ -90,16 +69,16 @@ router.post("/", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res
 });
 
 // patch a blog
-router.post("/patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), vBlog, async (req, res) => {
+router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let id = req.params.blogId;
+		let blogId = req.params.blogId;
 		req.session.formData = {
 			title: req.body.title,
 			content: req.body.content
 		};
 
 		let [err, patchedBlog] = await utils.to(
-			Blog.updateOne({ _id: id }, { $set: { title: req.body.title, content: req.body.content } })
+			Blog.updateOne({ _id: blogId }, { $set: { title: req.body.title, content: req.body.content } })
 		);
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
@@ -116,6 +95,7 @@ router.post("/patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), vBlog, as
 router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let blogId = req.params.blogId;
+		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.delError);
 
 		let [err, removedBlog] = await utils.to(Blog.deleteOne({ _id: blogId }));
 		if (err) throw new Error(ERROR_MESSAGE.delError);

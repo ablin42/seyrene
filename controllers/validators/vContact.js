@@ -11,8 +11,13 @@ module.exports.vContact = [
 		.isEmail()
 		.withMessage("Email must be valid")
 		.bail()
+		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
 		.withMessage("Email must be 256 characters max"),
-	body("title").isLength({ min: 10, max: 256 }).withMessage("Title must contain between 10 and 256 characters"),
-	body("content").trim().isLength({ min: 64, max: 2048 }).withMessage("Content must contain between 64 and 2048 characters")
+	body("title").isString().isLength({ min: 10, max: 256 }).withMessage("Title must contain between 10 and 256 characters"),
+	body("content")
+		.trim()
+		.isString()
+		.isLength({ min: 64, max: 2048 })
+		.withMessage("Content must contain between 64 and 2048 characters")
 ];

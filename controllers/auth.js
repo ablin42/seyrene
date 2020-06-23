@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const request = require("request");
 const { validationResult } = require("express-validator");
-const { vRegister, vLogin } = require("./validators/vAuth");
+const { vRegister, vLogin, vResend } = require("./validators/vAuth");
 
 const mailer = require("./helpers/mailer");
 const utils = require("./helpers/utils");
@@ -127,7 +127,8 @@ router.get("/logout", setUser, authUser, (req, res) => {
 router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, token, user;
-		const receivedToken = req.params.token; //sanitiwe
+		const receivedToken = req.params.token;
+		if (typeof receivedToken !== "string") throw new Error(ERROR_MESSAGE.tokenNotFound);
 
 		[err, token] = await utils.to(Token.findOne({ token: receivedToken }));
 		if (err || !token) throw new Error(ERROR_MESSAGE.tokenNotFound);
@@ -153,13 +154,20 @@ router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
 });
 
 // Resend account confirmation token
-router.post("/resend", setUser, notLoggedUser, async (req, res) => {
+router.post("/resend", vResend, setUser, notLoggedUser, async (req, res) => {
 	try {
+		const vResult = validationResult(req);
+		if (!vResult.isEmpty()) {
+			vResult.errors.forEach(item => {
+				req.flash("info", item.msg);
+			});
+			throw new Error(ERROR_MESSAGE.incorrectInput);
+		}
+
 		let err, user, savedToken;
-		const email = req.body.email; //sanitize
+		const email = req.body.email;
 
 		[err, user] = await utils.to(User.findOne({ email: email }));
-		// Check if an user exist with this email and check if his account is verified
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 		if (user.isVerified) throw new Error(ERROR_MESSAGE.alreadyVerified);
 

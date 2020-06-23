@@ -42,7 +42,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
 			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
-		[err, user] = await utils.to(User.findOne({ email: req.body.email })); //sanitize
+		[err, user] = await utils.to(User.findOne({ email: req.body.email }));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
 		[err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id }));

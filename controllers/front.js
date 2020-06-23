@@ -34,7 +34,7 @@ router.get("/", setUser, async (req, res) => {
 		let [err, result] = await utils.to(Front.find());
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
-		return res.status(200).json(result);
+		return res.status(200).json({ error: false, data: result });
 	} catch (err) {
 		console.log("FETCHING FRONT ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });

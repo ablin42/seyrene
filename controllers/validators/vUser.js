@@ -23,6 +23,7 @@ module.exports.vEmail = [
 		.isEmail()
 		.withMessage("Email must be valid")
 		.bail()
+		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
 		.withMessage("Email must be 256 characters max")
 		.custom(value => {
@@ -50,11 +51,12 @@ module.exports.vLostPw = [
 		.isEmail()
 		.withMessage("Email must be valid")
 		.bail()
+		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
 		.withMessage("Email must be 256 characters max")
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
-				if (!email) return Promise.reject("No account is registered with this e-mail address");
+				if (!email) return Promise.reject(ERROR_MESSAGE.lostpwEmail);
 			});
 		})
 ];

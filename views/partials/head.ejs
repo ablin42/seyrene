@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-		<title><%= (locals.active) ? locals.active : '' %></title>
+		<title><%= (locals.active) ? locals.active : 'Maral' %></title>
 		<!-- JQuery -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<!-- FontAwesome Icons -->
@@ -81,7 +81,7 @@
 						<li id="cart-qty-li">
 							<a href="/shopping-cart" class="navbar-text <%= (locals.active && locals.active == 'Cart') ? 'active' : '' %>"><i class="fas fa-shopping-cart fa-2x"></i></a>
 						</li>
-						<span id="cartQty"><%= (locals.session.cart && locals.session.cart.totalQty) ?locals.session.cart.totalQty : 0 %></span>
+						<span id="cartQty"><%= (locals.session.cart && locals.session.cart.totalQty) ? locals.session.cart.totalQty : 0 %></span>
 					</ul>
 				</nav>
 			</nav>

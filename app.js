@@ -51,7 +51,7 @@ app.use(
 );
 //-- Flash --//
 app.use(flash());
-const blacklist = ["$", "{", "&&", "||"];
+/*const blacklist = ["$", "{", "&&", "||"];
 app.use(
 	filter({
 		urlBlackList: blacklist,
@@ -60,7 +60,7 @@ app.use(
 		urlMessage: "A forbidden expression has been found in your data",
 		dispatchToErrorHandler: true
 	})
-);
+);*/
 // Mount express-sanitizer middleware here
 app.use(expressSanitizer());
 
@@ -114,7 +114,7 @@ app.use((err, req, res, next) => {
 	)
 		return res.status(500).json({ url: "/", message: err.message, err: true });
 
-	if (err.message) req.flash("warning", err.message);
+	if (err.message) console.log(err.message);
 	return res.status(500).redirect("back");
 });
 
@@ -122,10 +122,15 @@ app.use((err, req, res, next) => {
 app.set("view engine", "ejs");
 
 app.get("*", setUser, (req, res) => {
-	let obj = { active: "404" };
-	if (req.user) obj.user = req.user;
+	try {
+		let obj = { active: "404" };
+		if (req.user) obj.user = req.user;
 
-	return res.status(404).render("404", obj);
+		return res.status(404).render("404", obj);
+	} catch (err) {
+		console.log("404 ROUTE ERROR", err);
+		return res.status(404).render("404", obj);
+	}
 });
 
 const port = process.env.PORT || 8089;

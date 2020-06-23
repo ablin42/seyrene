@@ -1,52 +1,54 @@
 <% include ../partials/head %>
 
 <div class="container container-single">
-    <% if(locals.blogs){ %>
-      <div class="single-wrapper" id="<%= locals.blogs._id %>">
-        <div class="col-10 offset-1">
-          <h3 class="single-title col-12"><%= locals.blogs.title %>
-            <% if (locals.user && locals.user.role === "admin") { %>
-              <a href="/Admin/Blog/Patch/<%= locals.blogs._id %>"><i class="fas fa-edit"></i></a>
-            <% } %> 
-          </h3>  
-          
-          <p class="blog-info pb-2">par 
-            <b class="blog-author"><%= locals.blogs.author %></b>, <i class="blog-date"><%= locals.blogs.date %></i>
-          </p>
+	<% if(locals.blog){ %>
+	<div class="single-wrapper" id="<%= locals.blog._id %>">
+		<div class="col-10 offset-1">
+			<h3 class="single-title col-12">
+				<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
+				<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
+				<% } %>
+			</h3>
 
-          <div class="blog-content col-10 offset-1" id="content-holder"></div>
-        </div>
-      </div>
-    <% } %>
+			<p class="blog-info pb-2">par <b class="blog-author"><%= locals.blog.author %></b>, <i class="blog-date"><%= locals.blog.date %></i></p>
+
+			<div class="blog-content col-10 offset-1" id="content-holder"></div>
+		</div>
+	</div>
+	<% } %>
 </div>
-  
+
 <a class="lightbox-close" href="#close">
-  <div class="lightbox-target" id="expand">
-    <img id="expandImg" src=""> 
-  </div>
+	<div class="lightbox-target" id="expand">
+		<img id="expandImg" src="" />
+	</div>
 </a>
 
 <script>
-  let toAppend = "<%= locals.blogs.content %>";
-  let contentHolder = document.getElementById("content-holder");
+	let toAppend = "<%= locals.blog.content %>";
+	let contentHolder = document.getElementById("content-holder");
 
-  toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-  contentHolder.innerHTML = toAppend;
+	toAppend = toAppend
+		.replace(/(\r\n|\n|\r)/gm, "")
+		.replace(/&#34;/g, '"')
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">");
+	contentHolder.innerHTML = toAppend;
 
-  contentHolder.querySelectorAll("img").forEach(item => {
-    item.setAttribute("onclick", "expand(this)");
+	contentHolder.querySelectorAll("img").forEach(item => {
+		item.setAttribute("onclick", "expand(this)");
 
-    let link = document.createElement('a');
-    link.innerHTML = item.outerHTML;
-    link.setAttribute('href', '#expand');
-    
-    item.parentNode.insertBefore(link, item);
-    item.remove();
-  })
+		let link = document.createElement("a");
+		link.innerHTML = item.outerHTML;
+		link.setAttribute("href", "#expand");
 
-  $('#carousel-thumb').on('slide.bs.carousel', function (element) {
-    $("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
-    $(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
-  })
+		item.parentNode.insertBefore(link, item);
+		item.remove();
+	});
+
+	$("#carousel-thumb").on("slide.bs.carousel", function (element) {
+		$("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
+		$(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
+	});
 </script>
 <% include ../partials/footer %>

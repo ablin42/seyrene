@@ -1,78 +1,77 @@
 <% include ../partials/head %>
 
-<div class="container container-single"> 
-    <div class="single-wrapper col-8 offset-2">
-        <h1 class="single-title">Modifier un ticket de blog</h1>
-        <form class="col-8 offset-2" id="blog" method="POST" action="/api/blog/patch/<%= locals.blogContent.id %>">
-            <hr />
-            <div class="form-group">
-                <label class="control-label">Titre</label>
-                <input class="form-control" type="text" name="title" id="title" placeholder="Titre" value="<%= locals.blogContent.title %>" onkeyup="Validate.String(this, 1, 256);" required>
-                <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
-            </div>
+<div class="container container-single">
+	<div class="single-wrapper col-8 offset-2">
+		<h1 class="single-title">Modifier un ticket de blog</h1>
+		<form class="col-8 offset-2" id="blog" method="POST" action="/api/blog/patch/<%= locals.blog.id %>">
+			<hr />
+			<div class="form-group">
+				<label class="control-label">Titre</label>
+				<input class="form-control" type="text" name="title" id="title" placeholder="Titre" value="<%= locals.blog.title %>" onkeyup="Validate.String(this, 1, 256);" required />
+				<span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
+			</div>
 
-            <div class="form-group">
-                <div id="editor" style="background-color: white;" onkeyup="saveContent()"></div>
-                <input type="hidden" name="content" id="content">
-                <span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
-            </div>
+			<div class="form-group">
+				<div id="editor" style="background-color: white;" onkeyup="saveContent()"></div>
+				<input type="hidden" name="content" id="content" />
+				<span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
+			</div>
 
-            <input type="submit" class="logbtn" value="Mettre à jour" id="submit-blog">
-        </form>
-        <form class="col-8 offset-2 mt-4" method="GET" action="/api/blog/delete/<%= locals.blogContent.id %>">
-            <input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-blog">
-        </form>
-    </div>
+			<input type="submit" class="logbtn" value="Mettre à jour" id="submit-blog" />
+		</form>
+		<form class="col-8 offset-2 mt-4" method="GET" action="/api/blog/delete/<%= locals.blog.id %>">
+			<input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-blog" />
+		</form>
+	</div>
 </div>
 
 <script>
-    const toolbarOptions = [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['blockquote', 'code-block'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'font': [] }],
-        [{ 'align': [] }],
-        ['link', 'image'],
-        ['clean']                                         // remove formatting button
-    ];
+	const toolbarOptions = [
+	    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+	    ['blockquote', 'code-block'],
+	    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+	    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+	    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+	    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+	    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+	    [{ 'font': [] }],
+	    [{ 'align': [] }],
+	    ['link', 'image'],
+	    ['clean']                                         // remove formatting button
+	];
 
-    let quill = new Quill('#editor', {
-        modules: {
-            toolbar: toolbarOptions,
-        },
-        placeholder: "Your blog article...",
-        theme: 'snow'
-    });
+	let quill = new Quill('#editor', {
+	    modules: {
+	        toolbar: toolbarOptions,
+	    },
+	    placeholder: "Your blog article...",
+	    theme: 'snow'
+	});
 
-    let toAppend = "<%= locals.blogContent.content %>";
-    toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-    let delta = quill.clipboard.convert(toAppend);
-    quill.setContents(delta, 'silent');
+	let toAppend = "<%= locals.blog.content %>";
+	toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+	let delta = quill.clipboard.convert(toAppend);
+	quill.setContents(delta, 'silent');
 
-    <% if (locals.formData) { %>
-        toAppend = "<%= locals.formData.content %>";
-        toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-        delta = quill.clipboard.convert(toAppend);
-        quill.setContents(delta, 'silent');
-    <% } %>
-    
-    const saveButton = document.getElementById('submit-blog');
-    const editorData = document.getElementById('content');
+	<% if (locals.formData) { %>
+	    toAppend = "<%= locals.formData.content %>";
+	    toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+	    delta = quill.clipboard.convert(toAppend);
+	    quill.setContents(delta, 'silent');
+	<% } %>
 
-    saveButton.addEventListener('click', (event) => {
-        editorData.value = quill.root.innerHTML;
-        console.log(editorData.value.length)
-    })
+	const saveButton = document.getElementById('submit-blog');
+	const editorData = document.getElementById('content');
 
-    function saveContent() {
-        editorData.value = quill.root.innerHTML;
-        Validate.String(editorData, 128);
-    }
+	saveButton.addEventListener('click', (event) => {
+	    editorData.value = quill.root.innerHTML;
+	    console.log(editorData.value.length)
+	})
 
+	function saveContent() {
+	    editorData.value = quill.root.innerHTML;
+	    Validate.String(editorData, 128);
+	}
 </script>
 <script src="/scripts/frontValidation.js"></script>
 <% include ../partials/footer %>
