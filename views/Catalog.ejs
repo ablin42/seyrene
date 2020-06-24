@@ -20,15 +20,15 @@
 				</p>
 
 				<div class="text-center mb-4">
-					<button class="cat-btn tab-btn active" onclick="openSubCategory(this, 'box')">Box</button>
-					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'classic')">Classic</button>
-					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'gloss')">Gloss</button>
-					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'spacer')">Spacer</button>
-					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'sur')">Surface</button>
-					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'swoop')">Swoop</button>
+					<button class="framed cat-btn tab-btn active" onclick="openSubCategory(this, 'box', 'framed')">Box</button>
+					<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'classic', 'framed')">Classic</button>
+					<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'gloss', 'framed')">Gloss</button>
+					<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'spacer', 'framed')">Spacer</button>
+					<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'sur', 'framed')">Surface</button>
+					<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'swoop', 'framed')">Swoop</button>
 				</div>
 
-				<div class="catalog-subcategory sub-toggle" id="box">
+				<div class="catalog-subcategory framed sub-toggle" id="box">
 					<h2>Box</h2>
 					<h4>A modern design adding depth to your pictures</h4>
 					<p>
@@ -135,7 +135,7 @@
 					</div>
 				</div>
 
-				<div class="catalog-subcategory sub-toggle" id="classic" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle" id="classic" style="display: none;">
 					<h2>Classic</h2>
 					<h4>Our most popular picture frame</h4>
 					<p>
@@ -235,7 +235,7 @@
 					</div>
 				</div>
 
-				<div class="catalog-subcategory sub-toggle" id="gloss" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle" id="gloss" style="display: none;">
 					<h2>Gloss</h2>
 					<h4>Full-bleed pictures with a thin stylish profile</h4>
 					<p>
@@ -317,7 +317,7 @@
 						<span>The gloss frame is also available with a full-bleed/no-mount option</span>
 					</div>
 				</div>
-				<div class="catalog-subcategory sub-toggle" id="spacer" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle" id="spacer" style="display: none;">
 					<h2>Spacer</h2>
 					<h4>A contemporary twist on the traditional box frame</h4>
 					<p>
@@ -410,7 +410,7 @@
 						<span>Our spacer frame is 33mm deep</span>
 					</div>
 				</div>
-				<div class="catalog-subcategory sub-toggle" id="sur" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle" id="sur" style="display: none;">
 					<h2>Surface</h2>
 					<h4>Full-bleed pictures with a thin stylish profile</h4>
 					<p>
@@ -486,7 +486,7 @@
 						<span>The image is front-mounted with no glazing</span>
 					</div>
 				</div>
-				<div class="catalog-subcategory sub-toggle" id="swoop" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle" id="swoop" style="display: none;">
 					<h2>Swoop</h2>
 					<h4>Curved profile draws attention to your image</h4>
 					<p>
@@ -626,11 +626,11 @@
 					of the UK’s most experienced canvas framing teams.
 				</p>
 				<div class="text-center mb-4">
-					<button class="cat-btn tab-btn active" onclick="openSubCategory(this, 'framed-canvas')">Framed</button>
-					<button class="cat-btn tab-btn" onclick="openSubCategory(this, 'stretched')">Stretched</button>
+					<button class="canvas cat-btn tab-btn active" onclick="openSubCategory(this, 'framed-canvas', 'canvas')">Framed</button>
+					<button class="canvas cat-btn tab-btn" onclick="openSubCategory(this, 'stretched', 'canvas')">Stretched</button>
 				</div>
 
-				<div class="catalog-subcategory sub-toggle" id="framed-canvas">
+				<div class="catalog-subcategory canvas sub-toggle" id="framed-canvas">
 					<h2>Framed</h2>
 					<h4>Transform a standard canvas into a special work of art</h4>
 					<p>
@@ -668,7 +668,7 @@
 					<span>The "floating border" created by the frame sits approximately 5mm from the canvas edge</span>
 				</div>
 
-				<div class="catalog-subcategory sub-toggle" id="stretched" style="display: none;">
+				<div class="catalog-subcategory canvas sub-toggle" id="stretched" style="display: none;">
 					<h2>Stretched</h2>
 					<h4>Superior canvas prints designed for trade and retail</h4>
 					<p>
@@ -781,15 +781,14 @@
 		document.getElementById(tabName).style.display = "grid";
 	}
 
-	function openSubCategory(btn, tabName) {
-		let tab = document.getElementsByClassName("sub-toggle");
-		let buttons = document.getElementsByClassName("cat-btn");
+	function openSubCategory(btn, tabName, category) {
+		let tab = document.getElementsByClassName(`${category} sub-toggle`);
+		let buttons = document.getElementsByClassName(`${category} cat-btn`);
 
 		for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
 		btn.classList.add("active");
 
 		for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
-
 		document.getElementById(tabName).style.display = "grid";
 	}
 </script>

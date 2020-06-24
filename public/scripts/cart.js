@@ -80,7 +80,6 @@ async function cartAdd(itemId, caller) {
 			let alertType = "info";
 			if (response.error === false) {
 				let totalQty = response.cart.totalQty;
-				console.log(totalQty);
 				/*let totalPrice = response.cart.totalPrice;
         let rowId = document.getElementById(itemId);
 

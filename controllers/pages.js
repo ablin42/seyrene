@@ -327,8 +327,9 @@ router.get("/Shop", setUser, async (req, res) => {
 		let obj = { active: "Shop" };
 		if (req.user) obj.user = req.user;
 
-		obj.original = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/`)); //same as /About
-		if (obj.original.error) throw new Error(obj.original.message);
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/`));
+		if (response.error === false) obj.original = response.shop;
+		else throw new Error(response.message);
 
 		return res.status(200).render("shop", obj);
 	} catch (err) {
@@ -483,12 +484,14 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 
 		if (req.user) obj.user = req.user;
 
-		obj.shopItem = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/single/${id}`)); // like /About
-		if (obj.shopItem.error) throw new Error(obj.shopItem.message);
-		obj.shopItem.price = formatter.format(obj.shopItem.price).substr(2);
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/single/${id}`));
+		if (response.error === false) obj.shop = response.shop;
+		else throw new Error(response.message);
+		obj.shop.price = formatter.format(obj.shop.price).substr(2);
 
-		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${id}`)); // like /About
-		if (obj.img.error) throw new Error(obj.img.error);
+		response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${id}`));
+		if (response.error === false) obj.img = response.images;
+		else throw new Error(response.message);
 
 		return res.status(200).render("single/shop-single", obj);
 	} catch (err) {
@@ -703,8 +706,9 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.shop = result;
 
-		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${shopId}`));
-		if (obj.img.error) throw new Error(obj.img.error);
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${shopId}`));
+		if (response.error === false) obj.img = response.images;
+		else throw new Error(response.message);
 
 		return res.status(200).render("restricted/shop-patch", obj);
 	} catch (err) {

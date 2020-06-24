@@ -16,15 +16,12 @@ router.get("/add/:itemId", setUser, async (req, res) => {
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 
 		Shop.findById(productId, (err, product) => {
+			//redo that in async await
 			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.serverError });
-			if (product.isUnique === true) {
-				let arr = cart.generateArray();
-				for (let i = 0; i < arr.length; i++) {
-					if (arr[i].attributes._id == product._id) {
-						//elements: [{attributes : attributes}]
-						return res.status(200).json({ error: true, message: ERROR_MESSAGE.addTwiceUnique });
-					}
-				}
+			let arr = cart.generateArray();
+			for (let i = 0; i < arr.length; i++) {
+				if (arr[i].attributes._id == product._id)
+					return res.status(200).json({ error: true, message: ERROR_MESSAGE.addTwiceUnique });
 			}
 
 			cart.add(product, product.id);
@@ -34,7 +31,7 @@ router.get("/add/:itemId", setUser, async (req, res) => {
 			cartCpy.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
 			return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: cartCpy });
-		});
+		}); //else return error or if shop find by id !product
 	} catch (err) {
 		console.log("ADD TO CART ERROR");
 		return res.status(400).json({ error: true, message: err.message });

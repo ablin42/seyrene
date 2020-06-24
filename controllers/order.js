@@ -313,7 +313,7 @@ router.post("/confirm", setUser, authUser, async (req, res) => {
 			let isPwinty = false;
 			for (let index = 0; index < order.items.length; index++) {
 				[err, item] = await utils.to(
-					Shop.findOneAndUpdate({ _id: order.items[index].attributes._id, isUnique: true }, { $set: { soldOut: true } })
+					Shop.findOneAndUpdate({ _id: order.items[index].attributes._id }, { $set: { soldOut: true } })
 				);
 				if (err) throw new Error(ERROR_MESSAGE.serverError);
 				if (!order.items[index].attributes.isUnique) isPwinty = true;
@@ -424,9 +424,7 @@ router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		if (err || order === null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let isPwinty = false;
-		for (let index = 0; index < order.items.length; index++) {
-			if (!order.items[index].attributes.isUnique) isPwinty = true;
-		}
+		for (let index = 0; index < order.items.length; index++) if (!order.items[index].attributes.isUnique) isPwinty = true;
 
 		let response;
 		if (isPwinty === false) response = await submitOrder(order, req);
@@ -474,7 +472,7 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 		let isPwinty = false;
 		for (let index = 0; index < order.items.length; index++) {
 			[err, item] = await utils.to(
-				Shop.findOneAndUpdate({ _id: order.items[index].attributes._id, isUnique: true }, { $set: { soldOut: false } })
+				Shop.findOneAndUpdate({ _id: order.items[index].attributes._id }, { $set: { soldOut: false } })
 			);
 			if (err) throw new Error(ERROR_MESSAGE.serverError);
 			if (!order.items[index].attributes.isUnique) isPwinty = true;

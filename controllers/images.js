@@ -36,13 +36,14 @@ router.get("/main/:itemType/:itemId", setUser, async (req, res) => {
 
 		let [err, result] = await utils.to(Image.findOne({ itemType: itemType, _itemId: id, isMain: true }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
-		if (result == null) throw new Error(ERROR_MESSAGE.noResult);
+		if (!result) throw new Error(ERROR_MESSAGE.noResult);
 
 		fs.readFile(result.path, function (err, data) {
 			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.readFile });
 			let contentType = { "Content-Type": result.mimetype };
+
 			res.writeHead(200, contentType);
-			res.status(200).end(data);
+			return res.status(200).end(data);
 		});
 	} catch (err) {
 		console.log("IMAGE FETCH ERROR", err);
@@ -76,30 +77,17 @@ router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADM
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
-		let err, find, result, deleted;
+		let err, find, result;
 
 		[err, find] = await utils.to(Image.findOne({ _id: id }));
 		if (err || !find) throw new Error(ERROR_MESSAGE.noResult);
 		if (find.isMain === true) throw new Error(ERROR_MESSAGE.mainImgDel);
 
 		[err, result] = await utils.to(Image.deleteOne({ _id: id }));
-		if (err) throw new Error(ERROR_MESSAGE.delImg);
-		if (result.n === 1) {
-			fs.unlink(find.path, err => {
-				if (err) throw new Error(ERROR_MESSAGE.delImg);
-			});
-		} else if (result.n === 0) {
-			if (find && find.itemType === "Blog") {
-				// check later but i think this is never entered!!!!!!
-				[err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
-				if (deleted.n === 1) {
-					fs.unlink(find.path, err => {
-						if (err) throw new Error(ERROR_MESSAGE.delImg);
-					});
-				}
-				if (err) throw new Error(ERROR_MESSAGE.delImg);
-			} else throw new Error(ERROR_MESSAGE.mainImgDel);
-		}
+		if (err || !result) throw new Error(ERROR_MESSAGE.delImg);
+		fs.unlink(find.path, err => {
+			if (err) throw new Error(ERROR_MESSAGE.delImg);
+		});
 
 		return res.status(200).json({ err: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {

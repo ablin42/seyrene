@@ -194,7 +194,6 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 			uri: `${process.env.BASEURL}/api/image/Gallery/${id}`,
 			json: true
 		};
-
 		rp(options)
 			.then(async response => {
 				if (response.error === false) {

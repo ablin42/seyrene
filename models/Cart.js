@@ -10,6 +10,7 @@ module.exports = function Cart(oldCart) {
 	this.uniquePriceTotal = oldCart.uniquePriceTotal || 0;
 
 	this.add = function (item, id) {
+		item.isUnique = true;
 		let storedItem = this.items[id];
 		if (!storedItem) storedItem = this.items[id] = { attributes: item, qty: 0, price: 0, unitPrice: 0 };
 		this.items[id].unitPrice = parseFloat(storedItem.attributes.price);

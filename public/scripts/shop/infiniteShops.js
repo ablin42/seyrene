@@ -7,9 +7,9 @@ async function infiniteShopItems(tb) {
 	await fetch(`/api/shop?page=${page}`)
 		.then(function (response) {
 			response.json().then(function (data) {
-				if (!data.error) {
-					if (data.length > 0) {
-						data.forEach(shop => {
+				if (data.error === false) {
+					if (data.shop.length > 0) {
+						data.shop.forEach(shop => {
 							let id = shop._id;
 							if ($(`#${id}`).length === 0) {
 								let div = document.createElement("div");
@@ -17,24 +17,19 @@ async function infiniteShopItems(tb) {
 								div.setAttribute("id", id);
 
 								let toAppend = `
-                        <a class="card-img-expand" href="/Shop/${id}"><img src="/api/image/${shop.mainImgId}" class="card-img-top" alt="${shop.title}"></a>
-                        <div class="card-body">
-                            <h5 class="card-title"><i><a href="/Shop/${id}">${shop.shorttitle}</a></i></h5>
-                            <p class="card-text gallery-description mb-5">${shop.shortcontent}</p>
-                            <div class="row shop-price-row mt-4">
-                                <div class="shop-price-col col-6">
-                                    <b class="card-price">${shop.price}€</b>`;
-
-								if (shop.isUnique) {
-									toAppend += "<b class='isUnique'>Toile unique</b>";
-								}
-								toAppend += `    
-                                </div>
-                                <div class="col-6">
-                                    <input type="submit" class="logbtn" value="Ajouter au panier" onclick="cartAdd('${id}', this)">
-                                </div>
-                            </div>
-                        </div>`;
+									<a class="card-img-expand" href="/Shop/${id}"><img src="/api/image/${shop.mainImgId}" class="card-img-top" alt="${shop.title}"></a>
+									<div class="card-body">
+										<h5 class="card-title"><i><a href="/Shop/${id}">${shop.shorttitle}</a></i></h5>
+										<p class="card-text gallery-description mb-5">${shop.shortcontent}</p>
+										<div class="row shop-price-row mt-4">
+											<div class="shop-price-col col-6">
+												<b class="card-price">${shop.price}€</b>
+											</div>
+											<div class="col-6">
+												<input type="submit" class="logbtn" value="Ajouter au panier" onclick="cartAdd('${id}', this)">
+											</div>
+										</div>
+									</div>`;
 
 								div.innerHTML = toAppend;
 								id++;
