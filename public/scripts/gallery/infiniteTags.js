@@ -1,5 +1,5 @@
 async function infiniteTags() {
-	let nbItem = $(".card").length,
+	let nbItem = $(".expandable-card").length,
 		page = 1 + Math.floor(nbItem / 6),
 		loader = $("#loader"),
 		urlToFetch = `/api/gallery/tags?page=${page}`,
@@ -8,14 +8,14 @@ async function infiniteTags() {
 
 	loader.css("display", "block");
 	if (tagsParam) urlToFetch += `&t=${tagsParam}`;
-	else urlToFetch = `/api/gallery?page=${page}`;
+	else urlToFetch = `/api/gallery/?page=${page}`;
 
 	await fetch(urlToFetch)
 		.then(function (response) {
 			response.json().then(function (data) {
-				if (!data.error) {
-					if (data.length > 0) {
-						data.forEach(gallery => {
+				if (data.error === false) {
+					if (data.galleries.length > 0) {
+						data.galleries.forEach(gallery => {
 							let id = gallery._id;
 							if ($(`#${id}`).length === 0) {
 								let div = document.createElement("div");
@@ -70,3 +70,27 @@ $(window).scroll(function () {
 		infiniteTags();
 	}
 });
+
+async function filterByTags(e) {
+	e.preventDefault();
+	let tagInput = document.getElementsByClassName("label-info"),
+		tags = "";
+
+	if (tagInput.length > 0) {
+		tags = "?t=";
+		for (let i = 0; i < tagInput.length; i++) {
+			if (i + 1 === tagInput.length) tags += tagInput[i].textContent;
+			else tags += tagInput[i].textContent + ",";
+		}
+	}
+
+	window.location.href = `/Galerie/Tags${tags}`;
+}
+
+function preventEnter(e, item) {
+	let keyCode = e.keyCode || e.which;
+	if (keyCode === 13) {
+		e.preventDefault();
+		return false;
+	}
+}

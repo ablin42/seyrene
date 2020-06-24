@@ -7,7 +7,6 @@ const session = require("express-session");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
 const sanitize = require("mongo-sanitize");
-const filter = require("content-filter");
 require("dotenv").config();
 
 const { setUser } = require("./controllers/helpers/verifySession");
@@ -47,22 +46,13 @@ app.use(
 		secret: "keyboard cat",
 		resave: false,
 		saveUninitialized: true,
-		cookie: { maxAge: 180 * 60 * 1000 } //, sameSite: 'none', secure: true}, // 180 = 3mn
+		cookie: { maxAge: 180 * 60 * 1000 }, //, sameSite: 'none', secure: true}, // 180 = 3mn
+		sameSite: "Lax" //remove if bug
 	})
 );
 
 //-- Flash --//
 app.use(flash());
-/*const blacklist = ["$", "{", "&&", "||"];
-app.use(
-	filter({
-		urlBlackList: blacklist,
-		bodyBlackList: blacklist,
-		bodyMessage: "A forbidden expression has been found in your data",
-		urlMessage: "A forbidden expression has been found in your data",
-		dispatchToErrorHandler: true
-	})
-);*/
 // Mount express-sanitizer middleware here
 app.use(expressSanitizer());
 

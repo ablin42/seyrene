@@ -6,9 +6,9 @@ async function infiniteGalleries() {
 	await fetch(`/api/gallery?page=${page}`)
 		.then(function (response) {
 			response.json().then(function (data) {
-				if (!data.error) {
-					if (data.length > 0) {
-						data.forEach(gallery => {
+				if (data.error === false) {
+					if (data.galleries.length > 0) {
+						data.galleries.forEach(gallery => {
 							let id = gallery._id;
 							if ($(`#${id}`).length === 0) {
 								let div = document.createElement("div");
@@ -16,21 +16,21 @@ async function infiniteGalleries() {
 								div.setAttribute("id", id);
 
 								toAppend = `
-                        <div class="face face1 blog-overlay-wrapper mt-0">
-                            <a href="#expand">
-                                <img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="w-100" alt="${gallery.shorttitle}">
-                            </a>
-                        
-                        <div class="blog-overlay">
-                            <h4><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h4>
-                            <div class="gallery-tags mt-5">`;
+									<div class="face face1 blog-overlay-wrapper mt-0">
+										<a href="#expand">
+											<img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="w-100" alt="${gallery.shorttitle}">
+										</a>
+									
+									<div class="blog-overlay">
+										<h4><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h4>
+										<div class="gallery-tags mt-5">`;
 
 								gallery.tags.forEach(tag => {
 									toAppend += ` <a href="/Galerie/Tags?t=${tag}">#${tag}</a>`;
 								});
 								toAppend += `   </div>
-                                        <form action="/Galerie/${id}"><button class="blog-btn">Lire plus</button></form>
-                                        </div></div>`;
+											<form action="/Galerie/${id}"><button class="blog-btn">Lire plus</button></form>
+											</div></div>`;
 								div.innerHTML = toAppend;
 								$("#container-gallery").append(div);
 							} else {

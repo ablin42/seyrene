@@ -60,24 +60,9 @@ async function patchGallery(e, galleryId) {
 		});
 }
 
-async function filterByTags(e) {
-	e.preventDefault();
-	let tagInput = document.getElementsByClassName("label-info"),
-		tags = "";
-
-	if (tagInput.length > 0) {
-		tags = "?t=";
-		for (let i = 0; i < tagInput.length; i++) {
-			if (i + 1 === tagInput.length) tags += tagInput[i].textContent;
-			else tags += tagInput[i].textContent + ",";
-		}
-	}
-
-	window.location.href = `/Galerie/Tags${tags}`;
-}
-
 function setMain(e, item) {
 	e.preventDefault();
+
 	fetch(item.href, {
 		method: "get",
 		mode: "same-origin"
@@ -88,17 +73,15 @@ function setMain(e, item) {
 			if (data.err === true) type = "warning";
 			else {
 				let divs = $(".action-div");
-				console.log(divs);
-				for (let i = 0; i < divs.length; i++) {
-					divs[i].setAttribute("style", "display: block");
-				}
+				for (let i = 0; i < divs.length; i++) divs[i].setAttribute("style", "display: block");
+
 				$(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
 			}
 			let alertErr = `
-        <div id="alert" class="alert alert-${type}" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-            ${data.message}
-        </div>`;
+				<div id="alert" class="alert alert-${type}" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+					${data.message}
+				</div>`;
 			addAlert(alertErr, "#header");
 		});
 }
@@ -111,24 +94,18 @@ function deleteImage(e, item) {
 	})
 		.then(response => response.json())
 		.then(data => {
-			if (data.err === true) {
-				let alertErr = `
-        <div id="alert" class="alert alert-warning" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-            ${data.message}
-        </div>`;
-				addAlert(alertErr, "#header");
-			} else {
+			let type = "success";
+			if (data.err === true) type = "warning";
+			else {
 				$(`#${item.id.substr(3)}`).remove();
 				$(`#sel${item.id.substr(3)}`).remove();
 				item.remove();
-
-				let alertSuccess = `
-        <div id="alert" class="alert alert-success" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-            ${data.message}
-        </div>`;
-				addAlert(alertSuccess, "#header");
 			}
+			let alert = `
+				<div id="alert" class="alert alert-${type}" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+					${data.message}
+				</div>`;
+			addAlert(alert, "#header");
 		});
 }

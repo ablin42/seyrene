@@ -56,14 +56,15 @@ router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADM
 		let itemType = sanitize(req.params.itemType);
 		let itemId = sanitize(req.params.itemId);
 
-		//set old main to false, set new one to true
 		let [err, result] = await utils.to(
 			Image.updateMany({ _itemId: itemId, itemType: itemType, isMain: true }, { $set: { isMain: false } })
 		);
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
-		[err, result] = await utils.to(Image.findOneAndUpdate({ _id: id }, { $set: { isMain: true } }));
-		if (err) throw new Error(ERROR_MESSAGE.updateError);
+		[err, result] = await utils.to(
+			Image.findOneAndUpdate({ _id: id, _itemId: itemId, itemType: itemType }, { $set: { isMain: true } })
+		);
+		if (err || !result) throw new Error(ERROR_MESSAGE.updateError);
 
 		return res.status(200).json({ err: false, message: "Nouvelle image principale définie" });
 	} catch (err) {
@@ -78,17 +79,16 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let err, find, result, deleted;
 
 		[err, find] = await utils.to(Image.findOne({ _id: id }));
-		if (err) throw new Error(ERROR_MESSAGE.noResult);
+		if (err || !find) throw new Error(ERROR_MESSAGE.noResult);
+		if (find.isMain === true) throw new Error(ERROR_MESSAGE.mainImgDel);
 
-		[err, result] = await utils.to(Image.deleteOne({ _id: id, isMain: false }));
+		[err, result] = await utils.to(Image.deleteOne({ _id: id }));
 		if (err) throw new Error(ERROR_MESSAGE.delImg);
 		if (result.n === 1) {
 			fs.unlink(find.path, err => {
 				if (err) throw new Error(ERROR_MESSAGE.delImg);
 			});
-		}
-
-		if (result.n === 0) {
+		} else if (result.n === 0) {
 			if (find && find.itemType === "Blog") {
 				// check later but i think this is never entered!!!!!!
 				[err, deleted] = await utils.to(Image.deleteOne({ _id: id }));
@@ -115,10 +115,8 @@ router.get("/:itemType/:itemId", setUser, async (req, res) => {
 
 		let [err, result] = await utils.to(Image.find({ itemType: itemType, _itemId: itemId }).sort({ isMain: -1 }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
-		//if (result == null || result.length < 1)
-		//  throw new Error(ERROR_MESSAGE.noResult);
 
-		return res.status(200).json(result);
+		return res.status(200).json({ error: false, images: result });
 	} catch (err) {
 		console.log("IMAGES FETCH ERROR", err);
 		return res.status(200).json({ error: true, message: err.message });

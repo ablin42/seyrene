@@ -7,7 +7,6 @@ const sanitize = require("mongo-sanitize");
 
 const Front = require("../models/Front");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
-const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 
@@ -26,7 +25,7 @@ const upload = multer({
 		fileSize: 100000000
 	},
 	fileFilter: function (req, file, cb) {
-		gHelpers.sanitizeFile(req, file, cb);
+		utils.sanitizeFile(req, file, cb);
 	}
 }).single("img");
 
@@ -39,6 +38,26 @@ router.get("/", setUser, async (req, res) => {
 	} catch (err) {
 		console.log("FETCHING FRONT ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
+	}
+});
+
+router.get("/image/:id", setUser, async (req, res) => {
+	try {
+		let id = sanitize(req.params.id);
+
+		let [err, result] = await utils.to(Front.findOne({ _id: id }));
+		if (err || !result) throw new Error(ERROR_MESSAGE.fetchImg);
+
+		fs.readFile(result.path, function (err, data) {
+			if (err) throw new Error(ERROR_MESSAGE.readFile);
+			let contentType = { "Content-Type": result.mimetype };
+
+			res.writeHead(200, contentType);
+			return res.status(200).end(data);
+		});
+	} catch (err) {
+		console.log("FRONT IMAGE ERROR", err);
+		return res.status(400).json(err.message);
 	}
 });
 
@@ -84,7 +103,6 @@ router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req
 	}
 });
 
-//delete item using its id
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
@@ -94,30 +112,11 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		fs.unlink(front.path, err => {
 			if (err) throw new Error(ERROR_MESSAGE.delImg);
 		});
+
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {
 		console.log("DELETE FRONT ERROR", err);
 		return res.status(400).json({ error: true, message: err.message });
-	}
-});
-
-router.get("/image/:id", setUser, async (req, res) => {
-	try {
-		let id = sanitize(req.params.id);
-
-		let [err, result] = await utils.to(Front.findOne({ _id: id }));
-		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
-
-		fs.readFile(result.path, function (err, data) {
-			if (err) throw new Error(ERROR_MESSAGE.readFile);
-			let contentType = { "Content-Type": result.mimetype };
-
-			res.writeHead(200, contentType);
-			return res.status(200).end(data);
-		});
-	} catch (err) {
-		console.log("FRONT IMAGE ERROR", err);
-		return res.status(400).json(err.message);
 	}
 });
 

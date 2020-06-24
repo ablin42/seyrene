@@ -70,12 +70,11 @@ router.get("/", setUser, async (req, res) => {
 router.get("/Galerie", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Galerie" };
-
 		if (req.user) obj.user = req.user;
 
-		obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/`));
-		if (obj.galleries.error) throw new Error(obj.galleries.message);
-		if (obj.galleries.length === 0) throw new Error(ERROR_MESSAGE.pageEmpty);
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/`));
+		if (response.error === false) obj.galleries = response.galleries;
+		else throw new Error(response.message);
 
 		return res.status(200).render("galerie", obj);
 	} catch (err) {
@@ -88,17 +87,16 @@ router.get("/Galerie", setUser, async (req, res) => {
 router.get("/Galerie/Tags", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Tags search" };
-
 		if (req.user) obj.user = req.user;
-
 		let url = `${process.env.BASEURL}/api/gallery/`;
 		if (req.query.t) {
 			url = `${process.env.BASEURL}/api/gallery/tags?t=${req.query.t}`;
 			obj.tags = req.query.t;
 		}
 
-		obj.galleries = JSON.parse(await rp(url));
-		if (obj.galleries.error) throw new Error(obj.galleries.message);
+		let response = JSON.parse(await rp(url));
+		if (response.error === false) obj.galleries = response.galleries;
+		else throw new Error(response.message);
 
 		return res.status(200).render("tags", obj);
 	} catch (err) {
@@ -327,7 +325,6 @@ router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 router.get("/Shop", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Shop" };
-
 		if (req.user) obj.user = req.user;
 
 		obj.original = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/`)); //same as /About
@@ -435,14 +432,15 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let obj = { active: "Galerie" };
-
 		if (req.user) obj.user = req.user;
 
-		obj.galleries = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/single/${id}`)); // like /About
-		if (obj.galleries.error) throw new Error(obj.galleries.message);
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/single/${id}`));
+		if (response.error === false) obj.gallery = response.gallery;
+		else throw new Error(response.message);
 
-		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${id}`)); // like /About
-		if (obj.img.error) throw new Error(obj.img.error);
+		response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${id}`));
+		if (response.error === false) obj.images = response.images;
+		else throw new Error(response.message);
 
 		return res.status(200).render("single/galerie-single", obj);
 	} catch (err) {
@@ -455,7 +453,6 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 router.get("/Catalog", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Catalog" };
-
 		if (req.user) obj.user = req.user;
 
 		return res.status(200).render("catalog", obj);
@@ -539,8 +536,10 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 	try {
 		let obj = { active: "Update Homepage", user: req.user };
 
-		obj.front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`)); // like /About
-		if (obj.front.length <= 0) obj.front = undefined;
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
+		if (response.error === false) obj.front = response.data;
+		else throw new Error(response.message);
+		if (response.data.length <= 0) obj.front = undefined;
 
 		return res.status(200).render("restricted/front-post", obj);
 	} catch (err) {
@@ -671,8 +670,9 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.gallery = result;
 
-		obj.img = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${galleryId}`));
-		if (obj.img.error) throw new Error(obj.img.error);
+		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${galleryId}`));
+		if (response.error === false) obj.images = response.images;
+		else throw new Error(response.message);
 
 		return res.status(200).render("restricted/gallery-patch", obj);
 	} catch (err) {

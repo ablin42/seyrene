@@ -1,7 +1,6 @@
-const { ERROR_MESSAGE } = require("../../controllers/helpers/errorMessages");
-
 function deleteImage(item, e) {
 	e.preventDefault();
+
 	let imageItemId = "image" + item.id.substr(6, 1);
 	let imageItem = document.getElementById(imageItemId);
 
@@ -19,13 +18,11 @@ function deleteImage(item, e) {
 		})
 			.then(response => response.json())
 			.then(data => {
-				if (data.error === true) {
-					let alert = createAlertNode(data.message, "warning");
-					addAlert(alert, "#header");
-				} else {
-					let alert = createAlertNode(data.message, "success");
-					addAlert(alert, "#header");
-				}
+				let alertType = "success";
+				if (data.error === true) alertType = "warning";
+
+				let alert = createAlertNode(data.message, alertType);
+				addAlert(alert, "#header");
 			});
 	} else {
 		let alert = createAlertNode(ERROR_MESSAGE.itemDeleted, "success");
@@ -72,12 +69,10 @@ async function postFront(e, form) {
 	})
 		.then(response => response.json())
 		.then(data => {
-			if (data.error === true) {
-				let alert = createAlertNode(data.message, "warning");
-				addAlert(alert, "#header");
-			} else {
-				let alert = createAlertNode(data.message, "success");
-				addAlert(alert, "#header");
-			}
+			let alertType = "success";
+			if (data.error === true) alertType = "warning";
+
+			let alert = createAlertNode(data.message, alertType);
+			addAlert(alert, "#header");
 		});
 }

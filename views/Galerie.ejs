@@ -3,39 +3,38 @@
 <script src="/scripts/gallery/infiniteGalleries.js"></script>
 <script src="/scripts/cart.js"></script>
 <div class="container">
-  <div class="container-gallery" id="container-gallery">
-    <% if(locals.galleries){ %>
-      <% Object.keys(locals.galleries).forEach(function (index) { %>
-        <div class="expandable-card" id="<%= locals.galleries[index]._id %>">
-          <div class="face face1 blog-overlay-wrapper mt-0">
-            <a href="#expand">
-              <img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100" alt="<%= locals.galleries[index].title %>">
-            </a>
-            <div class="blog-overlay">
-              <h4><i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i></h4>
-              <div class="gallery-tags mt-5">
-                <% locals.galleries[index].tags.forEach(function (tag) { %>
-                  <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
-                <% }) %>
-              </div>
-              <form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
-            </div>
-          </div>
-        </div>
-      <% }) %>
-    <% } %>
-  </div>
-  <div class="col-6 offset-3 mb-3 mt-3">
-    <img id="loader" src="/img/loader.gif" style="width: 50px; height: 50px; margin: 5px auto 5px auto; display: none">
-    <input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteGalleries();">
-  </div>
+	<div class="container-gallery" id="container-gallery">
+		<% if (locals.galleries){ %> <% Object.keys(locals.galleries).forEach(function (index) { %>
+		<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
+			<div class="face face1 blog-overlay-wrapper mt-0">
+				<a href="#expand">
+					<img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100" alt="<%= locals.galleries[index].title %>" />
+				</a>
+				<div class="blog-overlay">
+					<h4>
+						<i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i>
+					</h4>
+					<div class="gallery-tags mt-5">
+						<% locals.galleries[index].tags.forEach(function (tag) { %>
+						<a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
+						<% }) %>
+					</div>
+					<form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+				</div>
+			</div>
+		</div>
+		<% }) %> <% } %>
+	</div>
+	<div class="col-6 offset-3 mb-3 mt-3">
+		<img id="loader" src="/img/loader.gif" style="width: 50px; height: 50px; margin: 5px auto 5px auto; display: none;" />
+		<input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteGalleries();" />
+	</div>
 </div>
 
 <a class="lightbox-close" href="#close">
-  <div class="lightbox-target" id="expand">
-    <img id="expandImg" src="/api/image/<%= locals.galleries[0].mainImgId %>"/>
-  </div>
+	<div class="lightbox-target" id="expand">
+		<img id="expandImg" src="/api/image/<%= locals.galleries[0].mainImgId %>" />
+	</div>
 </a>
 
-<script src="/scripts/gallery/galleryScripts.js"></script>
 <% include partials/footer %>

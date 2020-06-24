@@ -11,7 +11,6 @@ const rp = require("request-promise");
 const Shop = require("../models/Shop");
 const Image = require("../models/Image");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
-const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
@@ -31,7 +30,7 @@ const upload = multer({
 		fileSize: 100000000
 	},
 	fileFilter: function (req, file, cb) {
-		gHelpers.sanitizeFile(req, file, cb);
+		utils.sanitizeFile(req, file, cb);
 	}
 }).array("img");
 
@@ -41,6 +40,7 @@ const formatter = new Intl.NumberFormat("de-DE", {
 });
 
 async function parsePrice(shopItems) {
+	//move somewhere
 	let arr = [];
 	for (let i = 0; i < shopItems.length; i++) {
 		let obj = {
@@ -67,7 +67,6 @@ async function parsePrice(shopItems) {
 	return arr;
 }
 
-//update all entries to have soldOut: false
 router.get("/", setUser, async (req, res) => {
 	try {
 		const options = {

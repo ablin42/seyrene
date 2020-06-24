@@ -1,5 +1,3 @@
-const { ERROR_MESSAGE } = require("../../controllers/helpers/errorMessages");
-
 function closeAllSelect(elmnt) {
 	let x,
 		y,

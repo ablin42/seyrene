@@ -23,8 +23,8 @@
                     <label for="img" id="imglabel" class="filebtn">Choisir des images</label>
                     <input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" multiple>
                 </div>
-                <% if (locals.img) { %>
-                    <% locals.img.forEach(function (item) { %>
+                <% if (locals.images) { %>
+                    <% locals.images.forEach(function (item) { %>
                         <img class="w-100 m-1" id="<%= item._id %>" src="/api/image/<%= item._id %>">
                             <div id="actDiv<%= item._id %>" class="action-div" <% if (item.isMain === true) { %>style="display:none"<% } %>>
                                 <a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
