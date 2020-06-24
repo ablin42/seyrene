@@ -25,56 +25,19 @@ module.exports = function Cart(oldCart) {
 		this.generateArray();
 	};
 
-	// don't need this function
-	this.update = function (item, id, qty) {
-		let storedItem = this.items[id];
-		if (!storedItem)
-			//shouldnt need
-			storedItem = this.items[id] = { item: item, qty: 0, price: 0 }; //shouldnt need either
-
-		let itemPrice = parseFloat(storedItem.item.price);
-		let currItemQty = storedItem.qty;
-		let qtyOffset = qty - currItemQty;
-		let priceOffset = parseFloat(qtyOffset * itemPrice);
-
-		if (qty <= 0) {
-			this.items[id] = undefined;
-			storedItem = undefined;
-
-			this.totalQty = this.totalQty - currItemQty;
-			this.totalPrice = parseFloat((Math.round((this.totalPrice - currItemQty * itemPrice) * 100) / 100).toFixed(2));
-			return;
-		}
-
-		storedItem.qty = qty;
-		storedItem.price = parseFloat((itemPrice * storedItem.qty).toFixed(2));
-		this.totalQty = this.totalQty + qtyOffset;
-		this.totalPrice = parseFloat((Math.round((this.totalPrice + priceOffset) * 100) / 100).toFixed(2));
-	};
-
 	this.delete = function (item, id) {
 		let storedItem = this.items[id];
+
 		if (storedItem) {
 			let singlePrice = parseFloat((storedItem.price / storedItem.qty).toFixed(2));
-			if (storedItem.qty === 1) {
-				this.items[id] = undefined;
-				storedItem = undefined;
-				this.totalQty--;
-				this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal - singlePrice) * 100) / 100).toFixed(2));
-				this.price.totalIncludingTax = parseFloat(
-					(Math.round((this.price.totalIncludingTax - singlePrice) * 100) / 100).toFixed(2)
-				);
-				this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
-			} else if (storedItem.qty > 1) {
-				// should always be 1 or 0 since its for unique only
-				storedItem.qty--;
-				storedItem.price = parseFloat((storedItem.qty * singlePrice).toFixed(2));
-				this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal - singlePrice) * 100) / 100).toFixed(2));
-				this.price.totalIncludingTax = parseFloat(
-					(Math.round((this.price.totalIncludingTax - singlePrice) * 100) / 100).toFixed(2)
-				);
-				this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
-			}
+			this.items[id] = undefined;
+			storedItem = undefined;
+			this.totalQty--;
+			this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal - singlePrice) * 100) / 100).toFixed(2));
+			this.price.totalIncludingTax = parseFloat(
+				(Math.round((this.price.totalIncludingTax - singlePrice) * 100) / 100).toFixed(2)
+			);
+			this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
 		}
 	};
 
