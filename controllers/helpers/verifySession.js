@@ -59,7 +59,7 @@ function authRole(role) {
 }
 
 async function setDelivery(req, res, next) {
-	const userId = req.session._id;
+	const userId = "5d810b9365761c0840e0de25"; //req.session._id;
 
 	if (userId) {
 		let [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: userId }));

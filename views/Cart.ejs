@@ -5,7 +5,7 @@
 	<div class="single-wrapper">
 		<div class="col-10 offset-1">
 			<div class="text-center">
-				<b class="alertEmpty text-center" id="alertEmpty" <% if (locals.totalPrice !="0" ) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
+				<b class="alertEmpty text-center" id="alertEmpty" <% if (locals.totalPrice !="0" && locals.totalPrice !="0.00" ) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
 			</div>
 			<% if(locals.products){ %> <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
 			<div class="cart-row" id="cart-row-header">

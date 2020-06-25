@@ -72,7 +72,7 @@ router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 			attributes: req.body.attributes
 		};
 
-		let [err, product] = await utils.to(Gallery.findById(productId));
+		[err, product] = await utils.to(Gallery.findById(productId));
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
 		if (!product) throw new Error(ERROR_MESSAGE.noResult);
 
@@ -107,13 +107,11 @@ router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 			if (!product) throw new Error(ERROR_MESSAGE.noResult);
 
 			let item = await cart.pwintyUpdate(data, newQty);
-			item.price = formatter.format(item.price).substr(2);
 			req.session.cart = cart;
 
 			let formatted = JSON.parse(JSON.stringify(cart));
 			formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
-			if (formatted.items[productId])
-				formatted.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
+			if (formatted.items[data.SKU]) formatted.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
 			let message = ERROR_MESSAGE.qtyUpdated;
 			if (newQty == 0) message = ERROR_MESSAGE.removedFromCart;

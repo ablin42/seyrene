@@ -30,28 +30,27 @@ async function infiniteOrders(tab) {
 					if (data.orders.length > 0) {
 						data.orders.forEach(order => {
 							let id = order._id;
-							console.log(id, $(`#${id}`));
 							if ($(`#${tab}-${id}`).length === 0) {
 								toAppend = `
-                          <tr>
-                            <th scope="row" class="date-grid">${order.date_f}</th>
-                            <td class="status-grid">${order.status}</td>
-                            <td class="price-grid">${order.price}€</td>
-                            <td class="name-grid">${order.firstname[0]}. ${order.lastname}</td>
-                            <td class="id-grid"><a id="${tab}-${order._id}" href="/Admin/Order/${order._id}">#${order._id}</a></td>
-                          </tr>`;
+										<tr>
+											<th scope="row" class="date-grid">${order.date_f}</th>
+											<td class="status-grid">${order.status}</td>
+											<td class="price-grid">${order.price}€</td>
+											<td class="name-grid">${order.firstname[0]}. ${order.lastname}</td>
+											<td class="id-grid"><a id="${tab}-${order._id}" href="/Admin/Order/${order._id}">#${order._id}</a></td>
+										</tr>`;
 
 								$(`#container-admin-orders-${tab}`).append(toAppend);
 							} else {
 								$("#infinitebtn").val("Nothing more to load");
 								$("#infinitebtn").attr("disabled");
-								$("#infinitebtn").attr("onclick", "");
+								$("#infinitebtn").attr("onclick", `infiniteOrders("${tab}-block")`);
 							}
 						});
 					} else {
 						$("#infinitebtn").val("Nothing more to load");
 						$("#infinitebtn").attr("disabled");
-						$("#infinitebtn").attr("onclick", "");
+						$("#infinitebtn").attr("onclick", `infiniteOrders("${tab}-block")`);
 					}
 				} else {
 					let alert = createAlertNode(data.message, "warning");

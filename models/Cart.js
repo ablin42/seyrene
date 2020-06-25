@@ -9,14 +9,14 @@ module.exports = function Cart(oldCart) {
 	this.price = oldCart.price || { shippingIncludingTax: 0, shippingExcludingTax: 0, totalIncludingTax: 0, totalExcludingTax: 0 };
 	this.uniquePriceTotal = oldCart.uniquePriceTotal || 0;
 
+	/* UNIQUE */
 	this.add = function (item, id) {
 		item.isUnique = true;
 		let storedItem = this.items[id];
-		if (!storedItem) storedItem = this.items[id] = { attributes: item, qty: 0, price: 0, unitPrice: 0 };
+		if (!storedItem) storedItem = this.items[id] = { attributes: item, qty: 1, price: 0, unitPrice: 0 };
 		this.items[id].unitPrice = parseFloat(storedItem.attributes.price);
 
-		storedItem.qty++;
-		storedItem.price = parseFloat((this.items[id].unitPrice * storedItem.qty).toFixed(2));
+		storedItem.price = this.items[id].unitPrice.toFixed(2);
 		this.totalQty++;
 		this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal + this.items[id].unitPrice) * 100) / 100).toFixed(2));
 		this.price.totalIncludingTax += this.uniquePriceTotal;
@@ -40,6 +40,7 @@ module.exports = function Cart(oldCart) {
 			this.totalPrice = parseFloat((Math.round((this.totalPrice - singlePrice) * 100) / 100).toFixed(2));
 		}
 	};
+	/* END UNIQUE */
 
 	this.pwintyAdd = async function (item, data) {
 		let storedItem = this.items[data.SKU];
@@ -97,10 +98,7 @@ module.exports = function Cart(oldCart) {
 				if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
 					this.items[data.SKU].elements[index].qty--;
 					retData.qty = this.items[data.SKU].elements[index].qty;
-					if (this.items[data.SKU].elements[index].qty === 0) {
-						this.items[data.SKU].elements[index].attributes = undefined;
-						this.items[data.SKU].elements[index] = undefined; //check all scenario to find if this compromises cart items
-					}
+					if (this.items[data.SKU].elements[index].qty <= 0) this.items[data.SKU].elements.splice(index, 1);
 				}
 			});
 			storedItem.qty--;
@@ -137,13 +135,12 @@ module.exports = function Cart(oldCart) {
 					priceOffset = parseFloat(qtyOffset * unitPrice);
 					this.items[data.SKU].elements[index].qty = qty;
 					retData.qty = this.items[data.SKU].elements[index].qty;
-					if (this.items[data.SKU].elements[index].qty <= 0) this.items[data.SKU].elements[index].attributes = undefined;
+					if (this.items[data.SKU].elements[index].qty <= 0) this.items[data.SKU].elements.splice(index, 1);
 				}
 			});
 
 			storedItem.qty = storedItem.qty + qtyOffset;
 			storedItem.price = parseFloat((unitPrice * storedItem.qty).toFixed(2));
-
 			if (storedItem.qty === 0) {
 				this.items[data.SKU] = undefined;
 				storedItem = undefined;
@@ -194,6 +191,7 @@ module.exports = function Cart(oldCart) {
 		}
 
 		let countryCode = await this.fetchCountryCode();
+
 		let options = {
 			uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
 			method: "POST",
@@ -232,6 +230,6 @@ module.exports = function Cart(oldCart) {
 
 		let response = await rp(`${process.env.BASEURL}/api/user/countryCode/`, options);
 		if (response.error === false) return response.countryCode;
-		return "FR";
+		return "FR"; ///// defaults return fr, might need to return an error though
 	};
 };

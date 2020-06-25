@@ -21,7 +21,7 @@ function addAlert(alert, where) {
 
 function createAlertNode(message, alertType = "info", style = "") {
 	return `<div id="alert" class="alert alert-${alertType}" role="alert" style="${style}">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    ${message}
-                </div>`;
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                ${message}
+            </div>`;
 }

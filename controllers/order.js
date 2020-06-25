@@ -20,28 +20,6 @@ const format = require("date-format");
 const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 require("dotenv").config();
 
-/*
-router.get('/cc', async (req, res) => {
-try {
-    let nbFail = 0;
-    
-    pwintyCountries.forEach(countryn => {
-        resu = country.findByName(utils.toTitleCase(countryn.name));
-        //resu = getCode(countryn.name)
-        //resu = countries.getAlpha2Code(countryn.name, 'en');
-        if (!resu) {
-            console.log("Err:", countryn.name)
-            nbFail++;
-        }
-    })
-    //console.log(country.findByName(pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')), pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
-    //console.log(country.findByIso2("BA"))
-    return res.status(200).json({error: false, number: nbFail});
-} catch (err) {
-    console.log("COUNTRY TESTS ERR", err);
-    return res.status(200).json({error: true, message: err.message})
-}})*/
-
 router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		const options = {
@@ -535,5 +513,27 @@ router.post("/billing/save", vDelivery, setUser, authUser, async (req, res) => {
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
+
+/*
+router.get('/cc', async (req, res) => {
+try {
+    let nbFail = 0;
+    
+    pwintyCountries.forEach(countryn => {
+        resu = country.findByName(utils.toTitleCase(countryn.name));
+        //resu = getCode(countryn.name)
+        //resu = countries.getAlpha2Code(countryn.name, 'en');
+        if (!resu) {
+            console.log("Err:", countryn.name)
+            nbFail++;
+        }
+    })
+    //console.log(country.findByName(pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')), pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
+    //console.log(country.findByIso2("BA"))
+    return res.status(200).json({error: false, number: nbFail});
+} catch (err) {
+    console.log("COUNTRY TESTS ERR", err);
+    return res.status(200).json({error: true, message: err.message})
+}})*/
 
 module.exports = router;

@@ -147,7 +147,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 
 							let details = "";
 							Object.keys(element.attributes).forEach(attribute => {
-								itemObj.details +=
+								details +=
 									attribute.charAt(0).toUpperCase() +
 									attribute.slice(1) +
 									": " +
@@ -542,15 +542,13 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 		};
 
 		let result = await rp(options);
-		if (typeof result === "string") throw new Error(ERROR_MESSAGE.unauthorized);
-		if (result.error) throw new Error(result.message);
-		if (result.orders) obj.all = result.orders;
+		if (result.error === false) obj.all = result.orders;
+		else throw new Error(result.message);
 
 		options.uri = `${process.env.BASEURL}/api/order?tab=approval`;
 		result = await rp(options);
-		if (typeof result === "string") throw new Error(ERROR_MESSAGE.unauthorized);
-		if (result.error) throw new Error(result.message);
-		if (result.orders) obj.approval = result.orders;
+		if (result.error === false) obj.approval = result.orders;
+		else throw new Error(result.message);
 
 		return res.status(200).render("restricted/orders", obj);
 	} catch (err) {
