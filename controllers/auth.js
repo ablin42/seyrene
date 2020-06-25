@@ -38,7 +38,7 @@ router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async 
 
 		// Create User and validationToken objects
 		const user = new User({
-			name: req.session.formData.name,
+			name: req.session.formData.name.toLowerCase(),
 			email: req.session.formData.email,
 			password: hashPw
 		});

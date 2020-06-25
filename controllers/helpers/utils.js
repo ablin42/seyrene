@@ -8,7 +8,8 @@ module.exports = {
 		return false;
 	},
 	nameExist: async function (name) {
-		if (await User.findOne({ name: name })) return true;
+		if (await User.findOne({ name: name.toLowerCase() })) return true;
+
 		return false;
 	},
 	to: function (promise) {
@@ -25,5 +26,17 @@ module.exports = {
 
 		if (isAllowedExt && isAllowedMimeType) return cb(null, true);
 		else cb("Error: File type not allowed!");
+	},
+	toTitleCase: function (phrase) {
+		let arr = phrase.toLowerCase().split(" ");
+		let parsed = [];
+
+		arr.forEach(item => {
+			let obj = item.charAt(0).toUpperCase() + item.slice(1);
+			if (item === "and") obj = "and";
+			parsed.push(obj);
+		});
+
+		return parsed.join(" ");
 	}
 };

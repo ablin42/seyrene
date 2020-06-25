@@ -27,7 +27,6 @@ function saveBilling(e) {
 				let alert = createAlertNode(data.message, "warning");
 				addAlert(alert, "#header");
 				return;
-			}
-			window.location.href = "/Payment";
+			} else window.location.href = "/Payment";
 		});
 }

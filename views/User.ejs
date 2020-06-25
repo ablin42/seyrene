@@ -1,7 +1,5 @@
 <% include partials/head %>
 
-<script src="/scripts/order/order.js"></script>
-
 <div class="container-with-menu container">
 	<div class="row row-height">
 		<div class="menu col-3">
@@ -27,14 +25,14 @@
 
 				<form id="nameform" method="POST" action="/api/user/patch/name">
 					<label class="control-label">Nom de compte</label>
-					<input class="form-control" type="text" id="name" name="name" value="<% if (locals.name) { %><%= locals.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required />
+					<input class="form-control" type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required />
 					<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
 					<input type="submit" class="logbtn mt-2" value="Modifier" id="submit-nameform" />
 				</form>
 
 				<form id="emailform" method="POST" action="/api/user/patch/email">
 					<label class="control-label">Email</label>
-					<input class="form-control" type="email" id="email" name="email" value="<% if (locals.email) { %><%= locals.email %><% } %>" onkeyup="Validate.Email(this);" required />
+					<input class="form-control" type="email" id="email" name="email" value="<% if (locals.user.email) { %><%= locals.user.email %><% } %>" onkeyup="Validate.Email(this);" required />
 					<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 					<input type="submit" class="logbtn mt-2" value="Modifier" id="submit-emailform" />
 				</form>
@@ -144,7 +142,7 @@
 						<div class="row mt-4">
 							<div class="col-6">
 								<textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations...">
-<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea
+									<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea
 								>
 							</div>
 							<div class="col-6">

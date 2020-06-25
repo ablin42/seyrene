@@ -12,16 +12,7 @@ const Purchase = require("../models/PurchaseData");
 const User = require("../models/User");
 const Shop = require("../models/Shop");
 const DeliveryInfo = require("../models/DeliveryInfo");
-const {
-	ROLE,
-	setUser,
-	authUser,
-	authRole,
-	setOrder,
-	authGetOrder,
-	setBilling,
-	checkBilling
-} = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const mailer = require("./helpers/mailer");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
@@ -29,26 +20,13 @@ const format = require("date-format");
 const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 require("dotenv").config();
 
-const toTitleCase = phrase => {
-	let arr = phrase.toLowerCase().split(" ");
-	let parsed = [];
-
-	arr.forEach(item => {
-		let obj = item.charAt(0).toUpperCase() + item.slice(1);
-		if (item === "and") obj = "and";
-		parsed.push(obj);
-	});
-
-	return parsed.join(" ");
-};
-
 /*
 router.get('/cc', async (req, res) => {
 try {
     let nbFail = 0;
     
     pwintyCountries.forEach(countryn => {
-        resu = country.findByName(toTitleCase(countryn.name));
+        resu = country.findByName(utils.toTitleCase(countryn.name));
         //resu = getCode(countryn.name)
         //resu = countries.getAlpha2Code(countryn.name, 'en');
         if (!resu) {
@@ -149,7 +127,7 @@ function getNeededAttributes(attributes) {
 }
 
 async function createPwintyOrder(order, req) {
-	let countryCode = country.findByName(toTitleCase(order.country));
+	let countryCode = country.findByName(utils.toTitleCase(order.country));
 	if (countryCode) countryCode = countryCode.code.iso2;
 	else throw new Error(ERROR_MESSAGE.countryCode);
 	let options = {
@@ -529,7 +507,7 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 	}
 });
 
-router.post("/billing/save", vDelivery, setUser, authUser, setBilling, async (req, res) => {
+router.post("/billing/save", vDelivery, setUser, authUser, async (req, res) => {
 	try {
 		const vResult = validationResult(req.body.billing);
 		if (!vResult.isEmpty()) {
@@ -539,19 +517,19 @@ router.post("/billing/save", vDelivery, setUser, authUser, setBilling, async (re
 			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
-		let apiKey = "AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI";
+		//test if exist maybe in a separate ft?
 		let encoded_address = encodeURI(req.body.billing.fulltext_address);
 		let options = {
-			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${apiKey}`,
+			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${process.env.GOOGLE_API_KEY}xzxz`,
 			json: true
 		};
 
-		rp(options).then(async data => {
-			if (data.status !== "OK") return res.status(200).json({ error: true, message: ERROR_MESSAGE.deliveryAddressNotFound });
+		let address = rp(options);
+		if (address.status !== "OK") throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 
-			req.flash("success", ERROR_MESSAGE.savedBilling);
-			return res.status(200).json({ error: false });
-		});
+		req.session.billing = req.body.billing;
+		req.flash("success", ERROR_MESSAGE.savedBilling);
+		return res.status(200).json({ error: false });
 	} catch (err) {
 		console.log("SAVE BILLING ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });

@@ -30,19 +30,6 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 const stripePublic = process.env.STRIPE_PUBLIC;
 
-const toTitleCase = phrase => {
-	let arr = phrase.toLowerCase().split(" ");
-	let parsed = [];
-
-	arr.forEach(item => {
-		let obj = item.charAt(0).toUpperCase() + item.slice(1);
-		if (item === "and") obj = "and";
-		parsed.push(obj);
-	});
-
-	return parsed.join(" ");
-};
-
 //const formatter = new Intl.NumberFormat();
 const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",
@@ -117,7 +104,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 		let obj = {
 			active: "Cart",
 			stripePublicKey: stripePublic,
-			products: null,
+			products: [],
 			totalPrice: 0,
 			totalQty: 0,
 			user: req.user,
@@ -126,13 +113,15 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 
 		if (req.session.cart) {
 			let cart = new Cart(req.session.cart);
-			obj.products = [];
 			let itemArr = cart.generateArray();
+			obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
+			obj.totalQty = cart.totalQty;
 
 			itemArr.forEach(item => {
-				let items;
+				let itemObj;
+
 				if (item.attributes && item.attributes.isUnique) {
-					items = {
+					itemObj = {
 						item: item.attributes,
 						qty: item.qty,
 						price: formatter.format(item.price).substr(2),
@@ -140,11 +129,11 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 						shorttitle: item.attributes.title.substr(0, 64),
 						details: "Toile Unique"
 					};
-					obj.products.push(items);
+					obj.products.push(itemObj);
 				} else {
 					item.elements.forEach(element => {
 						if (element.attributes !== undefined) {
-							items = {
+							itemObj = {
 								item: item.attributes,
 								attributes: element.attributes,
 								stringifiedAttributes: JSON.stringify(element.attributes),
@@ -155,9 +144,10 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 								shorttitle: item.attributes.title.substr(0, 64),
 								details: ""
 							};
+
 							let details = "";
 							Object.keys(element.attributes).forEach(attribute => {
-								details +=
+								itemObj.details +=
 									attribute.charAt(0).toUpperCase() +
 									attribute.slice(1) +
 									": " +
@@ -165,18 +155,18 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 									element.attributes[attribute].slice(1) +
 									" / ";
 							});
-							items.details = details.substr(0, details.length - 3);
-							obj.products.push(items);
+							itemObj.details = details.substr(0, details.length - 3);
+
+							obj.products.push(itemObj);
 						}
 					});
 				}
 			});
-			obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-			obj.totalQty = cart.totalQty;
 
-			let countryCode = country.findByName(toTitleCase(obj.delivery.country));
+			let countryCode = country.findByName(utils.toTitleCase(obj.delivery.country));
 			if (countryCode) countryCode = countryCode.code.iso2;
 			else throw new Error(ERROR_MESSAGE.countryCode);
+
 			let options = {
 				uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
 				method: "POST",
@@ -204,20 +194,12 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 	try {
 		let obj = {
 			active: "Billing",
-			stripePublicKey: stripePublic,
-			totalPrice: 0,
 			user: req.user,
 			billing: {}
 		};
-
+		if (!req.session.cart) return res.status(400).redirect("/shopping-cart");
+		if (req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 		if (req.session.billing) obj.billing = req.session.billing;
-
-		if (req.session.cart) {
-			let cart = new Cart(req.session.cart);
-
-			if (cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
-			obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-		} else return res.status(400).redirect("/shopping-cart");
 
 		return res.status(200).render("billing", obj);
 	} catch (err) {
@@ -254,17 +236,11 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 router.get("/User", setUser, authUser, async (req, res) => {
 	try {
 		let err, result, orders;
-		let obj = {};
-		obj = await User.findOne({ _id: req.user._id });
-		obj.user = req.user;
-		obj.password = undefined;
-		obj.active = "User";
-		obj.delivery = false; /////////////////?
+		let obj = { active: "User", user: req.user, delivery: false };
 
 		[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
 		if (err || !result) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
-
-		if (result != null) obj.delivery = result;
+		obj.delivery = result;
 
 		[err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
