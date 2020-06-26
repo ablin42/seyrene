@@ -213,21 +213,22 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 			active: "Payment",
 			stripePublicKey: stripePublic,
 			totalPrice: 0,
-			user: req.user
+			user: req.user,
+			billing: req.session.billing
 		};
 
-		if (req.session.cart) {
-			let cart = new Cart(req.session.cart);
+		console.log(obj.billing);
+		if (!req.session.cart) return res.status(400).redirect("/shopping-cart");
+		let cart = new Cart(req.session.cart);
 
-			if (cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
-			obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-		} else return res.status(400).redirect("/shopping-cart");
+		if (cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
+		obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
 
 		return res.status(200).render("payment", obj);
 	} catch (err) {
 		console.log("PAYMENT ROUTE ERROR", err);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/");
+		return res.status(400).redirect("/shopping-cart");
 	}
 });
 

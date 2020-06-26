@@ -169,8 +169,12 @@ async function createPwintyOrder(order, req) {
 	);
 	if (err || !orderResponse) throw new Error(ERROR_MESSAGE.submitOrder);
 
-	await submitOrder(order, req);
+	[err, orderResponse] = await utils.to(
+		Purchase.findOneAndUpdate({ _orderId: order._id }, { $set: { pwintyId: pwintyOrderId } })
+	);
+	if (err || !orderResponse) throw new Error(ERROR_MESSAGE.saveError);
 
+	await submitOrder(order, req);
 	return;
 }
 
@@ -197,70 +201,41 @@ async function submitOrder(order, req) {
 	return { err: false, orderId: order._id };
 }
 
-async function savePurchaseData(req, order, response) {
-	let pwintyOrderId = "";
-	let shippingAddress = [];
-	let err, purchaseDataResponse, user, delivery;
-
-	if (response && response.pwintyOrderId) pwintyOrderId = response.pwintyOrderId;
-
-	[err, delivery] = await utils.to(DeliveryInfo.findOne({ _userId: order._userId }));
-	if (err || delivery === null) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
-
-	[err, user] = await utils.to(User.findOne({ _id: order._userId }));
-	if (err || user === null) throw new Error(ERROR_MESSAGE.userNotFound);
-
-	shippingAddress = delivery;
-	const purchaseData = new Purchase({
-		_orderId: order._id,
-		_userId: order._userId,
-		chargeId: order.chargeId,
-		pwintyId: pwintyOrderId,
-		shippingAddress: shippingAddress,
-		billingAddress: order.billing,
-		username: user.name,
-		email: user.email,
-		paymentInfo: req.body
-	});
-
-	[err, purchaseDataResponse] = await utils.to(purchaseData.save());
-	if (err) throw new Error(ERROR_MESSAGE.saveError);
-
-	return purchaseData;
-}
-
-router.post("/confirm", setUser, authUser, async (req, res) => {
-	//triggered when payment succeeded
+router.post("/confirm", async (req, res) => {
 	try {
-		let err, order, item;
-
 		if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) {
-			//make sure its sent by webhook
+			let err, delivery, user, response;
 			[err, order] = await utils.to(
 				Order.findOneAndUpdate(
 					{ chargeId: req.body.data.object.id, status: "awaitingStripePayment" },
 					{ $set: { status: "awaitingApproval" } }
 				)
 			);
-			if (err || order === null) throw new Error(ERROR_MESSAGE.fetchError);
+			if (err || !order) throw new Error(ERROR_MESSAGE.fetchError);
 
-			let isPwinty = false;
-			for (let index = 0; index < order.items.length; index++) {
-				[err, item] = await utils.to(
-					Shop.findOneAndUpdate({ _id: order.items[index].attributes._id }, { $set: { soldOut: true } })
-				);
-				if (err) throw new Error(ERROR_MESSAGE.serverError);
-				if (!order.items[index].attributes.isUnique) isPwinty = true;
-			}
+			[err, delivery] = await utils.to(DeliveryInfo.findOne({ _userId: order._userId }));
+			if (err || !delivery) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 
-			//below v
-			let response;
-			//if (isPwinty === false) response = await submitOrder(req);
-			//else response = await createPwintyOrder(order, req);
+			[err, user] = await utils.to(User.findOne({ _id: order._userId }));
+			if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
-			await savePurchaseData(req, order, response);
+			const purchaseData = new Purchase({
+				_orderId: order._id,
+				_userId: order._userId,
+				chargeId: order.chargeId,
+				pwintyId: "notYetProcessed",
+				shippingAddress: delivery,
+				billingAddress: order.billing,
+				username: user.name,
+				email: user.email,
+				paymentInfo: req.body
+			});
+
+			[err, response] = await utils.to(purchaseData.save());
+			if (err) throw new Error(ERROR_MESSAGE.saveError);
 		}
-		return res.status(200).send("OK"); //////////////////////
+
+		return res.status(200).send("OK");
 	} catch (err) {
 		console.log("CONFIRMING ORDER ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
@@ -309,27 +284,27 @@ router.post("/initialize", setUser, authUser, async (req, res) => {
 });
 
 router.post("/update", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	///
 	try {
 		let url = req.header("Referer") || "/Admin/Orders";
 		let newStatus = req.body.status;
 		let order, user, err;
 
-		if (newStatus !== "Completed" && newStatus !== "Submitted") throw new Error(ERROR_MESSAGE.incorrectInput);
+		if (newStatus !== "Completed") throw new Error(ERROR_MESSAGE.incorrectInput);
 
 		[err, order] = await utils.to(Order.findOne({ _id: req.body.orderId }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
+		if (err || !order) throw new Error(ERROR_MESSAGE.fetchError);
 
 		if (order.status === "Cancelled") throw new Error(ERROR_MESSAGE.badOrderStatus);
 
 		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: req.body.orderId }, { $set: { status: newStatus } }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.updateError);
+		if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
 
 		// Send mails
 		let subject = `Updated Order #${order._id}`;
 		let content = `You updated an order, to see the order, please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
-		if (await mailer("ablin@byom.de", subject, content))
-			//maral.canvas@gmail.com
-			throw new Error(ERROR_MESSAGE.sendMail);
+		//maral.canvas@gmail.com
+		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		[err, user] = await utils.to(User.findById(order._userId));
 		if (err || user == null) throw new Error(ERROR_MESSAGE.userNotFound);
@@ -410,7 +385,6 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 			let refund = await refundStripe(req, order.chargeId, order._id);
 			if (refund.error === true) throw new Error(refund.message);
 		} else {
-			//if order has not been approved, pwinty order hasnt been created
 			let options = {
 				method: "GET",
 				uri: `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}`,
@@ -420,7 +394,7 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 
 			let response = await rp(options);
 			if (response.error === true) throw new Error(ERROR_MESSAGE.fetchStatus);
-			if (response.canCancel !== true) throw new Error(ERROR_MESSAGE.badOrderStatus);
+			if (response.response.canCancel !== true) throw new Error(ERROR_MESSAGE.badOrderStatus);
 
 			options.method = "POST";
 			options.uri = `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}/submit`;

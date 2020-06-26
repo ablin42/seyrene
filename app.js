@@ -80,12 +80,13 @@ app.use((req, res, next) => {
 });
 
 // Handles multer error
+/* delete if useless
 app.use((err, req, res, next) => {
 	// treat as 404
 	if (err.message && (~err.message.indexOf("not found") || ~err.message.indexOf("Cast to ObjectId failed"))) {
 		return next();
 	}
-	console.error(err.stack);
+	console.error(err.stack, "stack");
 
 	// multer error
 	if (
@@ -95,9 +96,9 @@ app.use((err, req, res, next) => {
 	)
 		return res.status(500).json({ url: "/", message: err.message, err: true });
 
-	if (err.message) console.log(err.message);
+	if (err.message) console.log(err.message, "msg");
 	return res.status(500).redirect("back");
-});
+});*/
 
 // Routes
 app.use("/", pagesRoute);

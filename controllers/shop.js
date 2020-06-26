@@ -24,14 +24,13 @@ const storage = multer.diskStorage({
 		cb(null, Date.now() + path.extname(file.originalname));
 	}
 });
-
 const upload = multer({
 	storage: storage,
 	limits: {
 		fileSize: 100000000
 	},
 	fileFilter: function (req, file, cb) {
-		utils.sanitizeFile(req, file, cb);
+		utils.sanitizeFile(file, cb);
 	}
 }).array("img");
 
@@ -69,56 +68,64 @@ router.get("/single/:id", setUser, async (req, res) => {
 	}
 });
 
-router.post("/post", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	try {
-		let err, result, savedImage;
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				throw new Error(item.msg);
-			});
+router.post("/post", vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	upload(req, res, async function (err) {
+		try {
+			if (err) {
+				let errMsg = err;
+				if (err.message) errMsg = err.message;
+				return res.status(400).json({ url: "/", message: errMsg, err: true });
+			} else {
+				let err, result, savedImage;
+				const vResult = validationResult(req.body);
+				if (!vResult.isEmpty()) {
+					vResult.errors.forEach(item => {
+						throw new Error(item.msg);
+					});
+				}
+
+				let price = parseFloat(req.body.price);
+				if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
+				let formattedPrice = price.toFixed(2);
+
+				const obj = {
+					title: req.body.title,
+					content: req.body.content,
+					price: formattedPrice
+				};
+
+				const shop = new Shop(obj);
+				[err, result] = await utils.to(shop.save());
+				if (err) throw new Error(ERROR_MESSAGE.saveError);
+
+				for (let i = 0; i < req.files.length; i++) {
+					let isMain = false;
+					if (i === 0) isMain = true;
+
+					let image = new Image({
+						_itemId: result._id,
+						itemType: "Shop",
+						isMain: isMain,
+						mimetype: req.files[i].mimetype
+					});
+					let oldpath = req.files[i].destination + req.files[i].filename;
+					let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+					fs.rename(oldpath, newpath, err => {
+						if (err) throw new Error(err);
+					});
+					image.path = newpath;
+					[err, savedImage] = await utils.to(image.save());
+					if (err) throw new Error(ERROR_MESSAGE.updateError);
+				}
+
+				req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
+				return res.status(200).json({ err: false, url: `/Shop/${result._id}` });
+			}
+		} catch (err) {
+			console.log("POST SHOP ERROR", err);
+			return res.status(400).json({ url: "/", message: err.message, err: true });
 		}
-
-		let price = parseFloat(req.body.price);
-		if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
-		let formattedPrice = price.toFixed(2);
-
-		const obj = {
-			title: req.body.title,
-			content: req.body.content,
-			price: formattedPrice
-		};
-
-		const shop = new Shop(obj);
-		[err, result] = await utils.to(shop.save());
-		if (err) throw new Error(ERROR_MESSAGE.saveError);
-
-		for (let i = 0; i < req.files.length; i++) {
-			let isMain = false;
-			if (i === 0) isMain = true;
-
-			let image = new Image({
-				_itemId: result._id,
-				itemType: "Shop",
-				isMain: isMain,
-				mimetype: req.files[i].mimetype
-			});
-			let oldpath = req.files[i].destination + req.files[i].filename;
-			let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
-			fs.rename(oldpath, newpath, err => {
-				if (err) throw new Error(err);
-			});
-			image.path = newpath;
-			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error(ERROR_MESSAGE.updateError);
-		}
-
-		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
-		return res.status(200).json({ err: false, url: `/Shop/${result._id}` });
-	} catch (err) {
-		console.log("POST SHOP ERROR", err);
-		return res.status(400).json({ url: "/", message: err.message, err: true });
-	}
+	});
 });
 
 router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {

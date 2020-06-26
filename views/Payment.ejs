@@ -11,7 +11,7 @@
 		<div class="payment-form-wrapper col-6 offset-3">
 			<h1 class="payment-price" style="color: white;"><% if (locals.totalPrice) { %><%= locals.totalPrice %><% } %>€</h1>
 			<form action="" method="POST" id="payment-form">
-				<input type="text" id="email" placeholder="Email address" />
+				<input type="text" id="email" placeholder="Email address" required />
 				<label for="card-element" class="card-label">
 					Credit or debit card
 				</label>
@@ -30,7 +30,7 @@
 	</div>
 </div>
 
-<script async>
+<script>
 	let orderId;
 	let clientSecret;
 	let card;
@@ -98,18 +98,17 @@
 			payment_method: {
 				card: card
 			},
-			billing_details: {
-				/*"address": {
-	           "city": null,
-	           "country": null,
-	           "line1": null,
-	           "line2": null,
-	           "postal_code": null,
-	           "state": null
-	         },
-	         "email": null,
-	         "name": null,
-	         "phone": null*/
+			shipping: {
+				address: {
+					city: "<%= locals.billing.city %>",
+					country: "<%= locals.billing.country %>",
+					line1: "<%= locals.billing.fulltext_address %>",
+					line2: null,
+					postal_code: "<%= locals.billing.postal_code %>",
+					state: "<%= locals.billing.state %>"
+				},
+				name: "<%= locals.billing.lastname %> <%= locals.billing.firstname %>",
+				phone: null
 			}
 		});
 
@@ -126,17 +125,18 @@
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify({ type: "payment_intent.succeeded", data: { object: { id: result.paymentIntent.id } } }),
-			json: true
+			body: JSON.stringify({ type: "payment_intent.succeeded", data: { object: { id: result.paymentIntent.id } } })
 		});
+
 		if (confirm.error === true) {
 			let alert = createAlertNode(confirm.message);
 			addAlert(alert, "#header");
 			return;
+		} else {
+			setTimeout(function () {
+				window.location.href = `/api/cart/clear/${orderId}`;
+			}, 2000);
 		}
-		setTimeout(function () {
-			window.location.href = `/api/cart/clear/${orderId}`;
-		}, 2000);
 	};
 </script>
 <% include partials/footer %>

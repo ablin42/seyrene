@@ -19,13 +19,13 @@ module.exports = {
 			})
 			.catch(err => [pe(err)]);
 	},
-	sanitizeFile: function (req, file, cb) {
+	sanitizeFile: async function (file, cb) {
 		let fileExts = ["png", "jpg", "jpeg", "gif"];
 		let isAllowedExt = fileExts.includes(file.originalname.split(".")[1].toLowerCase());
 		let isAllowedMimeType = file.mimetype.startsWith("image/");
 
 		if (isAllowedExt && isAllowedMimeType) return cb(null, true);
-		else cb("Error: File type not allowed!");
+		else cb("File type not allowed");
 	},
 	toTitleCase: function (phrase) {
 		let arr = phrase.toLowerCase().split(" ");
