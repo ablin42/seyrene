@@ -4,7 +4,7 @@ const rp = require("request-promise");
 const sanitize = require("mongo-sanitize");
 
 const mailer = require("./helpers/mailer");
-const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Order = require("../models/Order");
 const Money = require("money-exchange");
@@ -37,11 +37,11 @@ router.post("/orders/create", setUser, authUser, async (req, res) => {
 		};
 
 		let response = await rp(options).catch(function (err) {
+			console.log(err, "XDD");
 			throw new Error(err.response.body.statusTxt);
 		});
 
-		if (response.statusCode === 200) return res.status(200).json(response);
-		else throw new Error(response.statusTxt);
+		return res.status(200).json({ error: false, order: response.data });
 	} catch (err) {
 		console.log("PWINTY ORDER CREATE ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
@@ -62,15 +62,13 @@ router.get("/orders/:id", setUser, authUser, async (req, res) => {
 		};
 
 		let response = await rp(options).catch(function (err) {
-			throw new Error(err.response.body.statusTxt);
+			throw new Error(err.error.message);
 		});
 
-		if (response.statusCode === 200) return res.status(200).json(response);
-		else throw new Error(response.statusTxt);
+		return res.status(200).json({ error: false, response: response.data });
 	} catch (err) {
 		console.log("PWINTY ORDER FETCH ERROR:", err);
-		return res.status(200).json({ message: err.message });
-		//	return res.status(200).json({ error: true, errordata: err.error });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
@@ -88,21 +86,19 @@ router.get("/orders/:id/status", setUser, authUser, async (req, res) => {
 		};
 
 		let response = await rp(options).catch(function (err) {
-			throw new Error(err.response.body.statusTxt);
+			throw new Error(err.error.message);
 		});
 
-		if (response.statusCode === 200) return res.status(200).json(response);
-		else throw new Error(response.statusTxt);
+		return res.status(200).json({ error: false, response: response.data });
 	} catch (err) {
 		console.log("PWINTY ORDER STATUS ERROR:", err);
-		return res.status(200).json({ message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
-router.post("/orders/:id/submit", setUser, authUser, async (req, res) => {
-	//might need setOrder canview
+router.post("/orders/:id/submit", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let id = sanitize(req.params.id);
+		const id = sanitize(req.params.id);
 		let options = {
 			method: "POST",
 			uri: `${API_URL}/v3.0/Orders/${id}/status`,
@@ -110,19 +106,17 @@ router.post("/orders/:id/submit", setUser, authUser, async (req, res) => {
 				"X-Pwinty-MerchantId": MERCHANTID,
 				"X-Pwinty-REST-API-Key": APIKEY
 			},
-			body: { status: req.body.status }, // Cancelled, AwaitingPayment or Submitted.
+			body: { status: req.body.status },
 			json: true
 		};
-
 		let response = await rp(options).catch(function (err) {
-			throw new Error(err.response.body.statusTxt);
+			throw new Error(err.error.message);
 		});
 
-		if (response.statusCode === 200) return res.status(200).json(response);
-		else throw new Error(response.statusTxt);
+		return res.status(200).json({ error: false, order: response });
 	} catch (err) {
 		console.log("PWINTY ORDER SUBMIT ERROR:", err);
-		return res.status(200).json({ message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 /* END ORDERS */
@@ -142,16 +136,14 @@ router.post("/orders/:id/images/batch", setUser, authUser, async (req, res) => {
 			body: req.body,
 			json: true
 		};
-
 		let response = await rp(options).catch(function (err) {
-			throw new Error(err.response.body.statusTxt);
+			throw new Error(err.error.message);
 		});
 
-		if (response.statusCode === 200) return res.status(200).json(response);
-		else throw new Error(response.statusTxt);
+		return res.status(200).json({ error: false, response: response });
 	} catch (err) {
 		console.log("PWINTY IMAGE BATCH ERROR:", err);
-		return res.status(200).json({ message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 /* END IMAGES */
@@ -168,16 +160,15 @@ router.get("/countries", setUser, async (req, res) => {
 			},
 			json: true
 		};
-
 		let response = await rp(options).catch(function (err) {
 			throw new Error(err.response.body.statusTxt);
 		});
+		if (response.statusCode !== 200) throw new Error(response.statusTxt);
 
-		if (response.statusCode === 200) return res.status(200).json(response);
-		else throw new Error(response.statusTxt);
+		return res.status(200).json({ error: false, response: response });
 	} catch (err) {
 		console.log("PWINTY COUNTRIES ERROR:", err);
-		return res.status(200).json({ message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 /* END COUNTRIES */
@@ -202,12 +193,12 @@ router.post("/countries/:countryCode", setUser, async (req, res) => {
 		let response = await rp(options).catch(function (err) {
 			throw new Error(ERROR_MESSAGE.serverError);
 		});
+		if (!response.prices) throw new Error(ERROR_MESSAGE.serverError);
 
-		if (response.prices) return res.status(200).json(response);
-		else throw new Error(ERROR_MESSAGE.serverError);
+		return res.status(200).json({ error: false, response });
 	} catch (err) {
 		console.log("PWINTY COUNTRYCODE ERROR:", err);
-		return res.status(200).json({ message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
@@ -316,335 +307,12 @@ router.post("/callback/status", async (req, res) => {
 			content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 			if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-			return res.status(200).send("OK");
+			return res.status(200).send({ error: false, message: "OK" });
 		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
 		console.log("PWINTY CALLBACK ERROR:", err.message);
-		return res.status(200).json({ message: err.message });
-	}
-});
-
-/*
-
-
-router.post("/orders/create", setUser, authUser, async (req, res) => {
-	try {
-		let options = {
-			method: "POST",
-			uri: `${API_URL}/v3.0/Orders`,
-			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
-			},
-			body: req.body,
-			json: true
-		};
-
-		rp(options)
-			.then(response => {
-				console.log(response);
-				return res.status(200).json(response);
-			})
-			.catch(err => {
-				//console.log(err)
-				return res.status(200).json({ error: true, errordata: err.error });
-			});
-	} catch (err) {
-		console.log("PWINTY ORDER CREATE ERROR:", err);
-		return res.status(200).json({ message: err.message });
-	}
-});
-
-router.get("/orders/:id", setUser, authUser, async (req, res) => {
-	try {
-		let id = sanitize(req.params.id);
-		let options = {
-			method: "GET",
-			uri: `${API_URL}/v3.0/Orders/${id}`,
-			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
-			},
-			json: true
-		};
-
-		rp(options)
-			.then(response => {
-				console.log(response);
-				return res.status(200).json(response);
-			})
-			.catch(err => {
-				console.log(err.error);
-				return res.status(200).json({ error: true, errordata: err.error });
-			});
-	} catch (err) {
-		console.log("PWINTY ORDER FETCH ERROR:", err);
-		return res.status(200).json({ message: err.message });
-	}
-});
-
-router.get("/orders/:id/status", setUser, authUser, async (req, res) => {
-	try {
-		let id = sanitize(req.params.id);
-		let options = {
-			method: "GET",
-			uri: `${API_URL}/v3.0/Orders/${id}/SubmissionStatus`,
-			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
-			},
-			json: true
-		};
-
-		rp(options)
-			.then(response => {
-				return res.status(200).json(response);
-			})
-			.catch(err => {
-				console.log(err.error);
-				return res.status(200).json({ error: true, errordata: err.error });
-			});
-	} catch (err) {
-		console.log("PWINTY ORDER STATUS ERROR:", err);
-		return res.status(200).json({ message: err.message });
-	}
-});
-
-router.post("/orders/:id/submit", setUser, authUser, async (req, res) => {
-	//might need setOrder canview
-	try {
-		let id = sanitize(req.params.id);
-		let options = {
-			method: "POST",
-			uri: `${API_URL}/v3.0/Orders/${id}/status`,
-			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
-			},
-			body: { status: req.body.status }, // Cancelled, AwaitingPayment or Submitted. //variable
-			json: true
-		};
-
-		rp(options)
-			.then(response => {
-				return res.status(200).json(response);
-			})
-			.catch(err => {
-				console.log(err.error);
-				return res.status(200).json({ error: true, errordata: err.error });
-			});
-	} catch (err) {
-		console.log("PWINTY ORDER SUBMIT ERROR:", err);
-		return res.status(200).json({ message: err.message });
-	}
-});
-
-
-router.post("/orders/:id/images/batch", setUser, authUser, async (req, res) => {
-	try {
-		let id = sanitize(req.params.id);
-		let options = {
-			method: "POST",
-			uri: `${API_URL}/v3.0/orders/${id}/images/batch`,
-			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
-			},
-			body: req.body,
-			json: true
-		};
-
-		rp(options)
-			.then(response => {
-				if (response.statusCode === 200) {
-					console.log(response);
-				} else return res.status(200).json({ error: true, errordata: "XDDD" });
-				return res.status(200).json(response);
-			})
-			.catch(err => {
-				console.log("IMAGE BATCH ERROR");
-				return res.status(200).json({ error: true, errordata: err.error });
-			});
-	} catch (err) {
-		console.log("PWINTY IMAGE BATCH ERROR:", err);
-		return res.status(200).json({ message: err.message });
-	}
-});
-router.get("/countries", setUser, async (req, res) => {
-	//maybe unused
-	try {
-		let options = {
-			method: "GET",
-			uri: `${API_URL}/v3.0/countries`,
-			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
-			},
-			json: true
-		};
-
-		rp(options)
-			.then(response => {
-				console.log(response);
-				return res.status(200).json(response);
-			})
-			.catch(err => {
-				console.log(err);
-				return res.status(200).json({ error: true, errordata: err.error });
-			});
-	} catch (err) {
-		console.log("PWINTY COUNTRIES ERROR:", err);
-		return res.status(200).json({ message: err.message });
-	}
-});
-router.post("/countries/:countryCode", setUser, async (req, res) => {
-	try {
-		let countryCode = sanitize(req.params.countryCode);
-		let options = {
-			method: "POST",
-			uri: `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/prices`,
-			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
-			},
-			body: {
-				skus: req.body.skus
-			},
-			json: true
-		};
-
-		rp(options)
-			.then(response => {
-				console.log(response);
-				return res.status(200).json(response);
-			})
-			.catch(err => {
-				console.log(err);
-				return res.status(200).json({ error: true, errordata: err.error });
-			});
-	} catch (err) {
-		console.log("PWINTY COUNTRYCODE ERROR:", err);
-		return res.status(200).json({ message: err.message });
-	}
-});
-
-router.post("/pricing/:countryCode", setUser, async (req, res) => {
-	try {
-		let countryCode = sanitize(req.params.countryCode);
-		let items = [];
-
-		if (req.body.items) {
-			req.body.items.forEach(item => {
-				if (item && item.attributes && item.attributes.isUnique !== true) {
-					let obj = {
-						sku: item.elements[0].attributes.SKU,
-						quantity: item.qty
-					};
-					items.push(obj);
-				} else if (item && item.SKU) {
-					let obj = {
-						sku: item.SKU,
-						quantity: item.quantity //need qty too (qty for elements with frame color diff not counted properly)
-					};
-					items.push(obj);
-				}
-			});
-
-			let options = {
-				method: "POST",
-				uri: `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/order/price`,
-				headers: {
-					"X-Pwinty-MerchantId": MERCHANTID,
-					"X-Pwinty-REST-API-Key": APIKEY
-				},
-				body: { items: items },
-				json: true
-			};
-
-			rp(options)
-				.then(response => {
-					let found = 0;
-					response.shipmentOptions.forEach(shipmentOption => {
-						if (shipmentOption.isAvailable && shipmentOption.shippingMethod === "Standard") {
-							found = 1;
-							let formatted = {
-								isAvailable: shipmentOption.isAvailable,
-								unitPriceIncludingTax: formatter
-									.format(fx.convert(shipmentOption.shipments[0].items[0].unitPriceIncludingTax / 100, "GBP", "EUR"))
-									.substr(2)
-									.replace(",", ""),
-								totalPriceIncludingTax: formatter
-									.format(fx.convert(shipmentOption.totalPriceIncludingTax / 100, "GBP", "EUR"))
-									.substr(2)
-									.replace(",", ""),
-								totalPriceExcludingTax: formatter
-									.format(fx.convert(shipmentOption.totalPriceExcludingTax / 100, "GBP", "EUR"))
-									.substr(2)
-									.replace(",", ""),
-								shippingMethod: shipmentOption.shippingMethod,
-								shippingPriceIncludingTax: formatter
-									.format(fx.convert(shipmentOption.shippingPriceIncludingTax / 100, "GBP", "EUR"))
-									.substr(2)
-									.replace(",", ""),
-								shippingPriceExcludingTax: formatter
-									.format(fx.convert(shipmentOption.shippingPriceExcludingTax / 100, "GBP", "EUR"))
-									.substr(2)
-									.replace(",", ""),
-								shipments: shipmentOption.shipments
-							};
-
-							return res.status(200).json({ error: false, response: formatted });
-						}
-					});
-					if (found === 0) return res.status(200).json({ error: false, response: [] });
-				})
-				.catch(err => {
-					console.log(err);
-					return res.status(200).json({ error: true, message: err.message });
-				});
-		} else throw new Error(ERROR_MESSAGE.incorrectInput);
-	} catch (err) {
-		console.log("PWINTY PRICING ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
-router.post("/callback/status", async (req, res) => {
-	try {
-		let err, order, user;
-		console.log("api callback called");
-		if (req.body.orderId && req.body.status) {
-			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
-			console.log(err, order);
-			if (err || order == null) throw new Error(ERROR_MESSAGE.noResult);
-
-			[err, order] = await utils.to(
-				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.status } })
-			);
-			console.log(err, order);
-			if (err || order == null) throw new Error(ERROR_MESSAGE.updateError);
-
-			// Send mails
-			let subject = `Updated Order #${order._id}`;
-			let content = `You order status has been updated, to see the order please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
-			if (await mailer("ablin@byom.de", subject, content))
-				//maral.canvas@gmail.com
-				throw new Error(ERROR_MESSAGE.sendMail);
-
-			[err, user] = await utils.to(Order.findOne({ _userId: order._userId }));
-			console.log(err, user);
-			if (err || user == null) throw new Error(ERROR_MESSAGE.userNotFound);
-
-			content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
-			if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
-
-			return res.status(200).send("OK");
-		} else throw new Error(ERROR_MESSAGE.incorrectInput);
-	} catch (err) {
-		console.log("PWINTY CALLBACK ERROR:", err.message);
-		return res.status(200).json({ message: err.message });
-	}
-});
-
-*/
 module.exports = router;

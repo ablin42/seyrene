@@ -74,7 +74,7 @@ async function setDelivery(req, res, next) {
 }
 
 function isDelivery(req, res, next) {
-	if (req.delivery == null) {
+	if (!req.delivery) {
 		req.flash("warning", ERROR_MESSAGE.unsetDeliveryAddress);
 		return res.status(403).redirect("/User");
 	}
@@ -86,7 +86,7 @@ async function setOrder(req, res, next) {
 	const orderId = sanitize(req.params.id);
 
 	let [err, order] = await utils.to(Order.findById(orderId));
-	if (err || order == null) {
+	if (err || !order) {
 		req.flash("warning", ERROR_MESSAGE.noResult);
 		return res.status(404).redirect("/User");
 	}

@@ -11,7 +11,7 @@ function closeDialog() {
 
 async function confirmDelete(orderId) {
 	closeDialog();
-	await fetch(`/api/order/cancel/${orderId}`, {
+	let response = await fetch(`/api/order/cancel/${orderId}`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
@@ -19,20 +19,15 @@ async function confirmDelete(orderId) {
 		},
 		credentials: "include",
 		mode: "same-origin"
-	})
-		.then(res => {
-			return res.json();
-		})
-		.then(function (response) {
-			let alertType = "success";
-			if (response.err === "true") alertType = "warning";
+	});
+	response = await response.json();
 
-			let alert = createAlertNode(response.message, alertType);
-			addAlert(alert, "#header");
-		})
-		.catch(err => {
-			console.log(err);
-		});
+	let alertType = "success";
+	console.log(response);
+	if (response.error === "true") alertType = "warning";
+
+	let alert = createAlertNode(response.message, alertType);
+	addAlert(alert, "#header");
 	return;
 }
 
@@ -43,7 +38,7 @@ function abortAction() {
 
 async function confirmApproval(orderId) {
 	closeDialog();
-	await fetch(`/api/order/approve/${orderId}`, {
+	let response = await fetch(`/api/order/approve/${orderId}`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
@@ -51,22 +46,15 @@ async function confirmApproval(orderId) {
 		},
 		credentials: "include",
 		mode: "same-origin"
-	})
-		.then(res => {
-			return res.json();
-		})
-		.then(function (response) {
-			if (response.error === false) {
-				console.log(response);
-			} else {
-				console.log("error:", response);
-			}
-			let alert = createAlertNode(response.message, "success");
-			addAlert(alert, "#header");
-		})
-		.catch(err => {
-			console.log(err);
-		});
+	});
+	response = await response.json();
+
+	console.log(response);
+	let alertType = "success";
+	if (response.error === true) alertType = "warning";
+
+	let alert = createAlertNode(response.message, alertType);
+	addAlert(alert, "#header");
 	return;
 }
 

@@ -7,9 +7,22 @@ const session = require("express-session");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
 const sanitize = require("mongo-sanitize");
+const { setUser } = require("./controllers/helpers/verifySession");
 require("dotenv").config();
 
-const { setUser } = require("./controllers/helpers/verifySession");
+const pagesRoute = require("./controllers/pages");
+const authRoute = require("./controllers/auth");
+const blogsRoute = require("./controllers/blogs");
+const userRoute = require("./controllers/user");
+const contactRoute = require("./controllers/contact");
+const galleryRoute = require("./controllers/galleries");
+const cartRoute = require("./controllers/cart");
+const shopRoute = require("./controllers/shop");
+const orderRoute = require("./controllers/order");
+const frontRoute = require("./controllers/front");
+const imageRoute = require("./controllers/images");
+const pwintyRoute = require("./controllers/pwinty");
+const stripeRoute = require("./controllers/stripe");
 
 //Connect to DB
 mongoose.connect(
@@ -31,8 +44,6 @@ const app = express();
 app.use(express.static(__dirname + "/public"));
 
 // Middleware
-//-- Body parser --//
-// Parse app/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
 // Parse app/json
 app.use(bodyParser.json({ limit: 100000000 }));
@@ -50,52 +61,23 @@ app.use(
 		sameSite: "Lax" //remove if bug
 	})
 );
-
-//-- Flash --//
+app.set("view engine", "ejs");
 app.use(flash());
-// Mount express-sanitizer middleware here
 app.use(expressSanitizer());
 
+// Keep session
 app.use((req, res, next) => {
 	res.locals.session = req.session;
 	next();
 });
 
+// Sanitize body and query params
 app.use((req, res, next) => {
 	req.body = sanitize(req.body);
 	req.query = sanitize(req.query);
 
 	next();
 });
-
-// Routes
-const pagesRoute = require("./controllers/pages");
-const authRoute = require("./controllers/auth");
-const blogsRoute = require("./controllers/blogs");
-const userRoute = require("./controllers/user");
-const contactRoute = require("./controllers/contact");
-const galleryRoute = require("./controllers/galleries");
-const cartRoute = require("./controllers/cart");
-const shopRoute = require("./controllers/shop");
-const orderRoute = require("./controllers/order");
-const frontRoute = require("./controllers/front");
-const imageRoute = require("./controllers/images");
-const pwintyRoute = require("./controllers/pwinty");
-const stripeRoute = require("./controllers/stripe");
-
-app.use("/", pagesRoute);
-app.use("/api/auth", authRoute);
-app.use("/api/blog", blogsRoute);
-app.use("/api/user", userRoute);
-app.use("/api/contact", contactRoute);
-app.use("/api/gallery", galleryRoute);
-app.use("/api/cart", cartRoute);
-app.use("/api/shop", shopRoute);
-app.use("/api/order", orderRoute);
-app.use("/api/front", frontRoute);
-app.use("/api/image", imageRoute);
-app.use("/api/pwinty", pwintyRoute);
-app.use("/api/stripe", stripeRoute);
 
 // Handles multer error
 app.use((err, req, res, next) => {
@@ -117,9 +99,22 @@ app.use((err, req, res, next) => {
 	return res.status(500).redirect("back");
 });
 
-// set the view engine to ejs
-app.set("view engine", "ejs");
+// Routes
+app.use("/", pagesRoute);
+app.use("/api/auth", authRoute);
+app.use("/api/blog", blogsRoute);
+app.use("/api/user", userRoute);
+app.use("/api/contact", contactRoute);
+app.use("/api/gallery", galleryRoute);
+app.use("/api/cart", cartRoute);
+app.use("/api/shop", shopRoute);
+app.use("/api/order", orderRoute);
+app.use("/api/front", frontRoute);
+app.use("/api/image", imageRoute);
+app.use("/api/pwinty", pwintyRoute);
+app.use("/api/stripe", stripeRoute);
 
+// 404 route
 app.get("*", setUser, (req, res) => {
 	try {
 		let obj = { active: "404" };

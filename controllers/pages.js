@@ -19,7 +19,6 @@ const {
 } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Blog = require("../models/Blog");
-const User = require("../models/User");
 const Shop = require("../models/Shop");
 const Order = require("../models/Order");
 const Gallery = require("../models/Gallery");
@@ -29,15 +28,12 @@ const Cart = require("../models/Cart");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 const stripePublic = process.env.STRIPE_PUBLIC;
-
-//const formatter = new Intl.NumberFormat();
 const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",
 	currency: "EUR"
 });
 
 /* MAIN ROUTES */
-
 router.get("/", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Home" };
@@ -163,24 +159,26 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 				}
 			});
 
-			let countryCode = country.findByName(utils.toTitleCase(obj.delivery.country));
-			if (countryCode) countryCode = countryCode.code.iso2;
-			else throw new Error(ERROR_MESSAGE.countryCode);
+			if (cart.generatePwintyArray().length > 0) {
+				let countryCode = country.findByName(utils.toTitleCase(obj.delivery.country));
+				if (countryCode) countryCode = countryCode.code.iso2;
+				else throw new Error(ERROR_MESSAGE.countryCode);
 
-			let options = {
-				uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Accept": "application/json"
-				},
-				body: { items: cart.generatePwintyArray() },
-				json: true
-			};
+				let options = {
+					uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"Accept": "application/json"
+					},
+					body: { items: cart.generatePwintyArray() },
+					json: true
+				};
 
-			obj.deliveryPrice = await rp(options);
-			if (obj.deliveryPrice.error) throw new Error(obj.deliveryPrice.message);
-			//parse and format price
+				obj.deliveryPrice = await rp(options);
+				if (obj.deliveryPrice.error) throw new Error(obj.deliveryPrice.message);
+				//parse and format price
+			}
 		}
 		return res.status(200).render("cart", obj);
 	} catch (err) {
@@ -339,18 +337,7 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 
 router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
-		let obj = { active: "Order recap", user: req.user };
-		const orderId = sanitize(req.params.id);
-
-		let options = {
-			method: "GET",
-			uri: `${process.env.BASEURL}/api/order/${orderId}`,
-			headers: { cookie: req.headers.cookie },
-			json: true
-		};
-
-		obj.order = await rp(options); //same as /About
-		if (obj.order.error) throw new Error(obj.order.message);
+		let obj = { active: "Order recap", user: req.user, order: req.order };
 
 		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
 		obj.products = [];
@@ -558,20 +545,9 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 	}
 });
 
-router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
-		let obj = { active: "Order recap", user: req.user };
-		const orderId = sanitize(req.params.id);
-
-		let options = {
-			method: "GET",
-			uri: `${process.env.BASEURL}/api/order/${orderId}`,
-			headers: { cookie: req.headers.cookie },
-			json: true
-		};
-
-		obj.order = await rp(options); //same as /About
-		if (obj.order.error) throw new Error(obj.order.message);
+		let obj = { active: "Order recap", user: req.user, order: req.order };
 
 		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
 		obj.products = [];

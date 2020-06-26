@@ -108,91 +108,70 @@ async function createPwintyOrder(order, req) {
 	let countryCode = country.findByName(utils.toTitleCase(order.country));
 	if (countryCode) countryCode = countryCode.code.iso2;
 	else throw new Error(ERROR_MESSAGE.countryCode);
+
 	let options = {
 		method: "POST",
-		uri: `${process.env.BASEURL}/api/pwinty/orders/create`, //${API_URL}/v3.0/Orders
+		uri: `${process.env.BASEURL}/api/pwinty/orders/create`,
 		body: {
-			merchantOrderId: order._id,
+			merchantOrderId: order._id, ///not good
 			recipientName: order.firstname + " " + order.lastname,
 			address1: order.full_address, //has city + country, might need to use only full_street
 			addressTownOrCity: order.city,
 			stateOrCounty: order.state,
 			postalOrZipCode: order.zipcode,
 			countryCode: countryCode,
-			preferredShippingMethod: "standard" // Possible values are Budget, Standard, Express, and Overnight.
+			preferredShippingMethod: "standard"
 		},
 		json: true
 	};
-
 	let response = await rp(options);
-	console.log(response);
+	if (response.error === true) throw new Error(response.message);
 
-	if (response.statusCode === 200) {
-		let pwintyOrderId = response.data.id;
-		let body = [];
+	let pwintyOrderId = response.order.id;
+	let body = [];
 
-		order.items.forEach(item => {
-			if (item.attributes.isUnique !== true) {
-				item.elements.forEach(product => {
-					let obj = {
-						sku: product.attributes.SKU,
-						url: `${process.env.BASEURL}/api/image/main/Shop/${item.attributes._id}`,
-						sizing: "crop", // idk yet // resize for canvas
-						copies: product.qty,
-						attributes: ""
-					};
+	order.items.forEach(item => {
+		if (item.attributes.isUnique !== true) {
+			item.elements.forEach(product => {
+				let obj = {
+					sku: product.attributes.SKU,
+					url: `${process.env.BASEURL}/api/image/main/Shop/${item.attributes._id}`,
+					sizing: "crop", // idk yet // resize for canvas
+					copies: product.qty,
+					attributes: ""
+				};
 
-					obj.attributes = getNeededAttributes(product.attributes);
-					body.push(obj);
-				});
-			}
-		});
-		options.body = body;
-		options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/images/batch`;
+				obj.attributes = getNeededAttributes(product.attributes);
+				body.push(obj);
+			});
+		}
+	});
 
-		response = await rp(options);
-		console.log(response);
+	options.body = body;
+	options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/images/batch`;
+	response = await rp(options);
+	if (response.error === true) throw new Error(response.message);
 
-		if (response.statusCode === 200) {
-			console.log("products and images added to order");
-			options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/status`;
-			options.method = "GET";
+	options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/status`;
+	options.method = "GET";
+	response = await rp(options);
+	if (response.error === true) throw new Error(response.message);
+	if (response.response.isValid === false) throw new Error(response.response.generalErrors[0]);
 
-			response = await rp(options);
-			console.log(response);
+	options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/submit`;
+	options.method = "POST";
+	options.body = { status: "Submitted" };
+	response = await rp(options);
+	if (response.error === true) throw new Error(response.message);
 
-			if (response.statusCode === 200) {
-				if (response.data.isValid === true) {
-					//////////////////////////////////////
-					options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}`;
-					response = await rp(options);
-					console.log(response);
+	let [err, orderResponse] = await utils.to(
+		Order.findOneAndUpdate({ _id: order._id }, { $set: { pwintyOrderId: pwintyOrderId } })
+	);
+	if (err || !orderResponse) throw new Error(ERROR_MESSAGE.submitOrder);
 
-					console.log("order is valid");
-					options.uri = `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}/submit`;
-					options.method = "POST";
-					options.body = { status: "Submitted" }; // Cancelled, AwaitingPayment or Submitted.
+	await submitOrder(order, req);
 
-					response = await rp(options);
-					console.log(response);
-
-					if (response.statusCode === 200) {
-						console.log("submitted order");
-
-						let [err, orderResponse] = await utils.to(
-							Order.findOneAndUpdate({ _id: order._id }, { $set: { pwintyOrderId: pwintyOrderId } })
-						);
-						if (err || orderResponse === null) throw new Error(ERROR_MESSAGE.submitOrder);
-
-						response = await submitOrder(order, req);
-						response.pwintyOrderId = pwintyOrderId;
-
-						return response;
-					} else throw new Error(`Something went wrong while submitting the order: ${response.errordata.statusTxt}`);
-				} else throw new Error(`Order is not valid: ${response.data.generalErrors[0]}`);
-			} else throw new Error(`Something went wrong while checking the order's validity: ${response.errordata.statusTxt}`);
-		} else throw new Error(`Something went wrong while adding products: ${response.errordata.statusTxt}`);
-	} else throw new Error(`Something went wrong while creating the order: ${response.errordata.statusTxt}`);
+	return;
 }
 
 async function submitOrder(order, req) {
@@ -201,7 +180,7 @@ async function submitOrder(order, req) {
 	[err, response] = await utils.to(
 		Order.findOneAndUpdate({ _id: order._id, status: "awaitingApproval" }, { $set: { status: "Submitted" } })
 	);
-	if (err || response === null) throw new Error(ERROR_MESSAGE.submitOrder);
+	if (err || !response) throw new Error(ERROR_MESSAGE.submitOrder);
 
 	// Send mails
 	let subject = `New Order #${order._id}`;
@@ -210,7 +189,7 @@ async function submitOrder(order, req) {
 	if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 	[err, user] = await utils.to(User.findById(order._userId));
-	if (err || user == null) throw new Error(ERROR_MESSAGE.userNotFound);
+	if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 	content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 	if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
@@ -253,7 +232,6 @@ async function savePurchaseData(req, order, response) {
 router.post("/confirm", setUser, authUser, async (req, res) => {
 	//triggered when payment succeeded
 	try {
-		/////////////// once this is triggered, wait 24h then proceed if no fraud webhook/refund events occurred
 		let err, order, item;
 
 		if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) {
@@ -276,7 +254,6 @@ router.post("/confirm", setUser, authUser, async (req, res) => {
 			}
 
 			//below v
-
 			let response;
 			//if (isPwinty === false) response = await submitOrder(req);
 			//else response = await createPwintyOrder(order, req);
@@ -322,12 +299,12 @@ router.post("/initialize", setUser, authUser, async (req, res) => {
 		});
 
 		[err, response] = await utils.to(order.save());
-		if (err || response == null) throw new Error(ERROR_MESSAGE.saveError);
+		if (err || !response) throw new Error(ERROR_MESSAGE.saveError);
 
-		return res.status(200).json(response);
+		return res.status(200).json({ error: false, order: response });
 	} catch (err) {
 		console.log("INITIALIZING ORDER ERROR:", err);
-		return res.status(200).json({ err: true, message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
@@ -377,19 +354,18 @@ router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		let err, order;
 
 		[err, order] = await utils.to(Order.findOne({ _id: orderId, status: "awaitingApproval" }));
-		if (err || order === null) throw new Error(ERROR_MESSAGE.fetchError);
+		if (err || !order) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let isPwinty = false;
 		for (let index = 0; index < order.items.length; index++) if (!order.items[index].attributes.isUnique) isPwinty = true;
 
-		let response;
-		if (isPwinty === false) response = await submitOrder(order, req);
-		else response = await createPwintyOrder(order, req);
+		if (isPwinty === false) await submitOrder(order, req);
+		else await createPwintyOrder(order, req);
 
-		return res.status(200).json({ err: false, message: "Order was approved and sent into production" });
+		return res.status(200).json({ error: false, message: "Order was approved and sent into production" });
 	} catch (err) {
 		console.log("APPROVING ORDER ERROR:", err);
-		return res.status(200).json({ err: true, message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
@@ -412,18 +388,14 @@ async function refundStripe(req, chargeId, orderId) {
 
 router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
-		let err, order, item, user;
+		let err,
+			order = req.order,
+			item,
+			user = req.user;
 		const orderId = sanitize(req.params.id);
-
-		console.log("cancel route");
-		[err, order] = await utils.to(Order.findById(orderId));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		if (order.status === "Cancelled" || order.status === "Completed" || order.status === "awaitingStripePayment")
 			throw new Error(ERROR_MESSAGE.badOrderStatus);
-
-		[err, order] = await utils.to(Order.findOne({ _id: orderId }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let isPwinty = false;
 		for (let index = 0; index < order.items.length; index++) {
@@ -434,10 +406,11 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 			if (!order.items[index].attributes.isUnique) isPwinty = true;
 		}
 
-		if (isPwinty === false) {
+		if (isPwinty === false || order.status === "awaitingApproval") {
 			let refund = await refundStripe(req, order.chargeId, order._id);
 			if (refund.error === true) throw new Error(refund.message);
 		} else {
+			//if order has not been approved, pwinty order hasnt been created
 			let options = {
 				method: "GET",
 				uri: `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}`,
@@ -446,19 +419,18 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 			};
 
 			let response = await rp(options);
-			if (response.statusCode === 200) {
-				if (response.data.canCancel === true) {
-					options.method = "POST";
-					options.uri = `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}/submit`;
-					options.body = { status: "Cancelled" };
+			if (response.error === true) throw new Error(ERROR_MESSAGE.fetchStatus);
+			if (response.canCancel !== true) throw new Error(ERROR_MESSAGE.badOrderStatus);
 
-					response = await rp(options);
-					if (response.statusCode === 200) {
-						let refund = await refundStripe(req, order.chargeId, order._id);
-						if (refund.error === true) throw new Error(refund.message);
-					} else throw new Error(ERROR_MESSAGE.cancelOrder);
-				} else throw new Error(ERROR_MESSAGE.badOrderStatus);
-			} else throw new Error(ERROR_MESSAGE.fetchStatus);
+			options.method = "POST";
+			options.uri = `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}/submit`;
+			options.body = { status: "Cancelled" };
+
+			response = await rp(options);
+			if (response.error === true) throw new Error(ERROR_MESSAGE.cancelOrder);
+
+			let refund = await refundStripe(req, order.chargeId, order._id);
+			if (refund.error === true) throw new Error(refund.message);
 		}
 
 		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: orderId }, { $set: { status: "Cancelled" } }));
@@ -467,21 +439,17 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 		// Send mails
 		let subject = `Cancelled Order #${order._id}`;
 		let content = `To see the cancelled order, please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
-		if (await mailer("ablin@byom.de", subject, content))
-			//maral.canvas@gmail.com
-			throw new Error(ERROR_MESSAGE.sendMail);
-
-		[err, user] = await utils.to(User.findById(req.user._id));
-		if (err || user == null) throw new Error(ERROR_MESSAGE.userNotFound);
+		//maral.canvas@gmail.com
+		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		console.log("cancelled order");
-		return res.status(200).json({ err: false, message: ERROR_MESSAGE.cancelOrderSuccess });
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.cancelOrderSuccess });
 	} catch (err) {
 		console.log("CANCEL ORDER ERROR:", err);
-		return res.status(200).json({ err: true, message: err.message });
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
@@ -498,11 +466,11 @@ router.post("/billing/save", vDelivery, setUser, authUser, async (req, res) => {
 		//test if exist maybe in a separate ft?
 		let encoded_address = encodeURI(req.body.billing.fulltext_address);
 		let options = {
-			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${process.env.GOOGLE_API_KEY}xzxz`,
+			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${process.env.GOOGLE_API_KEY}`,
 			json: true
 		};
 
-		let address = rp(options);
+		let address = await rp(options);
 		if (address.status !== "OK") throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 
 		req.session.billing = req.body.billing;
