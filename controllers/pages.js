@@ -175,9 +175,10 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 					json: true
 				};
 
-				obj.deliveryPrice = await rp(options);
-				if (obj.deliveryPrice.error) throw new Error(obj.deliveryPrice.message);
-				//parse and format price
+				let result = await rp(options);
+				if (result.error === true || result.response.length <= 0) throw new Error(ERROR_MESSAGE.noShipment);
+
+				obj.deliveryPrice = result;
 			}
 		}
 		return res.status(200).render("cart", obj);

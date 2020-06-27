@@ -28,7 +28,7 @@ async function checkSKU(SKU) {
 }
 
 async function checkIsDelivery(SKU) {
-	await fetch("/api/pwinty/pricing/FR", {
+	let response = await fetch("/api/pwinty/pricing/FR", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -37,20 +37,12 @@ async function checkIsDelivery(SKU) {
 		body: JSON.stringify({ items: [{ SKU: SKU, quantity: 1 }] }),
 		credentials: "include",
 		mode: "same-origin"
-	})
-		.then(res => {
-			return res.json();
-		})
-		.then(async function (response) {
-			if (response.error === true || response.response.length <= 0) {
-				console.log(`No delivery option for: ${SKU}`);
-				return;
-			}
-		})
-		.catch(err => {
-			console.log(`No delivery option for: ${SKU}`);
-			return;
-		});
+	});
+	response = await response.json();
+	if (response.error === true || response.response.length <= 0) {
+		console.log(`No delivery option for: ${SKU}`);
+		return;
+	}
 }
 
 function testSKU(category, subcategory) {

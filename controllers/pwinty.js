@@ -149,6 +149,7 @@ router.post("/orders/:id/images/batch", setUser, authUser, async (req, res) => {
 /* END IMAGES */
 
 /* COUNTRIES */
+//not used but might server later to display country selection to be sure to have code or something
 router.get("/countries", setUser, async (req, res) => {
 	try {
 		let options = {
@@ -294,13 +295,11 @@ router.post("/callback/status", async (req, res) => {
 			);
 			if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
 
-			// Send mails
 			let subject = `Updated Order #${order._id}`;
-			let content = `You order status has been updated, to see the order please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
+			let content = `Le status d'une commande vient d'être modifié par pwinty: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Voir la commande</a>`;
 			if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 			//maral.canvas@gmail.com
 
-			//lots of weird shit below
 			[err, user] = await utils.to(Order.findOne({ _userId: order._userId }));
 			if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 

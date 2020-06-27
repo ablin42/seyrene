@@ -21,8 +21,8 @@ class PwintyObject {
 		this.category = item.value;
 		this.subcategory = "";
 		this.attributes = {};
-		this.width = $("img[alt=\"0slide\"]")[0].naturalWidth;
-		this.height = $("img[alt=\"0slide\"]")[0].naturalHeight;
+		this.width = $('img[alt="0slide"]')[0].naturalWidth;
+		this.height = $('img[alt="0slide"]')[0].naturalHeight;
 		this.ratio = Math.round((this.width / this.height + Number.EPSILON) * 100) / 100;
 		this.megapixel = this.width * this.height;
 
@@ -294,33 +294,29 @@ class PwintyObject {
 	async generatePricing() {
 		let countryCode = await this.fetchCountryCode();
 
-		fetch(`/api/pwinty/pricing/${countryCode}`, {
+		let data = await fetch(`/api/pwinty/pricing/${countryCode}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				"Accept": "application/json"
 			},
 			body: JSON.stringify({ items: [{ SKU: this.SKU, quantity: 1 }] })
-		})
-			.then(res => {
-				return res.json();
-			})
-			.then(data => {
-				if (data.response.unitPriceIncludingTax) {
-					if (data.response.unitPriceIncludingTax === 0) throw new Error(ERROR_MESSAGE.notFoundCatalog);
-					this.price = data.response.unitPriceIncludingTax;
-					this.displayPricing();
-				} else throw new Error(ERROR_MESSAGE.notFoundCatalog);
-			})
-			.catch(err => {
-				this.hidePricing();
-				let alert = createAlertNode(
-					err.message,
-					"warning",
-					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-				);
-				addAlert(alert, "#header");
-			});
+		});
+		data = await data.json();
+
+		if (data.error === true || data.response.length <= 0) {
+			this.hidePricing();
+
+			let alert = createAlertNode(
+				ERROR_MESSAGE.notFoundCatalog,
+				"warning",
+				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+			);
+			addAlert(alert, "#header");
+		} else {
+			this.price = data.response.unitPriceIncludingTax;
+			this.displayPricing();
+		}
 	}
 
 	displayPricing() {
@@ -381,7 +377,7 @@ class PwintyObject {
 			caller.style.pointerEvents = "auto";
 		}, 1500);
 
-		await fetch(`/api/pwinty/pricing/${countryCode}`, {
+		let response = await fetch(`/api/pwinty/pricing/${countryCode}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -390,66 +386,43 @@ class PwintyObject {
 			body: JSON.stringify({ items: [{ SKU: SKU, quantity: 1 }] }),
 			credentials: "include",
 			mode: "same-origin"
-		})
-			.then(res => {
-				return res.json();
-			})
-			.then(async function (response) {
-				if (response.error === true || response.response.length <= 0) {
-					let alert = createAlertNode(
-						"Sorry, there are no shipment options available to the selected destination for these products",
-						"warning",
-						"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-					);
-					addAlert(alert, "#header");
-					return;
-				} else {
-					await fetch(`/api/cart/add/pwinty/${itemId}`, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							"Accept": "application/json"
-						},
-						body: JSON.stringify({ SKU, price, attributes }),
-						credentials: "include",
-						mode: "same-origin"
-					})
-						.then(res => {
-							return res.json();
-						})
-						.then(function (response) {
-							let alertType = "success";
-							if (response.error === false) {
-								let totalQty = response.cart.totalQty;
-								document.getElementById("cartQty").innerText = totalQty;
-							} else alertType = "warning";
+		});
+		response = await response.json();
 
-							let alert = createAlertNode(
-								response.message,
-								alertType,
-								"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-							);
-							addAlert(alert, "#header");
-						})
-						.catch(err => {
-							let alert = createAlertNode(
-								response.message,
-								alertType,
-								"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-							);
-							addAlert(alert, "#header");
-						});
-				}
-			})
-			.catch(err => {
-				let alert = createAlertNode(
-					ERROR_MESSAGE.noShipment,
-					alertType,
-					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-				);
-				addAlert(alert, "#header");
+		if (response.error === true || response.response.length <= 0) {
+			let alert = createAlertNode(
+				ERROR_MESSAGE.noShipment,
+				"warning",
+				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+			);
+			addAlert(alert, "#header");
+			return;
+		} else {
+			response = await fetch(`/api/cart/add/pwinty/${itemId}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Accept": "application/json"
+				},
+				body: JSON.stringify({ SKU, price, attributes }),
+				credentials: "include",
+				mode: "same-origin"
 			});
+			response = await response.json();
 
+			let alertType = "success";
+			if (response.error === false) {
+				let totalQty = response.cart.totalQty;
+				document.getElementById("cartQty").innerText = totalQty;
+			} else alertType = "warning";
+
+			let alert = createAlertNode(
+				response.message,
+				alertType,
+				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+			);
+			addAlert(alert, "#header");
+		}
 		return;
 	}
 
