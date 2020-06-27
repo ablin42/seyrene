@@ -23,8 +23,8 @@ async function setUser(req, res, next) {
 		req.user.password = undefined;
 	}
 
-	let [err, user] = await utils.to(User.findById("5d810b9365761c0840e0de25")); //
-	req.user = user; //
+	//let [err, user] = await utils.to(User.findById("5d810b9365761c0840e0de25")); //
+	//req.user = user; //
 
 	next();
 }

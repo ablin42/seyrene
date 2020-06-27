@@ -12,18 +12,17 @@ async function postShop(e) {
 	formData.append("content", content);
 	formData.append("price", price);
 
-	fetch("/api/shop/post", {
+	let data = await fetch("/api/shop/post", {
 		method: "post",
 		mode: "same-origin",
 		body: formData
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.err === true) {
-				let alert = createAlertNode(data.message, "warning");
-				addAlert(alert, "#header");
-			} else window.location.href = data.url;
-		});
+	});
+	data = await data.json();
+
+	if (data.err === true) {
+		let alert = createAlertNode(data.message, "warning");
+		addAlert(alert, "#header");
+	} else window.location.href = data.url;
 }
 
 async function patchShop(e, shopId) {
@@ -40,66 +39,65 @@ async function patchShop(e, shopId) {
 	formData.append("content", content);
 	formData.append("price", price);
 
-	fetch(`/api/shop/patch/${shopId}`, {
+	let data = await fetch(`/api/shop/patch/${shopId}`, {
 		method: "post",
 		mode: "same-origin",
 		body: formData
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.err) {
-				let alert = createAlertNode(data.message, "warning");
-				addAlert(alert, "#header");
-			} else window.location.href = data.url;
-		});
+	});
+	data = await data.json();
+
+	if (data.err) {
+		let alert = createAlertNode(data.message, "warning");
+		addAlert(alert, "#header");
+	} else window.location.href = data.url;
 }
 
-function setMain(e, item) {
+async function setMain(e, item) {
 	e.preventDefault();
-	fetch(item.href, {
+
+	let data = await fetch(item.href, {
 		method: "get",
 		mode: "same-origin"
-	})
-		.then(response => response.json())
-		.then(data => {
-			let type = "success";
-			if (data.err === true) type = "warning";
-			else {
-				let divs = $(".action-div");
-				for (let i = 0; i < divs.length; i++) divs[i].setAttribute("style", "display: block");
+	});
+	data = await data.json();
 
-				$(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
-			}
-			let alertErr = `
+	let type = "success";
+	if (data.err === true) type = "warning";
+	else {
+		let divs = $(".action-div");
+		for (let i = 0; i < divs.length; i++) divs[i].setAttribute("style", "display: block");
+
+		$(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
+	}
+	let alertErr = `
             <div id="alert" class="alert alert-${type}" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${data.message}
             </div>`;
-			addAlert(alertErr, "#header");
-		});
+	addAlert(alertErr, "#header");
 }
 
-function deleteImage(e, item) {
+async function deleteImage(e, item) {
 	e.preventDefault();
-	fetch(item.href, {
+
+	let data = await fetch(item.href, {
 		method: "get",
 		mode: "same-origin"
-	})
-		.then(response => response.json())
-		.then(data => {
-			let type = "success";
-			if (data.err === true) type = "warning";
-			else {
-				$(`#${item.id.substr(3)}`).remove();
-				$(`#sel${item.id.substr(3)}`).remove();
-				item.remove();
-			}
+	});
+	data = await data.json();
 
-			let alertSuccess = `
+	let type = "success";
+	if (data.err === true) type = "warning";
+	else {
+		$(`#${item.id.substr(3)}`).remove();
+		$(`#sel${item.id.substr(3)}`).remove();
+		item.remove();
+	}
+
+	let alertSuccess = `
 				<div id="alert" class="alert alert-${type}" role="alert">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
 					${data.message}
 				</div>`;
-			addAlert(alertSuccess, "#header");
-		});
+	addAlert(alertSuccess, "#header");
 }

@@ -267,12 +267,13 @@ router.get("/countryCode", setUser, async (req, res) => {
 			if (countryCode) countryCode = countryCode.code.iso2;
 			else throw new Error(ERROR_MESSAGE.countryCode);
 		} else {
-			ipinfo.lookupIp(ip).then(response => {
-				countryCode = countryList.findByName(utils.toTitleCase(response.country));
-				if (countryCode) countryCode = countryCode.code.iso2;
-				else throw new Error(ERROR_MESSAGE.countryCode);
-				return res.status(200).json({ error: false, countryCode: countryCode });
-			});
+			let response = await ipinfo.lookupIp(ip);
+
+			countryCode = countryList.findByName(utils.toTitleCase(response.country));
+			if (countryCode) countryCode = countryCode.code.iso2;
+			else throw new Error(ERROR_MESSAGE.countryCode);
+
+			return res.status(200).json({ error: false, countryCode: countryCode });
 		}
 		return res.status(200).json({ error: false, countryCode: countryCode });
 	} catch (err) {

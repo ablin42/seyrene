@@ -1,4 +1,4 @@
-function submitContact(e) {
+async function submitContact(e) {
 	e.preventDefault();
 
 	const name = document.querySelector("#name").value;
@@ -7,30 +7,25 @@ function submitContact(e) {
 	const content = document.querySelector("#content").value;
 	const captcha = document.querySelector("#g-recaptcha-response").value;
 
-	fetch("/api/contact/", {
+	let response = await fetch("/api/contact/", {
 		method: "POST",
 		headers: {
 			"Accept": "application/json, text/plain, */*",
 			"Content-Type": "application/json"
 		},
 		body: JSON.stringify({ name: name, email: email, title: title, content: content, captcha: captcha })
-	})
-		.then(res => res.json())
-		.then(response => {
-			let alertType = "success";
-			if (response.error === true) alertType = "warning";
-			else {
-				document.querySelector("#name").value = "";
-				document.querySelector("#email").value = "";
-				document.querySelector("#title").value = "";
-				document.querySelector("#content").value = "";
-			}
+	});
+	response = await response.json();
 
-			let alert = createAlertNode(response.message, alertType);
-			addAlert(alert, "#header");
-		})
-		.catch(err => {
-			let alert = createAlertNode(err.message, "danger");
-			addAlert(alert, "#header");
-		});
+	let alertType = "success";
+	if (response.error === true) alertType = "warning";
+	else {
+		document.querySelector("#name").value = "";
+		document.querySelector("#email").value = "";
+		document.querySelector("#title").value = "";
+		document.querySelector("#content").value = "";
+	}
+
+	let alert = createAlertNode(response.message, alertType);
+	addAlert(alert, "#header");
 }

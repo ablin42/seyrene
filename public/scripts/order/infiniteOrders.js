@@ -20,18 +20,16 @@ async function infiniteOrders(tab) {
 		page = 1 + Math.floor(nbItem / 20),
 		loader = $("#loader"),
 		url = `/api/order?page=${page}&tab=${tab}`;
-	console.log(url, nbItem, page);
 	loader.css("display", "block");
 
-	await fetch(url)
-		.then(function (response) {
-			response.json().then(function (data) {
-				if (!data.error) {
-					if (data.orders.length > 0) {
-						data.orders.forEach(order => {
-							let id = order._id;
-							if ($(`#${tab}-${id}`).length === 0) {
-								toAppend = `
+	let data = await fetch(url);
+	data = await data.json();
+	if (!data.error) {
+		if (data.orders.length > 0) {
+			data.orders.forEach(order => {
+				let id = order._id;
+				if ($(`#${tab}-${id}`).length === 0) {
+					toAppend = `
 										<tr>
 											<th scope="row" class="date-grid">${order.date_f}</th>
 											<td class="status-grid">${order.status}</td>
@@ -40,28 +38,22 @@ async function infiniteOrders(tab) {
 											<td class="id-grid"><a id="${tab}-${order._id}" href="/Admin/Order/${order._id}">#${order._id}</a></td>
 										</tr>`;
 
-								$(`#container-admin-orders-${tab}`).append(toAppend);
-							} else {
-								$("#infinitebtn").val("Nothing more to load");
-								$("#infinitebtn").attr("disabled");
-								$("#infinitebtn").attr("onclick", `infiniteOrders("${tab}-block")`);
-							}
-						});
-					} else {
-						$("#infinitebtn").val("Nothing more to load");
-						$("#infinitebtn").attr("disabled");
-						$("#infinitebtn").attr("onclick", `infiniteOrders("${tab}-block")`);
-					}
+					$(`#container-admin-orders-${tab}`).append(toAppend);
 				} else {
-					let alert = createAlertNode(data.message, "warning");
-					addAlert(alert, "#header");
+					$("#infinitebtn").val("Nothing more to load");
+					$("#infinitebtn").attr("disabled");
+					$("#infinitebtn").attr("onclick", `infiniteOrders("${tab}-block")`);
 				}
 			});
-		})
-		.catch(err => {
-			let alert = createAlertNode(err.message, "warning");
-			addAlert(alert, "#header");
-		});
+		} else {
+			$("#infinitebtn").val("Nothing more to load");
+			$("#infinitebtn").attr("disabled");
+			$("#infinitebtn").attr("onclick", `infiniteOrders("${tab}-block")`);
+		}
+	} else {
+		let alert = createAlertNode(data.message, "warning");
+		addAlert(alert, "#header");
+	}
 	loader.css("display", "none");
 }
 

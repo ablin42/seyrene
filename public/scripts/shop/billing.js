@@ -1,4 +1,4 @@
-function saveBilling(e) {
+async function saveBilling(e) {
 	e.preventDefault();
 
 	let obj = {
@@ -12,21 +12,18 @@ function saveBilling(e) {
 		country: $("#country")[0].value
 	};
 
-	fetch("/api/order/billing/save", {
+	let data = await fetch("/api/order/billing/save", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
 		},
 		body: JSON.stringify({ billing: obj })
-	})
-		.then(function (result) {
-			return result.json();
-		})
-		.then(function (data) {
-			if (data.error === true) {
-				let alert = createAlertNode(data.message, "warning");
-				addAlert(alert, "#header");
-				return;
-			} else window.location.href = "/Payment";
-		});
+	});
+	data = await data.json();
+
+	if (data.error === true) {
+		let alert = createAlertNode(data.message, "warning");
+		addAlert(alert, "#header");
+		return;
+	} else window.location.href = "/Payment";
 }

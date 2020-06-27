@@ -186,20 +186,17 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 			uri: `${process.env.BASEURL}/api/image/Shop/${id}`,
 			json: true
 		};
-		rp(options)
-			.then(async response => {
-				if (response.error === false) {
-					for (let i = 0; i < response.images.length; i++) {
-						fs.unlink(response.images[i].path, err => {
-							if (err) throw new Error(ERROR_MESSAGE.deleteImg);
-						});
-						await Image.deleteOne({ _id: response.images[i]._id });
-					}
-				}
-			})
-			.catch(err => {
-				throw new Error(ERROR_MESSAGE.fetchImg);
-			});
+		let response = await rp(options);
+		if (response.error === true) throw new Error(ERROR_MESSAGE.fetchImg);
+
+		if (response.error === false) {
+			for (let i = 0; i < response.images.length; i++) {
+				fs.unlink(response.images[i].path, err => {
+					if (err) throw new Error(ERROR_MESSAGE.deleteImg);
+				});
+				await Image.deleteOne({ _id: response.images[i]._id });
+			}
+		}
 
 		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/Shop");

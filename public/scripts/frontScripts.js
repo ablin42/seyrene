@@ -1,4 +1,4 @@
-function deleteImage(item, e) {
+async function deleteImage(item, e) {
 	e.preventDefault();
 
 	let imageItemId = "image" + item.id.substr(6, 1);
@@ -12,18 +12,17 @@ function deleteImage(item, e) {
 	groupId.attr("style", "display: block");
 
 	if (imageItem.getAttribute("data-uploaded") === "true") {
-		fetch(`/api/front/delete/${item.id.substr(6, 1)}`, {
+		let data = await fetch(`/api/front/delete/${item.id.substr(6, 1)}`, {
 			method: "get",
 			mode: "same-origin"
-		})
-			.then(response => response.json())
-			.then(data => {
-				let alertType = "success";
-				if (data.error === true) alertType = "warning";
+		});
 
-				let alert = createAlertNode(data.message, alertType);
-				addAlert(alert, "#header");
-			});
+		data = await data.json();
+		let alertType = "success";
+		if (data.error === true) alertType = "warning";
+
+		let alert = createAlertNode(data.message, alertType);
+		addAlert(alert, "#header");
 	} else {
 		let alert = createAlertNode(ERROR_MESSAGE.itemDeleted, "success");
 		addAlert(alert, "#header");
@@ -62,17 +61,16 @@ async function postFront(e, form) {
 	formData.append("img", form.querySelector("input[type=\"file\"]").files[0]);
 	formData.append("referenceId", form.querySelector("input[name=\"referenceId\"]").value);
 
-	fetch("/api/front/post", {
+	let data = await fetch("/api/front/post", {
 		method: "post",
 		mode: "same-origin",
 		body: formData
-	})
-		.then(response => response.json())
-		.then(data => {
-			let alertType = "success";
-			if (data.error === true) alertType = "warning";
+	});
+	data = await data.json();
 
-			let alert = createAlertNode(data.message, alertType);
-			addAlert(alert, "#header");
-		});
+	let alertType = "success";
+	if (data.error === true) alertType = "warning";
+
+	let alert = createAlertNode(data.message, alertType);
+	addAlert(alert, "#header");
 }

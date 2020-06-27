@@ -1,30 +1,23 @@
 async function checkSKU(SKU) {
-	fetch("/api/pwinty/countries/FR", {
+	let data = await fetch("/api/pwinty/countries/FR", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 			"Accept": "application/json"
 		},
 		body: JSON.stringify({ skus: [SKU] })
-	})
-		.then(res => {
-			return res.json();
-		})
-		.then(data => {
-			if (data.prices[0].price) {
-				if (data.prices[0].price === 0) {
-					console.log(data.prices[0].sku);
-					return 1;
-				}
-				return 0;
-			} else {
-				console.log(data.prices[0].sku);
-				return 1;
-			}
-		})
-		.catch(err => {
+	});
+	data = await data.json();
+	if (data.prices[0].price) {
+		if (data.prices[0].price === 0) {
+			console.log(data.prices[0].sku);
 			return 1;
-		});
+		}
+		return 0;
+	} else {
+		console.log(data.prices[0].sku);
+		return 1;
+	}
 }
 
 async function checkIsDelivery(SKU) {

@@ -333,33 +333,19 @@ class PwintyObject {
 			},
 			credentials: "include",
 			mode: "same-origin"
-		})
-			.then(res => {
-				return res.json();
-			})
-			.then(function (response) {
-				if (response.error === false) return response.countryCode;
-				else {
-					let alert = createAlertNode(
-						response.message,
-						"warning",
-						"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-					);
-					addAlert(alert, "#header");
-					return "FR"; /// might just return error idk yet
-				}
-			})
-			.catch(err => {
-				console.log(err);
-				let alert = createAlertNode(
-					ERROR_MESSAGE.countryCode,
-					"warning",
-					"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-				);
-				addAlert(alert, "#header");
-				return "FR";
-			});
-		return countryCode;
+		});
+		let response = await countryCode.json();
+
+		if (response.error === false) return response.countryCode;
+		else {
+			let alert = createAlertNode(
+				response.message,
+				"warning",
+				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+			);
+			addAlert(alert, "#header");
+			return "FR"; /// might just return error idk yet
+		}
 	}
 
 	async cartAdd(itemId, caller) {
