@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const sanitize = require("mongo-sanitize");
@@ -9,25 +8,7 @@ const Front = require("../models/Front");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
-
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "./public/img/upload/");
-	},
-	filename: function (req, file, cb) {
-		cb(null, Date.now() + path.extname(file.originalname));
-	}
-});
-
-const upload = multer({
-	storage: storage,
-	limits: {
-		fileSize: 100000000
-	},
-	fileFilter: function (req, file, cb) {
-		utils.sanitizeFile(req, file, cb);
-	}
-}).single("img");
+const upload = require("./helpers/multerHelpers");
 
 router.get("/", setUser, async (req, res) => {
 	try {
@@ -61,46 +42,54 @@ router.get("/image/:id", setUser, async (req, res) => {
 	}
 });
 
-router.post("/post", upload, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	try {
-		if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
-			let front = { null: false, referenceId: req.body.referenceId };
-
-			let [err, result] = await utils.to(Front.findOne({ referenceId: front.referenceId }));
-			if (err) throw new Error(ERROR_MESSAGE.serverError);
-
-			if (result === null) {
-				let newFront = new Front(front);
-				newFront.mimetype = req.file.mimetype;
-				let oldpath = req.file.destination + req.file.filename;
-				let newpath = req.file.destination + newFront._id + path.extname(req.file.originalname);
-				fs.rename(oldpath, newpath, err => {
-					if (err) throw new Error(err);
-				});
-				newFront.path = newpath;
-
-				[err, result] = await utils.to(newFront.save());
-				if (err) throw new Error(ERROR_MESSAGE.updateError);
+router.post("/post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	upload(req, res, async function (err) {
+		try {
+			if (err) {
+				let errMsg = err;
+				if (err.message) errMsg = err.message;
+				return res.status(400).json({ url: "/", message: errMsg, err: true });
 			} else {
-				let oldpath = req.file.destination + req.file.filename;
-				let newpath = req.file.destination + result._id + path.extname(req.file.originalname);
-				fs.rename(oldpath, newpath, err => {
-					if (err) throw new Error(err);
-				});
-				[err, result] = await utils.to(
-					Front.findOneAndUpdate(
-						{ referenceId: front.referenceId },
-						{ $set: { null: false, path: newpath, mimetype: req.file.mimetype } }
-					)
-				);
-				if (err) throw new Error(ERROR_MESSAGE.updateError);
+				if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
+					let front = { null: false, referenceId: req.body.referenceId };
+
+					let [err, result] = await utils.to(Front.findOne({ referenceId: front.referenceId }));
+					if (err) throw new Error(ERROR_MESSAGE.serverError);
+
+					if (result === null) {
+						let newFront = new Front(front);
+						newFront.mimetype = req.files[0].mimetype;
+						let oldpath = req.files[0].destination + req.files[0].filename;
+						let newpath = req.files[0].destination + newFront._id + path.extname(req.files[0].originalname);
+						fs.rename(oldpath, newpath, err => {
+							if (err) throw new Error(err);
+						});
+						newFront.path = newpath;
+
+						[err, result] = await utils.to(newFront.save());
+						if (err) throw new Error(ERROR_MESSAGE.updateError);
+					} else {
+						let oldpath = req.files[0].destination + req.files[0].filename;
+						let newpath = req.files[0].destination + result._id + path.extname(req.files[0].originalname);
+						fs.rename(oldpath, newpath, err => {
+							if (err) throw new Error(err);
+						});
+						[err, result] = await utils.to(
+							Front.findOneAndUpdate(
+								{ referenceId: front.referenceId },
+								{ $set: { null: false, path: newpath, mimetype: req.files[0].mimetype } }
+							)
+						);
+						if (err) throw new Error(ERROR_MESSAGE.updateError);
+					}
+					return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemUploaded });
+				} else throw new Error(ERROR_MESSAGE.incorrectInput);
 			}
-			return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemUploaded });
-		} else throw new Error(ERROR_MESSAGE.incorrectInput);
-	} catch (err) {
-		console.log("POST FRONT ERROR", err);
-		return res.status(400).json({ error: true, message: err.message });
-	}
+		} catch (err) {
+			console.log("POST FRONT ERROR", err);
+			return res.status(400).json({ error: true, message: err.message });
+		}
+	});
 });
 
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {

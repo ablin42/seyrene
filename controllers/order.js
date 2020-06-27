@@ -283,53 +283,33 @@ router.post("/initialize", setUser, authUser, async (req, res) => {
 	}
 });
 
-router.post("/update", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	///
+router.get("/complete/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
-		let url = req.header("Referer") || "/Admin/Orders";
-		let newStatus = req.body.status;
-		let order, user, err;
+		const order = req.order;
 
-		if (newStatus !== "Completed") throw new Error(ERROR_MESSAGE.incorrectInput);
+		if (order.status !== "Submitted")
+			throw new Error("La commande doit être approvée et traitée avant d'être marquée comme complétée");
 
-		[err, order] = await utils.to(Order.findOne({ _id: req.body.orderId }));
-		if (err || !order) throw new Error(ERROR_MESSAGE.fetchError);
+		let [err, result] = await utils.to(Order.findByIdAndUpdate(order._id, { $set: { status: "Completed" } }));
+		if (err || !result) throw new Error(ERROR_MESSAGE.saveError);
 
-		if (order.status === "Cancelled") throw new Error(ERROR_MESSAGE.badOrderStatus);
-
-		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: req.body.orderId }, { $set: { status: newStatus } }));
-		if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
-
-		// Send mails
-		let subject = `Updated Order #${order._id}`;
-		let content = `You updated an order, to see the order, please follow the link below using your administrator account: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">CLICK HERE</a>`;
+		let subject = `Commande complétée #${order._id}`;
+		let content = `Vous avez marquée une commande comme étant complétée <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Lien vers le commande</a>`;
 		//maral.canvas@gmail.com
 		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-		[err, user] = await utils.to(User.findById(order._userId));
-		if (err || user == null) throw new Error(ERROR_MESSAGE.userNotFound);
-
-		content = `Your order's status was updated, to see your order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
-		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
-
-		req.flash("success", ERROR_MESSAGE.orderUpdated);
-		return res.status(200).redirect(url);
+		return res.status(200).json({ error: false, message: "La commande à été marquée comme complétée" });
 	} catch (err) {
-		let url = req.header("Referer") || "/Admin/Orders";
-		console.log("UPDATING ORDER ERROR:", err);
-
-		req.flash("warning", err.message);
-		return res.status(200).redirect(url);
+		console.log("COMPLETE ORDER ERROR:", err);
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
-router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
-		const orderId = sanitize(req.params.id);
-		let err, order;
+		const order = req.order;
 
-		[err, order] = await utils.to(Order.findOne({ _id: orderId, status: "awaitingApproval" }));
-		if (err || !order) throw new Error(ERROR_MESSAGE.fetchError);
+		if (order.status !== "awaitingApproval") throw new Error("Seule une commande en attente d'approbation peut être approuvée");
 
 		let isPwinty = false;
 		for (let index = 0; index < order.items.length; index++) if (!order.items[index].attributes.isUnique) isPwinty = true;
@@ -337,7 +317,7 @@ router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		if (isPwinty === false) await submitOrder(order, req);
 		else await createPwintyOrder(order, req);
 
-		return res.status(200).json({ error: false, message: "Order was approved and sent into production" });
+		return res.status(200).json({ error: false, message: "La commande à été approuvée et mise en production" });
 	} catch (err) {
 		console.log("APPROVING ORDER ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
@@ -367,7 +347,6 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 			order = req.order,
 			item,
 			user = req.user;
-		const orderId = sanitize(req.params.id);
 
 		if (order.status === "Cancelled" || order.status === "Completed" || order.status === "awaitingStripePayment")
 			throw new Error(ERROR_MESSAGE.badOrderStatus);
@@ -407,8 +386,8 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 			if (refund.error === true) throw new Error(refund.message);
 		}
 
-		[err, order] = await utils.to(Order.findOneAndUpdate({ _id: orderId }, { $set: { status: "Cancelled" } }));
-		if (err || order == null) throw new Error(ERROR_MESSAGE.fetchError);
+		[err, order] = await utils.to(Order.findByIdAndUpdate({ _id: order._id }, { $set: { status: "Cancelled" } }));
+		if (err || !order) throw new Error(ERROR_MESSAGE.fetchError);
 
 		// Send mails
 		let subject = `Cancelled Order #${order._id}`;

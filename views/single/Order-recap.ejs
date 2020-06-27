@@ -11,7 +11,7 @@
 				<h2 style="color: var(--warning-color); display: initial;">Status: <%= locals.order.status %></h2>
 				<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Submitted" && locals.order.status !== "Completed") { %>
 				<i style="color: var(--danger-color); cursor: pointer;" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
-				<% } %> <% if (locals.order.status !== "awaitingStripePaymenty") { %>
+				<% } %> <% if (locals.order.status !== "awaitingStripePayment") { %>
 				<a href="/Payment">Go to payment page</a>
 				<% } %>
 			</div>

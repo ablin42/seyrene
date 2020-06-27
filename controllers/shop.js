@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
 const { validationResult } = require("express-validator");
 const { vShop } = require("./validators/vShop");
 const sanitize = require("mongo-sanitize");
@@ -13,26 +12,9 @@ const Image = require("../models/Image");
 const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const sHelpers = require("./helpers/shopHelpers");
+const upload = require("./helpers/multerHelpers");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
-
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "./public/img/upload/");
-	},
-	filename: function (req, file, cb) {
-		cb(null, Date.now() + path.extname(file.originalname));
-	}
-});
-const upload = multer({
-	storage: storage,
-	limits: {
-		fileSize: 100000000
-	},
-	fileFilter: function (req, file, cb) {
-		utils.sanitizeFile(file, cb);
-	}
-}).array("img");
 
 router.get("/", setUser, async (req, res) => {
 	try {
@@ -128,56 +110,64 @@ router.post("/post", vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req,
 	});
 });
 
-router.post("/patch/:id", upload, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	try {
-		let err, result, savedImage;
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				throw new Error(item.msg);
-			});
+router.post("/patch/:id", vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	upload(req, res, async function (err) {
+		try {
+			if (err) {
+				let errMsg = err;
+				if (err.message) errMsg = err.message;
+				return res.status(400).json({ url: "/", message: errMsg, err: true });
+			} else {
+				let err, result, savedImage;
+				const vResult = validationResult(req);
+				if (!vResult.isEmpty()) {
+					vResult.errors.forEach(item => {
+						throw new Error(item.msg);
+					});
+				}
+
+				let id = sanitize(req.params.id);
+				let price = parseFloat(req.body.price);
+				if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
+				let formattedPrice = price.toFixed(2);
+
+				const obj = {
+					title: req.body.title,
+					content: req.body.content,
+					price: formattedPrice
+				};
+
+				[err, result] = await utils.to(Shop.findOne({ _id: id }));
+				if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
+
+				[err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
+				if (err) throw new Error(ERROR_MESSAGE.updateError);
+
+				for (let i = 0; i < req.files.length; i++) {
+					let image = new Image({
+						_itemId: id,
+						itemType: "Shop",
+						isMain: false,
+						mimetype: req.files[i].mimetype
+					});
+					let oldpath = req.files[i].destination + req.files[i].filename;
+					let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+					fs.rename(oldpath, newpath, err => {
+						if (err) throw new Error(err);
+					});
+					image.path = newpath;
+					[err, savedImage] = await utils.to(image.save());
+					if (err) throw new Error(ERROR_MESSAGE.updateError);
+				}
+
+				req.flash("success", ERROR_MESSAGE.itemUploaded);
+				return res.status(200).json({ err: false, url: "/Shop" });
+			}
+		} catch (err) {
+			console.log("PATCH SHOP ERROR", err);
+			return res.status(400).json({ url: "/", message: err.message, err: true });
 		}
-
-		let id = sanitize(req.params.id);
-		let price = parseFloat(req.body.price);
-		if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
-		let formattedPrice = price.toFixed(2);
-
-		const obj = {
-			title: req.body.title,
-			content: req.body.content,
-			price: formattedPrice
-		};
-
-		[err, result] = await utils.to(Shop.findOne({ _id: id }));
-		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
-
-		[err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
-		if (err) throw new Error(ERROR_MESSAGE.updateError);
-
-		for (let i = 0; i < req.files.length; i++) {
-			let image = new Image({
-				_itemId: id,
-				itemType: "Shop",
-				isMain: false,
-				mimetype: req.files[i].mimetype
-			});
-			let oldpath = req.files[i].destination + req.files[i].filename;
-			let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
-			fs.rename(oldpath, newpath, err => {
-				if (err) throw new Error(err);
-			});
-			image.path = newpath;
-			[err, savedImage] = await utils.to(image.save());
-			if (err) throw new Error(ERROR_MESSAGE.updateError);
-		}
-
-		req.flash("success", ERROR_MESSAGE.itemUploaded);
-		return res.status(200).json({ err: false, url: "/Shop" });
-	} catch (err) {
-		console.log("PATCH SHOP ERROR", err);
-		return res.status(400).json({ url: "/", message: err.message, err: true });
-	}
+	});
 });
 
 router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {

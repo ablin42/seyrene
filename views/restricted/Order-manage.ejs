@@ -14,31 +14,16 @@
 				<h2>shipping(with tax): FREE</h2>
 				<% } %>
 
-				<form id="statusform" method="POST" action="/api/order/update">
-					<div class="form-group">
-            <label class="control-label" for="selectStatus">Status de la commande</label>
-            <%= locals.order.status %>
-            <select class="form-control" name="status" id="selectStatus" <% if (locals.order.status === "Cancelled" || locals.order.status === "Completed") { %> disabled readonly <% } %>>
-                <% if (locals.order.status === "awaitingPayment") { %><option selected disabled value="<%= locals.order.status %>">><%= locals.order.status %></option><% } %><!-- wait to see pwinty behavior live -->
-                <% if (locals.order.status === "awaitingStripePayment") { %><option selected disabled value="<%= locals.order.status %>"><%= locals.order.status %></option><% } %>
-                <% if (locals.order.status === "awaitingApproval") { %><option selected disabled value="<%= locals.order.status %>"><%= locals.order.status %></option><% } %>
-                <% if (locals.order.status === "Submitted") { %><option selected disabled value="<%= locals.order.status %>"><%= locals.order.status %></option><% } %>
-                <option value="Completed">Completed</option>
-                <% if (locals.order.status === "Cancelled") { %><option selected disabled value="Cancelled">Cancelled</option><% } %>
-            </select>
-
-            <h6>Il n'est nécessaire d'utiliser cette fonctionnalité uniquement pour les commandes traitées manuellement</h6>
-            <input type="hidden" name="orderId" value="<%= locals.order._id %>">
-            <% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
-              <input type="submit" class="logbtn" value="Update" id="submit-statusform">
-            <% } %>
-					</div>
-				</form>
+				<h2>
+					Status: <b><i><%= locals.order.status %></i></b>
+				</h2>
 
 				<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
 				<i style="color: red; cursor: pointer;" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
 				<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
 				<i style="color: green; cursor: pointer;" onclick="approveOrder('<%= locals.order._id %>')" class="far fa-times-circle">APPROUVER LA COMMANDE</i><br />
+				<% } %> <% if (locals.order.status === "Submitted" ) { %>
+				<i style="color: orange; cursor: pointer;" onclick="completeOrder('<%= locals.order._id %>')" class="far fa-times-circle">COMPLETER LA COMMANDE</i><br />
 				<% } %>
 				<hr />
 			</div>
