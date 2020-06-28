@@ -12,7 +12,7 @@ const Purchase = require("../models/PurchaseData");
 const User = require("../models/User");
 const Shop = require("../models/Shop");
 const DeliveryInfo = require("../models/DeliveryInfo");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder, checkAddress, authToken } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const mailer = require("./helpers/mailer");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
@@ -121,6 +121,9 @@ async function createPwintyOrder(order, req) {
 			postalOrZipCode: order.zipcode,
 			countryCode: countryCode,
 			preferredShippingMethod: "standard"
+		},
+		headers: {
+			ACCESS_TOKEN: process.env.ACCESS_TOKEN
 		},
 		json: true
 	};
@@ -242,7 +245,7 @@ router.post("/confirm", async (req, res) => {
 	}
 });
 
-router.post("/initialize", setUser, authUser, async (req, res) => {
+router.post("/initialize", authToken, setUser, authUser, async (req, res) => {
 	try {
 		let err, infos, response, deletedOrder;
 
@@ -331,7 +334,8 @@ async function refundStripe(req, chargeId, orderId) {
 		headers: {
 			"Content-Type": "application/json",
 			"Accept": "application/json",
-			"cookie": req.headers.cookie
+			"cookie": req.headers.cookie,
+			"AUTH_TOKEN": process.env.ACCESS_TOKEN
 		},
 		body: { chargeId: chargeId },
 		json: true
@@ -368,7 +372,10 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 				method: "GET",
 				uri: `${process.env.BASEURL}/api/pwinty/orders/${order.pwintyOrderId}`,
 				body: {},
-				json: true
+				json: true,
+				headers: {
+					ACCESS_TOKEN: process.env.ACCESS_TOKEN
+				}
 			};
 
 			let response = await rp(options);
@@ -406,7 +413,7 @@ router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req,
 	}
 });
 
-router.post("/billing/save", vDelivery, setUser, authUser, async (req, res) => {
+router.post("/billing/save", vDelivery, setUser, authUser, checkAddress, async (req, res) => {
 	try {
 		const vResult = validationResult(req.body.billing);
 		if (!vResult.isEmpty()) {
@@ -416,17 +423,7 @@ router.post("/billing/save", vDelivery, setUser, authUser, async (req, res) => {
 			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
-		//test if exist maybe in a separate ft?
-		let encoded_address = encodeURI(req.body.billing.fulltext_address);
-		let options = {
-			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${process.env.GOOGLE_API_KEY}`,
-			json: true
-		};
-
-		let address = await rp(options);
-		if (address.status !== "OK") throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
-
-		req.session.billing = req.body.billing;
+		req.session.billing = req.address;
 		req.flash("success", ERROR_MESSAGE.savedBilling);
 		return res.status(200).json({ error: false });
 	} catch (err) {

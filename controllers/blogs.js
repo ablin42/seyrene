@@ -4,13 +4,13 @@ const { vBlog } = require("./validators/vBlog");
 const sanitize = require("mongo-sanitize");
 
 const Blog = require("../models/Blog");
-const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
 const bHelpers = require("./helpers/blogHelpers");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 
 //blog pagination
-router.get("/", setUser, async (req, res) => {
+router.get("/", async (req, res) => {
 	try {
 		const options = {
 			page: parseInt(req.query.page, 10) || 1,
@@ -28,7 +28,7 @@ router.get("/", setUser, async (req, res) => {
 });
 
 // get a blog object
-router.get("/single/:blogId", setUser, async (req, res) => {
+router.get("/single/:blogId", authToken, async (req, res) => {
 	try {
 		const blogId = sanitize(req.params.blogId);
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);

@@ -3,12 +3,12 @@ const router = express.Router();
 const fs = require("fs");
 const sanitize = require("mongo-sanitize");
 
-const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
 const Image = require("../models/Image");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 
-router.get("/:id", setUser, async (req, res) => {
+router.get("/:id", async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 
@@ -29,7 +29,7 @@ router.get("/:id", setUser, async (req, res) => {
 	}
 });
 
-router.get("/main/:itemType/:itemId", setUser, async (req, res) => {
+router.get("/main/:itemType/:itemId", async (req, res) => {
 	try {
 		let id = sanitize(req.params.itemId),
 			itemType = sanitize(req.params.itemType);
@@ -96,7 +96,7 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 	}
 });
 
-router.get("/:itemType/:itemId", setUser, async (req, res) => {
+router.get("/:itemType/:itemId", authToken, async (req, res) => {
 	try {
 		let itemId = sanitize(req.params.itemId),
 			itemType = sanitize(req.params.itemType);

@@ -21,13 +21,13 @@
 				</div>
 
 				<label class="control-label">Adresse</label>
-				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" class="form-control" value="<%= locals.billing.fulltext_address %>" required />
+				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" class="form-control" value="<%= locals.billing.full_address %>" required />
 
 				<div id="address">
 					<div class="row">
 						<div class="col-md-12">
 							<label class="control-label">Route</label>
-							<input class="form-control" id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<%= locals.billing.route %>" required />
+							<input class="form-control" id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<%= locals.billing.street_name %>" required />
 						</div>
 					</div>
 					<div class="row">
@@ -43,7 +43,7 @@
 					<div class="row">
 						<div class="col-md-6">
 							<label class="control-label">Code Postal</label>
-							<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<%= locals.billing.postal_code %>" required />
+							<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<%= locals.billing.zipcode %>" required />
 						</div>
 						<div class="col-md-6">
 							<label class="control-label">Pays</label>

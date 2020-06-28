@@ -5,10 +5,10 @@ async function saveBilling(e) {
 		firstname: $("#firstname")[0].value,
 		lastname: $("#lastname")[0].value,
 		fulltext_address: $("#autocomplete")[0].value,
-		route: $("#route")[0].value,
+		street_name: $("#route")[0].value,
 		city: $("#locality")[0].value,
 		state: $("#administrative_area_level_1")[0].value,
-		postal_code: $("#postal_code")[0].value,
+		zipcode: $("#postal_code")[0].value,
 		country: $("#country")[0].value
 	};
 

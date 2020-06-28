@@ -33,6 +33,7 @@
 		"express-session": "^1.16.2",
 		"express-validator": "^6.2.0",
 		"image-type": "^4.1.0",
+		"jsonwebtoken": "^8.5.1",
 		"money-exchange": "^1.0.0",
 		"mongo-sanitize": "^1.1.0",
 		"mongoose": "^5.7.1",

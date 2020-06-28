@@ -9,7 +9,7 @@ const countryList = require("country-list-js");
 const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
-const { setUser, authUser } = require("./helpers/verifySession");
+const { setUser, authUser, checkAddress, notLoggedUser } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
@@ -18,7 +18,7 @@ const DeliveryInfo = require("../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
-router.post("/lostpw", vLostPw, async (req, res) => {
+router.post("/lostpw", vLostPw, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, user, pwToken, result;
 		const vResult = validationResult(req);
@@ -58,7 +58,7 @@ router.post("/lostpw", vLostPw, async (req, res) => {
 	}
 });
 
-router.post("/resetpw", vPassword, async (req, res) => {
+router.post("/resetpw", vPassword, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, pwToken, user;
 		const vResult = validationResult(req);
@@ -184,8 +184,12 @@ router.post("/patch/password", vPassword, setUser, authUser, async (req, res) =>
 	}
 });
 
-router.post("/patch/delivery-info", vDelivery, setUser, authUser, async (req, res) => {
+router.post("/patch/delivery-info", vDelivery, setUser, authUser, checkAddress, async (req, res) => {
 	try {
+		let err,
+			result,
+			infos,
+			obj = req.address;
 		const vResult = validationResult(req);
 		if (!vResult.isEmpty()) {
 			vResult.errors.forEach(item => {
@@ -194,36 +198,8 @@ router.post("/patch/delivery-info", vDelivery, setUser, authUser, async (req, re
 			throw new Error(ERROR_MESSAGE.incorrectInput);
 		}
 
-		let encoded_address = encodeURI(req.body.fulltext_address);
-		let street_name = req.body.street_name.replace(/[0-9]/g, "").trim();
-		let street_number = parseInt(req.body.street_name);
-		if (Number.isNaN(street_number)) throw new Error(ERROR_MESSAGE.noStreetNb);
-
-		let options = {
-			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${process.env.GOOGLE_API_KEY}`,
-			json: true
-		};
-		let address = await rp(options);
-		if (address.status != "OK") throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
-
-		let err, result, infos;
-
 		[err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
-
-		let obj = {
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			full_address: req.body.fulltext_address,
-			full_street: req.body.street_name,
-			country: req.body.country,
-			street_name: street_name,
-			street_number: street_number,
-			city: req.body.city,
-			state: req.body.state,
-			zipcode: req.body.postal_code,
-			instructions: req.body.instructions
-		};
 
 		if (!infos) {
 			obj._userId = req.user._id;

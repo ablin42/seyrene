@@ -2,18 +2,19 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-const request = require("request");
+const rp = require("request-promise");
 const sanitize = require("mongo-sanitize");
 const { validationResult } = require("express-validator");
-const { vRegister, vLogin, vResend } = require("./validators/vAuth");
 
+const { vRegister, vLogin, vResend } = require("./validators/vAuth");
 const mailer = require("./helpers/mailer");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
-const { setUser, notLoggedUser, authUser } = require("./helpers/verifySession");
+const { setUser, notLoggedUser, authUser, authToken } = require("./helpers/verifySession");
 const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
+const { RSA_PKCS1_OAEP_PADDING } = require("constants");
 require("dotenv").config();
 
 router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async (req, res) => {
@@ -91,8 +92,17 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 
 		// Check if user is verified
 		if (!user.isVerified) {
-			request.post(`${process.env.BASEURL}/api/auth/resend`, { json: { email: req.body.email } }, err => {
-				if (err) throw new Error(ERROR_MESSAGE.serverError);
+			let options = {
+				uri: `${process.env.BASEURL}/api/auth/resend`,
+				method: "POST",
+				headers: {
+					AUTH_TOKEN: process.env.ACCESS_TOKEN
+				},
+				body: { email: req.body.email },
+				json: true
+			};
+			let response = await rp(options).catch(err => {
+				throw new Error(ERROR_MESSAGE.serverError);
 			});
 			throw new Error(ERROR_MESSAGE.unverifiedAccount);
 		}
@@ -125,7 +135,7 @@ router.get("/logout", setUser, authUser, (req, res) => {
 });
 
 // Confirm account with token
-router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
+router.get("/confirmation/:token", setUser, async (req, res) => {
 	try {
 		let err, token, user;
 		const receivedToken = sanitize(req.params.token);
@@ -155,7 +165,7 @@ router.get("/confirmation/:token", setUser, notLoggedUser, async (req, res) => {
 });
 
 // Resend account confirmation token
-router.post("/resend", vResend, setUser, notLoggedUser, async (req, res) => {
+router.post("/resend", vResend, authToken, setUser, notLoggedUser, async (req, res) => {
 	try {
 		const vResult = validationResult(req);
 		if (!vResult.isEmpty()) {

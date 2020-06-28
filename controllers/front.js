@@ -5,12 +5,12 @@ const fs = require("fs");
 const sanitize = require("mongo-sanitize");
 
 const Front = require("../models/Front");
-const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const upload = require("./helpers/multerHelpers");
 
-router.get("/", setUser, async (req, res) => {
+router.get("/", authToken, async (req, res) => {
 	try {
 		let [err, result] = await utils.to(Front.find());
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
@@ -22,7 +22,7 @@ router.get("/", setUser, async (req, res) => {
 	}
 });
 
-router.get("/image/:id", setUser, async (req, res) => {
+router.get("/image/:id", async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 

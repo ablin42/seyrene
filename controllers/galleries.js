@@ -9,14 +9,14 @@ const sanitize = require("mongo-sanitize");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
-const { ROLE, setUser, authUser, authRole } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 const upload = require("./helpers/multerHelpers");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
-router.get("/", setUser, async (req, res) => {
+router.get("/", async (req, res) => {
 	try {
 		const options = {
 			page: parseInt(req.query.page, 10) || 1,
@@ -37,7 +37,7 @@ router.get("/", setUser, async (req, res) => {
 	}
 });
 
-router.get("/Tags", setUser, async (req, res) => {
+router.get("/Tags", async (req, res) => {
 	try {
 		const options = {
 			page: parseInt(req.query.page, 10) || 1,
@@ -60,7 +60,7 @@ router.get("/Tags", setUser, async (req, res) => {
 	}
 });
 
-router.get("/single/:id", setUser, async (req, res) => {
+router.get("/single/:id", authToken, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 
@@ -189,7 +189,10 @@ router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, r
 		let options = {
 			method: "GET",
 			uri: `${process.env.BASEURL}/api/image/Gallery/${id}`,
-			json: true
+			json: true,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			}
 		};
 		let response = await rp(options);
 		if (response.error === true) throw new Error(ERROR_MESSAGE.fetchImg);

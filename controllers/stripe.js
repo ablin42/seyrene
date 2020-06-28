@@ -7,7 +7,7 @@ const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const Gallery = require("../models/Gallery");
 const Shop = require("../models/Shop");
-const { setUser, authUser, setOrder, authGetOrder, checkBilling } = require("./helpers/verifySession");
+const { setUser, authUser, setOrder, authGetOrder, checkBilling, authToken } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
@@ -43,7 +43,8 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 				headers: {
 					"Content-Type": "application/json",
 					"Accept": "application/json",
-					"cookie": req.headers.cookie
+					"cookie": req.headers.cookie,
+					"AUTH_TOKEN": process.env.ACCESS_TOKEN
 				},
 				body: {
 					items: items,
@@ -67,7 +68,7 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 	}
 });
 
-router.post("/refund/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
+router.post("/refund/:id", authToken, setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
 		let chargeId = req.body.chargeId;
 

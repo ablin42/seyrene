@@ -4,7 +4,7 @@ const rp = require("request-promise");
 const sanitize = require("mongo-sanitize");
 
 const mailer = require("./helpers/mailer");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder, authToken } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const Order = require("../models/Order");
 const Money = require("money-exchange");
@@ -22,8 +22,7 @@ const API_URL = "https://sandbox.pwinty.com";
 const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
 const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
 
-router.post("/orders/create", setUser, authUser, async (req, res) => {
-	//might need delivery etc
+router.post("/orders/create", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let options = {
 			method: "POST",
@@ -37,7 +36,6 @@ router.post("/orders/create", setUser, authUser, async (req, res) => {
 		};
 
 		let response = await rp(options).catch(function (err) {
-			console.log(err, "XDD");
 			throw new Error(err.response.body.statusTxt);
 		});
 
@@ -48,7 +46,7 @@ router.post("/orders/create", setUser, authUser, async (req, res) => {
 	}
 });
 
-router.get("/orders/:id", setUser, authUser, async (req, res) => {
+router.get("/orders/:id", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let options = {
@@ -72,7 +70,7 @@ router.get("/orders/:id", setUser, authUser, async (req, res) => {
 	}
 });
 
-router.get("/orders/:id/status", setUser, authUser, async (req, res) => {
+router.get("/orders/:id/status", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let options = {
@@ -96,7 +94,7 @@ router.get("/orders/:id/status", setUser, authUser, async (req, res) => {
 	}
 });
 
-router.post("/orders/:id/submit", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/orders/:id/submit", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		const id = sanitize(req.params.id);
 		let options = {
@@ -123,7 +121,7 @@ router.post("/orders/:id/submit", setUser, authUser, authRole(ROLE.ADMIN), async
 
 /* IMAGES */
 
-router.post("/orders/:id/images/batch", setUser, authUser, async (req, res) => {
+router.post("/orders/:id/images/batch", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let options = {

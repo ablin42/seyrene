@@ -4,6 +4,7 @@ const Order = require("../../models/Order");
 const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./errorMessages");
+const rp = require("request-promise");
 
 const ROLE = {
 	ADMIN: "admin",
@@ -23,8 +24,8 @@ async function setUser(req, res, next) {
 		req.user.password = undefined;
 	}
 
-	//let [err, user] = await utils.to(User.findById("5d810b9365761c0840e0de25")); //
-	//req.user = user; //
+	let [err, user] = await utils.to(User.findById("5d810b9365761c0840e0de25")); //
+	req.user = user; //
 
 	next();
 }
@@ -56,6 +57,53 @@ function authRole(role) {
 
 		next();
 	};
+}
+
+async function checkAddress(req, res, next) {
+	try {
+		const addressData = req.body.billing || req.body;
+
+		let encoded_address = encodeURI(addressData.fulltext_address);
+		let street_number = parseInt(addressData.street_name);
+
+		if (Number.isNaN(street_number)) throw new Error(ERROR_MESSAGE.noStreetNb);
+
+		let options = {
+			uri: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encoded_address}&inputtype=textquery&key=${process.env.GOOGLE_API_KEY}`,
+			json: true
+		};
+		let address = await rp(options);
+		if (address.status != "OK" || !address.candidates[0].place_id) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
+
+		options.uri = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${address.candidates[0].place_id}&key=${process.env.GOOGLE_API_KEY}`;
+		address = await rp(options);
+		if (address.status != "OK") throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
+		let components = address.result.address_components;
+
+		req.address = {
+			firstname: addressData.firstname,
+			lastname: addressData.lastname,
+			full_address: addressData.fulltext_address,
+			full_street: components[1].long_name,
+			country: components[5].long_name,
+			street_name: addressData.street_name,
+			street_number: components[0].long_name,
+			city: components[2].long_name,
+			state: components[4].long_name,
+			zipcode: components[6].long_name
+		};
+		if (addressData.instructions) req.address.instructions = addressData.instructions;
+
+		console.log(req.address, "x");
+
+		next();
+	} catch (err) {
+		console.log("CHECK ADDRESS ERROR:", err);
+		if (req.body.billing) return res.status(200).json({ error: true, message: err.message });
+
+		req.flash("warning", err.message);
+		return res.status(400).redirect("/User");
+	}
 }
 
 async function setDelivery(req, res, next) {
@@ -119,6 +167,14 @@ function checkBilling(req, res, next) {
 	next();
 }
 
+function authToken(req, res, next) {
+	const token = req.headers.access_token;
+	if (!token || token !== process.env.ACCESS_TOKEN)
+		return res.status(200).json({ error: true, message: ERROR_MESSAGE.unauthorized });
+
+	next();
+}
+
 module.exports = {
 	ROLE,
 	setUser,
@@ -130,5 +186,7 @@ module.exports = {
 	setOrder,
 	canViewOrder,
 	authGetOrder,
-	checkBilling
+	checkBilling,
+	checkAddress,
+	authToken
 };

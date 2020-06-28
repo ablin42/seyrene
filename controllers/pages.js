@@ -39,7 +39,16 @@ router.get("/", setUser, async (req, res) => {
 		let obj = { active: "Home" };
 		if (req.user) obj.user = req.user;
 
-		let front = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/front/`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+		let front = await rp(options);
+
 		if (front.error === false) obj.front = front.data;
 		else throw new Error(front.message);
 
@@ -55,7 +64,12 @@ router.get("/Galerie", setUser, async (req, res) => {
 		let obj = { active: "Galerie" };
 		if (req.user) obj.user = req.user;
 
-		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/gallery/`,
+			json: true
+		};
+		let response = await rp(options);
 		if (response.error === false) obj.galleries = response.galleries;
 		else throw new Error(response.message);
 
@@ -200,6 +214,7 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 		if (req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 		if (req.session.billing) obj.billing = req.session.billing;
 
+		console.log(obj.billing);
 		return res.status(200).render("billing", obj);
 	} catch (err) {
 		console.log("BILLING ROUTE ERROR", err);
@@ -400,11 +415,21 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 		let obj = { active: "Galerie" };
 		if (req.user) obj.user = req.user;
 
-		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/gallery/single/${id}`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/gallery/single/${id}`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+
+		let response = await rp(options);
 		if (response.error === false) obj.gallery = response.gallery;
 		else throw new Error(response.message);
 
-		response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${id}`));
+		options.uri = `${process.env.BASEURL}/api/image/Gallery/${id}`;
+		response = await rp(options);
 		if (response.error === false) obj.images = response.images;
 		else throw new Error(response.message);
 
@@ -449,12 +474,22 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 
 		if (req.user) obj.user = req.user;
 
-		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/single/${id}`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/shop/single/${id}`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+		response = await rp(options);
+
 		if (response.error === false) obj.shop = response.shop;
 		else throw new Error(response.message);
 		obj.shop.price = formatter.format(obj.shop.price).substr(2);
 
-		response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${id}`));
+		options.uri = `${process.env.BASEURL}/api/image/Shop/${id}`;
+		response = JSON.parse(await rp(options));
 		if (response.error === false) obj.img = response.images;
 		else throw new Error(response.message);
 
@@ -473,7 +508,16 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 		if (req.user) obj.user = req.user;
 
-		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/blog/single/${blogId}`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/blog/single/${blogId}`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+		response = await rp(options);
+
 		if (response.error === false) obj.blog = response.blog;
 		else throw new Error(response.message);
 
@@ -504,7 +548,16 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 	try {
 		let obj = { active: "Update Homepage", user: req.user };
 
-		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/front/`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/front/`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+		response = await rp(options);
+
 		if (response.error === false) obj.front = response.data;
 		else throw new Error(response.message);
 		if (response.data.length <= 0) obj.front = undefined;
@@ -625,7 +678,15 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.gallery = result;
 
-		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Gallery/${galleryId}`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/image/Gallery/${galleryId}`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+		let response = JSON.parse(await rp(options));
 		if (response.error === false) obj.images = response.images;
 		else throw new Error(response.message);
 
@@ -658,7 +719,15 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.shop = result;
 
-		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/image/Shop/${shopId}`));
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/image/Shop/${id}`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+		let response = JSON.parse(await rp(options));
 		if (response.error === false) obj.img = response.images;
 		else throw new Error(response.message);
 
