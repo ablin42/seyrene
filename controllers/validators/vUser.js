@@ -6,13 +6,13 @@ module.exports.vName = [
 	sanitizeBody("name").trim().stripLow(),
 	body("name")
 		.isLength({ min: 4, max: 30 })
-		.withMessage("Userame must contain between 4 and 30 characters")
+		.withMessage(ERROR_MESSAGE.nameLength)
 		.matches(/^[a-z0-9 \-_àâçéèêëîïôûùüÿñæœ]+$/i)
-		.withMessage("Userame must be alphanumeric")
+		.withMessage(ERROR_MESSAGE.nameAlpha)
 		.bail()
 		.custom(value => {
 			return utils.nameExist(value).then(user => {
-				if (user) return Promise.reject("An account already exist with this username");
+				if (user) return Promise.reject(ERROR_MESSAGE.userNameTaken);
 			});
 		})
 ];
@@ -21,14 +21,14 @@ module.exports.vEmail = [
 	sanitizeBody("email").trim().stripLow(),
 	body("email")
 		.isEmail()
-		.withMessage("Email must be valid")
+		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
 		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
-		.withMessage("Email must be 256 characters max")
+		.withMessage(ERROR_MESSAGE.emailLenght)
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
-				if (email) return Promise.reject("An account already exist with this e-mail");
+				if (email) return Promise.reject(ERROR_MESSAGE.emailTaken);
 			});
 		})
 ];
@@ -36,9 +36,9 @@ module.exports.vEmail = [
 module.exports.vPassword = [
 	body("password")
 		.isLength({ min: 8, max: 256 })
-		.withMessage("Password must contain between 8 and 256 characters")
+		.withMessage(ERROR_MESSAGE.pwLength)
 		.matches(/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/)
-		.withMessage("Password must be atleast alphanumeric"),
+		.withMessage(ERROR_MESSAGE.pwAlpha),
 	body("password2").custom((value, { req }) => {
 		if (value !== req.body.password) throw new Error(ERROR_MESSAGE.pwDontMatch);
 		return true;
@@ -49,11 +49,11 @@ module.exports.vLostPw = [
 	sanitizeBody("email").trim().stripLow(),
 	body("email")
 		.isEmail()
-		.withMessage("Email must be valid")
+		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
 		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
-		.withMessage("Email must be 256 characters max")
+		.withMessage(ERROR_MESSAGE.emailLenght)
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
 				if (!email) return Promise.reject(ERROR_MESSAGE.lostpwEmail);
@@ -62,20 +62,12 @@ module.exports.vLostPw = [
 ];
 
 module.exports.vDelivery = [
-	body("fulltext_address").trim().stripLow().isLength({ min: 1 }).withMessage("Address cannot be empty!"),
-	body("street_name").trim().stripLow().isLength({ min: 1 }).withMessage("Street name cannot be empty!"),
-	body("city").trim().stripLow().isLength({ min: 1 }).withMessage("City cannot be empty!"),
-	body("state").trim().stripLow().isLength({ min: 1 }).withMessage("State cannot be empty!"),
-	body("postal_code").trim().stripLow().isLength({ min: 1 }).withMessage("Postal code cannot be empty!"),
-	body("country").trim().stripLow().isLength({ min: 1 }).withMessage("Country cannot be empty!"),
-	body("firstname")
-		.trim()
-		.stripLow()
-		.isLength({ min: 2, max: 128 })
-		.withMessage("First Name must contain between 8 and 256 characters"),
-	body("lastname")
-		.trim()
-		.stripLow()
-		.isLength({ min: 2, max: 128 })
-		.withMessage("Last Name must contain between 8 and 256 characters")
+	body("fulltext_address").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.address),
+	body("street_name").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.street),
+	body("city").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.city),
+	body("state").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.state),
+	body("postal_code").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.zipcode),
+	body("country").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.country),
+	body("firstname").trim().stripLow().isLength({ min: 2, max: 128 }).withMessage(ERROR_MESSAGE.firstname),
+	body("lastname").trim().stripLow().isLength({ min: 2, max: 128 }).withMessage(ERROR_MESSAGE.lastname)
 ];

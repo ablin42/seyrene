@@ -54,11 +54,11 @@ app.use(cookieParser());
 //-- Express Session --//
 app.use(
 	session({
-		secret: "keyboard cat",
+		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: true,
-		cookie: { maxAge: 180 * 60 * 1000 }, //, sameSite: 'none', secure: true}, // 180 = 3mn
-		sameSite: "Lax" //remove if bug
+		cookie: { maxAge: 180 * 60 * 1000 },
+		sameSite: "Lax"
 	})
 );
 app.set("view engine", "ejs");

@@ -6,31 +6,31 @@ module.exports.vRegister = [
 	sanitizeBody("name", "email").trim().stripLow(),
 	body("name")
 		.isLength({ min: 4, max: 30 })
-		.withMessage("Userame must contain between 4 and 30 characters")
+		.withMessage(ERROR_MESSAGE.nameLength)
 		.matches(/^[a-z0-9 \-_àâçéèêëîïôûùüÿñæœ]+$/i)
-		.withMessage("Userame must be alphanumeric")
+		.withMessage(ERROR_MESSAGE.nameAlpha)
 		.custom(value => {
 			return utils.nameExist(value).then(user => {
-				if (user) return Promise.reject("An account already exist with this username");
+				if (user) return Promise.reject(ERROR_MESSAGE.userNameTaken);
 			});
 		}),
 	body("email")
 		.isEmail()
-		.withMessage("Email must be valid")
+		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
 		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
-		.withMessage("Email must be 256 characters max")
+		.withMessage(ERROR_MESSAGE.emailLength)
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
-				if (email) return Promise.reject("An account already exist with this e-mail");
+				if (email) return Promise.reject(ERROR_MESSAGE.emailTaken);
 			});
 		}),
 	body("password")
 		.isLength({ min: 8, max: 256 })
-		.withMessage("Password must contain between 8 and 256 characters")
+		.withMessage(ERROR_MESSAGE.pwLength)
 		.matches(/^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(.{8,})/)
-		.withMessage("Password must be atleast alphanumeric"),
+		.withMessage(ERROR_MESSAGE.pwAlpha),
 	body("password2").custom((value, { req }) => {
 		if (value !== req.body.password) throw new Error(ERROR_MESSAGE.pwDontMatch);
 		return true;
@@ -41,27 +41,27 @@ module.exports.vLogin = [
 	sanitizeBody("email").trim().stripLow(),
 	body("email")
 		.isEmail()
-		.withMessage("Email must be valid")
+		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
 		.normalizeEmail()
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
-				if (!email) return Promise.reject("Invalid credentials");
+				if (!email) return Promise.reject(ERROR_MESSAGE.invalidCredentials);
 			});
 		}),
-	body("password").isString().isLength({ min: 1, max: 256 }).withMessage("Password must be 256 characters max and not empty")
+	body("password").isString()
 ];
 
 module.exports.vResend = [
 	sanitizeBody("email").trim().stripLow(),
 	body("email")
 		.isEmail()
-		.withMessage("Email must be valid")
+		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
 		.normalizeEmail()
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
-				if (!email) return Promise.reject("Invalid credentials");
+				if (!email) return Promise.reject(ERROR_MESSAGE.invalidCredentials);
 			});
 		})
 ];

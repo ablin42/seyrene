@@ -77,5 +77,23 @@ const ERROR_MESSAGE = {
 	updatedEmail: "Email successfully modified, please confirm your new e-mail by clicking on the link we sent you",
 	savedBilling: "Billing information successfully saved",
 	updatedDelivery: "Delivery informations successfully updated",
-	placedOrder: "Purchase successful, your order has been placed!"
+	placedOrder: "Purchase successful, your order has been placed!",
+
+	//Validators
+	nameLength: "Userame must contain between 4 and 30 characters",
+	nameAlpha: "Userame must be alphanumeric",
+	emailLength: "Email must be 256 characters max",
+	emailInvalid: "Email must be valid",
+	pwLength: "Password must contain between 8 and 256 characters",
+	pwAlpha: "Password must be atleast alphanumeric",
+	titleContact: "Title must contain between 10 and 256 characters",
+	contentContact: "Content must contain between 64 and 2048 characters",
+	address: "Address cannot be empty!",
+	street: "Street name cannot be empty!",
+	city: "City cannot be empty!",
+	state: "State cannot be empty!",
+	zipcode: "Postal code cannot be empty!",
+	country: "Country cannot be empty!",
+	firstname: "First Name must contain between 8 and 256 characters",
+	lastname: "Last Name must contain between 8 and 256 characters"
 };

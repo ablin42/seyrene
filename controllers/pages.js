@@ -489,7 +489,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 		obj.shop.price = formatter.format(obj.shop.price).substr(2);
 
 		options.uri = `${process.env.BASEURL}/api/image/Shop/${id}`;
-		response = JSON.parse(await rp(options));
+		response = await rp(options);
 		if (response.error === false) obj.img = response.images;
 		else throw new Error(response.message);
 
@@ -686,7 +686,7 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 			},
 			json: true
 		};
-		let response = JSON.parse(await rp(options));
+		let response = await rp(options);
 		if (response.error === false) obj.images = response.images;
 		else throw new Error(response.message);
 
@@ -727,7 +727,7 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 			},
 			json: true
 		};
-		let response = JSON.parse(await rp(options));
+		let response = await rp(options);
 		if (response.error === false) obj.img = response.images;
 		else throw new Error(response.message);
 

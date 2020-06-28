@@ -25,7 +25,7 @@ module.exports = {
 			};
 
 			let [err, img] = await utils.to(Image.findOne({ _itemId: shopItems[i]._id, itemType: "Shop", isMain: true }));
-			if (err || img == null) throw new Error(ERROR_MESSAGE.fetchImg);
+			if (err || !img) throw new Error(ERROR_MESSAGE.fetchImg);
 
 			obj.mainImgId = img._id;
 			arr.push(obj);
