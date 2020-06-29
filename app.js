@@ -2,8 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const csrf = require("csurf");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
 const sanitize = require("mongo-sanitize");
@@ -23,6 +25,7 @@ const frontRoute = require("./controllers/front");
 const imageRoute = require("./controllers/images");
 const pwintyRoute = require("./controllers/pwinty");
 const stripeRoute = require("./controllers/stripe");
+const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
 
 //Connect to DB
 mongoose.connect(
@@ -42,6 +45,9 @@ mongoose.connect(
 // Express
 const app = express();
 app.use(express.static(__dirname + "/public"));
+app.use(helmet());
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy({ policy: "same-origin" }));
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
@@ -61,9 +67,21 @@ app.use(
 		sameSite: "Lax"
 	})
 );
-app.set("view engine", "ejs");
 app.use(flash());
+app.set("view engine", "ejs");
 app.use(expressSanitizer());
+app.use(csrf({ cookie: false }));
+
+// handle CSRF token errors here
+app.use(function (err, req, res, next) {
+	if (err.code !== "EBADCSRFTOKEN") return next(err);
+
+	console.log("csrf error");
+
+	//return res.status(403).redirect("back");
+	req.flash("warning", ERROR_MESSAGE.incorrectInput);
+	return res.status(200).json({ error: true, message: ERROR_MESSAGE.incorrectInput });
+});
 
 // Keep session
 app.use((req, res, next) => {

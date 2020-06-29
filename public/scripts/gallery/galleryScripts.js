@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+
 async function postGallery(e) {
 	e.preventDefault();
 	let tagInput = document.getElementsByClassName("label-info"),
@@ -16,9 +18,12 @@ async function postGallery(e) {
 	formData.append("tags", JSON.stringify(tags));
 
 	let data = await fetch("/api/gallery/post", {
-		method: "post",
+		method: "POST",
 		mode: "same-origin",
-		body: formData
+		body: formData,
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 
@@ -46,9 +51,12 @@ async function patchGallery(e, galleryId) {
 	formData.append("tags", JSON.stringify(tags));
 
 	let data = await fetch(`/api/gallery/patch/${galleryId}`, {
-		method: "post",
+		method: "POST",
 		mode: "same-origin",
-		body: formData
+		body: formData,
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 
@@ -62,8 +70,11 @@ async function setMain(e, item) {
 	e.preventDefault();
 
 	let data = await fetch(item.href, {
-		method: "get",
-		mode: "same-origin"
+		method: "POST",
+		mode: "same-origin",
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 
@@ -87,8 +98,11 @@ async function deleteImage(e, item) {
 	e.preventDefault();
 
 	let data = await fetch(item.href, {
-		method: "get",
-		mode: "same-origin"
+		method: "POST",
+		mode: "same-origin",
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 

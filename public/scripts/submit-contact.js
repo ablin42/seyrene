@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+
 async function submitContact(e) {
 	e.preventDefault();
 
@@ -11,7 +13,8 @@ async function submitContact(e) {
 		method: "POST",
 		headers: {
 			"Accept": "application/json, text/plain, */*",
-			"Content-Type": "application/json"
+			"Content-Type": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		body: JSON.stringify({ name: name, email: email, title: title, content: content, captcha: captcha })
 	});

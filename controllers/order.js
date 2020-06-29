@@ -123,7 +123,9 @@ async function createPwintyOrder(order, req) {
 			preferredShippingMethod: "standard"
 		},
 		headers: {
-			ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			"ACCESS_TOKEN": process.env.ACCESS_TOKEN,
+			"CSRF-Token": req.csrfToken(),
+			"cookie": req.headers.cookie
 		},
 		json: true
 	};
@@ -286,7 +288,7 @@ router.post("/initialize", authToken, setUser, authUser, async (req, res) => {
 	}
 });
 
-router.get("/complete/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
+router.post("/complete/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
 		const order = req.order;
 
@@ -308,7 +310,7 @@ router.get("/complete/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, a
 	}
 });
 
-router.get("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
+router.post("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
 		const order = req.order;
 
@@ -334,6 +336,7 @@ async function refundStripe(req, chargeId, orderId) {
 		headers: {
 			"Content-Type": "application/json",
 			"Accept": "application/json",
+			"CSRF-Token": req.csrfToken(),
 			"cookie": req.headers.cookie,
 			"AUTH_TOKEN": process.env.ACCESS_TOKEN
 		},
@@ -345,7 +348,7 @@ async function refundStripe(req, chargeId, orderId) {
 	return result;
 }
 
-router.get("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
+router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
 		let err,
 			order = req.order,

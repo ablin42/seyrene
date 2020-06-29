@@ -4,6 +4,7 @@
 <script>
 	const stripePublicKey = "<%= locals.stripePublicKey %>";
 	const stripe = Stripe(stripePublicKey);
+	const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 </script>
 
 <div class="container container-single">
@@ -24,6 +25,7 @@
 					<div id="card-errors" role="alert" class="card-error"></div>
 				</div>
 
+				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 				<button class="btn-pay mt-3">Submit Payment</button>
 			</form>
 		</div>
@@ -40,7 +42,8 @@
 		data = await fetch("/api/stripe/create-intent", {
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				"CSRF-Token": csrfToken
 			},
 			body: []
 		});
@@ -123,7 +126,8 @@
 			//to remove once live using webhooks
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				"CSRF-Token": csrfToken
 			},
 			body: JSON.stringify({ type: "payment_intent.succeeded", data: { object: { id: result.paymentIntent.id } } })
 		});

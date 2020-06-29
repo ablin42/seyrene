@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
 function closeDialog() {
 	if ($("#alert-dialog").length !== 0) {
 		$("#alert-dialog").parent().css("opacity", 0);
@@ -12,10 +14,11 @@ function closeDialog() {
 async function confirmDelete(orderId) {
 	closeDialog();
 	let response = await fetch(`/api/order/cancel/${orderId}`, {
-		method: "GET",
+		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		credentials: "include",
 		mode: "same-origin"
@@ -38,10 +41,11 @@ function abortAction() {
 async function confirmApproval(orderId) {
 	closeDialog();
 	let response = await fetch(`/api/order/approve/${orderId}`, {
-		method: "GET",
+		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		credentials: "include",
 		mode: "same-origin"
@@ -59,10 +63,11 @@ async function confirmApproval(orderId) {
 async function confirmCompletion(orderId) {
 	closeDialog();
 	let response = await fetch(`/api/order/complete/${orderId}`, {
-		method: "GET",
+		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		credentials: "include",
 		mode: "same-origin"

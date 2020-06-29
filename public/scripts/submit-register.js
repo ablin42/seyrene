@@ -1,6 +1,7 @@
 const signUpButton = document.getElementById("signUp");
 const signInButton = document.getElementById("signIn");
 const container = document.getElementById("container");
+const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
 
 signUpButton.addEventListener("click", () => {
 	container.classList.add("right-panel-active");
@@ -22,7 +23,8 @@ async function submitRegister(e) {
 		method: "POST",
 		headers: {
 			"Accept": "application/json, text/plain, */*",
-			"Content-Type": "application/json"
+			"Content-Type": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		body: JSON.stringify({ name: name, email: email, password: password, password2: password2, captcha: captcha })
 	});

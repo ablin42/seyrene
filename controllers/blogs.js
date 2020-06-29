@@ -93,7 +93,7 @@ router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), as
 });
 
 // delete a blog
-router.get("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let blogId = sanitize(req.params.blogId);
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.delError);

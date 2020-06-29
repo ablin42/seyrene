@@ -38,9 +38,11 @@
                 <% } %>
             </div>
         
+            <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
             <input type="submit" class="logbtn" value="Mettre à jour" id="submit-shop">
         </form>
-        <form class="col-8 offset-2 mt-4" method="GET" action="/api/shop/delete/<%= locals.shop._id %>">
+        <form class="col-8 offset-2 mt-4" method="POST" action="/api/shop/delete/<%= locals.shop._id %>">
+            <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
             <input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-shop">
         </form>
     </div>

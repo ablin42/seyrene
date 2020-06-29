@@ -43,6 +43,7 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 				headers: {
 					"Content-Type": "application/json",
 					"Accept": "application/json",
+					"CSRF-Token": req.csrfToken(),
 					"cookie": req.headers.cookie,
 					"AUTH_TOKEN": process.env.ACCESS_TOKEN
 				},

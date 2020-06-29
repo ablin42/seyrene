@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
 async function checkSKU(SKU) {
 	let data = await fetch("/api/pwinty/countries/FR", {
 		method: "POST",
@@ -25,7 +27,8 @@ async function checkIsDelivery(SKU) {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		body: JSON.stringify({ items: [{ SKU: SKU, quantity: 1 }] }),
 		credentials: "include",

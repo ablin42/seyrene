@@ -204,6 +204,7 @@ router.post("/countries/:countryCode", setUser, async (req, res) => {
 router.post("/pricing/:countryCode", setUser, async (req, res) => {
 	try {
 		if (!req.body.items) throw new Error(ERROR_MESSAGE.incorrectInput);
+		if (!req.params.countryCode) throw new Error(ERROR_MESSAGE.countryCode);
 		let countryCode = sanitize(req.params.countryCode);
 		let items = [];
 
@@ -224,13 +225,43 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		});
 
 		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
+			headers: {
+				"X-Pwinty-MerchantId": MERCHANTID,
+				"X-Pwinty-REST-API-Key": APIKEY,
+				"ACCESS_TOKEN": process.env.ACCESS_TOKEN
+			},
+			body: { items: items },
+			json: true
+		};
+
+		let response = await rp(options);
+
+		let error = false;
+		if (response.error === true) throw new Error(response.message);
+		if (response.formatted <= 0) error = true;
+		return res.status(200).json({ error: error, response: response.formatted });
+	} catch (err) {
+		console.log("PWINTY PRICING ERROR:", err);
+		return res.status(200).json({ error: true, message: err.message });
+	}
+});
+
+router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
+	try {
+		if (!req.body.items) throw new Error(ERROR_MESSAGE.incorrectInput);
+		if (!req.params.countryCode) throw new Error(ERROR_MESSAGE.countryCode);
+		let countryCode = sanitize(req.params.countryCode);
+
+		let options = {
 			method: "POST",
 			uri: `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/order/price`,
 			headers: {
 				"X-Pwinty-MerchantId": MERCHANTID,
 				"X-Pwinty-REST-API-Key": APIKEY
 			},
-			body: { items: items },
+			body: { items: req.body.items },
 			json: true
 		};
 
@@ -271,12 +302,13 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 
 		let error = false;
 		if (formatted.length <= 0) error = true;
-		return res.status(200).json({ error: error, response: formatted });
+		return res.status(200).json({ error: error, formatted: formatted });
 	} catch (err) {
 		console.log("PWINTY PRICING ERROR:", err);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
+
 /* END CATALOGUE */
 
 router.post("/callback/status", async (req, res) => {

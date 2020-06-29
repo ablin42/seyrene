@@ -27,6 +27,7 @@
 				<input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" multiple required />
 			</div>
 
+			<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 			<input type="submit" class="logbtn" value="Valider" id="submit-shop" />
 		</form>
 	</div>

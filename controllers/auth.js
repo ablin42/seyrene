@@ -96,7 +96,9 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 				uri: `${process.env.BASEURL}/api/auth/resend`,
 				method: "POST",
 				headers: {
-					AUTH_TOKEN: process.env.ACCESS_TOKEN
+					"AUTH_TOKEN": process.env.ACCESS_TOKEN,
+					"CSRF-Token": req.csrfToken(),
+					"cookie": req.headers.cookie
 				},
 				body: { email: req.body.email },
 				json: true

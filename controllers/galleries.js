@@ -175,7 +175,7 @@ router.post("/patch/:id", vGallery, setUser, authUser, authRole(ROLE.ADMIN), asy
 	});
 });
 
-router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let err, gallery;

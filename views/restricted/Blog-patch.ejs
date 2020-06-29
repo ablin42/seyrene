@@ -17,9 +17,11 @@
 				<span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
 			</div>
 
+			<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 			<input type="submit" class="logbtn" value="Mettre à jour" id="submit-blog" />
 		</form>
-		<form class="col-8 offset-2 mt-4" method="GET" action="/api/blog/delete/<%= locals.blog.id %>">
+		<form class="col-8 offset-2 mt-4" method="POST" action="/api/blog/delete/<%= locals.blog.id %>">
+			<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 			<input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-blog" />
 		</form>
 	</div>

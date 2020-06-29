@@ -4,6 +4,8 @@ const formatter = new Intl.NumberFormat("de-DE", {
 	currency: "EUR"
 });
 
+const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+
 function cooldownBtn(caller, time) {
 	caller.disabled = true;
 	caller.style.pointerEvents = "none";
@@ -23,11 +25,13 @@ async function cartAdd(itemId, caller) {
 	cooldownBtn(caller, 1500);
 	let alertType = "success";
 
+	console.log(itemId);
 	let response = await fetch(`/api/cart/add/${itemId}`, {
-		method: "GET",
+		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		credentials: "include",
 		mode: "same-origin"
@@ -49,10 +53,11 @@ async function cartDel(itemId, caller) {
 	let alertType = "info";
 
 	let response = await fetch(`/api/cart/del/${itemId}`, {
-		method: "GET",
+		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		credentials: "include",
 		mode: "same-origin"
@@ -91,7 +96,8 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		body: JSON.stringify({ SKU, price, attributes }),
 		credentials: "include",
@@ -131,7 +137,8 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		body: JSON.stringify({ SKU, price, attributes }),
 		credentials: "include",
@@ -184,7 +191,8 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Accept": "application/json"
+			"Accept": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		body: JSON.stringify({ SKU, price, attributes }),
 		credentials: "include",

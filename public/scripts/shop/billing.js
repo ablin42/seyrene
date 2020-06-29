@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+
 async function saveBilling(e) {
 	e.preventDefault();
 
@@ -15,7 +17,8 @@ async function saveBilling(e) {
 	let data = await fetch("/api/order/billing/save", {
 		method: "POST",
 		headers: {
-			"Content-Type": "application/json"
+			"Content-Type": "application/json",
+			"CSRF-Token": csrfToken
 		},
 		body: JSON.stringify({ billing: obj })
 	});

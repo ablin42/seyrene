@@ -36,7 +36,7 @@ const formatter = new Intl.NumberFormat("de-DE", {
 /* MAIN ROUTES */
 router.get("/", setUser, async (req, res) => {
 	try {
-		let obj = { active: "Home" };
+		let obj = { active: "Home", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
 		let options = {
@@ -61,7 +61,7 @@ router.get("/", setUser, async (req, res) => {
 
 router.get("/Galerie", setUser, async (req, res) => {
 	try {
-		let obj = { active: "Galerie" };
+		let obj = { active: "Galerie", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
 		let options = {
@@ -83,7 +83,7 @@ router.get("/Galerie", setUser, async (req, res) => {
 
 router.get("/Galerie/Tags", setUser, async (req, res) => {
 	try {
-		let obj = { active: "Tags search" };
+		let obj = { active: "Tags search", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 		let url = `${process.env.BASEURL}/api/gallery/`;
 		if (req.query.t) {
@@ -118,7 +118,8 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 			totalPrice: 0,
 			totalQty: 0,
 			user: req.user,
-			delivery: req.delivery
+			delivery: req.delivery,
+			csrfToken: req.csrfToken()
 		};
 
 		if (req.session.cart) {
@@ -183,7 +184,9 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						"Accept": "application/json"
+						"Accept": "application/json",
+						"CSRF-Token": req.csrfToken(),
+						"cookie": req.headers.cookie
 					},
 					body: { items: cart.generatePwintyArray() },
 					json: true
@@ -208,7 +211,8 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 		let obj = {
 			active: "Billing",
 			user: req.user,
-			billing: {}
+			billing: {},
+			csrfToken: req.csrfToken()
 		};
 		if (!req.session.cart) return res.status(400).redirect("/shopping-cart");
 		if (req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
@@ -230,7 +234,8 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 			stripePublicKey: stripePublic,
 			totalPrice: 0,
 			user: req.user,
-			billing: req.session.billing
+			billing: req.session.billing,
+			csrfToken: req.csrfToken()
 		};
 
 		console.log(obj.billing);
@@ -251,7 +256,7 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 router.get("/User", setUser, authUser, async (req, res) => {
 	try {
 		let err, result, orders;
-		let obj = { active: "User", user: req.user, delivery: false };
+		let obj = { active: "User", csrfToken: req.csrfToken(), user: req.user, delivery: false };
 
 		[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
 		if (err || !result) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
@@ -278,7 +283,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 
 router.get("/About", setUser, async (req, res) => {
 	try {
-		let obj = { active: "About" };
+		let obj = { active: "About", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
@@ -299,7 +304,7 @@ router.get("/About", setUser, async (req, res) => {
 
 router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 	try {
-		let obj = { active: "Account" };
+		let obj = { active: "Account", csrfToken: req.csrfToken() };
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
 			req.session.formData = undefined;
@@ -315,7 +320,7 @@ router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 
 router.get("/Shop", setUser, async (req, res) => {
 	try {
-		let obj = { active: "Shop" };
+		let obj = { active: "Shop", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
 		let response = JSON.parse(await rp(`${process.env.BASEURL}/api/shop/`));
@@ -335,7 +340,8 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 		let obj = {
 			active: "Reset password",
 			tokenId: sanitize(req.params.tokenId),
-			token: sanitize(req.params.token)
+			token: sanitize(req.params.token),
+			csrfToken: req.csrfToken()
 		};
 
 		let [err, pwToken] = await utils.to(PwToken.findOne({ _id: obj.tokenId, token: obj.token }));
@@ -354,7 +360,7 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 
 router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
-		let obj = { active: "Order recap", user: req.user, order: req.order };
+		let obj = { active: "Order recap", csrfToken: req.csrfToken(), user: req.user, order: req.order };
 
 		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
 		obj.products = [];
@@ -412,7 +418,7 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 router.get("/Galerie/:id", setUser, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
-		let obj = { active: "Galerie" };
+		let obj = { active: "Galerie", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
 		let options = {
@@ -443,7 +449,7 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 
 router.get("/Catalog", setUser, async (req, res) => {
 	try {
-		let obj = { active: "Catalog" };
+		let obj = { active: "Catalog", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
 		return res.status(200).render("catalog", obj);
@@ -456,7 +462,7 @@ router.get("/Catalog", setUser, async (req, res) => {
 
 router.get("/CGU", setUser, async (req, res) => {
 	try {
-		let obj = { active: "CGU" };
+		let obj = { active: "CGU", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
 		return res.status(200).render("cgu", obj);
@@ -470,7 +476,7 @@ router.get("/CGU", setUser, async (req, res) => {
 router.get("/Shop/:id", setUser, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
-		let obj = { active: "Shop" };
+		let obj = { active: "Shop", csrfToken: req.csrfToken() };
 
 		if (req.user) obj.user = req.user;
 
@@ -503,7 +509,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 
 router.get("/Blog/:id", setUser, async (req, res) => {
 	try {
-		let obj = { active: "Blog" };
+		let obj = { active: "Blog", csrfToken: req.csrfToken() };
 		const blogId = sanitize(req.params.id);
 		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 		if (req.user) obj.user = req.user;
@@ -534,7 +540,7 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 
 router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Admin", user: req.user };
+		let obj = { active: "Admin", user: req.user, csrfToken: req.csrfToken() };
 
 		return res.status(200).render("restricted/admin", obj);
 	} catch (err) {
@@ -546,7 +552,7 @@ router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 
 router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Update Homepage", user: req.user };
+		let obj = { active: "Update Homepage", user: req.user, csrfToken: req.csrfToken() };
 
 		let options = {
 			method: "GET",
@@ -572,7 +578,7 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 
 router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Admin Orders", user: req.user };
+		let obj = { active: "Admin Orders", user: req.user, csrfToken: req.csrfToken() };
 
 		let options = {
 			method: "GET",
@@ -602,7 +608,7 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 
 router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
-		let obj = { active: "Order recap", user: req.user, order: req.order };
+		let obj = { active: "Order recap", user: req.user, order: req.order, csrfToken: req.csrfToken() };
 
 		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
 		obj.products = [];
@@ -659,7 +665,7 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 
 router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Post a gallery item", user: req.user };
+		let obj = { active: "Post a gallery item", user: req.user, csrfToken: req.csrfToken() };
 
 		return res.status(200).render("restricted/gallery-post", obj);
 	} catch (err) {
@@ -671,7 +677,7 @@ router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async
 
 router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Edit a gallery item" };
+		let obj = { active: "Edit a gallery item", csrfToken: req.csrfToken() };
 		const galleryId = sanitize(req.params.galleryId);
 
 		let [err, result] = await utils.to(Gallery.findOne({ _id: galleryId }));
@@ -700,7 +706,7 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 
 router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Post a shop item", user: req.user };
+		let obj = { active: "Post a shop item", user: req.user, csrfToken: req.csrfToken() };
 
 		return res.status(200).render("restricted/shop-post", obj);
 	} catch (err) {
@@ -712,7 +718,7 @@ router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 
 router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Edit a shop item", user: req.user };
+		let obj = { active: "Edit a shop item", user: req.user, csrfToken: req.csrfToken() };
 		const shopId = sanitize(req.params.shopId);
 
 		let [err, result] = await utils.to(Shop.findOne({ _id: shopId }));
@@ -741,7 +747,7 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 
 router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Post a blog", user: req.user };
+		let obj = { active: "Post a blog", user: req.user, csrfToken: req.csrfToken() };
 
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
@@ -758,7 +764,7 @@ router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 
 router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Edit a blog", user: req.user };
+		let obj = { active: "Edit a blog", user: req.user, csrfToken: req.csrfToken() };
 		if (req.session.formData) {
 			obj.formData = req.session.formData;
 			req.session.formData = undefined;

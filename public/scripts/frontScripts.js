@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+
 async function deleteImage(item, e) {
 	e.preventDefault();
 
@@ -13,8 +15,11 @@ async function deleteImage(item, e) {
 
 	if (imageItem.getAttribute("data-uploaded") === "true") {
 		let data = await fetch(`/api/front/delete/${item.id.substr(6, 1)}`, {
-			method: "get",
-			mode: "same-origin"
+			method: "POST",
+			mode: "same-origin",
+			headers: {
+				"CSRF-Token": csrfToken
+			}
 		});
 
 		data = await data.json();
@@ -62,9 +67,12 @@ async function postFront(e, form) {
 	formData.append("referenceId", form.querySelector("input[name=\"referenceId\"]").value);
 
 	let data = await fetch("/api/front/post", {
-		method: "post",
+		method: "POST",
 		mode: "same-origin",
-		body: formData
+		body: formData,
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 

@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+
 async function postShop(e) {
 	e.preventDefault();
 	let title = $("#title").val(),
@@ -13,9 +15,12 @@ async function postShop(e) {
 	formData.append("price", price);
 
 	let data = await fetch("/api/shop/post", {
-		method: "post",
+		method: "POST",
 		mode: "same-origin",
-		body: formData
+		body: formData,
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 
@@ -40,9 +45,12 @@ async function patchShop(e, shopId) {
 	formData.append("price", price);
 
 	let data = await fetch(`/api/shop/patch/${shopId}`, {
-		method: "post",
+		method: "POST",
 		mode: "same-origin",
-		body: formData
+		body: formData,
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 
@@ -56,8 +64,11 @@ async function setMain(e, item) {
 	e.preventDefault();
 
 	let data = await fetch(item.href, {
-		method: "get",
-		mode: "same-origin"
+		method: "POST",
+		mode: "same-origin",
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 
@@ -81,8 +92,11 @@ async function deleteImage(e, item) {
 	e.preventDefault();
 
 	let data = await fetch(item.href, {
-		method: "get",
-		mode: "same-origin"
+		method: "POST",
+		mode: "same-origin",
+		headers: {
+			"CSRF-Token": csrfToken
+		}
 	});
 	data = await data.json();
 

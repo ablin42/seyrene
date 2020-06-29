@@ -4,6 +4,7 @@ const router = express.Router();
 const Cart = require("../models/Cart");
 const Gallery = require("../models/Gallery");
 const Shop = require("../models/Shop");
+const rp = require("request-promise");
 
 const { setUser } = require("./helpers/verifySession");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
@@ -11,7 +12,7 @@ const utils = require("./helpers/utils");
 require("dotenv/config");
 const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 
-router.get("/add/:itemId", setUser, async (req, res) => {
+router.post("/add/:itemId", setUser, async (req, res) => {
 	try {
 		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -39,7 +40,7 @@ router.get("/add/:itemId", setUser, async (req, res) => {
 	}
 });
 
-router.get("/del/:itemId", setUser, async (req, res) => {
+router.post("/del/:itemId", setUser, async (req, res) => {
 	try {
 		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -76,7 +77,7 @@ router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
 		if (!product) throw new Error(ERROR_MESSAGE.noResult);
 
-		let item = await cart.pwintyAdd(product, data);
+		let item = await cart.pwintyAdd(product, data, req);
 		req.session.cart = cart;
 
 		let formatted = JSON.parse(JSON.stringify(cart));
@@ -106,7 +107,7 @@ router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 			if (err) throw new Error(ERROR_MESSAGE.serverError);
 			if (!product) throw new Error(ERROR_MESSAGE.noResult);
 
-			let item = await cart.pwintyUpdate(data, newQty);
+			let item = await cart.pwintyUpdate(data, newQty, req);
 			req.session.cart = cart;
 
 			let formatted = JSON.parse(JSON.stringify(cart));
@@ -137,7 +138,7 @@ router.post("/del/pwinty/:itemId", setUser, async (req, res) => {
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
 		if (!product) throw new Error(ERROR_MESSAGE.noResult);
 
-		let item = await cart.pwintyDelete(data);
+		let item = await cart.pwintyDelete(data, req);
 		req.session.cart = cart;
 
 		let formatted = JSON.parse(JSON.stringify(cart));

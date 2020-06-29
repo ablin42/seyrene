@@ -1,3 +1,5 @@
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
 function closeAllSelect(elmnt) {
 	let x,
 		y,
@@ -298,7 +300,8 @@ class PwintyObject {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"Accept": "application/json"
+				"Accept": "application/json",
+				"CSRF-Token": csrfToken
 			},
 			body: JSON.stringify({ items: [{ SKU: this.SKU, quantity: 1 }] })
 		});
@@ -354,6 +357,7 @@ class PwintyObject {
 		attributes.category = this.category;
 		attributes.subcategory = this.subcategory;
 		let price = this.price;
+
 		let countryCode = await this.fetchCountryCode();
 
 		caller.disabled = true;
@@ -367,7 +371,8 @@ class PwintyObject {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"Accept": "application/json"
+				"Accept": "application/json",
+				"CSRF-Token": csrfToken
 			},
 			body: JSON.stringify({ items: [{ SKU: SKU, quantity: 1 }] }),
 			credentials: "include",
@@ -388,13 +393,15 @@ class PwintyObject {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"Accept": "application/json"
+					"Accept": "application/json",
+					"CSRF-Token": csrfToken
 				},
 				body: JSON.stringify({ SKU, price, attributes }),
 				credentials: "include",
 				mode: "same-origin"
 			});
 			response = await response.json();
+			console.log(response);
 
 			let alertType = "success";
 			if (response.error === false) {

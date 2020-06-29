@@ -51,7 +51,7 @@ router.get("/main/:itemType/:itemId", async (req, res) => {
 	}
 });
 
-router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let itemType = sanitize(req.params.itemType);
@@ -74,7 +74,7 @@ router.get("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADM
 	}
 });
 
-router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let err, find, result;

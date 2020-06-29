@@ -170,7 +170,7 @@ router.post("/patch/:id", vShop, setUser, authUser, authRole(ROLE.ADMIN), async 
 	});
 });
 
-router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let err, shop;

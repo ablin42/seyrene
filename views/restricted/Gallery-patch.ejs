@@ -40,9 +40,11 @@
                 <span data-placeholder="Tags"></span>
             </div>
 
+            <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
             <input type="submit" class="logbtn" value="Mettre à jour" id="submit-gallery">
         </form>
-        <form class="col-8 offset-2 mt-4" method="GET" action="/api/gallery/delete/<%= locals.gallery._id %>">
+        <form class="col-8 offset-2 mt-4" method="POST" action="/api/gallery/delete/<%= locals.gallery._id %>">
+           	<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
             <input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-blog">
         </form>
 </div>

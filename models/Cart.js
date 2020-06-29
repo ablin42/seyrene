@@ -42,7 +42,7 @@ module.exports = function Cart(oldCart) {
 	};
 	/* END UNIQUE */
 
-	this.pwintyAdd = async function (item, data) {
+	this.pwintyAdd = async function (item, data, req) {
 		let storedItem = this.items[data.SKU];
 		let attributes = data.attributes;
 		attributes.SKU = data.SKU;
@@ -79,11 +79,11 @@ module.exports = function Cart(oldCart) {
 		this.totalPrice = parseFloat((Math.round((this.totalPrice + data.price) * 100) / 100).toFixed(2));
 		retData.price = parseFloat((Math.round(this.items[data.SKU].unitPrice * retData.qty * 100) / 100).toFixed(2));
 
-		await this.fetchPrice();
+		await this.fetchPrice(req);
 		return retData;
 	};
 
-	this.pwintyDelete = async function (data) {
+	this.pwintyDelete = async function (data, req) {
 		let storedItem = this.items[data.SKU];
 		let attributes = data.attributes;
 		attributes.SKU = data.SKU;
@@ -112,11 +112,11 @@ module.exports = function Cart(oldCart) {
 			retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
 		}
 
-		await this.fetchPrice();
+		await this.fetchPrice(req);
 		return retData;
 	};
 
-	this.pwintyUpdate = async function (data, qty) {
+	this.pwintyUpdate = async function (data, qty, req) {
 		let storedItem = this.items[data.SKU];
 		let attributes = data.attributes;
 		attributes.SKU = data.SKU;
@@ -151,7 +151,7 @@ module.exports = function Cart(oldCart) {
 			retData.price = parseFloat((Math.round(unitPrice * retData.qty * 100) / 100).toFixed(2));
 		}
 
-		await this.fetchPrice();
+		await this.fetchPrice(req);
 		return retData;
 	};
 
@@ -178,7 +178,7 @@ module.exports = function Cart(oldCart) {
 		return arr;
 	};
 
-	this.fetchPrice = async function () {
+	this.fetchPrice = async function (req) {
 		let items = this.generatePwintyArray();
 		if (items.length <= 0) {
 			this.price = {
@@ -197,13 +197,15 @@ module.exports = function Cart(oldCart) {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"Accept": "application/json"
+				"Accept": "application/json",
+				"CSRF-Token": req.csrfToken(),
+				"cookie": req.headers.cookie
 			},
 			body: { items: items },
 			json: true
 		};
 
-		let obj = await rp(options);
+		let obj = await rp(options); ////////////
 		if (obj.error === true || obj.response.length <= 0) {
 			this.clearCart();
 			throw new Error(ERROR_MESSAGE.noShipment);

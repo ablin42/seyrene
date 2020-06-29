@@ -92,7 +92,7 @@ router.post("/post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 	});
 });
 
-router.get("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 
