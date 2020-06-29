@@ -17,7 +17,7 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { RSA_PKCS1_OAEP_PADDING } = require("constants");
 require("dotenv").config();
 
-router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async (req, res) => {
+router.post("/register", vRegister, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, result;
 		req.session.formData = {
@@ -69,7 +69,7 @@ router.post("/register", vRegister, setUser, checkCaptcha, notLoggedUser, async 
 	}
 });
 
-router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
+router.post("/login", vLogin, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
 	try {
 		req.session.formData = { email: req.body.email };
 
@@ -113,11 +113,10 @@ router.post("/login", vLogin, setUser, notLoggedUser, async (req, res) => {
 		req.session._id = user._id;
 
 		req.flash("success", ERROR_MESSAGE.loggedIn);
-		return res.redirect("/");
+		return res.status(200).json({ error: false });
 	} catch (err) {
 		console.log("ERROR LOGIN:", err);
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/Account");
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 

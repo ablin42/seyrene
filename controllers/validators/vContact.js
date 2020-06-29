@@ -1,8 +1,8 @@
-const { body, sanitizeBody } = require("express-validator");
+const { body } = require("express-validator");
 const { ERROR_MESSAGE } = require("../helpers/errorMessages");
 
 module.exports.vContact = [
-	sanitizeBody("name", "email", "title").trim().stripLow(),
+	body("name", "email", "title").trim().stripLow(),
 	body("name")
 		.isLength({ min: 4, max: 30 })
 		.withMessage(ERROR_MESSAGE.nameLength)

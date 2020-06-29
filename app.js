@@ -9,6 +9,7 @@ const csrf = require("csurf");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
 const sanitize = require("mongo-sanitize");
+const MongoStore = require("connect-mongo")(session);
 const { setUser } = require("./controllers/helpers/verifySession");
 require("dotenv").config();
 
@@ -56,14 +57,21 @@ app.use(bodyParser.json({ limit: 100000000 }));
 //-- Cross origin --//
 app.use(cors());
 //-- Cookie parser --//
+
 app.use(cookieParser());
 //-- Express Session --//
+
 app.use(
 	session({
+		store: new MongoStore({
+			mongooseConnection: mongoose.connection,
+			ttl: 14 * 24 * 60 * 60
+		}),
+		name: "overlord",
 		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: true,
-		cookie: { maxAge: 180 * 60 * 1000 },
+		resave: true,
+		saveUninitialized: false,
+		cookie: { maxAge: 14 * 24 * 60 * 60, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
 );
@@ -77,9 +85,11 @@ app.use(function (err, req, res, next) {
 	if (err.code !== "EBADCSRFTOKEN") return next(err);
 
 	console.log("csrf error");
+	if (req.headers["content-type"] === "application/x-www-form-urlencoded") {
+		req.flash("warning", ERROR_MESSAGE.incorrectInput);
+		return res.status(403).redirect(req.headers.referer);
+	}
 
-	//return res.status(403).redirect("back");
-	req.flash("warning", ERROR_MESSAGE.incorrectInput);
 	return res.status(200).json({ error: true, message: ERROR_MESSAGE.incorrectInput });
 });
 
@@ -96,27 +106,6 @@ app.use((req, res, next) => {
 
 	next();
 });
-
-// Handles multer error
-/* delete if useless
-app.use((err, req, res, next) => {
-	// treat as 404
-	if (err.message && (~err.message.indexOf("not found") || ~err.message.indexOf("Cast to ObjectId failed"))) {
-		return next();
-	}
-	console.error(err.stack, "stack");
-
-	// multer error
-	if (
-		req.originalUrl.indexOf("/api/gallery/") != -1 ||
-		req.originalUrl.indexOf("/api/shop/") != -1 ||
-		req.originalUrl.indexOf("/api/front/") != -1
-	)
-		return res.status(500).json({ url: "/", message: err.message, err: true });
-
-	if (err.message) console.log(err.message, "msg");
-	return res.status(500).redirect("back");
-});*/
 
 // Routes
 app.use("/", pagesRoute);

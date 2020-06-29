@@ -1,9 +1,9 @@
-const { body, sanitizeBody, sanitizeParam } = require("express-validator");
+const { body, sanitizeParam } = require("express-validator");
 const utils = require("../helpers/utils");
 const { ERROR_MESSAGE } = require("../helpers/errorMessages");
 
 module.exports.vRegister = [
-	sanitizeBody("name", "email").trim().stripLow(),
+	body("name", "email").trim().stripLow(),
 	body("name")
 		.isLength({ min: 4, max: 30 })
 		.withMessage(ERROR_MESSAGE.nameLength)
@@ -38,7 +38,7 @@ module.exports.vRegister = [
 ];
 
 module.exports.vLogin = [
-	sanitizeBody("email").trim().stripLow(),
+	body("email").trim().stripLow(),
 	body("email")
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
@@ -53,7 +53,7 @@ module.exports.vLogin = [
 ];
 
 module.exports.vResend = [
-	sanitizeBody("email").trim().stripLow(),
+	body("email").trim().stripLow(),
 	body("email")
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)

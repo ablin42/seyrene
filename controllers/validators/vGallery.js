@@ -1,7 +1,7 @@
-const { body, sanitizeBody } = require("express-validator");
+const { body } = require("express-validator");
 
 module.exports.vGallery = [
-	sanitizeBody("title", "content").trim().stripLow(),
+	body("title", "content").trim().stripLow(),
 	body("title").isLength({ min: 1, max: 256 }).withMessage("Le titre ne doit pas être vide et doit faire 256 caractères maximum"),
 	body("content")
 		.trim()

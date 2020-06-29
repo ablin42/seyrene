@@ -18,6 +18,12 @@ const userSchema = new mongoose.Schema(
 			min: 3,
 			max: 255
 		},
+		salt: {
+			type: String,
+			required: true,
+			min: 8,
+			max: 1024
+		},
 		password: {
 			type: String,
 			required: true,

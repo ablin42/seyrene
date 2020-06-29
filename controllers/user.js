@@ -10,6 +10,7 @@ const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
 const { setUser, authUser, checkAddress, notLoggedUser } = require("./helpers/verifySession");
+const { checkCaptcha } = require("./helpers/captcha");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
@@ -18,16 +19,11 @@ const DeliveryInfo = require("../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
-router.post("/lostpw", vLostPw, setUser, notLoggedUser, async (req, res) => {
+router.post("/lostpw", vLostPw, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, user, pwToken, result;
 		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		if (!vResult.isEmpty()) throw new Error(ERROR_MESSAGE.incorrectInput);
 
 		[err, user] = await utils.to(User.findOne({ email: req.body.email }));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
@@ -50,11 +46,10 @@ router.post("/lostpw", vLostPw, setUser, notLoggedUser, async (req, res) => {
 		if (await mailer(req.body.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		req.flash("success", ERROR_MESSAGE.lostpwEmail);
-		return res.status(200).redirect("/");
+		return res.status(200).json({ error: false });
 	} catch (err) {
 		console.log("ERROR LOSTPW:", err);
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/Account");
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 

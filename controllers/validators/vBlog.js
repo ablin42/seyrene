@@ -1,7 +1,7 @@
-const { body, sanitizeBody } = require("express-validator");
+const { body } = require("express-validator");
 
 module.exports.vBlog = [
-	sanitizeBody("title").trim().stripLow(),
+	body("title").trim().stripLow(),
 	body("title")
 		.isString()
 		.isLength({ min: 1, max: 256 })

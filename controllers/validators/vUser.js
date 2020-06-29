@@ -1,9 +1,9 @@
-const { body, sanitizeBody } = require("express-validator");
+const { body } = require("express-validator");
 const utils = require("../helpers/utils");
 const { ERROR_MESSAGE } = require("../helpers/errorMessages");
 
 module.exports.vName = [
-	sanitizeBody("name").trim().stripLow(),
+	body("name").trim().stripLow(),
 	body("name")
 		.isLength({ min: 4, max: 30 })
 		.withMessage(ERROR_MESSAGE.nameLength)
@@ -18,7 +18,7 @@ module.exports.vName = [
 ];
 
 module.exports.vEmail = [
-	sanitizeBody("email").trim().stripLow(),
+	body("email").trim().stripLow(),
 	body("email")
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
@@ -46,7 +46,7 @@ module.exports.vPassword = [
 ];
 
 module.exports.vLostPw = [
-	sanitizeBody("email").trim().stripLow(),
+	body("email").trim().stripLow(),
 	body("email")
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
