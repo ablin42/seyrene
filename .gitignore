@@ -4,3 +4,6 @@
 .env
 eslint_output.txt
 .npmignore
+.snyk
+access.log
+/logs

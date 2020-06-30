@@ -5,9 +5,12 @@ const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const morgan = require("morgan");
 const csrf = require("csurf");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
+var rfs = require("rotating-file-stream");
+const path = require("path");
 const sanitize = require("mongo-sanitize");
 const MongoStore = require("connect-mongo")(session);
 const { setUser } = require("./controllers/helpers/verifySession");
@@ -45,6 +48,33 @@ mongoose.connect(
 
 // Express
 const app = express();
+
+// For logging filenames
+const pad = num => (num > 9 ? "" : "0") + num;
+const generator = (time, index) => {
+	if (!time) return "file.log";
+
+	let year = time.getFullYear();
+	let month = pad(time.getMonth() + 1);
+	let day = pad(time.getDate());
+	let hour = pad(time.getHours());
+	let minute = pad(time.getMinutes());
+
+	return `${year}-${day}-${month}-${hour}h${minute}-${index}-file.log`;
+};
+
+app.use(
+	morgan("dev", {
+		skip: function (req, res) {
+			return res.statusCode < 400;
+		}
+	})
+);
+// Log write stream
+const accessLogStream = rfs.createStream(generator, { interval: "6h", path: "./logs/" });
+
+app.use(morgan("combined", { stream: accessLogStream }));
+
 app.use(express.static(__dirname + "/public"));
 
 //Helmet
