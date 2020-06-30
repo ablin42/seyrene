@@ -54,19 +54,19 @@ module.exports = {
 	formatBlogData: async function (blogs) {
 		let arr = [];
 		for (let i = 0; i < blogs.length; i++) {
-			let images = blogs[i].content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/);
+			let images = blogs[parseInt(i)].content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/);
 			let obj = {
-				_id: blogs[i]._id,
-				title: blogs[i].title,
-				content: blogs[i].content,
-				shorttitle: blogs[i].title.substr(0, 128),
-				shortcontent: blogs[i].content.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "").substr(0, 512),
+				_id: blogs[parseInt(i)]._id,
+				title: blogs[parseInt(i)].title,
+				content: blogs[parseInt(i)].content,
+				shorttitle: blogs[parseInt(i)].title.substr(0, 128),
+				shortcontent: blogs[parseInt(i)].content.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "").substr(0, 512),
 				thumbnail: images,
-				date: blogs[i].date,
-				createdAt: blogs[i].createdAt,
-				updatedAt: blogs[i].updatedAt,
-				author: blogs[i].author,
-				__v: blogs[i].__v
+				date: blogs[parseInt(i)].date,
+				createdAt: blogs[parseInt(i)].createdAt,
+				updatedAt: blogs[parseInt(i)].updatedAt,
+				author: blogs[parseInt(i)].author,
+				__v: blogs[parseInt(i)].__v
 			};
 			if (images && images.length > 1) obj.thumbnail = images[0];
 			arr.push(obj);

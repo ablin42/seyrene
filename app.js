@@ -46,21 +46,18 @@ mongoose.connect(
 // Express
 const app = express();
 app.use(express.static(__dirname + "/public"));
+
+//Helmet
 app.use(helmet());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy({ policy: "same-origin" }));
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
-// Parse app/json
-app.use(bodyParser.json({ limit: 100000000 }));
 //-- Cross origin --//
 app.use(cors());
 //-- Cookie parser --//
-
 app.use(cookieParser());
-//-- Express Session --//
 
+//-- Express Session --//
 app.use(
 	session({
 		store: new MongoStore({
@@ -71,11 +68,26 @@ app.use(
 		secret: process.env.SESSION_SECRET,
 		resave: true,
 		saveUninitialized: false,
-		cookie: { maxAge: 14 * 24 * 60 * 60, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
+		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
 );
+
 app.use(flash());
+
+// Body-Parser
+app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
+app.use(bodyParser.json({ limit: 100000000 }));
+// BP Error handler
+app.use(function (err, req, res, next) {
+	res.status(err.status || 500);
+	if (req.headers["content-type"] === "application/x-www-form-urlencoded") {
+		req.flash("warning", err.message);
+		return res.status(403).redirect(req.headers.referer);
+	}
+	return res.status(200).json({ error: true, message: err.message });
+});
+
 app.set("view engine", "ejs");
 app.use(expressSanitizer());
 app.use(csrf({ cookie: false }));

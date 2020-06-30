@@ -8,7 +8,7 @@ async function postShop(e) {
 		img = document.querySelector("#img"),
 		formData = new FormData();
 
-	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[i]);
+	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[parseInt(i)]);
 
 	formData.append("title", title);
 	formData.append("content", content);
@@ -38,7 +38,7 @@ async function patchShop(e, shopId) {
 		img = document.querySelector("#img"),
 		formData = new FormData();
 
-	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[i]);
+	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[parseInt(i)]);
 
 	formData.append("title", title);
 	formData.append("content", content);
@@ -76,7 +76,7 @@ async function setMain(e, item) {
 	if (data.err === true) type = "warning";
 	else {
 		let divs = $(".action-div");
-		for (let i = 0; i < divs.length; i++) divs[i].setAttribute("style", "display: block");
+		for (let i = 0; i < divs.length; i++) divs[parseInt(i)].setAttribute("style", "display: block");
 
 		$(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
 	}

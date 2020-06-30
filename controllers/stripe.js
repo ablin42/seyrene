@@ -21,11 +21,11 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 
 		if (total > 0) {
 			for (let i = 0; i < items.length; i++) {
-				if (items[i].attributes.isUnique) {
-					[err, item] = await utils.to(Shop.findById(items[i].attributes._id));
+				if (items[parseInt(i)].attributes.isUnique) {
+					[err, item] = await utils.to(Shop.findById(items[parseInt(i)].attributes._id));
 					if (err || item === null) throw new Error(ERROR_MESSAGE.itemNotFound);
 				} else {
-					[err, item] = await utils.to(Gallery.findById(items[i].attributes._id));
+					[err, item] = await utils.to(Gallery.findById(items[parseInt(i)].attributes._id));
 					if (err || item === null) throw new Error(ERROR_MESSAGE.itemNotFound);
 				}
 			}

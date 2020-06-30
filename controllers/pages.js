@@ -55,6 +55,7 @@ router.get("/", setUser, async (req, res) => {
 		return res.status(200).render("home", obj);
 	} catch (err) {
 		console.log("HOME ROUTE ERROR", err.message);
+		req.flash("warning", err.message);
 		return res.status(400).render("home");
 	}
 });
@@ -267,8 +268,8 @@ router.get("/User", setUser, authUser, async (req, res) => {
 
 		if (orders != null) {
 			orders.forEach((order, index) => {
-				orders[index].price = formatter.format(order.price).substr(2);
-				orders[index].date_f = format.asString("dd/MM/yyyy", new Date(order.date));
+				orders[parseInt(index)].price = formatter.format(order.price).substr(2);
+				orders[parseInt(index)].date_f = format.asString("dd/MM/yyyy", new Date(order.date));
 			});
 			obj.orders = orders;
 		}

@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { validationResult } = require("express-validator");
 const sanitize = require("mongo-sanitize");
-//const {vOrder} = require('./validators/vShop');//vOrder
 const { vDelivery } = require("./validators/vUser");
 const rp = require("request-promise");
 const country = require("country-list-js");
@@ -64,9 +63,9 @@ router.get("/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) =
 
 		result.price = formatter.format(result.price).substr(2);
 		result.items.forEach((item, index) => {
-			result.items[index].price = formatter.format(item.price).substr(2);
-			result.items[index].attributes.content = item.attributes.content.substr(0, 128);
-			result.items[index].attributes.title = item.attributes.title.substr(0, 64);
+			result.items[parseInt(index)].price = formatter.format(item.price).substr(2);
+			result.items[parseInt(index)].attributes.content = item.attributes.content.substr(0, 128);
+			result.items[parseInt(index)].attributes.title = item.attributes.title.substr(0, 64);
 		});
 
 		return res.status(200).json(result);
@@ -317,7 +316,8 @@ router.post("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, a
 		if (order.status !== "awaitingApproval") throw new Error("Seule une commande en attente d'approbation peut être approuvée");
 
 		let isPwinty = false;
-		for (let index = 0; index < order.items.length; index++) if (!order.items[index].attributes.isUnique) isPwinty = true;
+		for (let index = 0; index < order.items.length; index++)
+			if (!order.items[parseInt(index)].attributes.isUnique) isPwinty = true;
 
 		if (isPwinty === false) await submitOrder(order, req);
 		else await createPwintyOrder(order, req);
@@ -361,10 +361,10 @@ router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req
 		let isPwinty = false;
 		for (let index = 0; index < order.items.length; index++) {
 			[err, item] = await utils.to(
-				Shop.findOneAndUpdate({ _id: order.items[index].attributes._id }, { $set: { soldOut: false } })
+				Shop.findOneAndUpdate({ _id: order.items[parseInt(index)].attributes._id }, { $set: { soldOut: false } })
 			);
 			if (err) throw new Error(ERROR_MESSAGE.serverError);
-			if (!order.items[index].attributes.isUnique) isPwinty = true;
+			if (!order.items[parseInt(index)].attributes.isUnique) isPwinty = true;
 		}
 
 		if (isPwinty === false || order.status === "awaitingApproval") {

@@ -12,25 +12,27 @@ module.exports = function Cart(oldCart) {
 	/* UNIQUE */
 	this.add = function (item, id) {
 		item.isUnique = true;
-		let storedItem = this.items[id];
-		if (!storedItem) storedItem = this.items[id] = { attributes: item, qty: 1, price: 0, unitPrice: 0 };
-		this.items[id].unitPrice = parseFloat(storedItem.attributes.price);
+		let storedItem = this.items[parseInt(id)];
+		if (!storedItem) storedItem = this.items[parseInt(id)] = { attributes: item, qty: 1, price: 0, unitPrice: 0 };
+		this.items[parseInt(id)].unitPrice = parseFloat(storedItem.attributes.price);
 
-		storedItem.price = this.items[id].unitPrice.toFixed(2);
+		storedItem.price = this.items[parseInt(id)].unitPrice.toFixed(2);
 		this.totalQty++;
-		this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal + this.items[id].unitPrice) * 100) / 100).toFixed(2));
+		this.uniquePriceTotal = parseFloat(
+			(Math.round((this.uniquePriceTotal + this.items[parseInt(id)].unitPrice) * 100) / 100).toFixed(2)
+		);
 		this.price.totalIncludingTax += this.uniquePriceTotal;
-		this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[id].unitPrice) * 100) / 100).toFixed(2));
+		this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[parseInt(id)].unitPrice) * 100) / 100).toFixed(2));
 
 		this.generateArray();
 	};
 
 	this.delete = function (item, id) {
-		let storedItem = this.items[id];
+		let storedItem = this.items[parseInt(id)];
 
 		if (storedItem) {
 			let singlePrice = parseFloat((storedItem.price / storedItem.qty).toFixed(2));
-			this.items[id] = undefined;
+			this.items[parseInt(id)] = undefined;
 			storedItem = undefined;
 			this.totalQty--;
 			this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal - singlePrice) * 100) / 100).toFixed(2));
@@ -69,8 +71,8 @@ module.exports = function Cart(oldCart) {
 			storedItem.elements.forEach((element, index) => {
 				if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
 					found++;
-					this.items[data.SKU].elements[index].qty++;
-					retData.qty = this.items[data.SKU].elements[index].qty;
+					this.items[data.SKU].elements[parseInt(index)].qty++;
+					retData.qty = this.items[data.SKU].elements[parseInt(index)].qty;
 				}
 			});
 			if (found === 0) storedItem.elements.push({ attributes: attributes, qty: 1 });
@@ -96,9 +98,9 @@ module.exports = function Cart(oldCart) {
 			let unitPrice = storedItem.unitPrice;
 			storedItem.elements.forEach((element, index) => {
 				if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
-					this.items[data.SKU].elements[index].qty--;
-					retData.qty = this.items[data.SKU].elements[index].qty;
-					if (this.items[data.SKU].elements[index].qty <= 0) this.items[data.SKU].elements.splice(index, 1);
+					this.items[data.SKU].elements[parseInt(index)].qty--;
+					retData.qty = this.items[data.SKU].elements[parseInt(index)].qty;
+					if (this.items[data.SKU].elements[parseInt(index)].qty <= 0) this.items[data.SKU].elements.splice(index, 1);
 				}
 			});
 			storedItem.qty--;
@@ -131,11 +133,11 @@ module.exports = function Cart(oldCart) {
 			let priceOffset;
 			storedItem.elements.forEach((element, index) => {
 				if (JSON.stringify(element.attributes) === JSON.stringify(data.attributes)) {
-					qtyOffset = qty - this.items[data.SKU].elements[index].qty;
+					qtyOffset = qty - this.items[data.SKU].elements[parseInt(index)].qty;
 					priceOffset = parseFloat(qtyOffset * unitPrice);
-					this.items[data.SKU].elements[index].qty = qty;
-					retData.qty = this.items[data.SKU].elements[index].qty;
-					if (this.items[data.SKU].elements[index].qty <= 0) this.items[data.SKU].elements.splice(index, 1);
+					this.items[data.SKU].elements[parseInt(index)].qty = qty;
+					retData.qty = this.items[data.SKU].elements[parseInt(index)].qty;
+					if (this.items[data.SKU].elements[parseInt(index)].qty <= 0) this.items[data.SKU].elements.splice(index, 1);
 				}
 			});
 
@@ -165,7 +167,7 @@ module.exports = function Cart(oldCart) {
 		let arr = [];
 
 		for (let id in this.items) {
-			arr.push(this.items[id]);
+			arr.push(this.items[parseInt(id)]);
 		}
 		return arr;
 	};
@@ -173,7 +175,7 @@ module.exports = function Cart(oldCart) {
 	this.generatePwintyArray = function () {
 		let arr = [];
 		for (let id in this.items) {
-			if (this.items[id] && !this.items[id].attributes.isUnique) arr.push(this.items[id]);
+			if (this.items[parseInt(id)] && !this.items[parseInt(id)].attributes.isUnique) arr.push(this.items[parseInt(id)]);
 		}
 		return arr;
 	};

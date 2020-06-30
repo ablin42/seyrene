@@ -73,8 +73,8 @@ async function filterByTags(e) {
 	if (tagInput.length > 0) {
 		tags = "?t=";
 		for (let i = 0; i < tagInput.length; i++) {
-			if (i + 1 === tagInput.length) tags += tagInput[i].textContent;
-			else tags += tagInput[i].textContent + ",";
+			if (i + 1 === tagInput.length) tags += tagInput[parseInt(i)].textContent;
+			else tags += tagInput[parseInt(i)].textContent + ",";
 		}
 	}
 

@@ -4,7 +4,8 @@ const router = express.Router();
 const Cart = require("../models/Cart");
 const Gallery = require("../models/Gallery");
 const Shop = require("../models/Shop");
-const rp = require("request-promise");
+const rateLimit = require("express-rate-limit");
+const MongoStore = require("rate-limit-mongo");
 
 const { setUser } = require("./helpers/verifySession");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
@@ -12,7 +13,20 @@ const utils = require("./helpers/utils");
 require("dotenv/config");
 const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 
-router.post("/add/:itemId", setUser, async (req, res) => {
+const limiter = rateLimit({
+	store: new MongoStore({
+		uri: process.env.DB_CONNECTION,
+		collectionName: "cartRateLimit",
+		expireTimeMs: 15 * 60 * 1000
+	}),
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // limit each IP to 100 requests per windowMs
+	handler: function (req, res) {
+		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
+	}
+});
+
+router.post("/add/:itemId", limiter, setUser, async (req, res) => {
 	try {
 		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -40,7 +54,7 @@ router.post("/add/:itemId", setUser, async (req, res) => {
 	}
 });
 
-router.post("/del/:itemId", setUser, async (req, res) => {
+router.post("/del/:itemId", limiter, setUser, async (req, res) => {
 	try {
 		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -63,7 +77,7 @@ router.post("/del/:itemId", setUser, async (req, res) => {
 	}
 });
 
-router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
+router.post("/add/pwinty/:itemId", limiter, setUser, async (req, res) => {
 	try {
 		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -91,7 +105,7 @@ router.post("/add/pwinty/:itemId", setUser, async (req, res) => {
 	}
 });
 
-router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
+router.post("/update/pwinty/:itemId/:qty", limiter, setUser, async (req, res) => {
 	try {
 		let productId = sanitize(req.params.itemId);
 		let newQty = parseInt(sanitize(req.params.qty));
@@ -124,7 +138,7 @@ router.post("/update/pwinty/:itemId/:qty", setUser, async (req, res) => {
 	}
 });
 
-router.post("/del/pwinty/:itemId", setUser, async (req, res) => {
+router.post("/del/pwinty/:itemId", limiter, setUser, async (req, res) => {
 	try {
 		let productId = sanitize(req.params.itemId);
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
@@ -152,7 +166,7 @@ router.post("/del/pwinty/:itemId", setUser, async (req, res) => {
 	}
 });
 
-router.get("/clear/:id", setUser, async (req, res) => {
+router.get("/clear/:id", limiter, setUser, async (req, res) => {
 	try {
 		let cart = new Cart({});
 		const id = sanitize(req.params.id);

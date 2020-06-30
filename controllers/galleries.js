@@ -103,10 +103,10 @@ router.post("/post", vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (r
 						_itemId: result._id,
 						itemType: "Gallery",
 						isMain: isMain,
-						mimetype: req.files[i].mimetype
+						mimetype: req.files[parseInt(i)].mimetype
 					});
-					let oldpath = req.files[i].destination + req.files[i].filename;
-					let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
+					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
 					fs.rename(oldpath, newpath, err => {
 						if (err) throw new Error(err);
 					});
@@ -149,10 +149,10 @@ router.post("/patch/:id", vGallery, setUser, authUser, authRole(ROLE.ADMIN), asy
 						_itemId: id,
 						itemType: "Gallery",
 						isMain: false,
-						mimetype: req.files[i].mimetype
+						mimetype: req.files[parseInt(i)].mimetype
 					});
-					let oldpath = req.files[i].destination + req.files[i].filename;
-					let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
+					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
 					image.path = newpath;
 					fs.rename(oldpath, newpath, err => {
 						if (err) throw new Error(err);
@@ -198,10 +198,10 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		if (response.error === true) throw new Error(ERROR_MESSAGE.fetchImg);
 
 		for (let i = 0; i < response.images.length; i++) {
-			fs.unlink(response.images[i].path, err => {
+			fs.unlink(response.images[parseInt(i)].path, err => {
 				if (err) throw new Error(ERROR_MESSAGE.deleteImg);
 			});
-			await Image.deleteOne({ _id: response.images[i]._id });
+			await Image.deleteOne({ _id: response.images[parseInt(i)]._id });
 		}
 
 		req.flash("success", ERROR_MESSAGE.itemDeleted);

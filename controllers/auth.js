@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const rp = require("request-promise");
 const sanitize = require("mongo-sanitize");
+const rateLimit = require("express-rate-limit");
+const MongoStore = require("rate-limit-mongo");
 const { validationResult } = require("express-validator");
 
 const { vRegister, vLogin, vResend } = require("./validators/vAuth");
@@ -14,10 +16,22 @@ const Token = require("../models/VerificationToken");
 const { setUser, notLoggedUser, authUser, authToken } = require("./helpers/verifySession");
 const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
-const { RSA_PKCS1_OAEP_PADDING } = require("constants");
 require("dotenv").config();
 
-router.post("/register", vRegister, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
+const limiter = rateLimit({
+	store: new MongoStore({
+		uri: process.env.DB_CONNECTION,
+		collectionName: "authRateLimit",
+		expireTimeMs: 15 * 60 * 1000
+	}),
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 50, // limit each IP to 100 requests per windowMs
+	handler: function (req, res) {
+		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
+	}
+});
+
+router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, result;
 		req.session.formData = {
@@ -69,7 +83,7 @@ router.post("/register", vRegister, checkCaptcha, setUser, notLoggedUser, async 
 	}
 });
 
-router.post("/login", vLogin, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
+router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
 	try {
 		req.session.formData = { email: req.body.email };
 
@@ -120,9 +134,8 @@ router.post("/login", vLogin, checkCaptcha, setUser, notLoggedUser, async (req, 
 	}
 });
 
-router.get("/logout", setUser, authUser, (req, res) => {
+router.get("/logout", limiter, setUser, authUser, (req, res) => {
 	try {
-		// might want to delete token idk
 		req.session.destroy(function (err) {
 			if (err) throw new Error(ERROR_MESSAGE.serverError);
 		});
@@ -136,7 +149,7 @@ router.get("/logout", setUser, authUser, (req, res) => {
 });
 
 // Confirm account with token
-router.get("/confirmation/:token", setUser, async (req, res) => {
+router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 	try {
 		let err, token, user;
 		const receivedToken = sanitize(req.params.token);
@@ -166,7 +179,7 @@ router.get("/confirmation/:token", setUser, async (req, res) => {
 });
 
 // Resend account confirmation token
-router.post("/resend", vResend, authToken, setUser, notLoggedUser, async (req, res) => {
+router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, async (req, res) => {
 	try {
 		const vResult = validationResult(req);
 		if (!vResult.isEmpty()) {

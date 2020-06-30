@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const rp = require("request-promise");
+const rateLimit = require("express-rate-limit");
+const MongoStore = require("rate-limit-mongo");
 const { validationResult } = require("express-validator");
 const { vName, vEmail, vPassword, vLostPw, vDelivery } = require("./validators/vUser");
 const countryList = require("country-list-js");
@@ -19,7 +20,20 @@ const DeliveryInfo = require("../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 require("dotenv").config();
 
-router.post("/lostpw", vLostPw, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
+const limiter = rateLimit({
+	store: new MongoStore({
+		uri: process.env.DB_CONNECTION,
+		collectionName: "userRateLimit",
+		expireTimeMs: 15 * 60 * 1000
+	}),
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 50, // limit each IP to 100 requests per windowMs
+	handler: function (req, res) {
+		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
+	}
+});
+
+router.post("/lostpw", limiter, vLostPw, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, user, pwToken, result;
 		const vResult = validationResult(req);
@@ -53,7 +67,7 @@ router.post("/lostpw", vLostPw, checkCaptcha, setUser, notLoggedUser, async (req
 	}
 });
 
-router.post("/resetpw", vPassword, setUser, notLoggedUser, async (req, res) => {
+router.post("/resetpw", limiter, vPassword, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, pwToken, user;
 		const vResult = validationResult(req);
@@ -85,7 +99,7 @@ router.post("/resetpw", vPassword, setUser, notLoggedUser, async (req, res) => {
 	}
 });
 
-router.post("/patch/name", vName, setUser, authUser, async (req, res) => {
+router.post("/patch/name", limiter, vName, setUser, authUser, async (req, res) => {
 	try {
 		const vResult = validationResult(req);
 		if (!vResult.isEmpty()) {
@@ -110,7 +124,7 @@ router.post("/patch/name", vName, setUser, authUser, async (req, res) => {
 	}
 });
 
-router.post("/patch/email", vEmail, setUser, authUser, async (req, res) => {
+router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res) => {
 	try {
 		let err, user, token;
 		const vResult = validationResult(req);
@@ -144,7 +158,7 @@ router.post("/patch/email", vEmail, setUser, authUser, async (req, res) => {
 	}
 });
 
-router.post("/patch/password", vPassword, setUser, authUser, async (req, res) => {
+router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req, res) => {
 	try {
 		const vResult = validationResult(req);
 		if (!vResult.isEmpty()) {
@@ -179,7 +193,7 @@ router.post("/patch/password", vPassword, setUser, authUser, async (req, res) =>
 	}
 });
 
-router.post("/patch/delivery-info", vDelivery, setUser, authUser, checkAddress, async (req, res) => {
+router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, checkAddress, async (req, res) => {
 	try {
 		let err,
 			result,

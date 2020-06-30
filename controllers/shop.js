@@ -88,10 +88,10 @@ router.post("/post", vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req,
 						_itemId: result._id,
 						itemType: "Shop",
 						isMain: isMain,
-						mimetype: req.files[i].mimetype
+						mimetype: req.files[parseInt(i)].mimetype
 					});
-					let oldpath = req.files[i].destination + req.files[i].filename;
-					let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
+					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
 					fs.rename(oldpath, newpath, err => {
 						if (err) throw new Error(err);
 					});
@@ -148,10 +148,10 @@ router.post("/patch/:id", vShop, setUser, authUser, authRole(ROLE.ADMIN), async 
 						_itemId: id,
 						itemType: "Shop",
 						isMain: false,
-						mimetype: req.files[i].mimetype
+						mimetype: req.files[parseInt(i)].mimetype
 					});
-					let oldpath = req.files[i].destination + req.files[i].filename;
-					let newpath = req.files[i].destination + image._id + path.extname(req.files[i].originalname);
+					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
+					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
 					fs.rename(oldpath, newpath, err => {
 						if (err) throw new Error(err);
 					});
@@ -194,10 +194,10 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 
 		if (response.error === false) {
 			for (let i = 0; i < response.images.length; i++) {
-				fs.unlink(response.images[i].path, err => {
+				fs.unlink(response.images[parseInt(i)].path, err => {
 					if (err) throw new Error(ERROR_MESSAGE.deleteImg);
 				});
-				await Image.deleteOne({ _id: response.images[i]._id });
+				await Image.deleteOne({ _id: response.images[parseInt(i)]._id });
 			}
 		}
 

@@ -21,19 +21,19 @@ module.exports = {
 		let arr = [];
 		for (let i = 0; i < galleries.length; i++) {
 			let obj = {
-				_id: galleries[i]._id,
-				title: galleries[i].title,
-				content: galleries[i].content,
-				shortcontent: galleries[i].content.substr(0, 128),
-				shorttitle: galleries[i].title.substr(0, 64),
-				date: galleries[i].date,
-				createdAt: galleries[i].createdAt,
-				updatedAt: galleries[i].updatedAt,
-				tags: galleries[i].tags,
+				_id: galleries[parseInt(i)]._id,
+				title: galleries[parseInt(i)].title,
+				content: galleries[parseInt(i)].content,
+				shortcontent: galleries[parseInt(i)].content.substr(0, 128),
+				shorttitle: galleries[parseInt(i)].title.substr(0, 64),
+				date: galleries[parseInt(i)].date,
+				createdAt: galleries[parseInt(i)].createdAt,
+				updatedAt: galleries[parseInt(i)].updatedAt,
+				tags: galleries[parseInt(i)].tags,
 				mainImgId: "",
-				__v: galleries[i].__v
+				__v: galleries[parseInt(i)].__v
 			};
-			let [err, img] = await utils.to(Image.findOne({ _itemId: galleries[i]._id, itemType: "Gallery", isMain: true }));
+			let [err, img] = await utils.to(Image.findOne({ _itemId: galleries[parseInt(i)]._id, itemType: "Gallery", isMain: true }));
 			if (err || img == null) throw new Error(ERROR_MESSAGE.fetchImg);
 			obj.mainImgId = img._id;
 			arr.push(obj);
