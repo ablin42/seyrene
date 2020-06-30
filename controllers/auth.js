@@ -16,6 +16,7 @@ const Token = require("../models/VerificationToken");
 const { setUser, notLoggedUser, authUser, authToken } = require("./helpers/verifySession");
 const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
+const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
 const limiter = rateLimit({
@@ -76,9 +77,10 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 		let content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
+		fullLog.info(`Account created: ${user._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.accountCreated });
 	} catch (err) {
-		console.log("ERROR REGISTER:", err);
+		threatLog.error("ERROR REGISTER:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -126,10 +128,11 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 		// Create session variable
 		req.session._id = user._id;
 
+		fullLog.info(`User log in: ${user._id}`);
 		req.flash("success", ERROR_MESSAGE.loggedIn);
 		return res.status(200).json({ error: false });
 	} catch (err) {
-		console.log("ERROR LOGIN:", err);
+		threatLog.error("ERROR LOGIN:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -142,7 +145,7 @@ router.get("/logout", limiter, setUser, authUser, (req, res) => {
 
 		return res.status(200).redirect("/");
 	} catch (err) {
-		console.log("ERROR LOGOUT:", err);
+		threatLog.error("ERROR LOGOUT:", err, req.headers, req.ip);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -169,10 +172,11 @@ router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 		[err, user] = await utils.to(user.save());
 		if (err) throw new Error(err.message);
 
+		fullLog.info(`Account verified: ${user._id}`);
 		req.flash("success", ERROR_MESSAGE.verified);
 		return res.status(200).redirect("/Account");
 	} catch (err) {
-		console.log("ERROR CONFIRMATION TOKEN:", err);
+		threatLog.error("ERROR CONFIRMATION TOKEN:", err, req.headers, req.ip);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Account");
 	}
@@ -211,7 +215,7 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 		req.flash("info", `A verification email has been sent to ${user.email}`);
 		return res.status(200).redirect("/Account");
 	} catch (err) {
-		console.log("ERROR SENDING TOKEN:", err);
+		threatLog.error("ERROR SENDING TOKEN:", err, req.headers, req.ip);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Account");
 	}

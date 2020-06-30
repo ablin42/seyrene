@@ -10,6 +10,7 @@ const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const mailer = require("./helpers/mailer");
 require("dotenv").config();
+const { fullLog, threatLog } = require("./helpers/log4");
 
 const limiter = rateLimit({
 	store: new MongoStore({
@@ -48,9 +49,10 @@ router.post("/", limiter, vContact, setUser, checkCaptcha, async (req, res) => {
 		//maral.canvas@gmail.com
 		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
+		fullLog.info(`Contact mail sent: ${formData.email}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.sentEmail });
 	} catch (err) {
-		console.log("ERROR CONTACT:", err);
+		threatLog.error("ERROR CONTACT:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

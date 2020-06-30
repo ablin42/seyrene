@@ -37,6 +37,7 @@
   "express-session": "^1.17.1",
   "express-validator": "^6.6.0",
   "helmet": "^3.23.3",
+  "log4js": "^6.3.0",
   "money-exchange": "^1.0.0",
   "mongo-sanitize": "^1.1.0",
   "mongoose": "^5.9.20",

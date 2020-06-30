@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 require("dotenv/config");
+const { fullLog, threatLog } = require("./log4");
 
 module.exports = async function sendValidationMail(email, subject, text) {
 	let transporter = nodemailer.createTransport({
@@ -19,10 +20,10 @@ module.exports = async function sendValidationMail(email, subject, text) {
 
 	transporter.sendMail(mailOptions, err => {
 		if (err) {
-			console.log("MAILING ERROR:", err);
+			fullLog.info("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
 			return true;
 		} else {
-			console.log("MAIL SENT SUCCESSFULLY");
+			fullLog.info("MAIL SENT SUCCESSFULLY");
 		}
 	});
 

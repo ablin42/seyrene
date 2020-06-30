@@ -5,6 +5,7 @@ const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./errorMessages");
 const rp = require("request-promise");
+const { fullLog, threatLog } = require("./log4");
 
 const ROLE = {
 	ADMIN: "admin",
@@ -91,11 +92,9 @@ async function checkAddress(req, res, next) {
 		};
 		if (addressData.instructions) req.address.instructions = addressData.instructions;
 
-		console.log(req.address, "x");
-
 		next();
 	} catch (err) {
-		console.log("CHECK ADDRESS ERROR:", err);
+		threatLog.error("CHECK ADDRESS ERROR:", err, req.headers, req.ip);
 		if (req.body.billing) return res.status(200).json({ error: true, message: err.message });
 
 		req.flash("warning", err.message);

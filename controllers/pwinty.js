@@ -11,6 +11,7 @@ const Money = require("money-exchange");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const fx = new Money();
 fx.init();
+const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
 const formatter = new Intl.NumberFormat("de-DE", {
@@ -39,9 +40,10 @@ router.post("/orders/create", authToken, setUser, authUser, authRole(ROLE.ADMIN)
 			throw new Error(err.response.body.statusTxt);
 		});
 
+		fullLog.info(`Pwinty order created: user[${req.user._id}]/${response.data.id}`);
 		return res.status(200).json({ error: false, order: response.data });
 	} catch (err) {
-		console.log("PWINTY ORDER CREATE ERROR:", err);
+		threatLog.error("PWINTY ORDER CREATE ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -63,9 +65,10 @@ router.get("/orders/:id", authToken, setUser, authUser, authRole(ROLE.ADMIN), as
 			throw new Error(err.error.message);
 		});
 
+		fullLog.info(`Pwinty order fetch: user[${req.user._id}]/${id}`);
 		return res.status(200).json({ error: false, response: response.data });
 	} catch (err) {
-		console.log("PWINTY ORDER FETCH ERROR:", err);
+		threatLog.error("PWINTY ORDER FETCH ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -87,9 +90,10 @@ router.get("/orders/:id/status", authToken, setUser, authUser, authRole(ROLE.ADM
 			throw new Error(err.error.message);
 		});
 
+		fullLog.info(`Pwinty check status: user[${req.user._id}]/${id}`);
 		return res.status(200).json({ error: false, response: response.data });
 	} catch (err) {
-		console.log("PWINTY ORDER STATUS ERROR:", err);
+		threatLog.error("PWINTY ORDER STATUS ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -111,9 +115,10 @@ router.post("/orders/:id/submit", authToken, setUser, authUser, authRole(ROLE.AD
 			throw new Error(err.error.message);
 		});
 
+		fullLog.info(`Pwinty submit: user[${req.user._id}]/${id}/status[${req.body.status}]`);
 		return res.status(200).json({ error: false, order: response });
 	} catch (err) {
-		console.log("PWINTY ORDER SUBMIT ERROR:", err);
+		threatLog.error("PWINTY ORDER SUBMIT ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -138,9 +143,10 @@ router.post("/orders/:id/images/batch", authToken, setUser, authUser, authRole(R
 			throw new Error(err.error.message);
 		});
 
+		fullLog.info(`Pwinty image batch: user[${req.user._id}]/${id}`);
 		return res.status(200).json({ error: false, response: response });
 	} catch (err) {
-		console.log("PWINTY IMAGE BATCH ERROR:", err);
+		threatLog.error("PWINTY IMAGE BATCH ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -166,7 +172,7 @@ router.get("/countries", setUser, async (req, res) => {
 
 		return res.status(200).json({ error: false, response: response });
 	} catch (err) {
-		console.log("PWINTY COUNTRIES ERROR:", err);
+		threatLog.error("PWINTY COUNTRIES ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -196,7 +202,7 @@ router.post("/countries/:countryCode", setUser, async (req, res) => {
 
 		return res.status(200).json({ error: false, response });
 	} catch (err) {
-		console.log("PWINTY COUNTRYCODE ERROR:", err);
+		threatLog.error("PWINTY COUNTRYCODE ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -241,9 +247,10 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		let error = false;
 		if (response.error === true) throw new Error(response.message);
 		if (response.formatted <= 0) error = true;
+
 		return res.status(200).json({ error: error, response: response.formatted });
 	} catch (err) {
-		console.log("PWINTY PRICING ERROR:", err);
+		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -304,7 +311,7 @@ router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
 		if (formatted.length <= 0) error = true;
 		return res.status(200).json({ error: error, formatted: formatted });
 	} catch (err) {
-		console.log("PWINTY PRICING ERROR:", err);
+		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -313,8 +320,6 @@ router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
 
 router.post("/callback/status", async (req, res) => {
 	try {
-		console.log("api callback called");
-
 		let err, order, user;
 		if (req.body.orderId && req.body.status) {
 			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
@@ -336,10 +341,11 @@ router.post("/callback/status", async (req, res) => {
 			content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 			if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
+			fullLog.info(`Pwinty status updated: ${req.body.orderId} - ${req.body.status}`);
 			return res.status(200).send({ error: false, message: "OK" });
 		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
-		console.log("PWINTY CALLBACK ERROR:", err.message);
+		threatLog.error("PWINTY CALLBACK ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

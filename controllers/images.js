@@ -7,6 +7,7 @@ const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/veri
 const Image = require("../models/Image");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
+const { fullLog, threatLog } = require("./helpers/log4");
 
 router.get("/:id", async (req, res) => {
 	try {
@@ -24,7 +25,7 @@ router.get("/:id", async (req, res) => {
 			return res.status(200).end(data);
 		});
 	} catch (err) {
-		console.log("IMAGE FETCH ERROR", err);
+		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -46,7 +47,7 @@ router.get("/main/:itemType/:itemId", async (req, res) => {
 			return res.status(200).end(data);
 		});
 	} catch (err) {
-		console.log("IMAGE FETCH ERROR", err);
+		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ip);
 		return res.status(400).json(err.message);
 	}
 });
@@ -67,9 +68,10 @@ router.post("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.AD
 		);
 		if (err || !result) throw new Error(ERROR_MESSAGE.updateError);
 
+		fullLog.info(`Main image selected: ${itemType}/${itemId}/${id}`);
 		return res.status(200).json({ err: false, message: "Nouvelle image principale définie" });
 	} catch (err) {
-		console.log("IMAGE SELECT MAIN ERROR", err);
+		threatLog.error("IMAGE SELECT MAIN ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ err: true, message: err.message });
 	}
 });
@@ -89,9 +91,10 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 			if (err) throw new Error(ERROR_MESSAGE.delImg);
 		});
 
+		fullLog.info(`Image deleted: ${id}`);
 		return res.status(200).json({ err: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {
-		console.log("IMAGE DELETE ERROR", err);
+		threatLog.error("IMAGE DELETE ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ err: true, message: err.message });
 	}
 });
@@ -106,7 +109,7 @@ router.get("/:itemType/:itemId", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, images: result });
 	} catch (err) {
-		console.log("IMAGES FETCH ERROR", err);
+		threatLog.error("IMAGES FETCH ERROR", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

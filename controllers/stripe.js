@@ -10,6 +10,7 @@ const Shop = require("../models/Shop");
 const { setUser, authUser, setOrder, authGetOrder, checkBilling, authToken } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
+const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
 router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) => {
@@ -61,10 +62,11 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 			let result = await rp(options);
 			if (result.error === true) throw new Error(result.message);
 
+			fullLog.info(`Initialized order (stripe): Intent[${paymentIntent.id}], ${total}€`);
 			return res.status(200).send({ error: false, clientSecret: paymentIntent.client_secret, orderId: result.order._id });
 		} else throw new Error(ERROR_MESSAGE.emptyCart);
 	} catch (err) {
-		console.log("STRIPE CREATE INTENT ERROR:", err);
+		threatLog.error("STRIPE CREATE INTENT ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -78,10 +80,12 @@ router.post("/refund/:id", authToken, setUser, authUser, setOrder, authGetOrder,
 
 		stripe.refunds.create({ payment_intent: chargeId }, (err, refund) => {
 			if (err) return res.status(200).json({ error: true, message: err.raw.message });
+
+			fullLog.info(`Refunded order (stripe): ChargeId[${chargeId}]`);
 			return res.status(200).json({ error: false, data: refund });
 		});
 	} catch (err) {
-		console.log("STRIPE REFUND ERROR:", err);
+		threatLog.error("STRIPE REFUND ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

@@ -11,6 +11,7 @@ const { setUser } = require("./helpers/verifySession");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const utils = require("./helpers/utils");
 require("dotenv/config");
+const { fullLog, threatLog } = require("./helpers/log4");
 const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 
 const limiter = rateLimit({
@@ -47,9 +48,10 @@ router.post("/add/:itemId", limiter, setUser, async (req, res) => {
 		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
 		formatted.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
+		fullLog.info(`Added to cart(unique): ${productId}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: formatted });
 	} catch (err) {
-		console.log("ADD TO CART ERROR");
+		threatLog.error("ADD TO CART ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -70,9 +72,10 @@ router.post("/del/:itemId", limiter, setUser, async (req, res) => {
 		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
 		if (formatted.items[productId]) formatted.items[product.id].price = formatter.format(cart.items[product.id].price).substr(2);
 
+		fullLog.info(`Deleted from cart(unique): ${productId}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: formatted });
 	} catch (err) {
-		console.log("DELETE FROM CART ERROR");
+		threatLog.error("DELETE FROM CART ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -98,9 +101,10 @@ router.post("/add/pwinty/:itemId", limiter, setUser, async (req, res) => {
 		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
 		if (formatted.items[data.SKU]) formatted.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
 
+		fullLog.info(`Added to cart(pwinty): ${productId}/${data.SKU}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: formatted, item: item });
 	} catch (err) {
-		console.log("ADD TO CART ERROR");
+		threatLog.error("ADD TO CART ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -130,10 +134,12 @@ router.post("/update/pwinty/:itemId/:qty", limiter, setUser, async (req, res) =>
 
 			let message = ERROR_MESSAGE.qtyUpdated;
 			if (newQty == 0) message = ERROR_MESSAGE.removedFromCart;
+
+			fullLog.info(`Updated cart(pwinty): ${productId}/${data.SKU}`);
 			return res.status(200).json({ error: false, message: message, cart: formatted, item: item });
 		} else throw new Error(ERROR_MESSAGE.updateQty);
 	} catch (err) {
-		console.log("UPDATE CART ERROR");
+		threatLog.error("UPDATE CART ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -159,9 +165,10 @@ router.post("/del/pwinty/:itemId", limiter, setUser, async (req, res) => {
 		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
 		if (formatted.items[data.SKU]) formatted.items[data.SKU].price = formatter.format(formatted.items[data.SKU].price).substr(2);
 
+		fullLog.info(`Deleted from cart(pwinty): ${productId}/${data.SKU}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: formatted, item: item });
 	} catch (err) {
-		console.log("DELETE FROM CART ERROR");
+		threatLog.error("DELETE FROM CART ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -176,7 +183,7 @@ router.get("/clear/:id", limiter, setUser, async (req, res) => {
 		req.flash("success", ERROR_MESSAGE.placedOrder);
 		return res.status(200).redirect(`/Order/${id}`);
 	} catch (err) {
-		console.log("CLEAR CART ERROR");
+		threatLog.error("CLEAR CART ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}

@@ -9,6 +9,7 @@ const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/veri
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const upload = require("./helpers/multerHelpers");
+const { fullLog, threatLog } = require("./helpers/log4");
 
 router.get("/", authToken, async (req, res) => {
 	try {
@@ -17,7 +18,7 @@ router.get("/", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, data: result });
 	} catch (err) {
-		console.log("FETCHING FRONT ERROR:", err);
+		threatLog.error("FETCHING FRONT ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -37,7 +38,7 @@ router.get("/image/:id", async (req, res) => {
 			return res.status(200).end(data);
 		});
 	} catch (err) {
-		console.log("FRONT IMAGE ERROR", err);
+		threatLog.error("FRONT IMAGE ERROR", err, req.headers, req.ip);
 		return res.status(400).json(err.message);
 	}
 });
@@ -82,11 +83,12 @@ router.post("/post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 						);
 						if (err) throw new Error(ERROR_MESSAGE.updateError);
 					}
+					fullLog.info(`Front posted: ${req.body.referenceId}`);
 					return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemUploaded });
 				} else throw new Error(ERROR_MESSAGE.incorrectInput);
 			}
 		} catch (err) {
-			console.log("POST FRONT ERROR", err);
+			threatLog.error("POST FRONT ERROR", err, req.headers, req.ip);
 			return res.status(400).json({ error: true, message: err.message });
 		}
 	});
@@ -102,9 +104,10 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 			if (err) throw new Error(ERROR_MESSAGE.delImg);
 		});
 
+		fullLog.info(`Front deleted: ${id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {
-		console.log("DELETE FRONT ERROR", err);
+		threatLog.error("DELETE FRONT ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });

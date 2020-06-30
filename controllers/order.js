@@ -17,6 +17,7 @@ const mailer = require("./helpers/mailer");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const format = require("date-format");
 const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
+const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
 router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
@@ -48,7 +49,7 @@ router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 
 		return res.status(200).json({ error: false, orders: orders });
 	} catch (err) {
-		console.log("FETCHING ORDERS ERROR:", err);
+		threatLog.error("FETCHING ORDERS ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -68,9 +69,10 @@ router.get("/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) =
 			result.items[parseInt(index)].attributes.title = item.attributes.title.substr(0, 64);
 		});
 
+		fullLog.info(`Order accessed: Order: ${id} - User: ${req.user._id}`);
 		return res.status(200).json(result);
 	} catch (err) {
-		console.log("FETCHING ORDER ERROR:", err);
+		threatLog.error("FETCHING ORDER ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -201,7 +203,7 @@ async function submitOrder(order, req) {
 	content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 	if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-	console.log("order saved to db", order._id);
+	fullLog.info("Order saved to DB", order._id);
 	return { err: false, orderId: order._id };
 }
 
@@ -239,9 +241,10 @@ router.post("/confirm", async (req, res) => {
 			if (err) throw new Error(ERROR_MESSAGE.saveError);
 		}
 
+		fullLog.info(`Order confirmed: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).send("OK");
 	} catch (err) {
-		console.log("CONFIRMING ORDER ERROR:", err);
+		threatLog.error("CONFIRMING ORDER ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -280,9 +283,10 @@ router.post("/initialize", authToken, setUser, authUser, async (req, res) => {
 		[err, response] = await utils.to(order.save());
 		if (err || !response) throw new Error(ERROR_MESSAGE.saveError);
 
+		fullLog.info(`Order initialized: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, order: response });
 	} catch (err) {
-		console.log("INITIALIZING ORDER ERROR:", err);
+		threatLog.error("INITIALIZING ORDER ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -302,9 +306,10 @@ router.post("/complete/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, 
 		//maral.canvas@gmail.com
 		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
+		fullLog.info(`Order completed: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: "La commande à été marquée comme complétée" });
 	} catch (err) {
-		console.log("COMPLETE ORDER ERROR:", err);
+		threatLog.error("COMPLETE ORDER ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -322,9 +327,10 @@ router.post("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, a
 		if (isPwinty === false) await submitOrder(order, req);
 		else await createPwintyOrder(order, req);
 
+		fullLog.info(`Order approved: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: "La commande à été approuvée et mise en production" });
 	} catch (err) {
-		console.log("APPROVING ORDER ERROR:", err);
+		threatLog.error("APPROVING ORDER ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -408,10 +414,10 @@ router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req
 		content = `You cancelled your order, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-		console.log("cancelled order");
+		fullLog.info(`Order cancelled: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.cancelOrderSuccess });
 	} catch (err) {
-		console.log("CANCEL ORDER ERROR:", err);
+		threatLog.error("CANCEL ORDER ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -428,9 +434,11 @@ router.post("/billing/save", vDelivery, setUser, authUser, checkAddress, async (
 
 		req.session.billing = req.address;
 		req.flash("success", ERROR_MESSAGE.savedBilling);
+
+		fullLog.info(`Billing saved: User: ${req.user._id} / ${req.address.full_address}.`);
 		return res.status(200).json({ error: false });
 	} catch (err) {
-		console.log("SAVE BILLING ERROR:", err);
+		threatLog.error("SAVE BILLING ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -445,15 +453,15 @@ try {
         //resu = getCode(countryn.name)
         //resu = countries.getAlpha2Code(countryn.name, 'en');
         if (!resu) {
-            console.log("Err:", countryn.name)
+            fullLog.info("Err:", countryn.name)
             nbFail++;
         }
     })
-    //console.log(country.findByName(pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')), pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
-    //console.log(country.findByIso2("BA"))
+    //fullLog.info(country.findByName(pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')), pwintyCountries[0].name.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '))
+    //fullLog.info(country.findByIso2("BA"))
     return res.status(200).json({error: false, number: nbFail});
 } catch (err) {
-    console.log("COUNTRY TESTS ERR", err);
+    threatLog.error("COUNTRY TESTS ERR", err, req.headers, req.ip);
     return res.status(200).json({error: true, message: err.message})
 }})*/
 

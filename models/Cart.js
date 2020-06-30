@@ -207,7 +207,7 @@ module.exports = function Cart(oldCart) {
 			json: true
 		};
 
-		let obj = await rp(options); ////////////
+		let obj = await rp(options);
 		if (obj.error === true || obj.response.length <= 0) {
 			this.clearCart();
 			throw new Error(ERROR_MESSAGE.noShipment);

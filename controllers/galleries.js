@@ -14,6 +14,7 @@ const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 const upload = require("./helpers/multerHelpers");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
+const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
 router.get("/", async (req, res) => {
@@ -32,7 +33,7 @@ router.get("/", async (req, res) => {
 
 		return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {
-		console.log("FETCHING GALLERIES ERROR:", err);
+		threatLog.error("FETCHING GALLERIES ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -55,7 +56,7 @@ router.get("/Tags", async (req, res) => {
 		galleries = await gHelpers.fetchMainImg(galleries);
 		return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {
-		console.log("FETCHING GALLERIES BY TAGS ERROR:", err);
+		threatLog.error("FETCHING GALLERIES BY TAGS ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -69,7 +70,7 @@ router.get("/single/:id", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, gallery: result });
 	} catch (err) {
-		console.log("GALLERY SINGLE ERROR", err);
+		threatLog.error("GALLERY SINGLE ERROR", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -115,11 +116,12 @@ router.post("/post", vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (r
 					if (err) throw new Error(ERROR_MESSAGE.saveError);
 				}
 
+				fullLog.info(`Gallery posted: ${gallery._id}`);
 				req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
 				return res.status(200).json({ url: `/Galerie/${result._id}` });
 			}
 		} catch (err) {
-			console.log("POST GALLERY ERROR", err);
+			threatLog.error("POST GALLERY ERROR", err, req.headers, req.ip);
 			return res.status(400).json({ url: "/", message: err.message, err: true });
 		}
 	});
@@ -165,11 +167,12 @@ router.post("/patch/:id", vGallery, setUser, authUser, authRole(ROLE.ADMIN), asy
 				[err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
 				if (err) throw new Error(ERROR_MESSAGE.updateError);
 
+				fullLog.info(`Gallery patched: ${id}`);
 				req.flash("success", ERROR_MESSAGE.itemUploaded);
 				return res.status(200).json({ url: "/Galerie" });
 			}
 		} catch (err) {
-			console.log("PATCH GALLERY ERROR", err);
+			threatLog.error("PATCH GALLERY ERROR", err, req.headers, req.ip);
 			return res.status(400).json({ url: "/", message: err.message, err: true });
 		}
 	});
@@ -204,10 +207,11 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 			await Image.deleteOne({ _id: response.images[parseInt(i)]._id });
 		}
 
+		fullLog.info(`Gallery deleted: ${id}`);
 		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/Galerie");
 	} catch (err) {
-		console.log("DELETE GALLERY ERROR", err);
+		threatLog.error("DELETE GALLERY ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}

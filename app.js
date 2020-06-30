@@ -9,8 +9,7 @@ const morgan = require("morgan");
 const csrf = require("csurf");
 const flash = require("express-flash");
 const expressSanitizer = require("express-sanitizer");
-var rfs = require("rotating-file-stream");
-const path = require("path");
+const rfs = require("rotating-file-stream");
 const sanitize = require("mongo-sanitize");
 const MongoStore = require("connect-mongo")(session);
 const { setUser } = require("./controllers/helpers/verifySession");
@@ -30,6 +29,7 @@ const imageRoute = require("./controllers/images");
 const pwintyRoute = require("./controllers/pwinty");
 const stripeRoute = require("./controllers/stripe");
 const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
+const { fullLog, threatLog } = require("./controllers/helpers/log4");
 
 //Connect to DB
 mongoose.connect(
@@ -42,7 +42,7 @@ mongoose.connect(
 	},
 	err => {
 		if (err) throw err;
-		console.log("Connected to database");
+		fullLog.trace("Connected to database");
 	}
 );
 
@@ -63,16 +63,8 @@ const generator = (time, index) => {
 	return `${year}-${day}-${month}-${hour}h${minute}-${index}-file.log`;
 };
 
-app.use(
-	morgan("dev", {
-		skip: function (req, res) {
-			return res.statusCode < 400;
-		}
-	})
-);
 // Log write stream
 const accessLogStream = rfs.createStream(generator, { interval: "6h", path: "./logs/" });
-
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(express.static(__dirname + "/public"));
@@ -81,6 +73,22 @@ app.use(express.static(__dirname + "/public"));
 app.use(helmet());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy({ policy: "same-origin" }));
+
+app.use((req, res, next) => {
+	req.ip =
+		(req.headers["x-forwarded-for"] || "").split(",").pop().trim() ||
+		req.connection.remoteAddress ||
+		req.socket.remoteAddress ||
+		req.connection.socket.remoteAddress;
+
+	next();
+});
+
+app.use((req, res, next) => {
+	fullLog.trace({ ip: req.ip, host: req.headers.host, referer: req.headers.referer, forward: req.url });
+
+	next();
+});
 
 //-- Cross origin --//
 app.use(cors());
@@ -126,7 +134,7 @@ app.use(csrf({ cookie: false }));
 app.use(function (err, req, res, next) {
 	if (err.code !== "EBADCSRFTOKEN") return next(err);
 
-	console.log("csrf error");
+	threatLog.warn("CSRF error", { headers: req.headers });
 	if (req.headers["content-type"] === "application/x-www-form-urlencoded") {
 		req.flash("warning", ERROR_MESSAGE.incorrectInput);
 		return res.status(403).redirect(req.headers.referer);
@@ -172,10 +180,10 @@ app.get("*", setUser, (req, res) => {
 
 		return res.status(404).render("404", obj);
 	} catch (err) {
-		console.log("404 ROUTE ERROR", err);
-		return res.status(404).render("404", obj);
+		threatLog.error("404 ROUTE ERROR", err, req.headers, req.ip);
+		return res.status(404).render("404", { active: "404" });
 	}
 });
 
 const port = process.env.PORT || 8089;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+app.listen(port, () => fullLog.trace(`Listening on port ${port}...`));

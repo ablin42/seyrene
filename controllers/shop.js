@@ -14,6 +14,7 @@ const utils = require("./helpers/utils");
 const sHelpers = require("./helpers/shopHelpers");
 const upload = require("./helpers/multerHelpers");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
+const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
 router.get("/", async (req, res) => {
@@ -31,7 +32,7 @@ router.get("/", async (req, res) => {
 		let shop = await sHelpers.parse(shopItems);
 		return res.status(200).json({ error: false, shop: shop });
 	} catch (err) {
-		console.log("FETCHING SHOP ERROR:", err);
+		threatLog.error("FETCHING SHOP ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -45,7 +46,7 @@ router.get("/single/:id", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, shop: result });
 	} catch (err) {
-		console.log("SHOP SINGLE ERROR", err);
+		threatLog.error("SHOP SINGLE ERROR", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -100,11 +101,12 @@ router.post("/post", vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req,
 					if (err) throw new Error(ERROR_MESSAGE.updateError);
 				}
 
+				fullLog.info(`Shop posted: ${shop._id}`);
 				req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
 				return res.status(200).json({ err: false, url: `/Shop/${result._id}` });
 			}
 		} catch (err) {
-			console.log("POST SHOP ERROR", err);
+			threatLog.error("POST SHOP ERROR", err, req.headers, req.ip);
 			return res.status(400).json({ url: "/", message: err.message, err: true });
 		}
 	});
@@ -160,11 +162,12 @@ router.post("/patch/:id", vShop, setUser, authUser, authRole(ROLE.ADMIN), async 
 					if (err) throw new Error(ERROR_MESSAGE.updateError);
 				}
 
+				fullLog.info(`Shop patched: ${id}`);
 				req.flash("success", ERROR_MESSAGE.itemUploaded);
 				return res.status(200).json({ err: false, url: "/Shop" });
 			}
 		} catch (err) {
-			console.log("PATCH SHOP ERROR", err);
+			threatLog.error("PATCH SHOP ERROR", err, req.headers, req.ip);
 			return res.status(400).json({ url: "/", message: err.message, err: true });
 		}
 	});
@@ -201,10 +204,11 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 			}
 		}
 
+		fullLog.info(`Shop deleted: ${id}`);
 		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/Shop");
 	} catch (err) {
-		console.log("DELETE SHOP ERROR", err);
+		threatLog.error("DELETE SHOP ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Shop");
 	}
