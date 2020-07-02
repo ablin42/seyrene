@@ -3,8 +3,8 @@ const utils = require("../helpers/utils");
 const { ERROR_MESSAGE } = require("../helpers/errorMessages");
 
 module.exports.vName = [
-	body("name").trim().stripLow(),
 	body("name")
+		.trim()
 		.isLength({ min: 4, max: 30 })
 		.withMessage(ERROR_MESSAGE.nameLength)
 		.matches(/^[a-z0-9 \-_àâçéèêëîïôûùüÿñæœ]+$/i)
@@ -18,8 +18,8 @@ module.exports.vName = [
 ];
 
 module.exports.vEmail = [
-	body("email").trim().stripLow(),
 	body("email")
+		.trim()
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
@@ -46,8 +46,8 @@ module.exports.vPassword = [
 ];
 
 module.exports.vLostPw = [
-	body("email").trim().stripLow(),
 	body("email")
+		.trim()
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
@@ -62,12 +62,12 @@ module.exports.vLostPw = [
 ];
 
 module.exports.vDelivery = [
-	body("fulltext_address").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.address),
-	body("street_name").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.street),
-	body("city").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.city),
-	body("state").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.state),
-	body("postal_code").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.zipcode),
-	body("country").trim().stripLow().isLength({ min: 1 }).withMessage(ERROR_MESSAGE.country),
+	body("fulltext_address").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.address),
+	body("street_name").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.street),
+	body("city").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.city),
+	body("state").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.state),
+	body("postal_code").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.zipcode),
+	body("country").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.country),
 	body("firstname").trim().stripLow().isLength({ min: 2, max: 128 }).withMessage(ERROR_MESSAGE.firstname),
 	body("lastname").trim().stripLow().isLength({ min: 2, max: 128 }).withMessage(ERROR_MESSAGE.lastname)
 ];

@@ -48,6 +48,8 @@ mongoose.connect(
 
 // Express
 const app = express();
+app.use(express.static(__dirname + "/public"));
+app.set("view engine", "ejs");
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
@@ -67,13 +69,12 @@ const generator = (time, index) => {
 const accessLogStream = rfs.createStream(generator, { interval: "6h", path: "./logs/" });
 app.use(morgan("combined", { stream: accessLogStream }));
 
-app.use(express.static(__dirname + "/public"));
-
 //Helmet
 app.use(helmet());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy({ policy: "same-origin" }));
 
+// Set ip object and logs info
 app.use((req, res, next) => {
 	req.ip =
 		(req.headers["x-forwarded-for"] || "").split(",").pop().trim() ||
@@ -81,18 +82,12 @@ app.use((req, res, next) => {
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
 
-	next();
-});
-
-app.use((req, res, next) => {
 	fullLog.trace({ ip: req.ip, host: req.headers.host, referer: req.headers.referer, forward: req.url });
 
 	next();
 });
 
-//-- Cross origin --//
 app.use(cors());
-//-- Cookie parser --//
 app.use(cookieParser());
 
 //-- Express Session --//
@@ -110,7 +105,6 @@ app.use(
 		sameSite: "Lax"
 	})
 );
-
 app.use(flash());
 
 // Body-Parser
@@ -126,10 +120,8 @@ app.use(function (err, req, res, next) {
 	return res.status(200).json({ error: true, message: err.message });
 });
 
-app.set("view engine", "ejs");
 app.use(expressSanitizer());
 app.use(csrf({ cookie: false }));
-
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {
 	if (err.code !== "EBADCSRFTOKEN") return next(err);

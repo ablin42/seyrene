@@ -6,7 +6,6 @@ const rp = require("request-promise");
 const sanitize = require("mongo-sanitize");
 const rateLimit = require("express-rate-limit");
 const MongoStore = require("rate-limit-mongo");
-const { validationResult } = require("express-validator");
 
 const { vRegister, vLogin, vResend } = require("./validators/vAuth");
 const mailer = require("./helpers/mailer");
@@ -39,20 +38,11 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 			name: req.body.name,
 			email: req.body.email
 		};
+		await utils.checkValidity(req);
 
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
-
-		// Hash and salt pw
 		const hashPw = await bcrypt.hash(req.body.password, 10);
 		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
 
-		// Create User and validationToken objects
 		const user = new User({
 			name: req.session.formData.name.toLowerCase(),
 			email: req.session.formData.email,
@@ -65,7 +55,6 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 			token: vToken
 		});
 
-		// Save User and validationToken to DB
 		[err, result] = await utils.to(user.save());
 		if (err) throw new Error(ERROR_MESSAGE.createAccount);
 
@@ -89,24 +78,16 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 	try {
 		req.session.formData = { email: req.body.email };
 
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		await utils.checkValidity(req);
 
-		// Check if email exists in DB
 		let [err, user] = await utils.to(User.findOne({ email: req.body.email }));
-		if (err) throw new Error(ERROR_MESSAGE.userNotFound);
+		if (err) throw new Error(ERROR_MESSAGE.serverError);
 		if (!user) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
 		// Check if pw matches
 		const validPw = await bcrypt.compare(req.body.password, user.password);
 		if (!validPw) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
-		// Check if user is verified
 		if (!user.isVerified) {
 			let options = {
 				uri: `${process.env.BASEURL}/api/auth/resend`,
@@ -161,13 +142,11 @@ router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 		[err, token] = await utils.to(Token.findOne({ token: receivedToken }));
 		if (err || !token) throw new Error(ERROR_MESSAGE.tokenNotFound);
 
-		// If we found a token, find a matching user
 		[err, user] = await utils.to(User.findOne({ _id: token._userId }));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
 		if (user.isVerified) throw new Error(ERROR_MESSAGE.alreadyVerified);
 
-		// Verify and save the user
 		user.isVerified = true;
 		[err, user] = await utils.to(user.save());
 		if (err) throw new Error(err.message);
@@ -185,13 +164,7 @@ router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 // Resend account confirmation token
 router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, async (req, res) => {
 	try {
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		await utils.checkValidity(req);
 
 		let err, user, savedToken;
 		const email = req.body.email;
@@ -204,10 +177,10 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 		let vToken = crypto.randomBytes(16).toString("hex");
 		let token = new Token({ _userId: user._id, token: vToken });
 
-		// Save the token
 		[err, savedToken] = await utils.to(token.save());
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
+		// Send mail containing link
 		let subject = "Account Verification Token for Maral";
 		let content = `Hello,\n\n Please verify your account by clicking the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);

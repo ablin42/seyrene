@@ -34,7 +34,7 @@ async function patchShop(e, shopId) {
 	e.preventDefault();
 	let title = $("#title").val(),
 		content = $("#content").val(),
-		price = $("#price").val(),
+		price = parseFloat($("#price").val()),
 		img = document.querySelector("#img"),
 		formData = new FormData();
 
@@ -54,7 +54,7 @@ async function patchShop(e, shopId) {
 	});
 	data = await data.json();
 
-	if (data.err) {
+	if (data.err === true) {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
 	} else window.location.href = data.url;

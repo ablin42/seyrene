@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { validationResult } = require("express-validator");
 const { vGallery } = require("./validators/vGallery");
-const path = require("path");
 const fs = require("fs");
 const rp = require("request-promise");
 const sanitize = require("mongo-sanitize");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
-const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
+const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setGallery } = require("./helpers/verifySession");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 const upload = require("./helpers/multerHelpers");
@@ -46,14 +44,13 @@ router.get("/Tags", async (req, res) => {
 			sort: { date: -1 }
 		};
 		if (req.query.t) var tagsArr = req.query.t.split(",");
-
 		let [err, result] = await utils.to(Gallery.paginate({ tags: { $all: tagsArr } }, options));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let galleries = result.docs;
 		if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
-
 		galleries = await gHelpers.fetchMainImg(galleries);
+
 		return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {
 		threatLog.error("FETCHING GALLERIES BY TAGS ERROR:", err, req.headers, req.ip);
@@ -66,7 +63,8 @@ router.get("/single/:id", authToken, async (req, res) => {
 		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Gallery.findById(id));
-		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchError);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
+		if (!result) throw new Error(ERROR_MESSAGE.noResult);
 
 		return res.status(200).json({ error: false, gallery: result });
 	} catch (err) {
@@ -75,116 +73,65 @@ router.get("/single/:id", authToken, async (req, res) => {
 	}
 });
 
-router.post("/post", vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	upload(req, res, async function (err) {
-		try {
-			if (err) {
-				let errMsg = err;
-				if (err.message) errMsg = err.message;
-				return res.status(400).json({ url: "/", message: errMsg, err: true });
-			} else {
-				let err, result, savedImage;
-				const vResult = validationResult(req);
-				if (!vResult.isEmpty()) {
-					vResult.errors.forEach(item => {
-						throw new Error(item.msg);
-					});
-				}
-				const obj = { title: req.body.title, content: req.body.content };
-				obj.tags = gHelpers.parseTags(req.body.tags);
+router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		await utils.checkValidity(req);
+		const obj = { title: req.body.title, content: req.body.content };
+		obj.tags = gHelpers.parseTags(req.body.tags);
 
-				const gallery = new Gallery(obj);
-				[err, result] = await utils.to(gallery.save());
-				if (err) throw new Error(ERROR_MESSAGE.saveError);
+		const gallery = new Gallery(obj);
+		let [err, result] = await utils.to(gallery.save());
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
-				for (let i = 0; i < req.files.length; i++) {
-					let isMain = false;
-					if (i === 0) isMain = true;
-					let image = new Image({
-						_itemId: result._id,
-						itemType: "Gallery",
-						isMain: isMain,
-						mimetype: req.files[parseInt(i)].mimetype
-					});
-					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
-					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
-					fs.rename(oldpath, newpath, err => {
-						if (err) throw new Error(err);
-					});
-					image.path = newpath;
-					[err, savedImage] = await utils.to(image.save());
-					if (err) throw new Error(ERROR_MESSAGE.saveError);
-				}
+		err = await utils.uploadImages(req.files, result._id, "Gallery", "save");
+		if (err) throw new Error(err);
 
-				fullLog.info(`Gallery posted: ${gallery._id}`);
-				req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
-				return res.status(200).json({ url: `/Galerie/${result._id}` });
-			}
-		} catch (err) {
-			threatLog.error("POST GALLERY ERROR", err, req.headers, req.ip);
-			return res.status(400).json({ url: "/", message: err.message, err: true });
-		}
-	});
+		fullLog.info(`Gallery posted: ${gallery._id}`);
+		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
+		return res.status(200).json({ url: `/Galerie/${result._id}` });
+	} catch (err) {
+		threatLog.error("POST GALLERY ERROR", err, req.headers, req.ip);
+		return res.status(400).json({ url: "/", message: err.message, err: true });
+	}
 });
 
-router.post("/patch/:id", vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	upload(req, res, async function (err) {
+router.post(
+	"/patch/:id",
+	upload,
+	errorHandler,
+	vGallery,
+	setGallery,
+	setUser,
+	authUser,
+	authRole(ROLE.ADMIN),
+	async (req, res) => {
 		try {
-			if (err) {
-				let errMsg = err;
-				if (err.message) errMsg = err.message;
-				return res.status(400).json({ url: "/", message: errMsg, err: true });
-			} else {
-				let err, savedImage, result;
-				const vResult = validationResult(req);
-				if (!vResult.isEmpty()) {
-					vResult.errors.forEach(item => {
-						throw new Error(item.msg);
-					});
-				}
-				let id = sanitize(req.params.id);
-				const obj = { title: req.body.title, content: req.body.content };
-				obj.tags = gHelpers.parseTags(req.body.tags);
+			await utils.checkValidity(req);
+			let id = sanitize(req.params.id);
+			const obj = { title: req.body.title, content: req.body.content };
+			obj.tags = gHelpers.parseTags(req.body.tags);
 
-				for (let i = 0; i < req.files.length; i++) {
-					let image = new Image({
-						_itemId: id,
-						itemType: "Gallery",
-						isMain: false,
-						mimetype: req.files[parseInt(i)].mimetype
-					});
-					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
-					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
-					image.path = newpath;
-					fs.rename(oldpath, newpath, err => {
-						if (err) throw new Error(err);
-					});
+			let [err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
+			if (err) throw new Error(ERROR_MESSAGE.updateError);
+			if (!result) throw new Error(ERROR_MESSAGE.noResult);
 
-					[err, savedImage] = await utils.to(image.save());
-					if (err) throw new Error(ERROR_MESSAGE.updateError);
-				}
+			err = await utils.uploadImages(req.files, id, "Gallery", "patch");
+			if (err) throw new Error(err);
 
-				[err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
-				if (err) throw new Error(ERROR_MESSAGE.updateError);
-
-				fullLog.info(`Gallery patched: ${id}`);
-				req.flash("success", ERROR_MESSAGE.itemUploaded);
-				return res.status(200).json({ url: "/Galerie" });
-			}
+			fullLog.info(`Gallery patched: ${id}`);
+			req.flash("success", ERROR_MESSAGE.itemUploaded);
+			return res.status(200).json({ url: "/Galerie" });
 		} catch (err) {
 			threatLog.error("PATCH GALLERY ERROR", err, req.headers, req.ip);
-			return res.status(400).json({ url: "/", message: err.message, err: true });
+			return res.status(400).json({ url: "/Galerie", message: err.message, err: true });
 		}
-	});
-});
+	}
+);
 
-router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/delete/:id", setGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let err, gallery;
-
-		[err, gallery] = await utils.to(Gallery.findOne({ _id: id }));
-		if (err || !gallery) throw new Error(ERROR_MESSAGE.fetchError);
 
 		[err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
 		if (err) throw new Error(ERROR_MESSAGE.delError);

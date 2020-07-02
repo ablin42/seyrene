@@ -77,7 +77,7 @@ async function postFront(e, form) {
 	data = await data.json();
 
 	let alertType = "success";
-	if (data.error === true) alertType = "warning";
+	if (data.err === true || data.error === true) alertType = "warning";
 
 	let alert = createAlertNode(data.message, alertType);
 	addAlert(alert, "#header");

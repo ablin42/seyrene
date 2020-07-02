@@ -4,7 +4,6 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const rateLimit = require("express-rate-limit");
 const MongoStore = require("rate-limit-mongo");
-const { validationResult } = require("express-validator");
 const { vName, vEmail, vPassword, vLostPw, vDelivery } = require("./validators/vUser");
 const countryList = require("country-list-js");
 const IPinfo = require("node-ipinfo");
@@ -37,8 +36,7 @@ const limiter = rateLimit({
 router.post("/lostpw", limiter, vLostPw, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, user, pwToken, result;
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) throw new Error(ERROR_MESSAGE.incorrectInput);
+		await utils.checkValidity(req);
 
 		[err, user] = await utils.to(User.findOne({ email: req.body.email }));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
@@ -72,13 +70,7 @@ router.post("/lostpw", limiter, vLostPw, checkCaptcha, setUser, notLoggedUser, a
 router.post("/resetpw", limiter, vPassword, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, pwToken, user;
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		await utils.checkValidity(req);
 
 		const hashPw = await bcrypt.hash(req.body.password, 10);
 		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
@@ -104,13 +96,7 @@ router.post("/resetpw", limiter, vPassword, setUser, notLoggedUser, async (req, 
 
 router.post("/patch/name", limiter, vName, setUser, authUser, async (req, res) => {
 	try {
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		await utils.checkValidity(req);
 
 		const name = req.body.name.toLowerCase();
 		const id = req.user._id;
@@ -131,14 +117,7 @@ router.post("/patch/name", limiter, vName, setUser, authUser, async (req, res) =
 router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res) => {
 	try {
 		let err, user, token;
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
-
+		await utils.checkValidity(req);
 		const newEmail = req.body.email;
 		const id = req.user._id;
 		const vToken = crypto.randomBytes(16).toString("hex");
@@ -165,14 +144,7 @@ router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res)
 
 router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req, res) => {
 	try {
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
-
+		await utils.checkValidity(req);
 		const id = req.user._id;
 		const cpassword = req.body.cpassword;
 		const password = req.body.password;
@@ -205,13 +177,7 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 			result,
 			infos,
 			obj = req.address;
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		await utils.checkValidity(req);
 
 		[err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
 		if (err) throw new Error(ERROR_MESSAGE.serverError);

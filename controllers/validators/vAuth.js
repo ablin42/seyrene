@@ -3,8 +3,8 @@ const utils = require("../helpers/utils");
 const { ERROR_MESSAGE } = require("../helpers/errorMessages");
 
 module.exports.vRegister = [
-	body("name", "email").trim().stripLow(),
 	body("name")
+		.trim()
 		.isLength({ min: 4, max: 30 })
 		.withMessage(ERROR_MESSAGE.nameLength)
 		.matches(/^[a-z0-9 \-_àâçéèêëîïôûùüÿñæœ]+$/i)
@@ -15,6 +15,7 @@ module.exports.vRegister = [
 			});
 		}),
 	body("email")
+		.trim()
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
@@ -38,8 +39,8 @@ module.exports.vRegister = [
 ];
 
 module.exports.vLogin = [
-	body("email").trim().stripLow(),
 	body("email")
+		.trim()
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()
@@ -53,8 +54,8 @@ module.exports.vLogin = [
 ];
 
 module.exports.vResend = [
-	body("email").trim().stripLow(),
 	body("email")
+		.trim()
 		.isEmail()
 		.withMessage(ERROR_MESSAGE.emailInvalid)
 		.bail()

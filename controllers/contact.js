@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { validationResult } = require("express-validator");
 const { vContact } = require("./validators/vContact");
 const rateLimit = require("express-rate-limit");
 const MongoStore = require("rate-limit-mongo");
@@ -37,14 +36,7 @@ router.post("/", limiter, vContact, setUser, checkCaptcha, async (req, res) => {
 			content: content
 		};
 		req.session.formData = formData;
-
-		const vResult = validationResult(req);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		await utils.checkValidity(req);
 
 		//maral.canvas@gmail.com
 		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);

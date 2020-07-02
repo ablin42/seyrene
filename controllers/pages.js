@@ -727,7 +727,7 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 
 		let options = {
 			method: "GET",
-			uri: `${process.env.BASEURL}/api/image/Shop/${id}`,
+			uri: `${process.env.BASEURL}/api/image/Shop/${shopId}`,
 			headers: {
 				ACCESS_TOKEN: process.env.ACCESS_TOKEN
 			},

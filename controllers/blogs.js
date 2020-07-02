@@ -37,7 +37,7 @@ router.get("/single/:blogId", authToken, async (req, res) => {
 		let [err, blog] = await utils.to(Blog.findById(blogId));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
-		if (blog === null) throw new Error(ERROR_MESSAGE.noResult);
+		if (!blog) throw new Error(ERROR_MESSAGE.noResult);
 		blog = await bHelpers.parseBlogs(blog, true);
 
 		return res.status(200).json({ error: false, blog: blog });

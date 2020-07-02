@@ -5,7 +5,7 @@ const fs = require("fs");
 const sanitize = require("mongo-sanitize");
 
 const Front = require("../models/Front");
-const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
+const { ROLE, errorHandler, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const upload = require("./helpers/multerHelpers");
@@ -28,7 +28,8 @@ router.get("/image/:id", async (req, res) => {
 		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Front.findOne({ _id: id }));
-		if (err || !result) throw new Error(ERROR_MESSAGE.fetchImg);
+		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
+		if (!result) throw new Error(ERROR_MESSAGE.noResult);
 
 		fs.readFile(result.path, function (err, data) {
 			if (err) throw new Error(ERROR_MESSAGE.readFile);
@@ -43,55 +44,47 @@ router.get("/image/:id", async (req, res) => {
 	}
 });
 
-router.post("/post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	upload(req, res, async function (err) {
-		try {
-			if (err) {
-				let errMsg = err;
-				if (err.message) errMsg = err.message;
-				return res.status(400).json({ url: "/", message: errMsg, err: true });
+router.post("/post", upload, errorHandler, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
+			let front = { null: false, referenceId: req.body.referenceId };
+
+			let [err, result] = await utils.to(Front.findOne({ referenceId: front.referenceId }));
+			if (err) throw new Error(ERROR_MESSAGE.serverError);
+
+			if (result === null) {
+				let newFront = new Front(front);
+				newFront.mimetype = req.files[0].mimetype;
+				let oldpath = req.files[0].destination + req.files[0].filename;
+				let newpath = req.files[0].destination + newFront._id + path.extname(req.files[0].originalname);
+				fs.rename(oldpath, newpath, err => {
+					if (err) throw new Error(err);
+				});
+				newFront.path = newpath;
+
+				[err, result] = await utils.to(newFront.save());
+				if (err) throw new Error(ERROR_MESSAGE.updateError);
 			} else {
-				if (req.body.referenceId >= 0 && req.body.referenceId <= 4) {
-					let front = { null: false, referenceId: req.body.referenceId };
-
-					let [err, result] = await utils.to(Front.findOne({ referenceId: front.referenceId }));
-					if (err) throw new Error(ERROR_MESSAGE.serverError);
-
-					if (result === null) {
-						let newFront = new Front(front);
-						newFront.mimetype = req.files[0].mimetype;
-						let oldpath = req.files[0].destination + req.files[0].filename;
-						let newpath = req.files[0].destination + newFront._id + path.extname(req.files[0].originalname);
-						fs.rename(oldpath, newpath, err => {
-							if (err) throw new Error(err);
-						});
-						newFront.path = newpath;
-
-						[err, result] = await utils.to(newFront.save());
-						if (err) throw new Error(ERROR_MESSAGE.updateError);
-					} else {
-						let oldpath = req.files[0].destination + req.files[0].filename;
-						let newpath = req.files[0].destination + result._id + path.extname(req.files[0].originalname);
-						fs.rename(oldpath, newpath, err => {
-							if (err) throw new Error(err);
-						});
-						[err, result] = await utils.to(
-							Front.findOneAndUpdate(
-								{ referenceId: front.referenceId },
-								{ $set: { null: false, path: newpath, mimetype: req.files[0].mimetype } }
-							)
-						);
-						if (err) throw new Error(ERROR_MESSAGE.updateError);
-					}
-					fullLog.info(`Front posted: ${req.body.referenceId}`);
-					return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemUploaded });
-				} else throw new Error(ERROR_MESSAGE.incorrectInput);
+				let oldpath = req.files[0].destination + req.files[0].filename;
+				let newpath = req.files[0].destination + result._id + path.extname(req.files[0].originalname);
+				fs.rename(oldpath, newpath, err => {
+					if (err) throw new Error(err);
+				});
+				[err, result] = await utils.to(
+					Front.findOneAndUpdate(
+						{ referenceId: front.referenceId },
+						{ $set: { null: false, path: newpath, mimetype: req.files[0].mimetype } }
+					)
+				);
+				if (err) throw new Error(ERROR_MESSAGE.updateError);
 			}
-		} catch (err) {
-			threatLog.error("POST FRONT ERROR", err, req.headers, req.ip);
-			return res.status(400).json({ error: true, message: err.message });
-		}
-	});
+			fullLog.info(`Front posted: ${req.body.referenceId}`);
+			return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemUploaded });
+		} else throw new Error(ERROR_MESSAGE.incorrectInput);
+	} catch (err) {
+		threatLog.error("POST FRONT ERROR", err, req.headers, req.ip);
+		return res.status(400).json({ error: true, message: err.message });
+	}
 });
 
 router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {

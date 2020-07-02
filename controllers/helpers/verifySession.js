@@ -1,6 +1,8 @@
 const utils = require("../helpers/utils");
 const sanitize = require("mongo-sanitize");
 const Order = require("../../models/Order");
+const Gallery = require("../../models/Gallery");
+const Shop = require("../../models/Shop");
 const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./errorMessages");
@@ -24,6 +26,9 @@ async function setUser(req, res, next) {
 		user.password = undefined;
 		req.user = user;
 	}
+
+	let [err, user] = await utils.to(User.findById("5d810b9365761c0840e0de25")); //
+	req.user = user; //
 
 	next();
 }
@@ -171,8 +176,46 @@ function authToken(req, res, next) {
 	next();
 }
 
+async function setGallery(req, res, next) {
+	const galleryId = sanitize(req.params.id);
+
+	let [err, gallery] = await utils.to(Gallery.findById(galleryId));
+	if (err || !gallery) {
+		if (req.headers["content-type"] === "application/x-www-form-urlencoded") {
+			req.flash("warning", ERROR_MESSAGE.noResult);
+			return res.status(404).redirect("/Galerie");
+		}
+		return res.status(200).json({ url: "/Galerie", message: ERROR_MESSAGE.noResult, err: true });
+	}
+
+	next();
+}
+
+async function setShop(req, res, next) {
+	const shopId = sanitize(req.params.id);
+
+	let [err, shop] = await utils.to(Shop.findById(shopId));
+	if (err || !shop) {
+		if (req.headers["content-type"] === "application/x-www-form-urlencoded") {
+			req.flash("warning", ERROR_MESSAGE.noResult);
+			return res.status(404).redirect("/Shop");
+		}
+		return res.status(200).json({ url: "/Shop", message: ERROR_MESSAGE.noResult, err: true });
+	}
+
+	next();
+}
+
+function errorHandler(err, req, res, next) {
+	if (res.headersSent) return next(err);
+
+	threatLog.warn(err.message, req.ip);
+	return res.status(500).json({ url: "/", message: err.message, err: true });
+}
+
 module.exports = {
 	ROLE,
+	errorHandler,
 	setUser,
 	notLoggedUser,
 	authUser,
@@ -184,5 +227,7 @@ module.exports = {
 	authGetOrder,
 	checkBilling,
 	checkAddress,
-	authToken
+	authToken,
+	setGallery,
+	setShop
 };

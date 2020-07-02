@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { validationResult } = require("express-validator");
 const sanitize = require("mongo-sanitize");
 const { vDelivery } = require("./validators/vUser");
 const rp = require("request-promise");
@@ -424,13 +423,7 @@ router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req
 
 router.post("/billing/save", vDelivery, setUser, authUser, checkAddress, async (req, res) => {
 	try {
-		const vResult = validationResult(req.body.billing);
-		if (!vResult.isEmpty()) {
-			vResult.errors.forEach(item => {
-				req.flash("info", item.msg);
-			});
-			throw new Error(ERROR_MESSAGE.incorrectInput);
-		}
+		await utils.checkValidity(req);
 
 		req.session.billing = req.address;
 		req.flash("success", ERROR_MESSAGE.savedBilling);

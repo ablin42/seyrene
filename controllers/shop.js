@@ -1,15 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { validationResult } = require("express-validator");
 const { vShop } = require("./validators/vShop");
 const sanitize = require("mongo-sanitize");
-const path = require("path");
 const fs = require("fs");
 const rp = require("request-promise");
 
 const Shop = require("../models/Shop");
 const Image = require("../models/Image");
-const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
+const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setShop } = require("./helpers/verifySession");
 const utils = require("./helpers/utils");
 const sHelpers = require("./helpers/shopHelpers");
 const upload = require("./helpers/multerHelpers");
@@ -24,12 +22,12 @@ router.get("/", async (req, res) => {
 			limit: 3,
 			sort: { date: -1 }
 		};
-
 		let [err, result] = await utils.to(Shop.paginate({ soldOut: false }, options));
 		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
-		let shopItems = result.docs;
 
+		let shopItems = result.docs;
 		let shop = await sHelpers.parse(shopItems);
+
 		return res.status(200).json({ error: false, shop: shop });
 	} catch (err) {
 		threatLog.error("FETCHING SHOP ERROR:", err, req.headers, req.ip);
@@ -42,7 +40,8 @@ router.get("/single/:id", authToken, async (req, res) => {
 		let id = sanitize(req.params.id);
 
 		let [err, result] = await utils.to(Shop.findById(id));
-		if (err || result === null) throw new Error(ERROR_MESSAGE.fetchImg);
+		if (err) throw new Error(ERROR_MESSAGE.fetchError);
+		if (!result) throw new Error(ERROR_MESSAGE.noResult);
 
 		return res.status(200).json({ error: false, shop: result });
 	} catch (err) {
@@ -51,135 +50,61 @@ router.get("/single/:id", authToken, async (req, res) => {
 	}
 });
 
-router.post("/post", vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	upload(req, res, async function (err) {
-		try {
-			if (err) {
-				let errMsg = err;
-				if (err.message) errMsg = err.message;
-				return res.status(400).json({ url: "/", message: errMsg, err: true });
-			} else {
-				let err, result, savedImage;
-				const vResult = validationResult(req.body);
-				if (!vResult.isEmpty()) {
-					vResult.errors.forEach(item => {
-						throw new Error(item.msg);
-					});
-				}
+router.post("/post", upload, errorHandler, vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		await utils.checkValidity(req);
+		const obj = {
+			title: req.body.title,
+			content: req.body.content,
+			price: req.body.price
+		};
 
-				let price = parseFloat(req.body.price);
-				if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
-				let formattedPrice = price.toFixed(2);
+		const shop = new Shop(obj);
+		let [err, result] = await utils.to(shop.save());
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
-				const obj = {
-					title: req.body.title,
-					content: req.body.content,
-					price: formattedPrice
-				};
+		err = await utils.uploadImages(req.files, result._id, "Shop", "save");
+		if (err) throw new Error(err);
 
-				const shop = new Shop(obj);
-				[err, result] = await utils.to(shop.save());
-				if (err) throw new Error(ERROR_MESSAGE.saveError);
-
-				for (let i = 0; i < req.files.length; i++) {
-					let isMain = false;
-					if (i === 0) isMain = true;
-
-					let image = new Image({
-						_itemId: result._id,
-						itemType: "Shop",
-						isMain: isMain,
-						mimetype: req.files[parseInt(i)].mimetype
-					});
-					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
-					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
-					fs.rename(oldpath, newpath, err => {
-						if (err) throw new Error(err);
-					});
-					image.path = newpath;
-					[err, savedImage] = await utils.to(image.save());
-					if (err) throw new Error(ERROR_MESSAGE.updateError);
-				}
-
-				fullLog.info(`Shop posted: ${shop._id}`);
-				req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
-				return res.status(200).json({ err: false, url: `/Shop/${result._id}` });
-			}
-		} catch (err) {
-			threatLog.error("POST SHOP ERROR", err, req.headers, req.ip);
-			return res.status(400).json({ url: "/", message: err.message, err: true });
-		}
-	});
+		fullLog.info(`Shop posted: ${shop._id}`);
+		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
+		return res.status(200).json({ err: false, url: `/Shop/${result._id}` });
+	} catch (err) {
+		threatLog.error("POST SHOP ERROR", err, req.headers, req.ip);
+		return res.status(400).json({ url: "/", message: err.message, err: true });
+	}
 });
 
-router.post("/patch/:id", vShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	upload(req, res, async function (err) {
-		try {
-			if (err) {
-				let errMsg = err;
-				if (err.message) errMsg = err.message;
-				return res.status(400).json({ url: "/", message: errMsg, err: true });
-			} else {
-				let err, result, savedImage;
-				const vResult = validationResult(req);
-				if (!vResult.isEmpty()) {
-					vResult.errors.forEach(item => {
-						throw new Error(item.msg);
-					});
-				}
+router.post("/patch/:id", upload, errorHandler, vShop, setShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		await utils.checkValidity(req);
+		let id = sanitize(req.params.id);
 
-				let id = sanitize(req.params.id);
-				let price = parseFloat(req.body.price);
-				if (isNaN(price)) throw new Error(ERROR_MESSAGE.incorrectInput);
-				let formattedPrice = price.toFixed(2);
+		const obj = {
+			title: req.body.title,
+			content: req.body.content,
+			price: req.body.price
+		};
 
-				const obj = {
-					title: req.body.title,
-					content: req.body.content,
-					price: formattedPrice
-				};
+		let [err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
+		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
-				[err, result] = await utils.to(Shop.findOne({ _id: id }));
-				if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
+		err = await utils.uploadImages(req.files, id, "Shop", "patch");
+		if (err) throw new Error(err);
 
-				[err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
-				if (err) throw new Error(ERROR_MESSAGE.updateError);
-
-				for (let i = 0; i < req.files.length; i++) {
-					let image = new Image({
-						_itemId: id,
-						itemType: "Shop",
-						isMain: false,
-						mimetype: req.files[parseInt(i)].mimetype
-					});
-					let oldpath = req.files[parseInt(i)].destination + req.files[parseInt(i)].filename;
-					let newpath = req.files[parseInt(i)].destination + image._id + path.extname(req.files[parseInt(i)].originalname);
-					fs.rename(oldpath, newpath, err => {
-						if (err) throw new Error(err);
-					});
-					image.path = newpath;
-					[err, savedImage] = await utils.to(image.save());
-					if (err) throw new Error(ERROR_MESSAGE.updateError);
-				}
-
-				fullLog.info(`Shop patched: ${id}`);
-				req.flash("success", ERROR_MESSAGE.itemUploaded);
-				return res.status(200).json({ err: false, url: "/Shop" });
-			}
-		} catch (err) {
-			threatLog.error("PATCH SHOP ERROR", err, req.headers, req.ip);
-			return res.status(400).json({ url: "/", message: err.message, err: true });
-		}
-	});
+		fullLog.info(`Shop patched: ${id}`);
+		req.flash("success", ERROR_MESSAGE.itemUploaded);
+		return res.status(200).json({ err: false, url: "/Shop" });
+	} catch (err) {
+		threatLog.error("PATCH SHOP ERROR", err, req.headers, req.ip);
+		return res.status(400).json({ url: "/", message: err.message, err: true });
+	}
 });
 
-router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/delete/:id", setShop, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let err, shop;
-
-		[err, shop] = await utils.to(Shop.findOne({ _id: id }));
-		if (err || !shop) throw new Error(ERROR_MESSAGE.fetchError);
 
 		[err, shop] = await utils.to(Shop.deleteOne({ _id: id }));
 		if (err) throw new Error(ERROR_MESSAGE.delError);
@@ -195,13 +120,11 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		let response = await rp(options);
 		if (response.error === true) throw new Error(ERROR_MESSAGE.fetchImg);
 
-		if (response.error === false) {
-			for (let i = 0; i < response.images.length; i++) {
-				fs.unlink(response.images[parseInt(i)].path, err => {
-					if (err) throw new Error(ERROR_MESSAGE.deleteImg);
-				});
-				await Image.deleteOne({ _id: response.images[parseInt(i)]._id });
-			}
+		for (let i = 0; i < response.images.length; i++) {
+			fs.unlink(response.images[parseInt(i)].path, err => {
+				if (err) throw new Error(ERROR_MESSAGE.deleteImg);
+			});
+			await Image.deleteOne({ _id: response.images[parseInt(i)]._id });
 		}
 
 		fullLog.info(`Shop deleted: ${id}`);
