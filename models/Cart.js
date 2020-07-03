@@ -23,8 +23,6 @@ module.exports = function Cart(oldCart) {
 		);
 		this.price.totalIncludingTax += this.uniquePriceTotal;
 		this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[parseInt(id)].unitPrice) * 100) / 100).toFixed(2));
-
-		this.generateArray();
 	};
 
 	this.delete = function (item, id) {
@@ -167,7 +165,7 @@ module.exports = function Cart(oldCart) {
 		let arr = [];
 
 		for (let id in this.items) {
-			arr.push(this.items[parseInt(id)]);
+			arr.push(this.items[id]);
 		}
 		return arr;
 	};
@@ -175,7 +173,7 @@ module.exports = function Cart(oldCart) {
 	this.generatePwintyArray = function () {
 		let arr = [];
 		for (let id in this.items) {
-			if (this.items[parseInt(id)] && !this.items[parseInt(id)].attributes.isUnique) arr.push(this.items[parseInt(id)]);
+			if (this.items[id] && !this.items[id].attributes.isUnique) arr.push(this.items[id]);
 		}
 		return arr;
 	};
@@ -234,6 +232,6 @@ module.exports = function Cart(oldCart) {
 
 		let response = await rp(`${process.env.BASEURL}/api/user/countryCode/`, options);
 		if (response.error === false) return response.countryCode;
-		return "FR"; ///// defaults return fr, might need to return an error though
+		return "FR"; // defaults return fr, might need to return an error though
 	};
 };

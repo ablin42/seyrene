@@ -1,4 +1,4 @@
-const utils = require("../helpers/utils");
+const utils = require("./utils");
 const Image = require("../../models/Image");
 const { ERROR_MESSAGE } = require("./errorMessages");
 const formatter = new Intl.NumberFormat("de-DE", {

@@ -62,12 +62,66 @@ module.exports.vLostPw = [
 ];
 
 module.exports.vDelivery = [
-	body("fulltext_address").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.address),
-	body("street_name").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.street),
-	body("city").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.city),
-	body("state").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.state),
-	body("postal_code").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.zipcode),
-	body("country").trim().stripLow().not().isEmpty().withMessage(ERROR_MESSAGE.country),
-	body("firstname").trim().stripLow().isLength({ min: 2, max: 128 }).withMessage(ERROR_MESSAGE.firstname),
-	body("lastname").trim().stripLow().isLength({ min: 2, max: 128 }).withMessage(ERROR_MESSAGE.lastname)
+	body("full_address")
+		.trim()
+		.stripLow()
+		.not()
+		.isEmpty()
+		.withMessage(ERROR_MESSAGE.address)
+		.isLength({ max: 300 })
+		.withMessage("Input too long"),
+	body("street_name")
+		.trim()
+		.stripLow()
+		.not()
+		.isEmpty()
+		.withMessage(ERROR_MESSAGE.street)
+		.isLength({ max: 300 })
+		.withMessage("Input too long"),
+	body("city")
+		.trim()
+		.stripLow()
+		.not()
+		.isEmpty()
+		.withMessage(ERROR_MESSAGE.city)
+		.isLength({ max: 300 })
+		.withMessage("Input too long"),
+	body("state")
+		.trim()
+		.stripLow()
+		.not()
+		.isEmpty()
+		.withMessage(ERROR_MESSAGE.state)
+		.isLength({ max: 300 })
+		.withMessage("Input too long"),
+	body("zipcode")
+		.trim()
+		.stripLow()
+		.not()
+		.isEmpty()
+		.withMessage(ERROR_MESSAGE.zipcode)
+		.isLength({ max: 300 })
+		.withMessage("Input too long"),
+	body("country")
+		.trim()
+		.stripLow()
+		.not()
+		.isEmpty()
+		.withMessage(ERROR_MESSAGE.country)
+		.isLength({ max: 300 })
+		.withMessage("Input too long"),
+	body("firstname")
+		.trim()
+		.stripLow()
+		.isLength({ min: 2, max: 128 })
+		.withMessage(ERROR_MESSAGE.firstname)
+		.isLength({ max: 300 })
+		.withMessage("Input too long"),
+	body("lastname")
+		.trim()
+		.stripLow()
+		.isLength({ min: 2, max: 128 })
+		.withMessage(ERROR_MESSAGE.lastname)
+		.isLength({ max: 300 })
+		.withMessage("Input too long")
 ];

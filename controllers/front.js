@@ -5,7 +5,7 @@ const fs = require("fs");
 const sanitize = require("mongo-sanitize");
 
 const Front = require("../models/Front");
-const { ROLE, errorHandler, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
+const { ROLE, errorHandler, setUser, authUser, authRole, authToken } = require("./helpers/middlewares");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const upload = require("./helpers/multerHelpers");

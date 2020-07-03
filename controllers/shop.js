@@ -7,7 +7,7 @@ const rp = require("request-promise");
 
 const Shop = require("../models/Shop");
 const Image = require("../models/Image");
-const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setShop } = require("./helpers/verifySession");
+const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setShop } = require("./helpers/middlewares");
 const utils = require("./helpers/utils");
 const sHelpers = require("./helpers/shopHelpers");
 const upload = require("./helpers/multerHelpers");

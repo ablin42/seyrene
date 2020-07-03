@@ -7,7 +7,7 @@ const Shop = require("../models/Shop");
 const rateLimit = require("express-rate-limit");
 const MongoStore = require("rate-limit-mongo");
 
-const { setUser } = require("./helpers/verifySession");
+const { setUser } = require("./helpers/middlewares");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const utils = require("./helpers/utils");
 require("dotenv/config");
@@ -20,8 +20,8 @@ const limiter = rateLimit({
 		collectionName: "cartRateLimit",
 		expireTimeMs: 15 * 60 * 1000
 	}),
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 100, // limit each IP to 100 requests per windowMs
+	windowMs: 15 * 60 * 1000,
+	max: 100,
 	handler: function (req, res) {
 		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
 	}

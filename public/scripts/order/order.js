@@ -26,7 +26,7 @@ async function confirmDelete(orderId) {
 	response = await response.json();
 
 	let alertType = "success";
-	if (response.error === "true") alertType = "warning";
+	if (response.error === true) alertType = "warning";
 
 	let alert = createAlertNode(response.message, alertType);
 	addAlert(alert, "#header");
@@ -83,8 +83,6 @@ async function confirmCompletion(orderId) {
 }
 
 async function cancelOrder(orderId) {
-	console.log("CANCEL ORDER:", orderId);
-
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
                         <h3><b>ANNULER</b> la commande</h3><span>Cette action est irréversible</span> \
@@ -101,8 +99,6 @@ async function cancelOrder(orderId) {
 }
 
 async function approveOrder(orderId) {
-	console.log("APPROVE ORDER:", orderId);
-
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
                         <h3><b>APPROUVER</b> la commande</h3><span>Cette action est irréversible</span> \
@@ -119,8 +115,6 @@ async function approveOrder(orderId) {
 }
 
 async function completeOrder(orderId) {
-	console.log("APPROVE ORDER:", orderId);
-
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
                         <h3><b>COMPLETER</b> la commande</h3><span>Cette action est irréversible</span> \

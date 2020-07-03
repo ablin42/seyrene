@@ -4,33 +4,22 @@ const rp = require("request-promise");
 const sanitize = require("mongo-sanitize");
 
 const mailer = require("./helpers/mailer");
-const { ROLE, setUser, authUser, authRole, setOrder, authGetOrder, authToken } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/middlewares");
+const pHelpers = require("./helpers/pwintyHelpers");
 const utils = require("./helpers/utils");
 const Order = require("../models/Order");
-const Money = require("money-exchange");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
-const fx = new Money();
-fx.init();
 const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
-
-const formatter = new Intl.NumberFormat("de-DE", {
-	style: "currency",
-	currency: "EUR"
-});
-
-const API_URL = "https://sandbox.pwinty.com";
-const MERCHANTID = "sandbox_1e827211-b264-4962-97c0-a8b74a6f5e98";
-const APIKEY = "61cf3a92-0ede-4c83-b3d8-0bb0aee55ed8";
 
 router.post("/orders/create", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let options = {
 			method: "POST",
-			uri: `${API_URL}/v3.0/Orders`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/Orders`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			body: req.body,
 			json: true
@@ -53,10 +42,10 @@ router.get("/orders/:id", authToken, setUser, authUser, authRole(ROLE.ADMIN), as
 		let id = sanitize(req.params.id);
 		let options = {
 			method: "GET",
-			uri: `${API_URL}/v3.0/Orders/${id}`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/Orders/${id}`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			json: true
 		};
@@ -78,10 +67,10 @@ router.get("/orders/:id/status", authToken, setUser, authUser, authRole(ROLE.ADM
 		let id = sanitize(req.params.id);
 		let options = {
 			method: "GET",
-			uri: `${API_URL}/v3.0/Orders/${id}/SubmissionStatus`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/Orders/${id}/SubmissionStatus`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			json: true
 		};
@@ -103,10 +92,10 @@ router.post("/orders/:id/submit", authToken, setUser, authUser, authRole(ROLE.AD
 		const id = sanitize(req.params.id);
 		let options = {
 			method: "POST",
-			uri: `${API_URL}/v3.0/Orders/${id}/status`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/Orders/${id}/status`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			body: { status: req.body.status },
 			json: true
@@ -131,10 +120,10 @@ router.post("/orders/:id/images/batch", authToken, setUser, authUser, authRole(R
 		let id = sanitize(req.params.id);
 		let options = {
 			method: "POST",
-			uri: `${API_URL}/v3.0/orders/${id}/images/batch`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/orders/${id}/images/batch`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			body: req.body,
 			json: true
@@ -158,10 +147,10 @@ router.get("/countries", setUser, async (req, res) => {
 	try {
 		let options = {
 			method: "GET",
-			uri: `${API_URL}/v3.0/countries`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/countries`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			json: true
 		};
@@ -179,15 +168,16 @@ router.get("/countries", setUser, async (req, res) => {
 /* END COUNTRIES */
 
 /* CATALOGUE */
+//only used in pwinty_test
 router.post("/countries/:countryCode", setUser, async (req, res) => {
 	try {
 		let countryCode = sanitize(req.params.countryCode);
 		let options = {
 			method: "POST",
-			uri: `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/prices`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/prices`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			body: {
 				skus: req.body.skus
@@ -212,43 +202,22 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		if (!req.body.items) throw new Error(ERROR_MESSAGE.incorrectInput);
 		if (!req.params.countryCode) throw new Error(ERROR_MESSAGE.countryCode);
 		let countryCode = sanitize(req.params.countryCode);
-		let items = [];
-
-		req.body.items.forEach(item => {
-			if (item && item.attributes && item.attributes.isUnique !== true) {
-				let obj = {
-					sku: item.elements[0].attributes.SKU,
-					quantity: item.qty
-				};
-				items.push(obj);
-			} else if (item && item.SKU) {
-				let obj = {
-					sku: item.SKU,
-					quantity: item.quantity
-				};
-				items.push(obj);
-			}
-		});
-
+		items = pHelpers.genPricingObj(req.body.items);
 		let options = {
 			method: "GET",
 			uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY,
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
 				"ACCESS_TOKEN": process.env.ACCESS_TOKEN
 			},
 			body: { items: items },
 			json: true
 		};
-
 		let response = await rp(options);
 
-		let error = false;
 		if (response.error === true) throw new Error(response.message);
-		if (response.formatted <= 0) error = true;
-
-		return res.status(200).json({ error: error, response: response.formatted });
+		return res.status(200).json({ error: response.error, response: response.formatted });
 	} catch (err) {
 		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ip);
 		return res.status(200).json({ error: true, message: err.message });
@@ -260,13 +229,12 @@ router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
 		if (!req.body.items) throw new Error(ERROR_MESSAGE.incorrectInput);
 		if (!req.params.countryCode) throw new Error(ERROR_MESSAGE.countryCode);
 		let countryCode = sanitize(req.params.countryCode);
-
 		let options = {
 			method: "POST",
-			uri: `${API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/order/price`,
+			uri: `${process.env.PWINTY_API_URL}/v3.0/catalogue/prodigi%20direct/destination/${countryCode}/order/price`,
 			headers: {
-				"X-Pwinty-MerchantId": MERCHANTID,
-				"X-Pwinty-REST-API-Key": APIKEY
+				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY
 			},
 			body: { items: req.body.items },
 			json: true
@@ -275,37 +243,7 @@ router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
 		let response = await rp(options).catch(function (err) {
 			throw new Error(ERROR_MESSAGE.serverError);
 		});
-
-		let formatted = [];
-		response.shipmentOptions.forEach(shipmentOption => {
-			if (shipmentOption.isAvailable && shipmentOption.shippingMethod === "Standard") {
-				formatted = {
-					isAvailable: shipmentOption.isAvailable,
-					unitPriceIncludingTax: formatter
-						.format(fx.convert(shipmentOption.shipments[0].items[0].unitPriceIncludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					totalPriceIncludingTax: formatter
-						.format(fx.convert(shipmentOption.totalPriceIncludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					totalPriceExcludingTax: formatter
-						.format(fx.convert(shipmentOption.totalPriceExcludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					shippingMethod: shipmentOption.shippingMethod,
-					shippingPriceIncludingTax: formatter
-						.format(fx.convert(shipmentOption.shippingPriceIncludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					shippingPriceExcludingTax: formatter
-						.format(fx.convert(shipmentOption.shippingPriceExcludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					shipments: shipmentOption.shipments
-				};
-			}
-		});
+		let formatted = pHelpers.treatShipment(response.shipmentOptions);
 
 		let error = false;
 		if (formatted.length <= 0) error = true;
@@ -330,7 +268,7 @@ router.post("/callback/status", async (req, res) => {
 			);
 			if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
 
-			let subject = `Updated Order #${order._id}`;
+			let subject = `Updated Order (Pwinty) #${order._id}`;
 			let content = `Le status d'une commande vient d'être modifié par pwinty: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Voir la commande</a>`;
 			if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 			//maral.canvas@gmail.com

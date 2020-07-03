@@ -91,8 +91,6 @@ async function submitLostpw(e) {
 		body: JSON.stringify({ email: email, captcha: captcha })
 	});
 	response = await response.json();
-	console.log(response);
-
 	if (response.error === false) return (window.location.href = "/");
 
 	let alert = createAlertNode(response.message, "warning");

@@ -1,7 +1,6 @@
 const express = require("express");
 const rp = require("request-promise");
 const format = require("date-format");
-const country = require("country-list-js");
 const router = express.Router();
 const sanitize = require("mongo-sanitize");
 
@@ -16,8 +15,9 @@ const {
 	setOrder,
 	authGetOrder,
 	checkBilling
-} = require("./helpers/verifySession");
+} = require("./helpers/middlewares");
 const utils = require("./helpers/utils");
+const pHelpers = require("./helpers/pwintyHelpers");
 const Blog = require("../models/Blog");
 const Shop = require("../models/Shop");
 const Order = require("../models/Order");
@@ -113,93 +113,40 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 
 router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (req, res) => {
 	try {
+		let cart = new Cart(req.session.cart ? req.session.cart : {});
 		let obj = {
 			active: "Cart",
 			stripePublicKey: stripePublic,
 			products: [],
-			totalPrice: 0,
-			totalQty: 0,
+			totalPrice: formatter.format(cart.price.totalIncludingTax).substr(2),
+			totalQty: cart.totalQty,
 			user: req.user,
 			delivery: req.delivery,
 			csrfToken: req.csrfToken()
 		};
+		let itemArr = cart.generateArray();
 
-		if (req.session.cart) {
-			let cart = new Cart(req.session.cart);
-			let itemArr = cart.generateArray();
-			obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
-			obj.totalQty = cart.totalQty;
+		itemArr.forEach(item => {
+			let itemObj;
 
-			itemArr.forEach(item => {
-				let itemObj;
-
-				if (item.attributes && item.attributes.isUnique) {
-					itemObj = {
-						item: item.attributes,
-						qty: item.qty,
-						price: formatter.format(item.price).substr(2),
-						shortcontent: item.attributes.content.substr(0, 128),
-						shorttitle: item.attributes.title.substr(0, 64),
-						details: "Toile Unique"
-					};
-					obj.products.push(itemObj);
-				} else {
-					item.elements.forEach(element => {
-						if (element.attributes !== undefined) {
-							itemObj = {
-								item: item.attributes,
-								attributes: element.attributes,
-								stringifiedAttributes: JSON.stringify(element.attributes),
-								qty: element.qty,
-								unitPrice: item.unitPrice,
-								price: formatter.format(item.unitPrice * element.qty).substr(2),
-								shortcontent: item.attributes.content.substr(0, 128),
-								shorttitle: item.attributes.title.substr(0, 64),
-								details: ""
-							};
-
-							let details = "";
-							Object.keys(element.attributes).forEach(attribute => {
-								details +=
-									attribute.charAt(0).toUpperCase() +
-									attribute.slice(1) +
-									": " +
-									element.attributes[attribute].charAt(0).toUpperCase() +
-									element.attributes[attribute].slice(1) +
-									" / ";
-							});
-							itemObj.details = details.substr(0, details.length - 3);
-
-							obj.products.push(itemObj);
-						}
-					});
-				}
-			});
-
-			if (cart.generatePwintyArray().length > 0) {
-				let countryCode = country.findByName(utils.toTitleCase(obj.delivery.country));
-				if (countryCode) countryCode = countryCode.code.iso2;
-				else throw new Error(ERROR_MESSAGE.countryCode);
-
-				let options = {
-					uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"Accept": "application/json",
-						"CSRF-Token": req.csrfToken(),
-						"cookie": req.headers.cookie
-					},
-					body: { items: cart.generatePwintyArray() },
-					json: true
+			if (item.attributes && item.attributes.isUnique) {
+				itemObj = {
+					item: item.attributes,
+					qty: item.qty,
+					price: formatter.format(item.price).substr(2),
+					shortcontent: item.attributes.content.substr(0, 128),
+					shorttitle: item.attributes.title.substr(0, 64),
+					details: "Toile Unique"
 				};
-
-				let result = await rp(options);
-				if (result.error === true || result.response.length <= 0) throw new Error(ERROR_MESSAGE.noShipment);
-
-				obj.deliveryPrice = result;
+				obj.products.push(itemObj);
+			} else {
+				itemObj = pHelpers.formatPwintyItems(item);
+				itemObj.forEach(pwintyItem => obj.products.push(pwintyItem));
 			}
-		}
+		});
+		if (cart.generatePwintyArray().length > 0)
+			obj.deliveryPrice = await pHelpers.getDeliveryPrice(req, cart, obj.delivery.country);
+
 		return res.status(200).render("cart", obj);
 	} catch (err) {
 		threatLog.error("CART ERROR", err, req.headers, req.ip);
@@ -216,8 +163,7 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 			billing: {},
 			csrfToken: req.csrfToken()
 		};
-		if (!req.session.cart) return res.status(400).redirect("/shopping-cart");
-		if (req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
+		if (!req.session.cart || req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 		if (req.session.billing) obj.billing = req.session.billing;
 
 		return res.status(200).render("billing", obj);
@@ -239,10 +185,9 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 			csrfToken: req.csrfToken()
 		};
 
-		if (!req.session.cart) return res.status(400).redirect("/shopping-cart");
+		if (!req.session.cart || req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 		let cart = new Cart(req.session.cart);
 
-		if (cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 		obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
 
 		return res.status(200).render("payment", obj);
@@ -265,7 +210,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 		[err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
-		if (orders != null) {
+		if (orders) {
 			orders.forEach((order, index) => {
 				orders[parseInt(index)].price = formatter.format(order.price).substr(2);
 				orders[parseInt(index)].date_f = format.asString("dd/MM/yyyy", new Date(order.date));
@@ -360,14 +305,19 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 
 router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
-		let obj = { active: "Order recap", csrfToken: req.csrfToken(), user: req.user, order: req.order };
+		let obj = {
+			active: "Order recap",
+			csrfToken: req.csrfToken(),
+			products: [],
+			user: req.user,
+			order: req.order,
+			deliveryPriceFormatted: formatter.format(req.order.deliveryPrice).substr(2)
+		};
 
-		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
-		obj.products = [];
 		obj.order.items.forEach(item => {
-			let items;
-			if (item.attributes.isUnique) {
-				items = {
+			let itemObj;
+			if (item.attributes && item.attributes.isUnique) {
+				itemObj = {
 					item: item.attributes,
 					qty: item.qty,
 					price: item.price,
@@ -375,35 +325,10 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 					shorttitle: item.attributes.title.substr(0, 64),
 					details: "Toile Unique"
 				};
-				obj.products.push(items);
+				obj.products.push(itemObj);
 			} else {
-				item.elements.forEach(element => {
-					if (element.attributes !== undefined) {
-						items = {
-							item: item.attributes,
-							attributes: element.attributes,
-							stringifiedAttributes: JSON.stringify(element.attributes),
-							qty: element.qty,
-							unitPrice: item.unitPrice,
-							price: formatter.format(item.unitPrice * element.qty).substr(2),
-							shortcontent: item.attributes.content.substr(0, 128),
-							shorttitle: item.attributes.title.substr(0, 64),
-							details: ""
-						};
-						let details = "";
-						Object.keys(element.attributes).forEach(attribute => {
-							details +=
-								attribute.charAt(0).toUpperCase() +
-								attribute.slice(1) +
-								": " +
-								element.attributes[attribute].charAt(0).toUpperCase() +
-								element.attributes[attribute].slice(1) +
-								" / ";
-						});
-						items.details = details.substr(0, details.length - 3);
-						obj.products.push(items);
-					}
-				});
+				itemObj = pHelpers.formatPwintyItems(item);
+				itemObj.forEach(pwintyItem => obj.products.push(pwintyItem));
 			}
 		});
 
@@ -477,7 +402,6 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let obj = { active: "Shop", csrfToken: req.csrfToken() };
-
 		if (req.user) obj.user = req.user;
 
 		let options = {
@@ -511,7 +435,6 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Blog", csrfToken: req.csrfToken() };
 		const blogId = sanitize(req.params.id);
-		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 		if (req.user) obj.user = req.user;
 
 		let options = {
@@ -608,14 +531,19 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 
 router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
-		let obj = { active: "Order recap", user: req.user, order: req.order, csrfToken: req.csrfToken() };
+		let obj = {
+			active: "Order Manage",
+			products: [],
+			user: req.user,
+			order: req.order,
+			csrfToken: req.csrfToken(),
+			deliveryPriceFormatted: formatter.format(req.order.deliveryPrice).substr(2)
+		};
 
-		obj.deliveryPriceFormatted = formatter.format(obj.order.deliveryPrice).substr(2);
-		obj.products = [];
 		obj.order.items.forEach(item => {
-			let items;
-			if (item.attributes.isUnique) {
-				items = {
+			let itemObj;
+			if (item.attributes && item.attributes.isUnique) {
+				itemObj = {
 					item: item.attributes,
 					qty: item.qty,
 					price: item.price,
@@ -623,35 +551,10 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 					shorttitle: item.attributes.title.substr(0, 64),
 					details: "Toile Unique"
 				};
-				obj.products.push(items);
+				obj.products.push(itemObj);
 			} else {
-				item.elements.forEach(element => {
-					if (element.attributes !== undefined) {
-						items = {
-							item: item.attributes,
-							attributes: element.attributes,
-							stringifiedAttributes: JSON.stringify(element.attributes),
-							qty: element.qty,
-							unitPrice: item.unitPrice,
-							price: formatter.format(item.unitPrice * element.qty).substr(2),
-							shortcontent: item.attributes.content.substr(0, 128),
-							shorttitle: item.attributes.title.substr(0, 64),
-							details: ""
-						};
-						let details = "";
-						Object.keys(element.attributes).forEach(attribute => {
-							details +=
-								attribute.charAt(0).toUpperCase() +
-								attribute.slice(1) +
-								": " +
-								element.attributes[attribute].charAt(0).toUpperCase() +
-								element.attributes[attribute].slice(1) +
-								" / ";
-						});
-						items.details = details.substr(0, details.length - 3);
-						obj.products.push(items);
-					}
-				});
+				itemObj = pHelpers.formatPwintyItems(item);
+				itemObj.forEach(pwintyItem => obj.products.push(pwintyItem));
 			}
 		});
 
@@ -769,9 +672,7 @@ router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN),
 			obj.formData = req.session.formData;
 			req.session.formData = undefined;
 		}
-
 		const blogId = sanitize(req.params.blogId);
-		if (typeof blogId !== "string") throw new Error(ERROR_MESSAGE.fetchError);
 
 		let [err, blog] = await utils.to(Blog.findOne({ _id: blogId }));
 		if (err || !blog) throw new Error(ERROR_MESSAGE.fetchError);

@@ -4,7 +4,7 @@ const { vBlog } = require("./validators/vBlog");
 const sanitize = require("mongo-sanitize");
 
 const Blog = require("../models/Blog");
-const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/middlewares");
 const bHelpers = require("./helpers/blogHelpers");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
@@ -59,7 +59,7 @@ router.post("/", vBlog, setUser, authUser, authRole(ROLE.ADMIN), async (req, res
 
 		const blog = new Blog(obj);
 		let [err, savedBlog] = await utils.to(blog.save());
-		if (err) throw new Error(ERROR_MESSAGE.saveError);
+		if (err || !savedBlog) throw new Error(ERROR_MESSAGE.saveError);
 
 		fullLog.info(`Blog posted: ${blog._id}`);
 		req.flash("success", ERROR_MESSAGE.itemUploaded);
@@ -83,7 +83,7 @@ router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), as
 		let [err, patchedBlog] = await utils.to(
 			Blog.updateOne({ _id: blogId }, { $set: { title: req.body.title, content: req.body.content } })
 		);
-		if (err) throw new Error(ERROR_MESSAGE.updateError);
+		if (err || !patchedBlog) throw new Error(ERROR_MESSAGE.updateError);
 
 		fullLog.info(`Blog patched: ${blogId}`);
 		req.flash("success", ERROR_MESSAGE.itemUploaded);

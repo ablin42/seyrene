@@ -9,7 +9,7 @@ const countryList = require("country-list-js");
 const IPinfo = require("node-ipinfo");
 
 const mailer = require("./helpers/mailer");
-const { setUser, authUser, checkAddress, notLoggedUser } = require("./helpers/verifySession");
+const { setUser, authUser, checkAddress, notLoggedUser } = require("./helpers/middlewares");
 const { checkCaptcha } = require("./helpers/captcha");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
@@ -26,8 +26,8 @@ const limiter = rateLimit({
 		collectionName: "userRateLimit",
 		expireTimeMs: 15 * 60 * 1000
 	}),
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 50, // limit each IP to 100 requests per windowMs
+	windowMs: 15 * 60 * 1000,
+	max: 50,
 	handler: function (req, res) {
 		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
 	}
@@ -42,7 +42,7 @@ router.post("/lostpw", limiter, vLostPw, checkCaptcha, setUser, notLoggedUser, a
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
 		[err, pwToken] = await utils.to(PwToken.findOne({ _userId: user._id }));
-		if (err) throw new Error(ERROR_MESSAGE.tokenNotFound);
+		if (err) throw new Error(ERROR_MESSAGE.serverError);
 
 		const token = crypto.randomBytes(16).toString("hex");
 		if (pwToken === null) {
@@ -145,12 +145,9 @@ router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res)
 router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req, res) => {
 	try {
 		await utils.checkValidity(req);
-		const id = req.user._id;
+		const user = req.user;
 		const cpassword = req.body.cpassword;
 		const password = req.body.password;
-
-		let [err, user] = await utils.to(User.findById(id));
-		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
 		const validPw = await bcrypt.compare(cpassword, user.password);
 		if (!validPw) throw new Error(ERROR_MESSAGE.invalidCredentials);
@@ -158,10 +155,10 @@ router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req
 		const hashPw = await bcrypt.hash(password, 10);
 		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
 
-		[err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { password: hashPw } }));
-		if (err || !user) throw new Error(ERROR_MESSAGE.userUpdate);
+		let [err, result] = await utils.to(User.updateOne({ _id: user._id }, { $set: { password: hashPw } }));
+		if (err || !result) throw new Error(ERROR_MESSAGE.userUpdate);
 
-		fullLog.info(`Password patched: ${id}`);
+		fullLog.info(`Password patched: ${user._id}`);
 		req.flash("success", ERROR_MESSAGE.updatedPw);
 		return res.status(200).redirect("/User");
 	} catch (err) {
@@ -177,7 +174,7 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 			result,
 			infos,
 			obj = req.address;
-		await utils.checkValidity(req);
+		await utils.checkValidity(req.address);
 
 		[err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
@@ -205,20 +202,14 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 
 router.get("/countryCode", setUser, async (req, res) => {
 	try {
-		const ip = "90.79.188.153";
-		/* 
-			(req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
-			req.connection.remoteAddress || 
-			req.socket.remoteAddress || 
-			req.connection.socket.remoteAddress || 
-		*/
-
+		const ip = "90.79.188.153"; //req.ip
 		const IPINFO_TOKEN = "4c60ea37e18dd1";
 		const ipinfo = new IPinfo(IPINFO_TOKEN);
 		let countryCode = undefined;
 		let err, result;
 
 		if (req.user) [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+		if (err) throw new Error(ERROR_MESSAGE.serverError);
 
 		if (result) {
 			countryCode = countryList.findByName(utils.toTitleCase(result.country));

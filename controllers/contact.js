@@ -4,7 +4,7 @@ const { vContact } = require("./validators/vContact");
 const rateLimit = require("express-rate-limit");
 const MongoStore = require("rate-limit-mongo");
 
-const { setUser } = require("./helpers/verifySession");
+const { setUser } = require("./helpers/middlewares");
 const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const mailer = require("./helpers/mailer");
@@ -17,8 +17,8 @@ const limiter = rateLimit({
 		collectionName: "contactRateLimit",
 		expireTimeMs: 15 * 60 * 1000
 	}),
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 20, // limit each IP to 100 requests per windowMs
+	windowMs: 15 * 60 * 1000,
+	max: 20,
 	handler: function (req, res) {
 		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
 	}

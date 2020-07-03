@@ -12,7 +12,7 @@ const expressSanitizer = require("express-sanitizer");
 const rfs = require("rotating-file-stream");
 const sanitize = require("mongo-sanitize");
 const MongoStore = require("connect-mongo")(session);
-const { setUser } = require("./controllers/helpers/verifySession");
+const { setUser } = require("./controllers/helpers/middlewares");
 require("dotenv").config();
 
 const pagesRoute = require("./controllers/pages");

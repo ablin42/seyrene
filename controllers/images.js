@@ -3,7 +3,7 @@ const router = express.Router();
 const fs = require("fs");
 const sanitize = require("mongo-sanitize");
 
-const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/verifySession");
+const { ROLE, setUser, authUser, authRole, authToken } = require("./helpers/middlewares");
 const Image = require("../models/Image");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
@@ -15,7 +15,7 @@ router.get("/:id", async (req, res) => {
 
 		let [err, result] = await utils.to(Image.findById(id));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
-		if (result == null) throw new Error(ERROR_MESSAGE.noResult);
+		if (!result) throw new Error(ERROR_MESSAGE.noResult);
 
 		fs.readFile(result.path, function (err, data) {
 			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.readFile });

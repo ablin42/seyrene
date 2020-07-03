@@ -58,7 +58,6 @@
 		orderId = data.orderId;
 		clientSecret = data.clientSecret;
 
-		// Initialize stripe elements and set its style
 		let elements = stripe.elements();
 		let style = {
 			base: {
@@ -76,12 +75,10 @@
 			}
 		};
 
-		// Create an instance of the card Element.
 		let card = elements.create("card", { style: style });
 		card.mount("#card-element");
 
 		card.on("change", function (event) {
-			// Disable the Pay button if there are no card details in the Element
 			document.querySelector("button").disabled = event.empty;
 			document.querySelector("#card-errors").textContent = event.error ? event.error.message : "";
 		});

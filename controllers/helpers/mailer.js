@@ -22,9 +22,7 @@ module.exports = async function sendValidationMail(email, subject, text) {
 		if (err) {
 			fullLog.info("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
 			return true;
-		} else {
-			fullLog.info("MAIL SENT SUCCESSFULLY");
-		}
+		} else fullLog.info("MAIL SENT SUCCESSFULLY");
 	});
 
 	return false;

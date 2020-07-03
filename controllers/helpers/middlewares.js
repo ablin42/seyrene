@@ -1,4 +1,4 @@
-const utils = require("../helpers/utils");
+const utils = require("./utils");
 const sanitize = require("mongo-sanitize");
 const Order = require("../../models/Order");
 const Gallery = require("../../models/Gallery");

@@ -7,7 +7,7 @@ const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const Gallery = require("../models/Gallery");
 const Shop = require("../models/Shop");
-const { setUser, authUser, setOrder, authGetOrder, checkBilling, authToken } = require("./helpers/verifySession");
+const { setUser, authUser, setOrder, authGetOrder, checkBilling, authToken } = require("./helpers/middlewares");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
@@ -32,7 +32,7 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 			}
 
 			let paymentIntent = await stripe.paymentIntents.create({
-				amount: Math.round(total * 100), /////////////add delivery price here (and taxes)
+				amount: Math.round(total * 100), //add delivery price here (and taxes)
 				currency: "eur",
 				description: "Charging for purchase @ maral"
 			});
@@ -46,7 +46,7 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 					"Accept": "application/json",
 					"CSRF-Token": req.csrfToken(),
 					"cookie": req.headers.cookie,
-					"AUTH_TOKEN": process.env.ACCESS_TOKEN
+					"ACCESS_TOKEN": process.env.ACCESS_TOKEN
 				},
 				body: {
 					items: items,
@@ -58,7 +58,6 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 				},
 				json: true
 			};
-
 			let result = await rp(options);
 			if (result.error === true) throw new Error(result.message);
 

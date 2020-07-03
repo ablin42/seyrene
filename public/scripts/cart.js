@@ -25,7 +25,6 @@ async function cartAdd(itemId, caller) {
 	cooldownBtn(caller, 1500);
 	let alertType = "success";
 
-	console.log(itemId);
 	let response = await fetch(`/api/cart/add/${itemId}`, {
 		method: "POST",
 		headers: {

@@ -12,7 +12,7 @@ const mailer = require("./helpers/mailer");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
-const { setUser, notLoggedUser, authUser, authToken } = require("./helpers/verifySession");
+const { setUser, notLoggedUser, authUser, authToken } = require("./helpers/middlewares");
 const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
@@ -24,8 +24,8 @@ const limiter = rateLimit({
 		collectionName: "authRateLimit",
 		expireTimeMs: 15 * 60 * 1000
 	}),
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 50, // limit each IP to 100 requests per windowMs
+	windowMs: 15 * 60 * 1000,
+	max: 50,
 	handler: function (req, res) {
 		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
 	}
@@ -61,7 +61,6 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 		[err, result] = await utils.to(validationToken.save());
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
-		// Send account confirmation mail to user
 		let subject = "Account Verification Token for Maral";
 		let content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
@@ -84,7 +83,6 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
 		if (!user) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
-		// Check if pw matches
 		const validPw = await bcrypt.compare(req.body.password, user.password);
 		if (!validPw) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
@@ -173,14 +171,12 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 		if (user.isVerified) throw new Error(ERROR_MESSAGE.alreadyVerified);
 
-		// Create a verification token, save it, and send email
 		let vToken = crypto.randomBytes(16).toString("hex");
 		let token = new Token({ _userId: user._id, token: vToken });
 
 		[err, savedToken] = await utils.to(token.save());
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
-		// Send mail containing link
 		let subject = "Account Verification Token for Maral";
 		let content = `Hello,\n\n Please verify your account by clicking the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);

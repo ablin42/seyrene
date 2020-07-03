@@ -7,7 +7,7 @@ const sanitize = require("mongo-sanitize");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
-const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setGallery } = require("./helpers/verifySession");
+const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setGallery } = require("./helpers/middlewares");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 const upload = require("./helpers/multerHelpers");
@@ -131,9 +131,8 @@ router.post(
 router.post("/delete/:id", setGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
-		let err, gallery;
 
-		[err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
+		let [err, gallery] = await utils.to(Gallery.deleteOne({ _id: id }));
 		if (err) throw new Error(ERROR_MESSAGE.delError);
 
 		let options = {
