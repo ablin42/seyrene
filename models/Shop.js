@@ -3,10 +3,6 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 
 const ShopSchema = mongoose.Schema(
 	{
-		pwintyData: {
-			type: Array,
-			required: false
-		},
 		soldOut: {
 			type: Boolean,
 			default: false

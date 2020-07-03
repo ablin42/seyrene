@@ -239,7 +239,6 @@ router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
 			body: { items: req.body.items },
 			json: true
 		};
-
 		let response = await rp(options).catch(function (err) {
 			throw new Error(ERROR_MESSAGE.serverError);
 		});

@@ -14,9 +14,9 @@
 				<span class="cart-price cart-header cart-column">PRIX</span>
 			</div>
 			<% } %> <% Object.keys(locals.products).forEach(function (index) { %>
-			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].item.isUnique) { %>-<%= index %><% } %>">
+			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].isUnique) { %>-<%= index %><% } %>">
 				<div class="cart-item cart-column">
-					<% if (locals.products[index].item.isUnique === true) { %>
+					<% if (locals.products[index].isUnique === true) { %>
 					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
 					<% } else { %>
 					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
@@ -29,7 +29,7 @@
 				</div>
 
 				<div class="cart-quantity cart-column">
-					<% if (locals.products[index].item.isUnique === true) { %>
+					<% if (locals.products[index].isUnique === true) { %>
 					<i class="fas fa-minus fa-2x qty-update" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
 					<input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly />
 					<i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
@@ -49,7 +49,7 @@
 
 				<div class="cart-price cart-column">
 					<p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
-					<% if (locals.products[index].item.isUnique !== true) { %>
+					<% if (locals.products[index].isUnique !== true) { %>
 					<p class="cart-item-unitprice"><b><%= locals.products[index].unitPrice %>€/Unité</b></p>
 					<% } %>
 				</div>
@@ -170,11 +170,10 @@
 	</div>
 </div>
 
-<% if(locals.products){ %> <% Object.keys(locals.products).forEach(function (index) { %> <% if (locals.products[index].item.isUnique !== true) { %>
+<% if(locals.products){ %> <% Object.keys(locals.products).forEach(function (index) { %> <% if (!locals.products[index].item.price) { %>
 <script>
 	PWINTY_DATA["<%= index %>"] = {
 		SKU: "<%= locals.products[index].attributes.SKU %>",
-		price: parseFloat("<%= locals.products[index].unitPrice %>"),
 		attributes: JSON.parse(`<%= locals.products[index].stringifiedAttributes %>`.replace(/&#34;/gi, '"'))
 	};
 </script>

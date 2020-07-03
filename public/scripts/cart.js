@@ -86,10 +86,8 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 	let alertType = "success";
 
 	if (PWINTY_DATA <= 0) throw new Error(ERROR_MESSAGE.itemNotFound);
-
-	let SKU = PWINTY_DATA[parseInt(i)].SKU;
-	let attributes = PWINTY_DATA[parseInt(i)].attributes;
-	let price = PWINTY_DATA[parseInt(i)].price;
+	let SKU = PWINTY_DATA[parseInt(referenceId)].SKU;
+	let attributes = PWINTY_DATA[parseInt(referenceId)].attributes;
 
 	let response = await fetch(`api/cart/add/pwinty/${itemId}`, {
 		method: "POST",
@@ -98,7 +96,7 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 			"Accept": "application/json",
 			"CSRF-Token": csrfToken
 		},
-		body: JSON.stringify({ SKU, price, attributes }),
+		body: JSON.stringify({ SKU, attributes }),
 		credentials: "include",
 		mode: "same-origin"
 	});
@@ -128,9 +126,8 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 
 	if (PWINTY_DATA.length <= 0) throw new Error(ERROR_MESSAGE.itemNotFound);
 
-	let SKU = PWINTY_DATA[parseInt(i)].SKU;
-	let attributes = PWINTY_DATA[parseInt(i)].attributes;
-	let price = PWINTY_DATA[parseInt(i)].price;
+	let SKU = PWINTY_DATA[parseInt(referenceId)].SKU;
+	let attributes = PWINTY_DATA[parseInt(referenceId)].attributes;
 
 	let response = await fetch(`/api/cart/del/pwinty/${itemId}`, {
 		method: "POST",
@@ -139,7 +136,7 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 			"Accept": "application/json",
 			"CSRF-Token": csrfToken
 		},
-		body: JSON.stringify({ SKU, price, attributes }),
+		body: JSON.stringify({ SKU, attributes }),
 		credentials: "include",
 		mode: "same-origin"
 	});
@@ -156,7 +153,7 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 
 		if (totalQty === 0) handleEmptiness();
 
-		if (response.cart.items[[parseInt(SKU)]]) {
+		if (response.cart.items[SKU]) {
 			if (response.item.qty === 0) rowId.remove();
 			else {
 				$(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
@@ -179,9 +176,8 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 	if (!item.value) throw new Error(ERROR_MESSAGE.updateQty);
 
 	let qty = parseInt(item.value);
-	let SKU = PWINTY_DATA[parseInt(i)].SKU;
-	let attributes = PWINTY_DATA[parseInt(i)].attributes;
-	let price = PWINTY_DATA[parseInt(i)].price;
+	let SKU = PWINTY_DATA[parseInt(referenceId)].SKU;
+	let attributes = PWINTY_DATA[parseInt(referenceId)].attributes;
 	let alertType = "info";
 
 	if (!Number.isInteger(qty) && qty <= 0) throw new Error(ERROR_MESSAGE.updateQty);
@@ -193,7 +189,7 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 			"Accept": "application/json",
 			"CSRF-Token": csrfToken
 		},
-		body: JSON.stringify({ SKU, price, attributes }),
+		body: JSON.stringify({ SKU, attributes }),
 		credentials: "include",
 		mode: "same-origin"
 	});

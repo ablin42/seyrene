@@ -1,3 +1,6 @@
+const rp = require("request-promise");
+require("dotenv").config();
+
 const utils = require("./utils");
 const sanitize = require("mongo-sanitize");
 const Order = require("../../models/Order");
@@ -6,7 +9,7 @@ const Shop = require("../../models/Shop");
 const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./errorMessages");
-const rp = require("request-promise");
+const { FRA_sizes, CAN_sizes, PRINT_sizes, FRA_SUR_sizes, attributesList } = require("./pwintyData");
 const { fullLog, threatLog } = require("./log4");
 
 const ROLE = {
@@ -187,6 +190,7 @@ async function setGallery(req, res, next) {
 		}
 		return res.status(200).json({ url: "/Galerie", message: ERROR_MESSAGE.noResult, err: true });
 	}
+	req.product = gallery;
 
 	next();
 }
@@ -202,7 +206,123 @@ async function setShop(req, res, next) {
 		}
 		return res.status(200).json({ url: "/Shop", message: ERROR_MESSAGE.noResult, err: true });
 	}
+	req.product = shop;
 
+	next();
+}
+
+async function checkPwintyAttributes(req, res, next) {
+	const attributes = req.body.attributes;
+	let error = false;
+
+	Object.keys(attributes).forEach(attribute => {
+		if (attributesList.indexOf(attribute) === -1) return res.status(400).json({ error: true, message: "Invalid attributes" });
+	});
+
+	switch (attributes.category) {
+	case "CAN":
+		{
+			if (attributes.subcategory !== "FRA" && attributes.subcategory !== "STR") error = true;
+			if (CAN_sizes.indexOf(attributes.size) === -1) error = true;
+			if (
+				attributes.wrap !== "Black" &&
+					attributes.wrap !== "White" &&
+					attributes.wrap !== "ImageWrap" &&
+					attributes.wrap !== "MirrorWrap"
+			)
+				error = true;
+		}
+		break;
+	case "FRA":
+		{
+			if (
+				attributes.subcategory !== "BOX" &&
+					attributes.subcategory !== "CLA" &&
+					attributes.subcategory !== "GLO" &&
+					attributes.subcategory !== "SWO" &&
+					attributes.subcategory !== "SPACE" &&
+					attributes.subcategory !== "SUR"
+			)
+				error = true;
+			if (FRA_sizes.indexOf(attributes.size) === -1) error = true;
+			if (
+				attributes.mountType &&
+					attributes.mountType !== "MOUNT1" &&
+					attributes.mountType !== "MOUNT2" &&
+					attributes.mountType !== "NM"
+			)
+				error = true;
+			if (attributes.glaze && attributes.glaze !== "ACRY" && attributes.glaze !== "GLA" && attributes.glaze !== "TRU")
+				error = true;
+			if (
+				attributes.frameColour &&
+					attributes.frameColour !== "Black" &&
+					attributes.frameColour !== "Brown" &&
+					attributes.frameColour !== "White" &&
+					attributes.frameColour !== "Natural" &&
+					attributes.frameColour !== "Silver" &&
+					attributes.frameColour !== "Gold"
+			)
+				error = true;
+			if (
+				attributes.mountColour &&
+					attributes.mountColour !== "Black" &&
+					attributes.mountColour !== "Off-White" &&
+					attributes.mountColour !== "Snow White"
+			)
+				error = true;
+			if (
+				attributes.substrateType &&
+					attributes.substrateType !== "BAP" &&
+					attributes.substrateType !== "CPWP" &&
+					attributes.substrateType !== "EMA" &&
+					attributes.substrateType !== "MFA" &&
+					attributes.substrateType !== "HGE" &&
+					attributes.substrateType !== "SAP"
+			)
+				error = true;
+			if (attributes.depth && attributes.depth !== "1" && attributes.detph !== "2") error = true;
+		}
+		break;
+
+	case "PRINT":
+		{
+			if (attributes.subcategory !== "GLOBAL") error = true;
+			if (attributes.substrateType !== "FAP" && attributes.substrateType !== "HGE") error = true;
+			if (PRINT_sizes.indexOf(attributes.size) === -1) error = true;
+		}
+		break;
+
+	default:
+		error = true;
+	}
+
+	if (error === true) return res.status(400).json({ error: true, message: "Invalid attributes" });
+
+	req.attributes = req.body.attributes;
+	next();
+}
+
+async function pwintyGetPrice(req, res, next) {
+	const SKU = req.body.SKU;
+
+	let options = {
+		uri: `${process.env.BASEURL}/api/pwinty/pricing/FR`, //${countryCode} FETCH
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Accept": "application/json",
+			"CSRF-Token": req.csrfToken(),
+			"cookie": req.headers.cookie
+		},
+		body: JSON.stringify({ items: [{ SKU: SKU, quantity: 1 }] })
+	};
+	let response = await rp(options);
+	response = JSON.parse(response);
+	if (response.error === true || response.response.length <= 0)
+		return res.status(400).json({ error: true, message: "Invalid SKU" });
+
+	req.price = response.response.unitPriceIncludingTax;
 	next();
 }
 
@@ -229,5 +349,7 @@ module.exports = {
 	checkAddress,
 	authToken,
 	setGallery,
-	setShop
+	setShop,
+	checkPwintyAttributes,
+	pwintyGetPrice
 };

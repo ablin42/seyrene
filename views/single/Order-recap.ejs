@@ -27,9 +27,9 @@
 				<span class="cart-price cart-header cart-column">PRIX</span>
 			</div>
 			<% Object.keys(locals.products).forEach(function (index) { %>
-			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].item.isUnique) { %>-<%= index %><% } %>">
+			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].isUnique) { %>-<%= index %><% } %>">
 				<div class="cart-item cart-column">
-					<% if (locals.products[index].item.isUnique === true) { %>
+					<% if (locals.products[index].isUnique === true) { %>
 					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
 					<% } else { %>
 					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
@@ -47,7 +47,7 @@
 
 				<div class="cart-price cart-column">
 					<p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
-					<% if (locals.products[index].item.isUnique !== true) { %>
+					<% if (locals.products[index].isUnique !== true) { %>
 					<p class="cart-item-unitprice"><b><%= locals.products[index].unitPrice %>€/Unité</b></p>
 					<% } %>
 				</div>

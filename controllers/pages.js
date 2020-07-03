@@ -129,8 +129,9 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 		itemArr.forEach(item => {
 			let itemObj;
 
-			if (item.attributes && item.attributes.isUnique) {
+			if (item.attributes && item.isUnique) {
 				itemObj = {
+					isUnique: true,
 					item: item.attributes,
 					qty: item.qty,
 					price: formatter.format(item.price).substr(2),
@@ -316,8 +317,9 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 
 		obj.order.items.forEach(item => {
 			let itemObj;
-			if (item.attributes && item.attributes.isUnique) {
+			if (item.attributes && item.isUnique) {
 				itemObj = {
+					isUnique: true,
 					item: item.attributes,
 					qty: item.qty,
 					price: item.price,
@@ -542,8 +544,9 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 
 		obj.order.items.forEach(item => {
 			let itemObj;
-			if (item.attributes && item.attributes.isUnique) {
+			if (item.attributes && item.isUnique) {
 				itemObj = {
+					isUnique: true,
 					item: item.attributes,
 					qty: item.qty,
 					price: item.price,

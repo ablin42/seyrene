@@ -10,6 +10,7 @@ const formatter = new Intl.NumberFormat("de-DE", {
 });
 const utils = require("./utils");
 const { ERROR_MESSAGE } = require("./errorMessages");
+const { attributesList } = require("./pwintyData");
 
 module.exports = {
 	genPricingObj: function (items) {
@@ -70,13 +71,15 @@ module.exports = {
 	formatAttributes: function (element) {
 		let details = "";
 		Object.keys(element.attributes).forEach(attribute => {
-			details +=
-				attribute.charAt(0).toUpperCase() +
-				attribute.slice(1) +
-				": " +
-				element.attributes[attribute].charAt(0).toUpperCase() +
-				element.attributes[attribute].slice(1) +
-				" / ";
+			if (attributesList.indexOf(attribute) >= 0) {
+				details +=
+					attribute.charAt(0).toUpperCase() +
+					attribute.slice(1) +
+					": " +
+					element.attributes[attribute].charAt(0).toUpperCase() +
+					element.attributes[attribute].slice(1) +
+					" / ";
+			}
 		});
 		details = details.substr(0, details.length - 3);
 

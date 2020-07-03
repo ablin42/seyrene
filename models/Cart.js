@@ -12,25 +12,23 @@ module.exports = function Cart(oldCart) {
 	/* UNIQUE */
 	this.add = function (item, id) {
 		item.isUnique = true;
-		let storedItem = this.items[parseInt(id)];
-		if (!storedItem) storedItem = this.items[parseInt(id)] = { attributes: item, qty: 1, price: 0, unitPrice: 0 };
-		this.items[parseInt(id)].unitPrice = parseFloat(storedItem.attributes.price);
+		let storedItem = this.items[id];
+		if (!storedItem) storedItem = this.items[id] = { attributes: item, qty: 1, price: 0, unitPrice: 0, isUnique: true };
+		this.items[id].unitPrice = parseFloat(storedItem.attributes.price);
 
-		storedItem.price = this.items[parseInt(id)].unitPrice.toFixed(2);
+		storedItem.price = this.items[id].unitPrice.toFixed(2);
 		this.totalQty++;
-		this.uniquePriceTotal = parseFloat(
-			(Math.round((this.uniquePriceTotal + this.items[parseInt(id)].unitPrice) * 100) / 100).toFixed(2)
-		);
+		this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal + this.items[id].unitPrice) * 100) / 100).toFixed(2));
 		this.price.totalIncludingTax += this.uniquePriceTotal;
-		this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[parseInt(id)].unitPrice) * 100) / 100).toFixed(2));
+		this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[id].unitPrice) * 100) / 100).toFixed(2));
 	};
 
 	this.delete = function (item, id) {
-		let storedItem = this.items[parseInt(id)];
+		let storedItem = this.items[id];
 
 		if (storedItem) {
 			let singlePrice = parseFloat((storedItem.price / storedItem.qty).toFixed(2));
-			this.items[parseInt(id)] = undefined;
+			this.items[id] = undefined;
 			storedItem = undefined;
 			this.totalQty--;
 			this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal - singlePrice) * 100) / 100).toFixed(2));
@@ -173,7 +171,7 @@ module.exports = function Cart(oldCart) {
 	this.generatePwintyArray = function () {
 		let arr = [];
 		for (let id in this.items) {
-			if (this.items[id] && !this.items[id].attributes.isUnique) arr.push(this.items[id]);
+			if (this.items[id] && !this.items[id].attributes.price) arr.push(this.items[id]);
 		}
 		return arr;
 	};

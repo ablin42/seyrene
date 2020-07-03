@@ -347,7 +347,7 @@ class PwintyObject {
 				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
 			);
 			addAlert(alert, "#header");
-			return "FR"; /// might just return error idk yet
+			return "FR"; // defaults return fr, might need to return an error though
 		}
 	}
 
@@ -356,7 +356,6 @@ class PwintyObject {
 		let attributes = this.attributes;
 		attributes.category = this.category;
 		attributes.subcategory = this.subcategory;
-		let price = this.price;
 
 		let countryCode = await this.fetchCountryCode();
 
@@ -396,12 +395,11 @@ class PwintyObject {
 					"Accept": "application/json",
 					"CSRF-Token": csrfToken
 				},
-				body: JSON.stringify({ SKU, price, attributes }),
+				body: JSON.stringify({ SKU, attributes }),
 				credentials: "include",
 				mode: "same-origin"
 			});
 			response = await response.json();
-			console.log(response);
 
 			let alertType = "success";
 			if (response.error === false) {

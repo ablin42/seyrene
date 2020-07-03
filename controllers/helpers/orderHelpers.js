@@ -38,8 +38,7 @@ module.exports = {
 		switch (attributes.category) {
 		case "CAN":
 			{
-				if (attributes.subcategory === "ROL" && typeof attributes.glaze === "string") obj.glaze = attributes.glaze;
-				else obj.wrap = attributes.wrap;
+				obj.wrap = attributes.wrap;
 			}
 			break;
 		case "FRA":
@@ -50,9 +49,8 @@ module.exports = {
 						attributes.subcategory === "CLA" ||
 						attributes.subcategory === "GLO" ||
 						attributes.subcategory === "SWO"
-				) {
+				)
 					if (attributes.mountColour && attributes.mountType !== "NM") obj.mountColour = attributes.mountColour;
-				}
 			}
 			break;
 		}
@@ -68,7 +66,7 @@ module.exports = {
 					let obj = {
 						sku: product.attributes.SKU,
 						url: `${process.env.BASEURL}/api/image/main/Shop/${item.attributes._id}`,
-						sizing: "crop", // idk yet (resize for canvas?)
+						sizing: "shrinkToExactFit", // idk yet (resize for canvas?)
 						copies: product.qty,
 						attributes: ""
 					};
@@ -81,22 +79,28 @@ module.exports = {
 		return body;
 	},
 	createPwintyOrder: async function (order, req) {
+		let err, user, orderResponse;
 		let countryCode = country.findByName(utils.toTitleCase(order.country));
 		if (countryCode) countryCode = countryCode.code.iso2;
 		else throw new Error(ERROR_MESSAGE.countryCode);
+
+		[err, user] = await utils.to(User.findById(order._userId));
+		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
 		let options = {
 			method: "POST",
 			uri: `${process.env.BASEURL}/api/pwinty/orders/create`,
 			body: {
-				merchantOrderId: order._id, //not good
+				merchantOrderId: order._id,
 				recipientName: order.firstname + " " + order.lastname,
-				address1: order.full_address, //has city + country, might need to use only full_street
+				address1: order.full_address,
 				addressTownOrCity: order.city,
 				stateOrCounty: order.state,
 				postalOrZipCode: order.zipcode,
 				countryCode: countryCode,
-				preferredShippingMethod: "standard"
+				preferredShippingMethod: "standard",
+				email: user.email,
+				payment: "InvoiceMe"
 			},
 			headers: {
 				"ACCESS_TOKEN": process.env.ACCESS_TOKEN,
@@ -127,9 +131,7 @@ module.exports = {
 		response = await rp(options);
 		if (response.error === true) throw new Error(response.message);
 
-		let [err, orderResponse] = await utils.to(
-			Order.findOneAndUpdate({ _id: order._id }, { $set: { pwintyOrderId: pwintyOrderId } })
-		);
+		[err, orderResponse] = await utils.to(Order.findOneAndUpdate({ _id: order._id }, { $set: { pwintyOrderId: pwintyOrderId } }));
 		if (err || !orderResponse) throw new Error(ERROR_MESSAGE.submitOrder);
 
 		[err, orderResponse] = await utils.to(
