@@ -28,7 +28,6 @@ const Cart = require("../models/Cart");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
-const stripePublic = process.env.STRIPE_PUBLIC;
 const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",
 	currency: "EUR"
@@ -116,7 +115,6 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 		let obj = {
 			active: "Cart",
-			stripePublicKey: stripePublic,
 			products: [],
 			totalPrice: formatter.format(cart.price.totalIncludingTax).substr(2),
 			totalQty: cart.totalQty,
@@ -179,7 +177,7 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 	try {
 		let obj = {
 			active: "Payment",
-			stripePublicKey: stripePublic,
+			stripePublicKey: process.env.STRIPE_PUBLIC,
 			totalPrice: 0,
 			user: req.user,
 			billing: req.session.billing,

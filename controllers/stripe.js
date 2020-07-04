@@ -74,7 +74,7 @@ router.post("/refund/:id", authToken, setUser, authUser, setOrder, authGetOrder,
 	try {
 		let chargeId = req.body.chargeId;
 
-		let [err, order] = await utils.to(Order.findOne({ chargeId: chargeId }));
+		let [err, order] = await utils.to(Order.findOne({ chargeId: chargeId })); //might be extra
 		if (err || !order) throw new Error(ERROR_MESSAGE.noResult);
 
 		stripe.refunds.create({ payment_intent: chargeId }, (err, refund) => {

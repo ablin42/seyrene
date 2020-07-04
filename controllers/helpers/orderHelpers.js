@@ -111,7 +111,6 @@ module.exports = {
 		};
 		let response = await rp(options);
 		if (response.error === true) throw new Error(response.message);
-
 		let pwintyOrderId = response.order.id;
 
 		options.body = this.generateBatchBody(order.items);

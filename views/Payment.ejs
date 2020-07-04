@@ -119,6 +119,7 @@
 			return;
 		}
 
+		/**/
 		let confirm = await fetch("/api/order/confirm", {
 			//to remove once live using webhooks
 			method: "POST",
@@ -137,7 +138,7 @@
 			setTimeout(function () {
 				window.location.href = `/api/cart/clear/${orderId}`;
 			}, 2000);
-		}
+		} /**/
 	};
 </script>
 <% include partials/footer %>

@@ -216,8 +216,10 @@ async function checkPwintyAttributes(req, res, next) {
 	let error = false;
 
 	Object.keys(attributes).forEach(attribute => {
-		if (attributesList.indexOf(attribute) === -1) return res.status(400).json({ error: true, message: "Invalid attributes" });
+		if (attributesList.indexOf(attribute) === -1) error = true;
 	});
+
+	if (error === true) return res.status(400).json({ error: true, message: "Invalid attributes" });
 
 	switch (attributes.category) {
 	case "CAN":
@@ -305,9 +307,21 @@ async function checkPwintyAttributes(req, res, next) {
 
 async function pwintyGetPrice(req, res, next) {
 	const SKU = req.body.SKU;
+	let countryCode = "FR"; // default
 
 	let options = {
-		uri: `${process.env.BASEURL}/api/pwinty/pricing/FR`, //${countryCode} FETCH
+		uri: `${process.env.BASEURL}/api/user/countryCode/`,
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			"Accept": "application/json"
+		}
+	};
+	let response = await rp(options);
+	if (response.error === false) countryCode = response.countryCode;
+
+	options = {
+		uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -317,7 +331,7 @@ async function pwintyGetPrice(req, res, next) {
 		},
 		body: JSON.stringify({ items: [{ SKU: SKU, quantity: 1 }] })
 	};
-	let response = await rp(options);
+	response = await rp(options);
 	response = JSON.parse(response);
 	if (response.error === true || response.response.length <= 0)
 		return res.status(400).json({ error: true, message: "Invalid SKU" });
