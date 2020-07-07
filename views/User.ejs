@@ -144,6 +144,16 @@
 								<label class="control-label">Pays</label>
 								<input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
 							</div>
+							<div class="col-md-12">
+								<label class="control-label">Pays - Code Iso</label>
+								<h6 style="color: red">*We need this to properly state your country to the delivery services.</h6>
+								<select name="country-iso" id="country-iso" required>
+									<option selected disabled value="">Select One</option>
+									<% if(locals.countries){ %> <% locals.countries.forEach(function (item, index) { %>
+									<option <% if (item.isoCode === locals.delivery.isoCode) { %> selected <% } %> value="<%= item.isoCode %>"><%= item.name %> - <%= item.isoCode %></option>
+									<% }) } %>
+								</select>
+							</div>
 						</div>
 						<div class="row mt-4">
 							<div class="col-6">

@@ -143,7 +143,7 @@ router.post("/orders/:id/images/batch", authToken, setUser, authUser, authRole(R
 
 /* COUNTRIES */
 //not used but might server later to display country selection to be sure to have code or something
-router.get("/countries", setUser, async (req, res) => {
+router.get("/countries", setUser, authToken, async (req, res) => {
 	try {
 		let options = {
 			method: "GET",

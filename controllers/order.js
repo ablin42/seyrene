@@ -221,6 +221,7 @@ router.post("/billing/save", vDelivery, setUser, authUser, checkAddress, async (
 
 router.post("/confirm", async (req, res) => {
 	try {
+		//mail on success and verify webhook
 		if (req.body.type === "payment_intent.succeeded" && req.body.data.object.id) {
 			let err, delivery, user, response;
 			[err, order] = await utils.to(
@@ -251,9 +252,12 @@ router.post("/confirm", async (req, res) => {
 
 			[err, response] = await utils.to(purchaseData.save());
 			if (err) throw new Error(ERROR_MESSAGE.saveError);
+
+			fullLog.info(`Order confirmed: Order: ${order._id} - User: ${req.user._id}`);
+			return res.status(200).send("OK");
 		}
 
-		fullLog.info(`Order confirmed: Order: ${order._id} - User: ${req.user._id}`);
+		threatLog.error("INVALID WEBHOOK ERROR:", err, req.headers, req.ip);
 		return res.status(200).send("OK");
 	} catch (err) {
 		threatLog.error("CONFIRMING ORDER ERROR:", err, req.headers, req.ip);

@@ -11,6 +11,7 @@ const DeliveryInfo = require("../../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./errorMessages");
 const { FRA_sizes, CAN_sizes, PRINT_sizes, FRA_SUR_sizes, attributesList } = require("./pwintyData");
 const { fullLog, threatLog } = require("./log4");
+const { count } = require("../../models/User");
 
 const ROLE = {
 	ADMIN: "admin",
@@ -307,7 +308,7 @@ async function checkPwintyAttributes(req, res, next) {
 
 async function pwintyGetPrice(req, res, next) {
 	const SKU = req.body.SKU;
-	let countryCode = "FR"; // default
+	let countryCode;
 
 	let options = {
 		uri: `${process.env.BASEURL}/api/user/countryCode/`,
@@ -315,10 +316,13 @@ async function pwintyGetPrice(req, res, next) {
 		headers: {
 			"Content-Type": "application/json",
 			"Accept": "application/json"
-		}
+		},
+		json: true
 	};
 	let response = await rp(options);
-	if (response.error === false) countryCode = response.countryCode;
+
+	if (response.error === true) return res.status(400).json({ error: true, message: response.message });
+	else countryCode = response.countryCode;
 
 	options = {
 		uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,

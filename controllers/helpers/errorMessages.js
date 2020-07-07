@@ -49,7 +49,8 @@ const ERROR_MESSAGE = {
 	missingBilling: "You need to fill in your billing informations",
 	unsetDeliveryAddress: "You need to set your delivery address",
 	noShipment: "Sorry, there are no shipment options available to the selected destination for these products",
-	countryCode: "We cannot find your country ISO code, please contact us if the error persist",
+	countryCode:
+		"We cannot find your country ISO code, you can resolve this issue by creating an account and filling the delivery form",
 	noStreetNb: "You did not mention a street number!",
 	cancelOrder: "We could not cancel your order, please try again later",
 	badOrderStatus: "Your order status does not allow it to be cancelled",

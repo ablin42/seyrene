@@ -188,7 +188,10 @@ module.exports = function Cart(oldCart) {
 			return;
 		}
 
-		let countryCode = await this.fetchCountryCode();
+		let response = await this.fetchCountryCode();
+		let countryCode;
+		if (response.error === true) throw new Error(response.message);
+		else countryCode = response.countryCode;
 
 		let options = {
 			uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
@@ -225,11 +228,13 @@ module.exports = function Cart(oldCart) {
 				"Accept": "application/json"
 			},
 			credentials: "include",
-			mode: "same-origin"
+			mode: "same-origin",
+			json: true
 		};
 
 		let response = await rp(`${process.env.BASEURL}/api/user/countryCode/`, options);
-		if (response.error === false) return response.countryCode;
-		return "FR"; // defaults return fr, might need to return an error though
+		if (response.error === true) return { error: true, message: response.message };
+
+		return { error: false, countryCode: response.countryCode };
 	};
 };

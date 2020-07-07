@@ -66,7 +66,7 @@ module.exports = {
 					let obj = {
 						sku: product.attributes.SKU,
 						url: `${process.env.BASEURL}/api/image/main/Shop/${item.attributes._id}`,
-						sizing: "shrinkToExactFit", // idk yet (resize for canvas?)
+						sizing: "crop",
 						copies: product.qty,
 						attributes: ""
 					};

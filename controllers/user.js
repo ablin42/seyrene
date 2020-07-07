@@ -7,6 +7,7 @@ const MongoStore = require("rate-limit-mongo");
 const { vName, vEmail, vPassword, vLostPw, vDelivery } = require("./validators/vUser");
 const countryList = require("country-list-js");
 const IPinfo = require("node-ipinfo");
+const rp = require("request-promise");
 
 const mailer = require("./helpers/mailer");
 const { setUser, authUser, checkAddress, notLoggedUser } = require("./helpers/middlewares");
@@ -173,8 +174,32 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 		let err,
 			result,
 			infos,
+			isoCodeList,
 			obj = req.address;
 		await utils.checkValidity(req.address);
+
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/pwinty/countries`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+
+		let response = await rp(options);
+		if (response.error === false) isoCodeList = response.response.data;
+		else throw new Error(response.message);
+
+		if (
+			isoCodeList
+				.map(function (e) {
+					return e.isoCode;
+				})
+				.indexOf(req.body["country-iso"]) === -1
+		)
+			throw new Error("Invalid iso code");
+		obj.isoCode = req.body["country-iso"];
 
 		[err, infos] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
 		if (err) throw new Error(ERROR_MESSAGE.serverError);
@@ -208,14 +233,13 @@ router.get("/countryCode", setUser, async (req, res) => {
 		let countryCode = undefined;
 		let err, result;
 
-		if (req.user) [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-		if (err) throw new Error(ERROR_MESSAGE.serverError);
+		if (req.user) {
+			[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+			if (err) throw new Error(ERROR_MESSAGE.serverError);
+		}
 
-		if (result) {
-			countryCode = countryList.findByName(utils.toTitleCase(result.country));
-			if (countryCode) countryCode = countryCode.code.iso2;
-			else throw new Error(ERROR_MESSAGE.countryCode);
-		} else {
+		if (result && result.isoCode) return res.status(200).json({ error: false, countryCode: result.isoCode });
+		else {
 			let response = await ipinfo.lookupIp(ip);
 
 			countryCode = countryList.findByName(utils.toTitleCase(response.country));
@@ -224,7 +248,6 @@ router.get("/countryCode", setUser, async (req, res) => {
 
 			return res.status(200).json({ error: false, countryCode: countryCode });
 		}
-		return res.status(200).json({ error: false, countryCode: countryCode });
 	} catch (err) {
 		threatLog.error("USER COUNTRY CODE ERROR", err, req.headers, req.ip);
 		return res.status(400).json({ error: true, message: err.message });

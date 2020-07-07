@@ -217,6 +217,19 @@ router.get("/User", setUser, authUser, async (req, res) => {
 			obj.orders = orders;
 		}
 
+		let options = {
+			method: "GET",
+			uri: `${process.env.BASEURL}/api/pwinty/countries`,
+			headers: {
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+			},
+			json: true
+		};
+
+		let response = await rp(options);
+		if (response.error === false) obj.countries = response.response.data;
+		else throw new Error(response.message);
+
 		return res.status(200).render("user", obj);
 	} catch (err) {
 		threatLog.error("USER ROUTE ERROR", err, req.headers, req.ip);

@@ -65,7 +65,7 @@ class PwintyObject {
 								<option disabled selected>Pick one</option>`;
 
 			Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute]).forEach((option, i) => {
-				if (option !== "size") {
+				if (attribute !== "size") {
 					if (option !== "fullname")
 						attributeSelect += `
 							<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category]["sharedAttributes"][attribute])[i]}">\
@@ -93,7 +93,7 @@ class PwintyObject {
                                	 	<option disabled selected>Pick one</option>`;
 
 				Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute]).forEach((option, i) => {
-					if (option !== "size") {
+					if (attribute !== "size") {
 						if (option !== "fullname")
 							attributeSelect += `
 								<option value="${Object.keys(PWINTY_ITEMS[subcategory.dataset.category][this.subcategory][attribute])[i]}">\
@@ -294,7 +294,17 @@ class PwintyObject {
 	}
 
 	async generatePricing() {
-		let countryCode = await this.fetchCountryCode();
+		let response = await this.fetchCountryCode();
+		let countryCode;
+		if (response.error === true) {
+			let alert = createAlertNode(
+				response.message,
+				"warning",
+				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+			);
+			addAlert(alert, "#header");
+			return;
+		} else countryCode = response.countryCode;
 
 		let data = await fetch(`/api/pwinty/pricing/${countryCode}`, {
 			method: "POST",
@@ -338,17 +348,9 @@ class PwintyObject {
 			mode: "same-origin"
 		});
 		let response = await countryCode.json();
+		if (response.error === true) return { error: true, message: response.message };
 
-		if (response.error === false) return response.countryCode;
-		else {
-			let alert = createAlertNode(
-				response.message,
-				"warning",
-				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-			);
-			addAlert(alert, "#header");
-			return "FR"; // defaults return fr, might need to return an error though
-		}
+		return { error: false, countryCode: response.countryCode };
 	}
 
 	async cartAdd(itemId, caller) {
@@ -357,7 +359,17 @@ class PwintyObject {
 		attributes.category = this.category;
 		attributes.subcategory = this.subcategory;
 
-		let countryCode = await this.fetchCountryCode();
+		let response = await this.fetchCountryCode();
+		let countryCode;
+		if (response.error === true) {
+			let alert = createAlertNode(
+				response.message,
+				"warning",
+				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
+			);
+			addAlert(alert, "#header");
+			return;
+		} else countryCode = response.countryCode;
 
 		caller.disabled = true;
 		caller.style.pointerEvents = "none";
@@ -366,7 +378,7 @@ class PwintyObject {
 			caller.style.pointerEvents = "auto";
 		}, 1500);
 
-		let response = await fetch(`/api/pwinty/pricing/${countryCode}`, {
+		response = await fetch(`/api/pwinty/pricing/${countryCode}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

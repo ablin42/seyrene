@@ -31,6 +31,10 @@ const deliverySchema = new mongoose.Schema(
 			type: String,
 			required: true
 		},
+		isoCode: {
+			type: String,
+			required: true
+		},
 		street_name: {
 			type: String,
 			required: true
