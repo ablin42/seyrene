@@ -79,10 +79,12 @@ module.exports = {
 		return body;
 	},
 	createPwintyOrder: async function (order, req) {
-		let err, user, orderResponse;
-		let countryCode = country.findByName(utils.toTitleCase(order.country));
-		if (countryCode) countryCode = countryCode.code.iso2;
-		else throw new Error(ERROR_MESSAGE.countryCode);
+		let err, user, orderResponse, delivery;
+
+		[err, delivery] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+		if (err) throw new Error(ERROR_MESSAGE.serverError);
+		if (!delivery) throw new Error(ERROR_MESSAGE.countryCode);
+		let countryCode = delivery.isoCode;
 
 		[err, user] = await utils.to(User.findById(order._userId));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);

@@ -144,7 +144,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 			}
 		});
 		if (cart.generatePwintyArray().length > 0)
-			obj.deliveryPrice = await pHelpers.getDeliveryPrice(req, cart, obj.delivery.country);
+			obj.deliveryPrice = await pHelpers.getDeliveryPrice(req, cart, obj.delivery.isoCode);
 
 		return res.status(200).render("cart", obj);
 	} catch (err) {

@@ -85,13 +85,9 @@ module.exports = {
 
 		return details;
 	},
-	getDeliveryPrice: async function (req, cart, countryName) {
-		let countryCode = country.findByName(utils.toTitleCase(countryName));
-		if (countryCode) countryCode = countryCode.code.iso2;
-		else throw new Error(ERROR_MESSAGE.countryCode);
-
+	getDeliveryPrice: async function (req, cart, isoCode) {
 		let options = {
-			uri: `${process.env.BASEURL}/api/pwinty/pricing/${countryCode}`,
+			uri: `${process.env.BASEURL}/api/pwinty/pricing/${isoCode}`,
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
