@@ -57,7 +57,7 @@ router.get("/", setUser, async (req, res) => {
 	} catch (err) {
 		threatLog.error("HOME ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
-		return res.status(400).render("Home");
+		return res.status(400).render("home");
 	}
 });
 
