@@ -17,6 +17,7 @@ module.exports = async function sendValidationMail(email, subject, text) {
 	});
 	const accessToken = oauth2Client.getAccessToken();*/
 
+	console.log("in mailer");
 	let transporter = nodemailer.createTransport({
 		service: "gmail",
 		auth: {
@@ -30,6 +31,8 @@ module.exports = async function sendValidationMail(email, subject, text) {
 			pass: process.env.SERVER_EMAILPW
 		}
 	});
+
+	console.log(transporter);
 
 	let mailOptions = {
 		from: process.env.SERVER_EMAIL,
