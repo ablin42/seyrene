@@ -32,8 +32,6 @@ const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
 const { fullLog, threatLog } = require("./controllers/helpers/log4");
 const { body } = require("express-validator");
 
-console.log(process.env.DB_CONNECTION);
-
 //Connect to DB
 mongoose.connect(
 	process.env.DB_CONNECTION,
