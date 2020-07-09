@@ -203,7 +203,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 		let obj = { active: "User", csrfToken: req.csrfToken(), user: req.user, delivery: false };
 
 		[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-		if (err || !result) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
+		if (err) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 		obj.delivery = result;
 
 		[err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
