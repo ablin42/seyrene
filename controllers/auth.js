@@ -99,6 +99,7 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 				json: true
 			};
 			let response = await rp(options).catch(err => {
+				console.log(err, "oof");
 				throw new Error(ERROR_MESSAGE.serverError);
 			});
 			throw new Error(ERROR_MESSAGE.unverifiedAccount);
