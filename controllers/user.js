@@ -227,7 +227,7 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 
 router.get("/countryCode", setUser, async (req, res) => {
 	try {
-		const ip = "90.79.188.153"; //req.ip
+		const ip = req.ip; //"90.79.188.153";
 		const IPINFO_TOKEN = "4c60ea37e18dd1";
 		const ipinfo = new IPinfo(IPINFO_TOKEN);
 		let countryCode = undefined;

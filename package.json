@@ -37,7 +37,6 @@
 		"express-sanitizer": "^1.0.5",
 		"express-session": "^1.17.1",
 		"express-validator": "^6.6.0",
-		"googleapis": "^52.1.0",
 		"helmet": "^3.23.3",
 		"log4js": "^6.3.0",
 		"money-exchange": "^1.0.0",
