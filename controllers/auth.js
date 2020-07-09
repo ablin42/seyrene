@@ -56,7 +56,6 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 		});
 
 		[err, result] = await utils.to(user.save());
-		console.log(err, result);
 		if (err) throw new Error(ERROR_MESSAGE.createAccount);
 
 		[err, result] = await utils.to(validationToken.save());
