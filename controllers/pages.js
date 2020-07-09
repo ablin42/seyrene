@@ -96,7 +96,7 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 		if (response.error === false) obj.galleries = response.galleries;
 		else throw new Error(response.message);
 
-		return res.status(200).render("tags", obj);
+		return res.status(200).render("Tags", obj);
 	} catch (err) {
 		let obj = { active: "Tags search" };
 		if (req.query.t) {
@@ -251,7 +251,7 @@ router.get("/About", setUser, async (req, res) => {
 		if (response.error === false) obj.blogs = response.blogs;
 		else throw new Error(response.message);
 
-		return res.status(200).render("about", obj);
+		return res.status(200).render("About", obj);
 	} catch (err) {
 		threatLog.error("ABOUT ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", ERROR_MESSAGE.serverError);
@@ -267,7 +267,7 @@ router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 			req.session.formData = undefined;
 		}
 
-		return res.status(200).render("account", obj);
+		return res.status(200).render("Account", obj);
 	} catch (err) {
 		threatLog.error("ACCOUNT ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", ERROR_MESSAGE.serverError);
@@ -284,7 +284,7 @@ router.get("/Shop", setUser, async (req, res) => {
 		if (response.error === false) obj.original = response.shop;
 		else throw new Error(response.message);
 
-		return res.status(200).render("shop", obj);
+		return res.status(200).render("Shop", obj);
 	} catch (err) {
 		threatLog.error("SHOP ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -345,7 +345,7 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 			}
 		});
 
-		return res.status(200).render("single/order-recap", obj);
+		return res.status(200).render("single/Order-recap", obj);
 	} catch (err) {
 		threatLog.error("ORDER RECAP ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -377,7 +377,7 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 		if (response.error === false) obj.images = response.images;
 		else throw new Error(response.message);
 
-		return res.status(200).render("single/galerie-single", obj);
+		return res.status(200).render("single/Galerie-single", obj);
 	} catch (err) {
 		threatLog.error("GALLERY SINGLE ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -403,7 +403,7 @@ router.get("/CGU", setUser, async (req, res) => {
 		let obj = { active: "CGU", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
-		return res.status(200).render("cgu", obj);
+		return res.status(200).render("CGU", obj);
 	} catch (err) {
 		threatLog.error("CGU ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -436,7 +436,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 		if (response.error === false) obj.img = response.images;
 		else throw new Error(response.message);
 
-		return res.status(200).render("single/shop-single", obj);
+		return res.status(200).render("single/Shop-single", obj);
 	} catch (err) {
 		threatLog.error("SHOP SINGLE ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -463,7 +463,7 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 		if (response.error === false) obj.blog = response.blog;
 		else throw new Error(response.message);
 
-		return res.status(200).render("single/blog-single", obj);
+		return res.status(200).render("single/Blog-single", obj);
 	} catch (err) {
 		threatLog.error("BLOG ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -478,7 +478,7 @@ router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 	try {
 		let obj = { active: "Admin", user: req.user, csrfToken: req.csrfToken() };
 
-		return res.status(200).render("restricted/admin", obj);
+		return res.status(200).render("restricted/Admin", obj);
 	} catch (err) {
 		threatLog.error("ADMIN ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -504,7 +504,7 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		else throw new Error(response.message);
 		if (response.data.length <= 0) obj.front = undefined;
 
-		return res.status(200).render("restricted/front-post", obj);
+		return res.status(200).render("restricted/Front-post", obj);
 	} catch (err) {
 		threatLog.error("ADMIN FRONT ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -534,7 +534,7 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 		if (result.error === false) obj.approval = result.orders;
 		else throw new Error(result.message);
 
-		return res.status(200).render("restricted/orders", obj);
+		return res.status(200).render("restricted/Orders", obj);
 	} catch (err) {
 		threatLog.error("ADMIN ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -572,7 +572,7 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 			}
 		});
 
-		return res.status(200).render("restricted/order-manage", obj);
+		return res.status(200).render("restricted/Order-manage", obj);
 	} catch (err) {
 		threatLog.error("ORDER RECAP ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -584,7 +584,7 @@ router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async
 	try {
 		let obj = { active: "Post a gallery item", user: req.user, csrfToken: req.csrfToken() };
 
-		return res.status(200).render("restricted/gallery-post", obj);
+		return res.status(200).render("restricted/Gallery-post", obj);
 	} catch (err) {
 		threatLog.error("GALLERY POST ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -613,7 +613,7 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 		if (response.error === false) obj.images = response.images;
 		else throw new Error(response.message);
 
-		return res.status(200).render("restricted/gallery-patch", obj);
+		return res.status(200).render("restricted/Gallery-patch", obj);
 	} catch (err) {
 		threatLog.error("GALLERY PATCH ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -625,7 +625,7 @@ router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 	try {
 		let obj = { active: "Post a shop item", user: req.user, csrfToken: req.csrfToken() };
 
-		return res.status(200).render("restricted/shop-post", obj);
+		return res.status(200).render("restricted/Shop-post", obj);
 	} catch (err) {
 		threatLog.error("SHOP POST ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -654,7 +654,7 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 		if (response.error === false) obj.img = response.images;
 		else throw new Error(response.message);
 
-		return res.status(200).render("restricted/shop-patch", obj);
+		return res.status(200).render("restricted/Shop-patch", obj);
 	} catch (err) {
 		threatLog.error("SHOP PATCH ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -671,11 +671,11 @@ router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 			req.session.formData = undefined;
 		}
 
-		return res.status(200).render("restricted/blog-post", obj);
+		return res.status(200).render("restricted/Blog-post", obj);
 	} catch (err) {
 		threatLog.error("BLOG POST ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
-		return res.status(200).redirect("/restricted/blog-post");
+		return res.status(200).redirect("/restricted/Blog-post");
 	}
 });
 
@@ -692,7 +692,7 @@ router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN),
 		if (err || !blog) throw new Error(ERROR_MESSAGE.fetchError);
 		obj.blog = blog;
 
-		return res.status(200).render("restricted/blog-patch", obj);
+		return res.status(200).render("restricted/Blog-patch", obj);
 	} catch (err) {
 		threatLog.error("BLOG PATCH ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
