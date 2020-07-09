@@ -51,7 +51,6 @@ mongoose.connect(
 const app = express();
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
-app.set("views", "/app/");
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;

@@ -52,11 +52,11 @@ router.get("/", setUser, async (req, res) => {
 		if (front.error === false) obj.front = front.data;
 		else throw new Error(front.message);
 
-		return res.status(200).render("Home", obj); ///////////////
+		return res.status(200).render("Home.ejs", obj); ///////////////
 	} catch (err) {
 		threatLog.error("HOME ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
-		return res.status(400).render("home");
+		return res.status(400).render("Home.ejs");
 	}
 });
 
