@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"start": "node app",
+		"start": "node app.js",
 		"devStart": "nodemon app",
 		"pretest": "eslint controllers/*.js controllers/helpers/*.js controllers/validators/*.js models/*.js public/scripts/*.js public/scripts/blog/*.js public/scripts/gallery/*.js public/scripts/shop/*.js -f table --fix",
 		"test": "snyk test",
