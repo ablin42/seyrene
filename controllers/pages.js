@@ -205,7 +205,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 		[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
 		if (err) throw new Error(ERROR_MESSAGE.deliveryAddressNotFound);
 		obj.delivery = result;
-		if (!result) obj.delivery = {};
+		if (!result) obj.delivery = [];
 
 		[err, orders] = await utils.to(Order.find({ _userId: req.user._id }, {}, { sort: { date: -1 } }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
