@@ -22,7 +22,7 @@ log4js.configure({
 	},
 	categories: {
 		complete: { appenders: ["completeLogs", "console"], level: "trace" },
-		threat: { appenders: ["threatLogs", "completeLogs"], level: "warn" },
+		threat: { appenders: ["threatLogs", "completeLogs", "console"], level: "warn" },
 		default: { appenders: ["console"], level: "trace" }
 	}
 });
