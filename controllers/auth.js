@@ -91,7 +91,7 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 				uri: `${process.env.BASEURL}/api/auth/resend`,
 				method: "POST",
 				headers: {
-					"AUTH_TOKEN": process.env.ACCESS_TOKEN,
+					"ACCESS_TOKEN": process.env.ACCESS_TOKEN,
 					"CSRF-Token": req.csrfToken(),
 					"cookie": req.headers.cookie
 				},
@@ -101,7 +101,6 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 			let response = await rp(options).catch(err => {
 				throw new Error(ERROR_MESSAGE.serverError);
 			});
-			console.log(response, "wowi");
 			throw new Error(ERROR_MESSAGE.unverifiedAccount);
 		}
 
