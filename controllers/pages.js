@@ -74,7 +74,7 @@ router.get("/Galerie", setUser, async (req, res) => {
 		if (response.error === false) obj.galleries = response.galleries;
 		else throw new Error(response.message);
 
-		return res.status(200).render("galerie", obj);
+		return res.status(200).render("Galerie", obj);
 	} catch (err) {
 		threatLog.error("GALLERY ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -106,7 +106,7 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 
 		threatLog.error("GALLERY TAGS ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
-		return res.status(400).render("tags", obj);
+		return res.status(400).render("Tags", obj);
 	}
 });
 
@@ -146,7 +146,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 		if (cart.generatePwintyArray().length > 0)
 			obj.deliveryPrice = await pHelpers.getDeliveryPrice(req, cart, obj.delivery.isoCode);
 
-		return res.status(200).render("cart", obj);
+		return res.status(200).render("Cart", obj);
 	} catch (err) {
 		threatLog.error("CART ERROR", err, req.headers, req.ip);
 		req.flash("info", err.message);
@@ -165,7 +165,7 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 		if (!req.session.cart || req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 		if (req.session.billing) obj.billing = req.session.billing;
 
-		return res.status(200).render("billing", obj);
+		return res.status(200).render("Billing", obj);
 	} catch (err) {
 		threatLog.error("BILLING ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -189,7 +189,7 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 
 		obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
 
-		return res.status(200).render("payment", obj);
+		return res.status(200).render("Payment", obj);
 	} catch (err) {
 		threatLog.error("PAYMENT ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -230,7 +230,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 		if (response.error === false) obj.countries = response.response.data;
 		else throw new Error(response.message);
 
-		return res.status(200).render("user", obj);
+		return res.status(200).render("User", obj);
 	} catch (err) {
 		threatLog.error("USER ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
@@ -390,7 +390,7 @@ router.get("/Catalog", setUser, async (req, res) => {
 		let obj = { active: "Catalog", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
-		return res.status(200).render("catalog", obj);
+		return res.status(200).render("Catalog", obj);
 	} catch (err) {
 		threatLog.error("CATALOG ROUTE ERROR", err, req.headers, req.ip);
 		req.flash("warning", err.message);
