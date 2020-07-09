@@ -98,10 +98,9 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 				body: { email: req.body.email },
 				json: true
 			};
-			let response = await rp(options).catch(err => {
-				console.log(err, "oof");
-				throw new Error(ERROR_MESSAGE.serverError);
-			});
+			let response = await rp(options);
+			if (response.error === true) throw new Error(response.message);
+
 			throw new Error(ERROR_MESSAGE.unverifiedAccount);
 		}
 
@@ -183,11 +182,11 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		req.flash("info", `A verification email has been sent to ${user.email}`);
-		return res.status(200).redirect("/Account");
+		return res.status(200).json({ error: false });
 	} catch (err) {
 		threatLog.error("ERROR SENDING TOKEN:", err, req.headers, req.ip);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/Account");
+		return res.status(200).json({ error: true, message: err.message });
 	}
 });
 
