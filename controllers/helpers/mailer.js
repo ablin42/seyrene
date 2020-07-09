@@ -42,6 +42,7 @@ module.exports = async function sendValidationMail(email, subject, text) {
 	};
 
 	transporter.sendMail(mailOptions, err => {
+		console.log(err, "xDD");
 		if (err) {
 			fullLog.info("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
 			return true;
