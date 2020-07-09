@@ -18,6 +18,8 @@ module.exports = async function sendValidationMail(email, subject, text) {
 		text: text
 	};
 
+	console.log(mailOptions, process.env.SERVER_EMAIL, process.env.SERVER_EMAILPW);
+
 	transporter.sendMail(mailOptions, err => {
 		if (err) {
 			fullLog.info("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
