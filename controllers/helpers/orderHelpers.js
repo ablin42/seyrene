@@ -173,7 +173,7 @@ module.exports = {
 				"Accept": "application/json",
 				"CSRF-Token": req.csrfToken(),
 				"cookie": req.headers.cookie,
-				"AUTH_TOKEN": process.env.ACCESS_TOKEN
+				"ACCESS_TOKEN": process.env.ACCESS_TOKEN
 			},
 			body: { chargeId: chargeId },
 			json: true
