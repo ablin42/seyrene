@@ -13,6 +13,7 @@ const rfs = require("rotating-file-stream");
 const sanitize = require("mongo-sanitize");
 const MongoStore = require("connect-mongo")(session);
 const { setUser } = require("./controllers/helpers/middlewares");
+const path = require("path");
 require("dotenv").config();
 
 const pagesRoute = require("./controllers/pages");
@@ -51,7 +52,7 @@ mongoose.connect(
 const app = express();
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
-app.set("views", __dirname + "/app/views");
+app.set("views", path.join(__dirname, "views"));
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
