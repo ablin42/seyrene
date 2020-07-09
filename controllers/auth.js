@@ -101,6 +101,7 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 			let response = await rp(options).catch(err => {
 				throw new Error(ERROR_MESSAGE.serverError);
 			});
+			console.log(response, "wowi");
 			throw new Error(ERROR_MESSAGE.unverifiedAccount);
 		}
 
@@ -162,7 +163,6 @@ router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 // Resend account confirmation token
 router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, async (req, res) => {
 	try {
-		console.log("IN RESEND");
 		await utils.checkValidity(req);
 
 		let err, user, savedToken;
@@ -180,9 +180,8 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 
 		let subject = "Account Verification Token for Maral";
 		let content = `Hello,\n\n Please verify your account by clicking the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
-		console.log("BEFORE MAILER");
 		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
-		console.log("after MAILER");
+
 		req.flash("info", `A verification email has been sent to ${user.email}`);
 		return res.status(200).redirect("/Account");
 	} catch (err) {

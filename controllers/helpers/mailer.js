@@ -17,7 +17,6 @@ module.exports = async function sendValidationMail(email, subject, text) {
 	});
 	const accessToken = oauth2Client.getAccessToken();*/
 
-	console.log("in mailer");
 	let transporter = nodemailer.createTransport({
 		service: "gmail",
 		auth: {
@@ -32,8 +31,6 @@ module.exports = async function sendValidationMail(email, subject, text) {
 		}
 	});
 
-	console.log(transporter);
-
 	let mailOptions = {
 		from: process.env.SERVER_EMAIL,
 		to: email,
@@ -42,7 +39,6 @@ module.exports = async function sendValidationMail(email, subject, text) {
 	};
 
 	transporter.sendMail(mailOptions, err => {
-		console.log(err, "xDD");
 		if (err) {
 			fullLog.info("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
 			return true;
