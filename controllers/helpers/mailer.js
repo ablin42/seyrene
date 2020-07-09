@@ -6,8 +6,12 @@ module.exports = async function sendValidationMail(email, subject, text) {
 	let transporter = nodemailer.createTransport({
 		service: "gmail",
 		auth: {
-			user: process.env.SERVER_EMAIL,
-			pass: process.env.SERVER_EMAILPW
+			type: "OAuth2",
+			user: "Space6fic@gmail.com",
+			clientId: "67318916933-tnmum56ogq013qk1a7t2ljmf5g09dv6g.apps.googleusercontent.com",
+			clientSecret: "ODJJz6x-fyFCsm9LHaHipxni"
+			/*user: process.env.SERVER_EMAIL,
+			pass: process.env.SERVER_EMAILPW*/
 		}
 	});
 
