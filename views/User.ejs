@@ -157,9 +157,7 @@
 						</div>
 						<div class="row mt-4">
 							<div class="col-6">
-								<textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations...">
-									<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea
-								>
+								<textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..."><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
 							</div>
 							<div class="col-6">
 								<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
