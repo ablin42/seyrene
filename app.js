@@ -30,6 +30,7 @@ const pwintyRoute = require("./controllers/pwinty");
 const stripeRoute = require("./controllers/stripe");
 const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
 const { fullLog, threatLog } = require("./controllers/helpers/log4");
+const { body } = require("express-validator");
 
 //Connect to DB
 mongoose.connect(
@@ -153,8 +154,6 @@ app.use((req, res, next) => {
 	next();
 });
 
-// Routes
-app.use("/", pagesRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/blog", blogsRoute);
 app.use("/api/user", userRoute);
@@ -167,6 +166,35 @@ app.use("/api/front", frontRoute);
 app.use("/api/image", imageRoute);
 app.use("/api/pwinty", pwintyRoute);
 app.use("/api/stripe", stripeRoute);
+
+app.post("/plsauth", (req, res) => {
+	//DELPROD//
+	if (req.body.authlog === process.env.AUTHLOG) {
+		req.session.authprod = process.env.ACCESS_TOKEN;
+		return res.status(200).redirect("/");
+	} else return res.status(200).redirect("plsauth");
+});
+
+app.use((req, res, next) => {
+	//DELPROD//
+	req.session.authprod;
+	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) {
+		req.session.authprod = process.env.ACCESS_TOKEN;
+		return next();
+	}
+
+	return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
+});
+
+app.get("/plsauth", (req, res) => {
+	//DELPROD//
+	res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
+});
+
+//DELPROD// del plsauth.ejs
+
+// Routes
+app.use("/", pagesRoute);
 
 // 404 route
 app.get("*", setUser, (req, res) => {

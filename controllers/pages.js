@@ -49,6 +49,7 @@ router.get("/", setUser, async (req, res) => {
 		};
 		let front = await rp(options);
 
+		console.log(front);
 		if (front.error === false) obj.front = front.data;
 		else throw new Error(front.message);
 

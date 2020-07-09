@@ -1,0 +1,12 @@
+<% include partials/head %>
+<div class="container">
+	<div class="wrapper-404">
+		<form method="POST" action="/plsauth">
+			<input type="text" name="authlog" />
+			<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+			<input type="submit" />
+		</form>
+	</div>
+</div>
+
+<% include partials/footer %>
