@@ -4,7 +4,7 @@ log4js.configure({
 	appenders: {
 		completeLogs: {
 			type: "file",
-			filename: "./logs/log4js/fullreport.log",
+			filename: "./tmp/logs/log4js/fullreport.log",
 			maxLogSize: 100000,
 			backups: 5,
 			compress: true,
@@ -12,7 +12,7 @@ log4js.configure({
 		},
 		threatLogs: {
 			type: "file",
-			filename: "./logs/log4js/threat.log",
+			filename: "./tmp/logs/log4js/threat.log",
 			maxLogSize: 100000,
 			backups: 5,
 			compress: true,

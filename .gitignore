@@ -7,3 +7,4 @@ eslint_output.txt
 .snyk
 access.log
 /logs
+/tmp

@@ -69,7 +69,7 @@ const generator = (time, index) => {
 };
 
 // Log write stream
-const accessLogStream = rfs.createStream(generator, { interval: "6h", path: "./logs/" });
+const accessLogStream = rfs.createStream(generator, { interval: "6h", path: "./tmp/logs/" });
 app.use(morgan("combined", { stream: accessLogStream }));
 
 //Helmet
