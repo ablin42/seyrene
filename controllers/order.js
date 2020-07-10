@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const sanitize = require("mongo-sanitize");
 const { vDelivery } = require("./validators/vUser");
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 const Order = require("../models/Order");
 const Purchase = require("../models/PurchaseData");
