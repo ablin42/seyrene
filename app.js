@@ -126,7 +126,7 @@ app.use(expressSanitizer());
 app.use(csrf({ cookie: false }));
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {
-	console.log(req.headers["stripe-signature"], "stripe signature");
+	console.log(req.path, "stripe signature");
 	if (req.headers["stripe-signature"]) return next();
 
 	if (err.code !== "EBADCSRFTOKEN") return next(err);
