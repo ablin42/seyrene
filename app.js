@@ -85,9 +85,7 @@ app.use((req, res, next) => {
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
 
-	console.log(req.ipAddress);
 	fullLog.trace({ ip: req.ipAddress, host: req.headers.host, referer: req.headers.referer, forward: req.url });
-
 	next();
 });
 
@@ -128,8 +126,7 @@ app.use(expressSanitizer());
 app.use(csrf({ cookie: false }));
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {
-	console.log(req.headers);
-	console.log(req.headers["stripe-signature"], "x");
+	console.log(req.headers["stripe-signature"], "stripe signature");
 	if (req.headers["stripe-signature"]) return next();
 
 	if (err.code !== "EBADCSRFTOKEN") return next(err);

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const stripe = require("stripe")("sk_test_52HhMBaVOLRzC2iN3zljiCcP00Zb6YvQ3W");
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 const rp = require("request-promise");
 
 const Cart = require("../models/Cart");
