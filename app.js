@@ -112,6 +112,13 @@ app.use(flash());
 // Body-Parser
 app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
 app.use(bodyParser.json({ limit: 100000000 }));
+app.use(
+	bodyParser.json({
+		verify: (req, res, buf) => {
+			req.rawBody = buf;
+		}
+	})
+);
 // BP Error handler
 app.use(function (err, req, res, next) {
 	res.status(err.status || 500);
