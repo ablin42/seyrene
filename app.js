@@ -116,8 +116,8 @@ app.use(
 	bodyParser.json({
 		verify: function (req, res, buf) {
 			let url = req.originalUrl;
-			console.log(url);
-			if (url.startsWith("/stripe")) req.rawBody = buf.toString();
+			console.log(url, "XXXD");
+			if (url.startsWith("/api/order/confirm")) req.rawBody = buf.toString();
 		},
 		limit: 100000000
 	})
