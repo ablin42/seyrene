@@ -79,14 +79,14 @@ app.use(helmet.referrerPolicy({ policy: "same-origin" }));
 
 // Set ip object and logs info
 app.use((req, res, next) => {
-	req.ipAddressAddress =
+	req.ipAddress =
 		(req.headers["x-forwarded-for"] || "").split(",")[0] ||
 		req.connection.remoteAddress ||
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
 
-	console.log(req.ipAddressAddress);
-	fullLog.trace({ ip: req.ipAddressAddress, host: req.headers.host, referer: req.headers.referer, forward: req.url });
+	console.log(req.ipAddress);
+	fullLog.trace({ ip: req.ipAddress, host: req.headers.host, referer: req.headers.referer, forward: req.url });
 
 	next();
 });
