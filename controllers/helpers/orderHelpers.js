@@ -153,8 +153,7 @@ module.exports = {
 
 		let subject = `New Order #${order._id}`;
 		let content = `Une nouvelle commande à été approuvée: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Cliquez ici pour voir la commande</a>`;
-		//maral.canvas@gmail.com
-		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		if (await mailer(process.env.EMAIL, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		[err, user] = await utils.to(User.findById(order._userId));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);

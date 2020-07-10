@@ -269,8 +269,7 @@ router.post("/callback/status", async (req, res) => {
 
 			let subject = `Updated Order (Pwinty) #${order._id}`;
 			let content = `Le status d'une commande vient d'être modifié par pwinty: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Voir la commande</a>`;
-			if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
-			//maral.canvas@gmail.com
+			if (await mailer(process.env.EMAIL, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 			[err, user] = await utils.to(Order.findOne({ _userId: order._userId }));
 			if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);

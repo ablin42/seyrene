@@ -38,8 +38,7 @@ router.post("/", limiter, vContact, setUser, checkCaptcha, async (req, res) => {
 		req.session.formData = formData;
 		await utils.checkValidity(req);
 
-		//maral.canvas@gmail.com
-		if (await mailer("ablin@byom.de", subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		if (await mailer(process.env.EMAIL, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info(`Contact mail sent: ${formData.email}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.sentEmail });
