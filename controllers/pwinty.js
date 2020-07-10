@@ -258,13 +258,12 @@ router.post("/callback/status", async (req, res) => {
 	try {
 		let err, order, user;
 
-		console.log(req.body);
-		if (req.body.orderId && req.body.status) {
+		if (req.body.orderId && req.body.eventData && req.body.eventId === "orderStatusChanged") {
 			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
 			if (err || !order) throw new Error(ERROR_MESSAGE.noResult);
 
 			[err, order] = await utils.to(
-				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.status } })
+				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.eventId } })
 			);
 			if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
 
@@ -279,7 +278,7 @@ router.post("/callback/status", async (req, res) => {
 			content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
 			if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
 
-			fullLog.info(`Pwinty status updated: ${req.body.orderId} - ${req.body.status}`);
+			fullLog.info(`Pwinty status updated: ${req.body.orderId} - ${req.body.eventId}`);
 			return res.status(200).send({ error: false, message: "OK" });
 		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
