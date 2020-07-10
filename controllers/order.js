@@ -223,9 +223,10 @@ router.post("/billing/save", vDelivery, setUser, authUser, checkAddress, async (
 router.post("/confirm", async (req, res) => {
 	try {
 		const sig = req.headers["stripe-signature"];
-		let event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.ENDPOINT_SECRET);
 
-		console.log(event, "event stripe");
+		let event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.ENDPOINT_SECRET).catch(err => {
+			console.log(err, "wahou");
+		});
 
 		//mail on success and verify webhook
 		if (event.type === "payment_intent.succeeded" && req.body.data.object.id) {

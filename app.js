@@ -111,12 +111,15 @@ app.use(flash());
 
 // Body-Parser
 app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
-app.use(bodyParser.json({ limit: 100000000 }));
+//app.use(bodyParser.json({ limit: 100000000 }));
 app.use(
 	bodyParser.json({
-		verify: (req, res, buf) => {
-			req.rawBody = buf;
-		}
+		verify: function (req, res, buf) {
+			let url = req.originalUrl;
+			console.log(url);
+			if (url.startsWith("/stripe")) req.rawBody = buf.toString();
+		},
+		limit: 100000000
 	})
 );
 // BP Error handler
