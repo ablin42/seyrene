@@ -257,6 +257,8 @@ router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
 router.post("/callback/status", async (req, res) => {
 	try {
 		let err, order, user;
+
+		console.log(req.body);
 		if (req.body.orderId && req.body.status) {
 			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
 			if (err || !order) throw new Error(ERROR_MESSAGE.noResult);
