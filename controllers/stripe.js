@@ -65,7 +65,7 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 			return res.status(200).send({ error: false, clientSecret: paymentIntent.client_secret, orderId: result.order._id });
 		} else throw new Error(ERROR_MESSAGE.emptyCart);
 	} catch (err) {
-		threatLog.error("STRIPE CREATE INTENT ERROR:", err, req.headers, req.ip);
+		threatLog.error("STRIPE CREATE INTENT ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -84,7 +84,7 @@ router.post("/refund/:id", authToken, setUser, authUser, setOrder, authGetOrder,
 			return res.status(200).json({ error: false, data: refund });
 		});
 	} catch (err) {
-		threatLog.error("STRIPE REFUND ERROR:", err, req.headers, req.ip);
+		threatLog.error("STRIPE REFUND ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
 
 		return res.status(200).json({ error: false, shop: shop });
 	} catch (err) {
-		threatLog.error("FETCHING SHOP ERROR:", err, req.headers, req.ip);
+		threatLog.error("FETCHING SHOP ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -45,7 +45,7 @@ router.get("/single/:id", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, shop: result });
 	} catch (err) {
-		threatLog.error("SHOP SINGLE ERROR", err, req.headers, req.ip);
+		threatLog.error("SHOP SINGLE ERROR", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -70,7 +70,7 @@ router.post("/post", upload, errorHandler, vShop, setUser, authUser, authRole(RO
 		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
 		return res.status(200).json({ err: false, url: `/Shop/${result._id}` });
 	} catch (err) {
-		threatLog.error("POST SHOP ERROR", err, req.headers, req.ip);
+		threatLog.error("POST SHOP ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
@@ -96,7 +96,7 @@ router.post("/patch/:id", upload, errorHandler, vShop, setShop, setUser, authUse
 		req.flash("success", ERROR_MESSAGE.itemUploaded);
 		return res.status(200).json({ err: false, url: "/Shop" });
 	} catch (err) {
-		threatLog.error("PATCH SHOP ERROR", err, req.headers, req.ip);
+		threatLog.error("PATCH SHOP ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
@@ -131,7 +131,7 @@ router.post("/delete/:id", setShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/Shop");
 	} catch (err) {
-		threatLog.error("DELETE SHOP ERROR", err, req.headers, req.ip);
+		threatLog.error("DELETE SHOP ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Shop");
 	}

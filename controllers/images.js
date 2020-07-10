@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
 			return res.status(200).end(data);
 		});
 	} catch (err) {
-		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ip);
+		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -47,7 +47,7 @@ router.get("/main/:itemType/:itemId", async (req, res) => {
 			return res.status(200).end(data);
 		});
 	} catch (err) {
-		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ip);
+		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json(err.message);
 	}
 });
@@ -71,7 +71,7 @@ router.post("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.AD
 		fullLog.info(`Main image selected: ${itemType}/${itemId}/${id}`);
 		return res.status(200).json({ err: false, message: "Nouvelle image principale définie" });
 	} catch (err) {
-		threatLog.error("IMAGE SELECT MAIN ERROR", err, req.headers, req.ip);
+		threatLog.error("IMAGE SELECT MAIN ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ err: true, message: err.message });
 	}
 });
@@ -94,7 +94,7 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		fullLog.info(`Image deleted: ${id}`);
 		return res.status(200).json({ err: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {
-		threatLog.error("IMAGE DELETE ERROR", err, req.headers, req.ip);
+		threatLog.error("IMAGE DELETE ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ err: true, message: err.message });
 	}
 });
@@ -109,7 +109,7 @@ router.get("/:itemType/:itemId", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, images: result });
 	} catch (err) {
-		threatLog.error("IMAGES FETCH ERROR", err, req.headers, req.ip);
+		threatLog.error("IMAGES FETCH ERROR", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

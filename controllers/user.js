@@ -63,7 +63,7 @@ router.post("/lostpw", limiter, vLostPw, checkCaptcha, setUser, notLoggedUser, a
 		req.flash("success", ERROR_MESSAGE.lostpwEmail);
 		return res.status(200).json({ error: false });
 	} catch (err) {
-		threatLog.error("ERROR LOSTPW:", err, req.headers, req.ip);
+		threatLog.error("ERROR LOSTPW:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -89,7 +89,7 @@ router.post("/resetpw", limiter, vPassword, setUser, notLoggedUser, async (req, 
 		req.flash("success", ERROR_MESSAGE.updatedPw);
 		return res.status(200).redirect("/Account");
 	} catch (err) {
-		threatLog.error("ERROR RESETPW:", err, req.headers, req.ip);
+		threatLog.error("ERROR RESETPW:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect(`/Resetpw/${req.body.tokenId}/${req.body.token}`);
 	}
@@ -109,7 +109,7 @@ router.post("/patch/name", limiter, vName, setUser, authUser, async (req, res) =
 		req.flash("success", ERROR_MESSAGE.updatedUsername);
 		return res.status(200).redirect("/User");
 	} catch (err) {
-		threatLog.error("ERROR PATCHING NAME:", err, req.headers, req.ip);
+		threatLog.error("ERROR PATCHING NAME:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/User");
 	}
@@ -137,7 +137,7 @@ router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res)
 		req.flash("success", ERROR_MESSAGE.updatedEmail);
 		return res.status(200).redirect("/User");
 	} catch (err) {
-		threatLog.error("ERROR PATCHING EMAIL:", err, req.headers, req.ip);
+		threatLog.error("ERROR PATCHING EMAIL:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/User");
 	}
@@ -163,7 +163,7 @@ router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req
 		req.flash("success", ERROR_MESSAGE.updatedPw);
 		return res.status(200).redirect("/User");
 	} catch (err) {
-		threatLog.error("ERROR PATCHING PASSWORD:", err, req.headers, req.ip);
+		threatLog.error("ERROR PATCHING PASSWORD:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/User");
 	}
@@ -219,7 +219,7 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 		req.flash("success", ERROR_MESSAGE.updatedDelivery);
 		return res.status(200).redirect("/User");
 	} catch (err) {
-		threatLog.error("ERROR PATCHING PASSWORD:", err, req.headers, req.ip);
+		threatLog.error("ERROR PATCHING PASSWORD:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/User");
 	}
@@ -227,7 +227,7 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 
 router.get("/countryCode", setUser, async (req, res) => {
 	try {
-		const ip = req.ip; //"90.79.188.153";
+		const ip = req.ipAddress; //"90.79.188.153";
 		const IPINFO_TOKEN = "4c60ea37e18dd1";
 		const ipinfo = new IPinfo(IPINFO_TOKEN);
 		let countryCode = undefined;
@@ -249,7 +249,7 @@ router.get("/countryCode", setUser, async (req, res) => {
 			return res.status(200).json({ error: false, countryCode: countryCode });
 		}
 	} catch (err) {
-		threatLog.error("USER COUNTRY CODE ERROR", err, req.headers, req.ip);
+		threatLog.error("USER COUNTRY CODE ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });

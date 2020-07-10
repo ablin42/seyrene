@@ -46,7 +46,7 @@ router.post("/add/:id", limiter, setUser, setShop, async (req, res) => {
 		fullLog.info(`Added to cart(unique): ${product._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: formatted });
 	} catch (err) {
-		threatLog.error("ADD TO CART ERROR", err, req.headers, req.ip);
+		threatLog.error("ADD TO CART ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -67,7 +67,7 @@ router.post("/del/:id", limiter, setUser, setShop, async (req, res) => {
 		fullLog.info(`Deleted from cart(unique): ${product._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: formatted });
 	} catch (err) {
-		threatLog.error("DELETE FROM CART ERROR", err, req.headers, req.ip);
+		threatLog.error("DELETE FROM CART ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -92,7 +92,7 @@ router.post("/add/pwinty/:id", limiter, setUser, setGallery, pwintyGetPrice, che
 		fullLog.info(`Added to cart(pwinty): ${product._id}/${data.SKU}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: formatted, item: item });
 	} catch (err) {
-		threatLog.error("ADD TO CART ERROR", err, req.headers, req.ip);
+		threatLog.error("ADD TO CART ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -123,7 +123,7 @@ router.post("/update/pwinty/:id/:qty", limiter, setUser, setGallery, pwintyGetPr
 			return res.status(200).json({ error: false, message: message, cart: formatted, item: item });
 		} else throw new Error(ERROR_MESSAGE.updateQty);
 	} catch (err) {
-		threatLog.error("UPDATE CART ERROR", err, req.headers, req.ip);
+		threatLog.error("UPDATE CART ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -148,7 +148,7 @@ router.post("/del/pwinty/:id", limiter, setUser, setGallery, pwintyGetPrice, che
 		fullLog.info(`Deleted from cart(pwinty): ${product._id}/${data.SKU}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: formatted, item: item });
 	} catch (err) {
-		threatLog.error("DELETE FROM CART ERROR", err, req.headers, req.ip);
+		threatLog.error("DELETE FROM CART ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -163,7 +163,7 @@ router.get("/clear/:id", limiter, setUser, async (req, res) => {
 		req.flash("success", ERROR_MESSAGE.placedOrder);
 		return res.status(200).redirect(`/Order/${id}`);
 	} catch (err) {
-		threatLog.error("CLEAR CART ERROR", err, req.headers, req.ip);
+		threatLog.error("CLEAR CART ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}

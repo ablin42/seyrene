@@ -68,7 +68,7 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 		fullLog.info(`Account created: ${user._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.accountCreated });
 	} catch (err) {
-		threatLog.error("ERROR REGISTER:", err, req.headers, req.ip);
+		threatLog.error("ERROR REGISTER:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -111,7 +111,7 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 		req.flash("success", ERROR_MESSAGE.loggedIn);
 		return res.status(200).json({ error: false });
 	} catch (err) {
-		threatLog.error("ERROR LOGIN:", err, req.headers, req.ip);
+		threatLog.error("ERROR LOGIN:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -124,7 +124,7 @@ router.get("/logout", limiter, setUser, authUser, (req, res) => {
 
 		return res.status(200).redirect("/");
 	} catch (err) {
-		threatLog.error("ERROR LOGOUT:", err, req.headers, req.ip);
+		threatLog.error("ERROR LOGOUT:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -153,7 +153,7 @@ router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 		req.flash("success", ERROR_MESSAGE.verified);
 		return res.status(200).redirect("/Account");
 	} catch (err) {
-		threatLog.error("ERROR CONFIRMATION TOKEN:", err, req.headers, req.ip);
+		threatLog.error("ERROR CONFIRMATION TOKEN:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Account");
 	}
@@ -184,7 +184,7 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 		req.flash("info", `A verification email has been sent to ${user.email}`);
 		return res.status(200).json({ error: false });
 	} catch (err) {
-		threatLog.error("ERROR SENDING TOKEN:", err, req.headers, req.ip);
+		threatLog.error("ERROR SENDING TOKEN:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(200).json({ error: true, message: err.message });
 	}

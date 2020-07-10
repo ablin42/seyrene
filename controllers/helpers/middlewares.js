@@ -103,7 +103,7 @@ async function checkAddress(req, res, next) {
 
 		next();
 	} catch (err) {
-		threatLog.error("CHECK ADDRESS ERROR:", err, req.headers, req.ip);
+		threatLog.error("CHECK ADDRESS ERROR:", err, req.headers, req.ipAddress);
 		if (req.body.billing) return res.status(200).json({ error: true, message: err.message });
 
 		req.flash("warning", err.message);
@@ -347,7 +347,7 @@ async function pwintyGetPrice(req, res, next) {
 function errorHandler(err, req, res, next) {
 	if (res.headersSent) return next(err);
 
-	threatLog.warn(err.message, req.ip);
+	threatLog.warn(err.message, req.ipAddress);
 	return res.status(500).json({ url: "/", message: err.message, err: true });
 }
 

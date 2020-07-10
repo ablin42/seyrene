@@ -79,14 +79,14 @@ app.use(helmet.referrerPolicy({ policy: "same-origin" }));
 
 // Set ip object and logs info
 app.use((req, res, next) => {
-	req.ip =
+	req.ipAddressAddress =
 		(req.headers["x-forwarded-for"] || "").split(",")[0] ||
 		req.connection.remoteAddress ||
 		req.socket.remoteAddress ||
 		req.connection.socket.remoteAddress;
 
-	console.log(req.ip);
-	fullLog.trace({ ip: req.ip, host: req.headers.host, referer: req.headers.referer, forward: req.url });
+	console.log(req.ipAddressAddress);
+	fullLog.trace({ ip: req.ipAddressAddress, host: req.headers.host, referer: req.headers.referer, forward: req.url });
 
 	next();
 });
@@ -207,7 +207,7 @@ app.get("*", setUser, (req, res) => {
 
 		return res.status(404).render("404", obj);
 	} catch (err) {
-		threatLog.error("404 ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("404 ROUTE ERROR", err, req.headers, req.ipAddress);
 		return res.status(404).render("404", { active: "404" });
 	}
 });

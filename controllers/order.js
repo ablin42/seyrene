@@ -46,7 +46,7 @@ router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 
 		return res.status(200).json({ error: false, orders: orders });
 	} catch (err) {
-		threatLog.error("FETCHING ORDERS ERROR:", err, req.headers, req.ip);
+		threatLog.error("FETCHING ORDERS ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -66,7 +66,7 @@ router.get("/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) =
 		fullLog.info(`Order accessed: Order: ${id} - User: ${req.user._id}`);
 		return res.status(200).json(order);
 	} catch (err) {
-		threatLog.error("FETCHING ORDER ERROR:", err, req.headers, req.ip);
+		threatLog.error("FETCHING ORDER ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -108,7 +108,7 @@ router.post("/initialize", authToken, setUser, authUser, async (req, res) => {
 		fullLog.info(`Order initialized: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, order: response });
 	} catch (err) {
-		threatLog.error("INITIALIZING ORDER ERROR:", err, req.headers, req.ip);
+		threatLog.error("INITIALIZING ORDER ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -131,7 +131,7 @@ router.post("/complete/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, 
 		fullLog.info(`Order completed: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: "La commande à été marquée comme complétée" });
 	} catch (err) {
-		threatLog.error("COMPLETE ORDER ERROR:", err, req.headers, req.ip);
+		threatLog.error("COMPLETE ORDER ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -152,7 +152,7 @@ router.post("/approve/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, a
 		fullLog.info(`Order approved: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: "La commande à été approuvée et mise en production" });
 	} catch (err) {
-		threatLog.error("APPROVING ORDER ERROR:", err, req.headers, req.ip);
+		threatLog.error("APPROVING ORDER ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -200,7 +200,7 @@ router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req
 		fullLog.info(`Order cancelled: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.cancelOrderSuccess });
 	} catch (err) {
-		threatLog.error("CANCEL ORDER ERROR:", err, req.headers, req.ip);
+		threatLog.error("CANCEL ORDER ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -214,7 +214,7 @@ router.post("/billing/save", vDelivery, setUser, authUser, checkAddress, async (
 		fullLog.info(`Billing saved: User: ${req.user._id} / ${req.address.full_address}.`);
 		return res.status(200).json({ error: false });
 	} catch (err) {
-		threatLog.error("SAVE BILLING ERROR:", err, req.headers, req.ip);
+		threatLog.error("SAVE BILLING ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -257,10 +257,10 @@ router.post("/confirm", async (req, res) => {
 			return res.status(200).send("OK");
 		}
 
-		threatLog.error("INVALID WEBHOOK ERROR:", err, req.headers, req.ip);
+		threatLog.error("INVALID WEBHOOK ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).send("OK");
 	} catch (err) {
-		threatLog.error("CONFIRMING ORDER ERROR:", err, req.headers, req.ip);
+		threatLog.error("CONFIRMING ORDER ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

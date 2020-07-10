@@ -32,7 +32,7 @@ router.post("/orders/create", authToken, setUser, authUser, authRole(ROLE.ADMIN)
 		fullLog.info(`Pwinty order created: user[${req.user._id}]/${response.data.id}`);
 		return res.status(200).json({ error: false, order: response.data });
 	} catch (err) {
-		threatLog.error("PWINTY ORDER CREATE ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY ORDER CREATE ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -57,7 +57,7 @@ router.get("/orders/:id", authToken, setUser, authUser, authRole(ROLE.ADMIN), as
 		fullLog.info(`Pwinty order fetch: user[${req.user._id}]/${id}`);
 		return res.status(200).json({ error: false, response: response.data });
 	} catch (err) {
-		threatLog.error("PWINTY ORDER FETCH ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY ORDER FETCH ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -82,7 +82,7 @@ router.get("/orders/:id/status", authToken, setUser, authUser, authRole(ROLE.ADM
 		fullLog.info(`Pwinty check status: user[${req.user._id}]/${id}`);
 		return res.status(200).json({ error: false, response: response.data });
 	} catch (err) {
-		threatLog.error("PWINTY ORDER STATUS ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY ORDER STATUS ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -107,7 +107,7 @@ router.post("/orders/:id/submit", authToken, setUser, authUser, authRole(ROLE.AD
 		fullLog.info(`Pwinty submit: user[${req.user._id}]/${id}/status[${req.body.status}]`);
 		return res.status(200).json({ error: false, order: response });
 	} catch (err) {
-		threatLog.error("PWINTY ORDER SUBMIT ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY ORDER SUBMIT ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -135,7 +135,7 @@ router.post("/orders/:id/images/batch", authToken, setUser, authUser, authRole(R
 		fullLog.info(`Pwinty image batch: user[${req.user._id}]/${id}`);
 		return res.status(200).json({ error: false, response: response });
 	} catch (err) {
-		threatLog.error("PWINTY IMAGE BATCH ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY IMAGE BATCH ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -160,7 +160,7 @@ router.get("/countries", setUser, authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, response: response });
 	} catch (err) {
-		threatLog.error("PWINTY COUNTRIES ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY COUNTRIES ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -191,7 +191,7 @@ router.post("/countries/:countryCode", setUser, async (req, res) => {
 
 		return res.status(200).json({ error: false, response });
 	} catch (err) {
-		threatLog.error("PWINTY COUNTRYCODE ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY COUNTRYCODE ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -218,7 +218,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		if (response.error === true) throw new Error(response.message);
 		return res.status(200).json({ error: response.error, response: response.formatted });
 	} catch (err) {
-		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -247,7 +247,7 @@ router.get("/pricing/fetch/:countryCode", authToken, async (req, res) => {
 		if (formatted.length <= 0) error = true;
 		return res.status(200).json({ error: error, formatted: formatted });
 	} catch (err) {
-		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -281,7 +281,7 @@ router.post("/callback/status", async (req, res) => {
 			return res.status(200).send({ error: false, message: "OK" });
 		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
-		threatLog.error("PWINTY CALLBACK ERROR:", err, req.headers, req.ip);
+		threatLog.error("PWINTY CALLBACK ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

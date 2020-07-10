@@ -18,7 +18,7 @@ router.get("/", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, data: result });
 	} catch (err) {
-		threatLog.error("FETCHING FRONT ERROR:", err, req.headers, req.ip);
+		threatLog.error("FETCHING FRONT ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -39,7 +39,7 @@ router.get("/image/:id", async (req, res) => {
 			return res.status(200).end(data);
 		});
 	} catch (err) {
-		threatLog.error("FRONT IMAGE ERROR", err, req.headers, req.ip);
+		threatLog.error("FRONT IMAGE ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json(err.message);
 	}
 });
@@ -82,7 +82,7 @@ router.post("/post", upload, errorHandler, setUser, authUser, authRole(ROLE.ADMI
 			return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemUploaded });
 		} else throw new Error(ERROR_MESSAGE.incorrectInput);
 	} catch (err) {
-		threatLog.error("POST FRONT ERROR", err, req.headers, req.ip);
+		threatLog.error("POST FRONT ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
@@ -100,7 +100,7 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		fullLog.info(`Front deleted: ${id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.itemDeleted });
 	} catch (err) {
-		threatLog.error("DELETE FRONT ERROR", err, req.headers, req.ip);
+		threatLog.error("DELETE FRONT ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });

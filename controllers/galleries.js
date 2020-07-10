@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
 
 		return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {
-		threatLog.error("FETCHING GALLERIES ERROR:", err, req.headers, req.ip);
+		threatLog.error("FETCHING GALLERIES ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -53,7 +53,7 @@ router.get("/Tags", async (req, res) => {
 
 		return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {
-		threatLog.error("FETCHING GALLERIES BY TAGS ERROR:", err, req.headers, req.ip);
+		threatLog.error("FETCHING GALLERIES BY TAGS ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -68,7 +68,7 @@ router.get("/single/:id", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, gallery: result });
 	} catch (err) {
-		threatLog.error("GALLERY SINGLE ERROR", err, req.headers, req.ip);
+		threatLog.error("GALLERY SINGLE ERROR", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -90,7 +90,7 @@ router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole
 		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
 		return res.status(200).json({ url: `/Galerie/${result._id}` });
 	} catch (err) {
-		threatLog.error("POST GALLERY ERROR", err, req.headers, req.ip);
+		threatLog.error("POST GALLERY ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
@@ -122,7 +122,7 @@ router.post(
 			req.flash("success", ERROR_MESSAGE.itemUploaded);
 			return res.status(200).json({ url: "/Galerie" });
 		} catch (err) {
-			threatLog.error("PATCH GALLERY ERROR", err, req.headers, req.ip);
+			threatLog.error("PATCH GALLERY ERROR", err, req.headers, req.ipAddress);
 			return res.status(400).json({ url: "/Galerie", message: err.message, err: true });
 		}
 	}
@@ -157,7 +157,7 @@ router.post("/delete/:id", setGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/Galerie");
 	} catch (err) {
-		threatLog.error("DELETE GALLERY ERROR", err, req.headers, req.ip);
+		threatLog.error("DELETE GALLERY ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}

@@ -44,7 +44,7 @@ router.post("/", limiter, vContact, setUser, checkCaptcha, async (req, res) => {
 		fullLog.info(`Contact mail sent: ${formData.email}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.sentEmail });
 	} catch (err) {
-		threatLog.error("ERROR CONTACT:", err, req.headers, req.ip);
+		threatLog.error("ERROR CONTACT:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });

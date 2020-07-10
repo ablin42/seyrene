@@ -54,7 +54,7 @@ router.get("/", setUser, async (req, res) => {
 
 		return res.status(200).render("home", obj); ///////////////
 	} catch (err) {
-		threatLog.error("HOME ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("HOME ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).render("home");
 	}
@@ -76,7 +76,7 @@ router.get("/Galerie", setUser, async (req, res) => {
 
 		return res.status(200).render("Galerie", obj);
 	} catch (err) {
-		threatLog.error("GALLERY ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("GALLERY ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -104,7 +104,7 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 			obj.tags = req.query.t;
 		}
 
-		threatLog.error("GALLERY TAGS ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("GALLERY TAGS ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).render("Tags", obj);
 	}
@@ -148,7 +148,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 
 		return res.status(200).render("Cart", obj);
 	} catch (err) {
-		threatLog.error("CART ERROR", err, req.headers, req.ip);
+		threatLog.error("CART ERROR", err, req.headers, req.ipAddress);
 		req.flash("info", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -167,7 +167,7 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 
 		return res.status(200).render("Billing", obj);
 	} catch (err) {
-		threatLog.error("BILLING ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("BILLING ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -191,7 +191,7 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 
 		return res.status(200).render("Payment", obj);
 	} catch (err) {
-		threatLog.error("PAYMENT ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("PAYMENT ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/shopping-cart");
 	}
@@ -233,7 +233,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 
 		return res.status(200).render("User", obj);
 	} catch (err) {
-		threatLog.error("USER ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("USER ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		res.status(400).redirect("/Account");
 	}
@@ -254,7 +254,7 @@ router.get("/About", setUser, async (req, res) => {
 
 		return res.status(200).render("About", obj);
 	} catch (err) {
-		threatLog.error("ABOUT ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("ABOUT ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", ERROR_MESSAGE.serverError);
 		return res.status(400).redirect("/");
 	}
@@ -270,7 +270,7 @@ router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 
 		return res.status(200).render("Account", obj);
 	} catch (err) {
-		threatLog.error("ACCOUNT ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("ACCOUNT ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", ERROR_MESSAGE.serverError);
 		return res.status(400).redirect("/");
 	}
@@ -287,7 +287,7 @@ router.get("/Shop", setUser, async (req, res) => {
 
 		return res.status(200).render("Shop", obj);
 	} catch (err) {
-		threatLog.error("SHOP ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("SHOP ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -307,7 +307,7 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 
 		return res.status(200).render("Resetpw", obj);
 	} catch (err) {
-		threatLog.error("RESETPW ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("RESETPW ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(200).redirect("/Account");
 	}
@@ -348,7 +348,7 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 
 		return res.status(200).render("single/Order-recap", obj);
 	} catch (err) {
-		threatLog.error("ORDER RECAP ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("ORDER RECAP ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -380,7 +380,7 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 
 		return res.status(200).render("single/Galerie-single", obj);
 	} catch (err) {
-		threatLog.error("GALLERY SINGLE ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("GALLERY SINGLE ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}
@@ -393,7 +393,7 @@ router.get("/Catalog", setUser, async (req, res) => {
 
 		return res.status(200).render("Catalog", obj);
 	} catch (err) {
-		threatLog.error("CATALOG ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("CATALOG ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}
@@ -406,7 +406,7 @@ router.get("/CGU", setUser, async (req, res) => {
 
 		return res.status(200).render("CGU", obj);
 	} catch (err) {
-		threatLog.error("CGU ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("CGU ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}
@@ -439,7 +439,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 
 		return res.status(200).render("single/Shop-single", obj);
 	} catch (err) {
-		threatLog.error("SHOP SINGLE ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("SHOP SINGLE ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Shop");
 	}
@@ -466,7 +466,7 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 
 		return res.status(200).render("single/Blog-single", obj);
 	} catch (err) {
-		threatLog.error("BLOG ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("BLOG ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(200).redirect("/About");
 	}
@@ -481,7 +481,7 @@ router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 
 		return res.status(200).render("restricted/Admin", obj);
 	} catch (err) {
-		threatLog.error("ADMIN ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("ADMIN ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -507,7 +507,7 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 
 		return res.status(200).render("restricted/Front-post", obj);
 	} catch (err) {
-		threatLog.error("ADMIN FRONT ERROR", err, req.headers, req.ip);
+		threatLog.error("ADMIN FRONT ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -537,7 +537,7 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 
 		return res.status(200).render("restricted/Orders", obj);
 	} catch (err) {
-		threatLog.error("ADMIN ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("ADMIN ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Admin");
 	}
@@ -575,7 +575,7 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 
 		return res.status(200).render("restricted/Order-manage", obj);
 	} catch (err) {
-		threatLog.error("ORDER RECAP ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("ORDER RECAP ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/");
 	}
@@ -587,7 +587,7 @@ router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async
 
 		return res.status(200).render("restricted/Gallery-post", obj);
 	} catch (err) {
-		threatLog.error("GALLERY POST ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("GALLERY POST ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}
@@ -616,7 +616,7 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 
 		return res.status(200).render("restricted/Gallery-patch", obj);
 	} catch (err) {
-		threatLog.error("GALLERY PATCH ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("GALLERY PATCH ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}
@@ -628,7 +628,7 @@ router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 
 		return res.status(200).render("restricted/Shop-post", obj);
 	} catch (err) {
-		threatLog.error("SHOP POST ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("SHOP POST ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Shop");
 	}
@@ -657,7 +657,7 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 
 		return res.status(200).render("restricted/Shop-patch", obj);
 	} catch (err) {
-		threatLog.error("SHOP PATCH ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("SHOP PATCH ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Shop");
 	}
@@ -674,7 +674,7 @@ router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 
 		return res.status(200).render("restricted/Blog-post", obj);
 	} catch (err) {
-		threatLog.error("BLOG POST ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("BLOG POST ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(200).redirect("/restricted/Blog-post");
 	}
@@ -695,7 +695,7 @@ router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN),
 
 		return res.status(200).render("restricted/Blog-patch", obj);
 	} catch (err) {
-		threatLog.error("BLOG PATCH ROUTE ERROR", err, req.headers, req.ip);
+		threatLog.error("BLOG PATCH ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(200).redirect("/");
 	}

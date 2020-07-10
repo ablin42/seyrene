@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
 
 		return res.status(200).json({ error: false, blogs: result });
 	} catch (err) {
-		threatLog.error("BLOG FETCH ERROR", err, req.headers, req.ip);
+		threatLog.error("BLOG FETCH ERROR", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -42,7 +42,7 @@ router.get("/single/:blogId", authToken, async (req, res) => {
 
 		return res.status(200).json({ error: false, blog: blog });
 	} catch (err) {
-		threatLog.error("ERROR FETCHING A BLOG:", err, req.headers, req.ip);
+		threatLog.error("ERROR FETCHING A BLOG:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
 });
@@ -65,7 +65,7 @@ router.post("/", vBlog, setUser, authUser, authRole(ROLE.ADMIN), async (req, res
 		req.flash("success", ERROR_MESSAGE.itemUploaded);
 		return res.status(200).redirect(`/Blog/${blog._id}`);
 	} catch (err) {
-		threatLog.error("POST BLOG ERROR", err, req.headers, req.ip);
+		threatLog.error("POST BLOG ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Admin/Blog/Post");
 	}
@@ -89,7 +89,7 @@ router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), as
 		req.flash("success", ERROR_MESSAGE.itemUploaded);
 		return res.status(200).redirect(`/Blog/${blogId}`);
 	} catch (err) {
-		threatLog.error("PATCH BLOG ERROR", err, req.headers, req.ip);
+		threatLog.error("PATCH BLOG ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect(`/Admin/Blog/Patch/${blogId}`);
 	}
@@ -108,7 +108,7 @@ router.post("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (r
 		req.flash("success", ERROR_MESSAGE.itemDeleted);
 		return res.status(200).redirect("/About");
 	} catch (err) {
-		threatLog("DELETE BLOG ERROR", err, req.headers, req.ip);
+		threatLog("DELETE BLOG ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/About");
 	}
