@@ -135,7 +135,7 @@ app.use(expressSanitizer());
 app.use(csrf({ cookie: false }));
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {
-	if (req.path === "/api/order/confirm") return next();
+	if (req.path === "/api/order/confirm" || req.path === "api/pwinty/callback/status") return next();
 	if (err.code !== "EBADCSRFTOKEN") return next(err);
 
 	threatLog.warn("CSRF error", { headers: req.headers });
