@@ -221,7 +221,7 @@ router.post("/billing/save", vDelivery, setUser, authUser, checkAddress, async (
 
 router.post("/confirm", async (req, res) => {
 	try {
-		const sig = request.headers["stripe-signature"];
+		const sig = req.headers["stripe-signature"];
 		let event = stripe.webhooks.constructEvent(req.body, sig, process.env.ENDPOINT_SECRET);
 
 		console.log(event, "event stripe");
