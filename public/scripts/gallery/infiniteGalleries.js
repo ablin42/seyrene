@@ -1,6 +1,6 @@
 async function infiniteGalleries() {
 	let nbItem = $(".expandable-card").length,
-		page = 1 + Math.floor(nbItem / 6),
+		page = 1 + Math.floor(nbItem / 12),
 		loader = $("#loader");
 	loader.css("display", "block");
 

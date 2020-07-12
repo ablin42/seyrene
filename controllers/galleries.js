@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 	try {
 		const options = {
 			page: parseInt(req.query.page, 10) || 1,
-			limit: 6,
+			limit: 12,
 			sort: { date: -1 }
 		};
 		let [err, result] = await utils.to(Gallery.paginate({}, options));
@@ -40,7 +40,7 @@ router.get("/Tags", async (req, res) => {
 	try {
 		const options = {
 			page: parseInt(req.query.page, 10) || 1,
-			limit: 6,
+			limit: 12,
 			sort: { date: -1 }
 		};
 		if (req.query.t) var tagsArr = req.query.t.split(",");

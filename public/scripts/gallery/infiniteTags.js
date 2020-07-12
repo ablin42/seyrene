@@ -1,6 +1,6 @@
 async function infiniteTags() {
 	let nbItem = $(".expandable-card").length,
-		page = 1 + Math.floor(nbItem / 6),
+		page = 1 + Math.floor(nbItem / 12),
 		loader = $("#loader"),
 		urlToFetch = `/api/gallery/tags?page=${page}`,
 		parsedURL = new URL(window.location.href),

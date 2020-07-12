@@ -2,7 +2,7 @@
 
 <script src="/scripts/gallery/infiniteGalleries.js"></script>
 <script src="/scripts/cart.js"></script>
-<div class="container">
+<div class="container gallery-mode">
 	<div class="container-gallery" id="container-gallery">
 		<% if (locals.galleries){ %> <% Object.keys(locals.galleries).forEach(function (index) { %>
 		<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
