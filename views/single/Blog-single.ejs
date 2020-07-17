@@ -4,15 +4,21 @@
 	<% if(locals.blog){ %>
 	<div class="single-wrapper" id="<%= locals.blog._id %>">
 		<div class="col-10 offset-1">
-			<h3 class="single-title col-12">
-				<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
-				<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
-				<% } %>
-			</h3>
+			<div class="content-wrapper pt-0 pb-0">
+				<div class="blog-header text-center p-3 col-10 offset-1">
+					<h3 class="single-title" style="display: inline;">
+						<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
+						<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
+						<% } %>
+					</h3>
+					<p class="blog-info pb-2">par <b class="blog-author"><%= locals.blog.author %></b>, <i class="blog-date"><%= locals.blog.date %></i></p>
+					<hr class="hr-pwinty mt-3" />
+				</div>
 
-			<p class="blog-info pb-2">par <b class="blog-author"><%= locals.blog.author %></b>, <i class="blog-date"><%= locals.blog.date %></i></p>
-
-			<div class="blog-content col-10 offset-1" id="content-holder"></div>
+				<div class="blog-content col-10 offset-1">
+					<div class="col-10 offset-1" id="content-holder"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<% } %>

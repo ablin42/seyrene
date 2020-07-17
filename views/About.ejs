@@ -11,6 +11,18 @@
           <li><a href="#" onclick="openTab(event, this, 'contact')" class="menu-link"><i class="fas fa-envelope mr-2"></i> Contact <i class="fas fa-chevron-right chev"></i></a></li>
           <li><a href="/CGU"  class="menu-link"><i class="fa fa-gavel mr-2"></i> Legal <i class="fas fa-chevron-right chev"></i></a></li>
         </ul>
+
+        <ul class="footer-list text-center">
+          <li>
+            <a href="#!" class="social-btn"><i class="fab fa-instagram"></i></a>
+          </li>
+          <li>
+            <a href="#!" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+          </li>
+          <li>
+            <a href="#!" class="social-btn"><i class="fab fa-pinterest-p"></i></a>
+          </li>
+        </ul>
       </div>
   
       <div id="contact" class="tab col-9" style="display: none;">
@@ -19,32 +31,34 @@
           <div class="col-10 offset-1 wrapper">
             <div class="section-heading">
                 <h2>Contact</h2>
-                <h5>Nous avons besoin de ces informations pour pouvoir vous répondre...</h5>
+                <h5>Nous avons besoin de ces informations pour pouvoir vous répondre</h5>
                 <h6>Sinon, vous pouvez nous envoyer un mail directement à l'adresse <b>abkarianpatricia@gmail.com</b></h6>
             </div>
             <form class="col-10 offset-1 mt-4" id="contact" method="POST" onsubmit="submitContact(event)" action="/api/contact/">
                 <div class="row">
                     <div class="col-6">
                         <label class="control-label">Nom</label>
-                        <input class="form-control" placeholder="Jean Dupont" type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required>
+                        <input placeholder="Jean Dupont" type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required>
                         <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
                     </div>
                     <div class="col-6">
                         <label class="control-label">Email</label>
-                        <input class="form-control" placeholder="jeandupont@gmail.com" type="email" name="email" id="email" onkeyup="Validate.Email(this);" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required>
+                        <input  placeholder="jeandupont@gmail.com" type="email" name="email" id="email" onkeyup="Validate.Email(this);" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required>
                         <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
                     </div>
                 </div>
 
                 <label class="control-label">Objet</label>
-                <input class="form-control" placeholder="À propos de votre tableau..." type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);" value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>" required>
+                <input  placeholder="À propos de votre tableau..." type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);" value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>" required>
                 <span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
     
                 <label class="control-label">Message</label>
                 <textarea id="content" onkeyup="Validate.String(this, 64, 2048);" class="instructions-textarea" style="min-height: 175px;" name="content" placeholder="Écrivez votre message ici..." required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
                 <span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
 
-                <div class="g-recaptcha" data-sitekey="6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9"></div>
+                <div class="text-center">
+                  <div class="g-recaptcha" data-sitekey="6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9"></div>
+                </div>
                 <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
                 <input type="submit" class="logbtn mt-3" value="Envoyer" id="submit-contact">
             </form>
@@ -105,7 +119,7 @@
       <div id="blog" class="tab col-9">
         <section class="blog-section">
             <div class="container container-blog">
-              <div class="col-10 offset-1 wrapper" id="container-blog">
+              <div class="col-12 wrapper" id="container-blog">
                 <% if (locals.blogs){ %>
                   <% Object.keys(locals.blogs).forEach(function (index) { %>
                       <div class="blog-row" id="<%= locals.blogs[index]._id %>">
@@ -119,7 +133,7 @@
                         <div class="blog-overlay-wrapper">
                           <div class="blog-overlay">
                             <div class="content-holder"></div>
-                            <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+                            <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
                           </div>
                         </div>
                       </div>
@@ -127,7 +141,7 @@
                         <div class="blog-no-overlay-wrapper">
                           <div class="blog-no-overlay">
                             <div class="content-holder"></div>
-                            <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+                            <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
                           </div>
                         </div>
                       </div>

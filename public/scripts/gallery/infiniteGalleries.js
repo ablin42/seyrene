@@ -22,15 +22,15 @@ async function infiniteGalleries() {
 											<img onclick="expand(this);" src="/api/image/${gallery.mainImgId}" class="w-100" alt="${gallery.shorttitle}">
 										</a>
 									
-									<div class="blog-overlay">
+									<div class="blog-overlay" onclick="expand('${gallery.mainImgId}', event, true)">
 										<h4><i><a href="/Galerie/${id}">${gallery.shorttitle}</a></i></h4>
-										<div class="gallery-tags mt-5">`;
+										<div class="gallery-tags mt-2">`;
 
 					gallery.tags.forEach(tag => {
 						toAppend += ` <a href="/Galerie/Tags?t=${tag}">#${tag}</a>`;
 					});
 					toAppend += `   </div>
-											<form action="/Galerie/${id}"><button class="blog-btn">Lire plus</button></form>
+											<form action="/Galerie/${id}"><button class="blog-btn">See More</button></form>
 											</div></div>`;
 					div.innerHTML = toAppend;
 					$("#container-gallery").append(div);

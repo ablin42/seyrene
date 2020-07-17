@@ -26,6 +26,7 @@ class PwintyObject {
 		this.width = $('img[alt="0slide"]')[0].naturalWidth;
 		this.height = $('img[alt="0slide"]')[0].naturalHeight;
 		this.ratio = Math.round((this.width / this.height + Number.EPSILON) * 100) / 100;
+		if (this.height > this.width) this.ratio = Math.round((this.height / this.width + Number.EPSILON) * 100) / 100;
 		this.megapixel = this.width * this.height;
 
 		document.getElementById("subcategories").innerHTML = "";
@@ -35,9 +36,9 @@ class PwintyObject {
 		let selection = "";
 		Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
 			let subcategoryRadio = `<label for="${subcategory}">
-                                    <div class="sku-item unselectable">
+                                    <div class="sku-item unselectable cat-list" onclick="toggleActive(this, 'active-subcat');">
                                         <p>${PWINTY_ITEMS[this.category][subcategory].fullname}</p>
-										<input data-category="${this.category}" 
+										<input class="pwinty-input" data-category="${this.category}" 
 										name="pwinty-subcategory" id="${subcategory}" value="${subcategory}"
 										type="radio" onclick="Pwinty.loadSubCategory(this)">
                                     </div>
@@ -116,6 +117,7 @@ class PwintyObject {
 
 	checkSize(attributeSelect, subcategory, i) {
 		let dimensions = Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i].split("x");
+		console.log(dimensions);
 
 		if (isNaN(parseInt(dimensions[0]))) {
 			for (let j = 0; j < A_FORMAT.length; j++) {
@@ -131,6 +133,7 @@ class PwintyObject {
 			maxDimension = parseInt(dimensions[1]);
 			sizeRatio = Math.round((dimensions[1] / dimensions[0] + Number.EPSILON) * 100) / 100;
 		}
+		console.log(maxDimension, sizeRatio, this.ratio);
 
 		if (this.category !== "FRA") maxDimension = maxDimension * 2.54; //conversion from inches to cm
 

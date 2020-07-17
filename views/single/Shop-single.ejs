@@ -4,14 +4,8 @@
 <div class="container container-single">
 	<div class="single-wrapper">
 		<% if (locals.shop){ %>
-		<div class="col-10 offset-1" id="<%= locals.shop._id %>">
-			<h3 class="single-title col-12">
-				<%= locals.shop.title %> <% if (locals.user && locals.user.role === "admin") { %>
-				<a href="/Admin/Shop/Patch/<%= locals.shop._id %>"><i class="fas fa-edit"></i></a>
-				<% } %>
-			</h3>
-
-			<div class="carousel-container mt-3">
+		<div class="col-10 offset-1 content-wrapper" id="<%= locals.shop._id %>">
+			<div class="carousel-container">
 				<div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
 					<div class="carousel-inner" role="listbox">
 						<% if (locals.img) { %> <% locals.img.forEach(function (item, index) { %>
@@ -33,21 +27,30 @@
 					<!--/.Controls-->
 				</div>
 			</div>
-			<div class="thumbnail-wrapper mb-4 mt-3">
+			<div class="thumbnail-wrapper mb-2 mt-3">
 				<ol class="carousel-indicators no-thumb">
 					<% if (locals.img) { %> <% locals.img.forEach(function (item, index) { %>
 					<li data-target="#carousel-thumb" data-slide-to="<%= index %>" class="<% if(index == 0) { %>active<% } %>">
-						<img class="d-block w-100" src="/img/white_circle.png" alt="..." class="img-fluid" />
+						<img class="d-block w-100" src="/img/grey_circle.png" alt="..." class="img-fluid" />
 					</li>
 					<% }) %> <% } %>
 				</ol>
 			</div>
 
-			<p class="blog-content col-10 offset-1 mt-2"><%= locals.shop.content %></p>
+			<div class="blog-content col-10 offset-1 mt-3 pt-4">
+				<h3 class="single-title col-12 mb-0">
+					<%= locals.shop.title %> <% if (locals.user && locals.user.role === "admin") { %>
+					<a href="/Admin/Shop/Patch/<%= locals.shop._id %>"><i class="fas fa-edit"></i></a>
+					<% } %>
+				</h3>
+				<p class="p-4 mb-0 single-content">
+					<%= locals.shop.content %>
+				</p>
+			</div>
 
-			<div class="col-10 offset-1 text-center">
+			<div class="col-4 offset-4 text-center mt-2">
 				<b class="card-price"><%= locals.shop.price %>€</b>
-				<b class="isUnique" style="color: var(--light-shade);">Toile unique</b>
+				<b class="isUnique">Toile unique</b>
 				<input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shop._id %>', this)" /><!--disabled -->
 			</div>
 			<% } %>

@@ -10,16 +10,17 @@
 				<a href="#expand">
 					<img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100" alt="<%= locals.galleries[index].title %>" />
 				</a>
-				<div class="blog-overlay">
+
+				<div class="blog-overlay" onclick="expand('<%= locals.galleries[index]._id %>', event, true)">
 					<h4>
 						<i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i>
 					</h4>
-					<div class="gallery-tags mt-5">
+					<div class="gallery-tags mt-2">
 						<% locals.galleries[index].tags.forEach(function (tag) { %>
 						<a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
 						<% }) %>
 					</div>
-					<form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">Lire plus</button></form>
+					<form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">See More</button></form>
 				</div>
 			</div>
 		</div>

@@ -11,13 +11,18 @@ function openTab(e, item, tabName) {
 	for (let i = 0; i < tab.length; i++) {
 		tab[parseInt(i)].style.display = "none";
 	}
-	document.getElementById(tabName).style.display = "flex";
+	document.getElementById(tabName).style.display = "block";
 }
 
-function expand(image) {
+function expand(image, e = null, gallery = false) {
 	let expand = $("#expandImg");
 	if (expand) {
-		expand.src = image.src;
-		expand.attr("src", image.src);
+		if (gallery === false) {
+			expand.src = image.src;
+			expand.attr("src", image.src);
+		} else {
+			console.log(e.path[0], e.path[0].classList.contains("blog-overlay"), e.path[0].classList);
+			if (e.path[0].classList.contains("blog-overlay")) $(`#${image} img`).click();
+		}
 	}
 }

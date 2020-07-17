@@ -2,50 +2,53 @@
 
 <script src="/scripts/cart.js"></script>
 <div class="container">
-	
 	<div class="container-single container-catalog col-12">
-		<div class="catalog-category tab col-10 offset-1" id="framed">
-
+		<div class="catalog-wrapper col-10 offset-1">
 			<div class="text-center mb-4 pt-4">
-			<button class="tab-btn active" onclick="openTab(this, 'framed')">Framed Painting</button>
-			<button class="tab-btn" onclick="openTab(this, 'fap')">Fine Art Print</button>
-			<button class="tab-btn" onclick="openTab(this, 'canvas')">Canvas</button>
+				<button class="tab-btn active" onclick="openTab(this, 'framed')">Framed Painting</button>
+				<button class="tab-btn" onclick="openTab(this, 'fap')">Fine Art Print</button>
+				<button class="tab-btn" onclick="openTab(this, 'canvas')">Canvas</button>
+			</div>
 		</div>
-			<div class="category-text">
-				<h1 class="catalog-title-category">Framed prints</h1>
-				<h4>Handmade by Guild-recognised framers</h4>
-				<p>
-					Each framed print is handmade in the UK by our team of specialist picture framers. All picture frames are made to order; individually created from a range of popular mouldings and finished
-					with your choice of paper, mount and glaze. We offer six standard frame types, as well as a wide range of custom framing and finishing options
-				</p>
 
-				<hr/>
-			<h4 class="text-center">Frames Categories</h4>
-			<div class="cat-btn-wrap text-center m-3">
-				<button class="framed cat-btn tab-btn active" onclick="openSubCategory(this, 'box', 'framed')">Box</button>
-				<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'classic', 'framed')">Classic</button>
-				<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'gloss', 'framed')">Gloss</button>
-				<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'spacer', 'framed')">Spacer</button>
-				<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'sur', 'framed')">Surface</button>
-				<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'swoop', 'framed')">Swoop</button>
-		
-			</div>		<hr/>		</div>
+		<div class="catalog-category tab col-10 offset-1" id="framed">
+			<div class="row pb-0">
+				<div class="col-6">
+					<h1 class="catalog-title-category">Framed prints</h1>
+					<h4>Handmade by Guild-recognised framers</h4>
+					<p>
+						Each framed print is <b>handmade</b> in the UK by our team of specialist picture framers. All picture frames are made to order; individually created from a range of popular mouldings and
+						finished with <b>your choice of paper, mount and glaze.</b> We offer six standard frame types for each one of your need
+					</p>
+				</div>
 
-			<div class="catalog-subcategory framed sub-toggle" id="box">
-				<div class="category-text">
+				<div class="col-6 mt-2 cat-btn-wrap">
+					<h4 class="text-center">Frames Categories</h4>
+					<div class="text-center m-3">
+						<button class="framed cat-btn tab-btn active" onclick="openSubCategory(this, 'box', 'framed')">Box</button>
+						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'classic', 'framed')">Classic</button>
+						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'gloss', 'framed')">Gloss</button>
+						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'spacer', 'framed')">Spacer</button>
+						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'sur', 'framed')">Surface</button>
+						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'swoop', 'framed')">Swoop</button>
+					</div>
+				</div>
+				<hr style="margin: auto; width: 80%;" />
+
+				<div class="catalog-subcategory framed sub-toggle" id="box">
 					<h1 class="catalog-title-category">Box Frame</h1>
 					<h4>A modern design adding depth to your pictures</h4>
-					<p>
-						Our box frame is milled from solid ash, hand-stained by our team and finished with a specialist wax to accentuate the grain. The frame has a box profile measuring 20mm (front face) by 33mm
-						(depth from wall). Available in black, white, brown or natural.
+					<p class="col-8 pl-0">
+						Our <b>box frame</b> is milled from solid ash, hand-stained by our team and finished with a specialist wax to accentuate the grain. <br />
+						The frame has a <b>box profile</b> measuring <b>20mm</b> (front face) by <b>33mm</b> (depth from wall). Available in <b>black, white, brown or natural.</b>
 					</p>
 
 					<div class="row">
-						<div class="col-6">
+						<div class="col-6 text-center mt-5">
 							<img src="/img/framed-box-cut.png" />
 						</div>
 						<div class="col-6">
-							<h2>Highlights</h2>
+							<h4>Highlights</h4>
 							<ul>
 								<li>Classic deep frame</li>
 								<li>Solid ash with hand-stained finish</li>
@@ -57,7 +60,8 @@
 							<div class="catalog-colors">
 								<h4>Mount colours</h4>
 								<p>
-									Our standard mounts are available at depths of 1.4mm or 2.0mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade with age.
+									Our standard mounts are available at depths of <b>1.4mm</b> or <b>2.0mm</b>. All mounts are "conservation grade", <b>FSC certified, 100% acid free</b>, and will not discolour or fade
+									with age.
 								</p>
 								<ul class="mounts">
 									<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">Snow white</span></li>
@@ -68,7 +72,7 @@
 						</div>
 					</div>
 
-					<h4>Custom framing glaze</h4>
+					<h4>Framing glaze</h4>
 					<p>We support a choice of three different types of glaze for finishing your framed pictures</p>
 					<ul>
 						<li>2mm water-white float glass</li>
@@ -76,25 +80,23 @@
 						<li>Invisible museum glass</li>
 					</ul>
 					<p>
-						Float glass is the standard industry glaze used in most framed pictures. Plexiglass provides increased UV protection, is extremely robust and offers less glare than float glass. Works well
-						in larger sizes; especially if being shipped internationally. Invisible museum glass offers the clearest possible glazing option. The glaze has very low reflective properties, appearing as
-						though no glass is present in the picture. It creates genuinely stunning results and is perfect for prestige exhibitions, high-value commissions or premium interior design projects.
+						<b>Float glass</b> is the standard industry glaze used in most framed pictures. <br />
+						<b>Plexiglass</b> provides increased UV protection, is extremely robust and offers less glare than float glass. Works well in larger sizes. <br />
+						<b>Invisible museum glass</b> offers the clearest possible glazing option. The glaze has very low reflective properties, appearing as though no glass is present in the picture. It creates
+						genuinely stunning results and is perfect for prestige exhibitions, high-value commissions or premium interior design projects.
 					</p>
-				</div>
 
-				<img class="w-100" src="/img/glaze.jpg" />
-				<div class="category-text text-center"><b>Invisible low-reflective museum glass versus standard float glass</b></div>
+					<img class="w-100" src="/img/glaze.jpg" />
+					<div class="text-center w-100"><b>Invisible low-reflective museum glass versus standard float glass</b></div>
 
-				<div class="category-text">
 					<h4>Paper Types</h4>
 
-					<div class="catalog-substrate row">
+					<div class="row">
 						<div class="catalog-substrate-item col-6">
 							<img class="w-100" src="/img/fine-art-1.jpg" />
-
 							<p>
 								<b>Budget Art Paper</b><br />
-								An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most competitive price.
+								An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most <b>competitive price</b>.
 							</p>
 						</div>
 
@@ -103,8 +105,8 @@
 
 							<p>
 								<b>Enhanced Matte Art</b><br />
-								A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour
-								graphics or illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+								A <b>premium-quality</b> heavyweight fine art print material with a <b>smooth, clean finish.</b> This museum-quality paper is <b>extremely consistent</b> and works perfectly with
+								large, full colour graphics or illustrations. The <b>matte finish</b> emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
 							</p>
 						</div>
 
@@ -113,8 +115,8 @@
 
 							<p>
 								<b>Smooth Art Paper</b><br />
-								A high-quality, smooth matt paper with a light, fine-grain surface texture. This paper is particularly suited to contemporary illustration and photography. Image reproduction is sharp,
-								crisp and vibrant, with great density and vivid colours.
+								A <b>high-quality</b>, smooth <b>matt paper</b> with a light, <b>fine-grain surface texture.</b> This paper is particularly suited to contemporary illustration and photography. Image
+								reproduction is <b>sharp, crisp and vibrant</b>, with great density and vivid colours.
 							</p>
 						</div>
 
@@ -123,8 +125,8 @@
 
 							<p>
 								<b>Museum Fine Art</b><br />
-								A gently textured etching paper designed for museum-quality reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of artworks and
-								paintings. Ideal for premium colour and monochrome prints.
+								A <b>gently textured</b> etching paper designed for <b>museum-quality</b> reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of
+								artworks and paintings. Ideal for premium colour and monochrome prints.
 							</p>
 						</div>
 
@@ -133,8 +135,8 @@
 
 							<p>
 								<b>Cold Press Watercolour Paper</b><br />
-								A rough-textured, coarse-structured surface designed for high-quality art and photographic reproductions using giclée techniques. Particularly well suited to reproducing collages and
-								graphic illustrations featuring solid blocks of colour.
+								A <b>rough-textured</b>, coarse-structured surface designed for <b>high-quality</b> art and photographic reproductions using giclée techniques. Particularly well suited to reproducing
+								collages and graphic illustrations featuring solid blocks of colour.
 							</p>
 						</div>
 
@@ -142,59 +144,63 @@
 							<img class="w-100" src="/img/fine-art-7.jpg" />
 							<p>
 								<b>Hahnemühle German Etching</b><br />
-								A heavy-duty paper with a more textured finish than Photorag (HPR), the velvety matt surface is optimised for high-contrast prints and works brilliantly for limited editions. The paper
-								has a warm white hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
+								A heavy-duty paper with a <b>more textured finish</b>, the velvety <b>matt surface</b> is optimised for high-contrast prints and works brilliantly for limited editions. The paper has a
+								<b>warm white</b> hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
 							</p>
 						</div>
 					</div>
-					</div>
 					<img class="w-100" src="/img/framed-box-1.jpg" />
-						<div class="category-text text-center"><b>Our box framed print, using a black frame and snow white mount</span></b></div>
+					<div class="text-center w-100"><b>Our box framed print, using a black frame and snow white mount</b></div>
 
 					<img class="w-100" src="/img/framed-box-2.jpg" />
-						<div class="category-text text-center"><b>Black, white, brown and natural box frame available</span></b></div>
+					<div class="text-center w-100"><b>Black, white, brown and natural box frame available</b></div>
 
 					<img class="w-100" src="/img/framed-box-3.jpg" />
-						<div class="category-text text-center"><b>Also available with a full-bleed/no-mount option</span></b></div>
+					<div class="text-center w-100"><b>Also available with a full-bleed/no-mount option</b></div>
 
 					<img class="w-100" src="/img/framed-box-4.jpg" />
-						<div class="category-text text-center"><b>Solid ash frame</span></b></div>
+					<div class="text-center w-100"><b>Solid ash frame</b></div>
 				</div>
-			</div>
 
-			<div class="catalog-subcategory framed sub-toggle" id="classic" style="display: none;">
-				<h2>Classic</h2>
-				<h4>Our most popular picture frame</h4>
-				<p>
-					Created from high-quality wood, milled with simple clean lines and presented with a satin finish. This frame has a square profile measuring 20mm (front face) by 23mm (depth from wall).
-					Available in black, white, brown, silver, gold or natural.
-				</p>
+				<div class="catalog-subcategory framed sub-toggle" id="classic" style="display: none;">
+					<h1 class="catalog-title-category">Classic Frame</h1>
+					<h4>Our most popular picture frame</h4>
+					<p class="col-8 pl-0">
+						Created from <b>high-quality wood</b>, milled with simple clean lines and presented with a <b>satin finish.</b><br />
+						This frame has a square profile measuring <b>20mm</b> (front face) by <b>23mm</b> (depth from wall). Available in <b>black, white, brown, silver, gold or natural.</b>
+					</p>
 
-				<div>
-					<img src="/img/framed-cla-cut.png" />
+					<div class="row">
+						<div class="col-6 text-center mt-5">
+							<img src="/img/framed-cla-cut.png" />
+						</div>
 
-					<h2>Highlights</h2>
-					<ul>
-						<li>Eternally popular simple, elegant design</li>
-						<li>Custom mount, cut perfectly to your image</li>
-						<li>Delivered fully strung ready for hanging</li>
-						<li>Choice of colours, including gilts</li>
-						<li>Available in multiple sizes</li>
-					</ul>
+						<div class="col-6">
+							<h4>Highlights</h4>
+							<ul>
+								<li>Eternally popular simple, elegant design</li>
+								<li>Custom mount, cut perfectly to your image</li>
+								<li>Delivered fully strung ready for hanging</li>
+								<li>Choice of colours, including gilts</li>
+								<li>Available in multiple sizes</li>
+							</ul>
 
-					<div class="catalog-colors">
-						<h4>Mount colours</h4>
-						<p>
-							Our standard mounts are available at depths of 1.4mm or 2.0mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade with age.
-						</p>
-						<ul class="mounts">
-							<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">Snow white</span></li>
-							<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
-							<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
-						</ul>
+							<div class="catalog-colors">
+								<h4>Mount colours</h4>
+								<p>
+									Our standard mounts are available at depths of <b>1.4mm</b> or <b>2.0mm.</b> All mounts are "conservation grade", <b>FSC certified, 100% acid free</b>, and will not discolour or fade
+									with age.
+								</p>
+								<ul class="mounts">
+									<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">Snow white</span></li>
+									<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
+									<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
+								</ul>
+							</div>
+						</div>
 					</div>
 
-					<h4>Custom framing glaze</h4>
+					<h4>Framing glaze</h4>
 					<p>We support a choice of three different types of glaze for finishing your framed pictures</p>
 					<ul>
 						<li>2mm water-white float glass</li>
@@ -202,166 +208,206 @@
 						<li>Invisible museum glass</li>
 					</ul>
 					<p>
-						Float glass is the standard industry glaze used in most framed pictures. Plexiglass provides increased UV protection, is extremely robust and offers less glare than float glass. Works well
-						in larger sizes; especially if being shipped internationally. Invisible museum glass offers the clearest possible glazing option. The glaze has very low reflective properties, appearing as
-						though no glass is present in the picture. It creates genuinely stunning results and is perfect for prestige exhibitions, high-value commissions or premium interior design projects.
+						<b>Float glass</b> is the standard industry glaze used in most framed pictures. <br />
+						<b>Plexiglass</b> provides increased UV protection, is extremely robust and offers less glare than float glass. Works well in larger sizes. <br />
+						<b>Invisible museum glass</b> offers the clearest possible glazing option. The glaze has very low reflective properties, appearing as though no glass is present in the picture. It creates
+						genuinely stunning results and is perfect for prestige exhibitions, high-value commissions or premium interior design projects.
 					</p>
 					<img class="w-100" src="/img/glaze.jpg" />
-					<span>Invisible low-reflective museum glass versus standard float glass</span>
+					<div class="text-center w-100"><b>Invisible low-reflective museum glass versus standard float glass</b></div>
 
-					<div class="catalog-substrate">
-						<h4>Paper Types</h4>
+					<h4>Paper Types</h4>
 
-						<img src="/img/fine-art-1.jpg" />
-						<span>Budget Art Paper</span>
-						<p>
-							An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most competitive price.
-						</p>
+					<div class="row">
+						<div class="catalog-substrate-item col-6">
+							<img class="w-100" src="/img/fine-art-1.jpg" />
+							<p>
+								<b>Budget Art Paper</b><br />
+								An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most <b>competitive price</b>.
+							</p>
+						</div>
 
-						<img src="/img/fine-art-2.jpg" />
-						<span>Enhanced Matte Art</span>
-						<p>
-							A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour graphics
-							or illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
-						</p>
+						<div class="catalog-substrate-item col-6">
+							<img class="w-100" src="/img/fine-art-2.jpg" />
 
-						<img src="/img/fine-art-3.jpg" />
-						<span>Smooth Art Paper</span>
-						<p>
-							A high-quality, smooth matt paper with a light, fine-grain surface texture. This paper is particularly suited to contemporary illustration and photography. Image reproduction is sharp,
-							crisp and vibrant, with great density and vivid colours.
-						</p>
+							<p>
+								<b>Enhanced Matte Art</b><br />
+								A <b>premium-quality</b> heavyweight fine art print material with a <b>smooth, clean finish.</b> This museum-quality paper is <b>extremely consistent</b> and works perfectly with
+								large, full colour graphics or illustrations. The <b>matte finish</b> emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+							</p>
+						</div>
 
-						<img src="/img/fine-art-4.jpg" />
-						<span>Museum Fine Art</span>
-						<p>
-							A gently textured etching paper designed for museum-quality reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of artworks and
-							paintings. Ideal for premium colour and monochrome prints.
-						</p>
+						<div class="catalog-substrate-item col-6">
+							<img class="w-100" src="/img/fine-art-3.jpg" />
 
-						<img src="/img/fine-art-6.jpg" />
-						<span>Cold Press Watercolour Paper</span>
-						<p>
-							A rough-textured, coarse-structured surface designed for high-quality art and photographic reproductions using giclée techniques. Particularly well suited to reproducing collages and
-							graphic illustrations featuring solid blocks of colour.
-						</p>
+							<p>
+								<b>Smooth Art Paper</b><br />
+								A <b>high-quality</b>, smooth <b>matt paper</b> with a light, <b>fine-grain surface texture.</b> This paper is particularly suited to contemporary illustration and photography. Image
+								reproduction is <b>sharp, crisp and vibrant</b>, with great density and vivid colours.
+							</p>
+						</div>
+
+						<div class="catalog-substrate-item col-6">
+							<img class="w-100" src="/img/fine-art-4.jpg" />
+
+							<p>
+								<b>Museum Fine Art</b><br />
+								A <b>gently textured</b> etching paper designed for <b>museum-quality</b> reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of
+								artworks and paintings. Ideal for premium colour and monochrome prints.
+							</p>
+						</div>
+
+						<div class="catalog-substrate-item col-6">
+							<img class="w-100" src="/img/fine-art-6.jpg" />
+
+							<p>
+								<b>Cold Press Watercolour Paper</b><br />
+								A <b>rough-textured</b>, coarse-structured surface designed for <b>high-quality</b> art and photographic reproductions using giclée techniques. Particularly well suited to reproducing
+								collages and graphic illustrations featuring solid blocks of colour.
+							</p>
+						</div>
 					</div>
 
 					<img class="w-100" src="/img/framed-cla-1.jpg" />
-					<span>Our classic frame in black</span>
+					<div class="text-center w-100"><b>Our classic frame in black</b></div>
 
 					<img class="w-100" src="/img/framed-cla-2.jpg" />
-					<span>Satin finish and clean-milled lines </span>
+					<div class="text-center w-100"><b>Satin finish and clean-milled lines</b></div>
 
 					<img class="w-100" src="/img/framed-cla-3.jpg" />
-					<span>Our classic frame colour range</span>
+					<div class="text-center w-100"><b>Our classic frame colour range</b></div>
 
 					<img class="w-100" src="/img/framed-cla-4.jpg" />
-					<span>Classic frame with a snow white mount</span>
+					<div class="text-center w-100"><b>Classic frame with a snow white mount</b></div>
 				</div>
-			</div>
 
-			<div class="catalog-subcategory framed sub-toggle" id="gloss" style="display: none;">
-				<h2>Gloss</h2>
-				<h4>Full-bleed pictures with a thin stylish profile</h4>
-				<p>
-					The Gloss frame has a high-shine, lacquered finish creating a highly sophisticated look. The profile has a subtle curve and measures 39mm wide (front face) by 25mm deep (depth from wall).
-					Available in black or white.
-				</p>
-
-				<div>
-					<img src="/img/framed-glo-cut.png" />
-
-					<h2>Highlights</h2>
-					<ul>
-						<li>High-quality finish suited to luxury interiors</li>
-						<li>Perfect for colour and black & white photography</li>
-						<li>Delivered fully strung, ready for hanging</li>
-						<li>Available in multiple sizes</li>
-					</ul>
-
-					<h4>Framing glaze</h4>
-					<p>
-						Only one choice available for this item: Clear acrylic plexiglass. Plexiglass provides increased UV protection, is extremely robust and offers less glare than float glass.
+				<div class="catalog-subcategory framed sub-toggle" id="gloss" style="display: none;">
+					<h1 class="catalog-title-category">Gloss Frame</h1>
+					<h4>Full-bleed pictures with a thin stylish profile</h4>
+					<p class="col-8 pl-0">
+						The Gloss frame has a <b>high-shine, lacquered finish</b> creating a highly sophisticated look. <br />The profile has a <b>subtle curve</b> and measures <b>39mm</b> wide (front face) by
+						<b>25mm</b> deep (depth from wall). Available in <b>black</b> or <b>white.</b>
 					</p>
 
-					<div class="catalog-substrate">
+					<div class="row">
+						<div class="col-6 text-center mt-5">
+							<img src="/img/framed-glo-cut.png" />
+						</div>
+
+						<div class="col-6">
+							<h4>Highlights</h4>
+							<ul>
+								<li>High-quality finish suited to luxury interiors</li>
+								<li>Perfect for colour and black & white photography</li>
+								<li>Delivered fully strung, ready for hanging</li>
+								<li>Available in multiple sizes</li>
+							</ul>
+
+							<h4>Framing glaze</h4>
+							<p>
+								Only one choice available for this item: <b>Clear acrylic plexiglass.</b> Plexiglass provides increased UV protection, is <b>extremely robust</b> and offers <b>less glare</b> than
+								float glass.
+							</p>
+						</div>
 						<h4>Paper Types</h4>
+						<div class="row">
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-1.jpg" />
+								<p>
+									<b>Budget Art Paper</b><br />
+									An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most <b>competitive price</b>.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-1.jpg" />
-						<span>Budget Art Paper</span>
-						<p>
-							An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most competitive price.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-2.jpg" />
 
-						<img src="/img/fine-art-2.jpg" />
-						<span>Enhanced Matte Art</span>
-						<p>
-							A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour graphics
-							or illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
-						</p>
+								<p>
+									<b>Enhanced Matte Art</b><br />
+									A <b>premium-quality</b> heavyweight fine art print material with a <b>smooth, clean finish.</b> This museum-quality paper is <b>extremely consistent</b> and works perfectly with
+									large, full colour graphics or illustrations. The <b>matte finish</b> emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-3.jpg" />
-						<span>Smooth Art Paper</span>
-						<p>
-							A high-quality, smooth matt paper with a light, fine-grain surface texture. This paper is particularly suited to contemporary illustration and photography. Image reproduction is sharp,
-							crisp and vibrant, with great density and vivid colours.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-3.jpg" />
 
-						<img src="/img/fine-art-4.jpg" />
-						<span>Museum Fine Art</span>
-						<p>
-							A gently textured etching paper designed for museum-quality reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of artworks and
-							paintings. Ideal for premium colour and monochrome prints.
-						</p>
+								<p>
+									<b>Smooth Art Paper</b><br />
+									A <b>high-quality</b>, smooth <b>matt paper</b> with a light, <b>fine-grain surface texture.</b> This paper is particularly suited to contemporary illustration and photography. Image
+									reproduction is <b>sharp, crisp and vibrant</b>, with great density and vivid colours.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-6.jpg" />
-						<span>Cold Press Watercolour Paper</span>
-						<p>
-							A rough-textured, coarse-structured surface designed for high-quality art and photographic reproductions using giclée techniques. Particularly well suited to reproducing collages and
-							graphic illustrations featuring solid blocks of colour.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-4.jpg" />
 
-						<img src="/img/fine-art-7.jpg" />
-						<span>Hahnemühle German Etching</span>
-						<p>
-							A heavy-duty paper with a more textured finish than Photorag (HPR), the velvety matt surface is optimised for high-contrast prints and works brilliantly for limited editions. The paper
-							has a warm white hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
-						</p>
+								<p>
+									<b>Museum Fine Art</b><br />
+									A <b>gently textured</b> etching paper designed for <b>museum-quality</b> reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of
+									artworks and paintings. Ideal for premium colour and monochrome prints.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-6.jpg" />
+
+								<p>
+									<b>Cold Press Watercolour Paper</b><br />
+									A <b>rough-textured</b>, coarse-structured surface designed for <b>high-quality</b> art and photographic reproductions using giclée techniques. Particularly well suited to
+									reproducing collages and graphic illustrations featuring solid blocks of colour.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-7.jpg" />
+								<p>
+									<b>Hahnemühle German Etching</b><br />
+									A heavy-duty paper with a <b>more textured finish</b>, the velvety <b>matt surface</b> is optimised for high-contrast prints and works brilliantly for limited editions. The paper has
+									a <b>warm white</b> hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
+								</p>
+							</div>
+
+							<img class="w-100" src="/img/framed-glo-1.jpg" />
+							<div class="text-center w-100"><b>Our gloss frame in white</b></div>
+
+							<img class="w-100" src="/img/framed-glo-2.jpg" />
+							<div class="text-center w-100"><b>Subtle curve with a straight edge 15mm deep</b></div>
+
+							<img class="w-100" src="/img/framed-glo-3.jpg" />
+							<div class="text-center w-100"><b>High-shine, lacquered finish</b></div>
+
+							<img class="w-100" src="/img/framed-glo-4.jpg" />
+							<div class="text-center w-100"><b>The gloss frame is also available with a full-bleed/no-mount option</b></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="catalog-subcategory framed sub-toggle" id="spacer" style="display: none;">
+					<h1 class="catalog-title-category">Spacer Frame</h1>
+					<h4>A contemporary twist on the traditional box frame</h4>
+					<p class="col-8 pl-0">
+						The Spacer frame has a deep fillet to create <b>additional depth</b> for displaying artworks or photographs. Prints are typically <b>back-mounted</b>, rather than a traditional front
+						mount, creating a modern contemporary look. <br />
+						The Spacer uses our solid ash box frame which has a box profile measuring <b>20mm</b> (front face) by <b>33mm</b> (depth from wall). Available in <b>black</b> or <b>white.</b>
+					</p>
+					<div class="row">
+						<div class="col-6 text-center mt-5">
+							<img src="/img/framed-spa-cut.png" />
+						</div>
+
+						<div class="col-6">
+							<h4>Highlights</h4>
+							<ul>
+								<li>Contemporary finish suited to back mounted prints</li>
+								<li>Solid Ash with hand stained finish</li>
+								<li>Delivered fully strung, ready for hanging</li>
+								<li>Available in multiple sizes</li>
+							</ul>
+						</div>
 					</div>
 
-					<img class="w-100" src="/img/framed-glo-1.jpg" />
-					<span>Our gloss frame in white</span>
-
-					<img class="w-100" src="/img/framed-glo-2.jpg" />
-					<span>Subtle curve with a straight edge 15mm deep</span>
-
-					<img class="w-100" src="/img/framed-glo-3.jpg" />
-					<span>High-shine, lacquered finish</span>
-
-					<img class="w-100" src="/img/framed-glo-4.jpg" />
-					<span>The gloss frame is also available with a full-bleed/no-mount option</span>
-				</div>
-			</div>
-			<div class="catalog-subcategory framed sub-toggle" id="spacer" style="display: none;">
-				<h2>Spacer</h2>
-				<h4>A contemporary twist on the traditional box frame</h4>
-				<p>
-					The Spacer frame has a deep fillet to create additional depth for displaying artworks or photographs. Prints are typically back-mounted, rather than a traditional front mount, creating a
-					modern contemporary look. The Spacer uses our solid ash box frame which has a box profile measuring 20mm (front face) by 33mm (depth from wall). Available in black or white.
-				</p>
-				<div>
-					<img src="/img/framed-spa-cut.png" />
-
-					<h2>Highlights</h2>
-					<ul>
-						<li>Contemporary finish suited to back mounted prints</li>
-						<li>Solid Ash with hand stained finish</li>
-						<li>Delivered fully strung, ready for hanging</li>
-						<li>Available in multiple sizes</li>
-					</ul>
-
-					<h4>Custom framing glaze</h4>
+					<h4>Framing Glaze</h4>
 					<p>We support a choice of three different types of glaze for finishing your framed pictures</p>
 					<ul>
 						<li>2mm water-white float glass</li>
@@ -369,340 +415,414 @@
 						<li>Invisible museum glass</li>
 					</ul>
 					<p>
-						Float glass is the standard industry glaze used in most framed pictures. Plexiglass provides increased UV protection, is extremely robust and offers less glare than float glass. Works well
-						in larger sizes; especially if being shipped internationally. Invisible museum glass offers the clearest possible glazing option. The glaze has very low reflective properties, appearing as
-						though no glass is present in the picture. It creates genuinely stunning results and is perfect for prestige exhibitions, high-value commissions or premium interior design projects.
+						<b>Float glass</b> is the standard industry glaze used in most framed pictures. <br />
+						<b>Plexiglass</b> provides increased UV protection, is extremely robust and offers less glare than float glass. Works well in larger sizes. <br />
+						<b>Invisible museum glass</b> offers the clearest possible glazing option. The glaze has very low reflective properties, appearing as though no glass is present in the picture. It creates
+						genuinely stunning results and is perfect for prestige exhibitions, high-value commissions or premium interior design projects.
 					</p>
 
 					<img class="w-100" src="/img/glaze.jpg" />
-					<span>Invisible low-reflective museum glass versus standard float glass</span>
+					<div class="text-center w-100"><b>Invisible low-reflective museum glass versus standard float glass</b></div>
 
-					<div class="catalog-substrate">
-						<h4>Paper Types</h4>
+					<div class="row">
+						<div class="row">
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-1.jpg" />
+								<p>
+									<b>Budget Art Paper</b><br />
+									An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most <b>competitive price</b>.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-1.jpg" />
-						<span>Budget Art Paper</span>
-						<p>
-							An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most competitive price.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-2.jpg" />
 
-						<img src="/img/fine-art-2.jpg" />
-						<span>Enhanced Matte Art</span>
-						<p>
-							A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour graphics
-							or illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
-						</p>
+								<p>
+									<b>Enhanced Matte Art</b><br />
+									A <b>premium-quality</b> heavyweight fine art print material with a <b>smooth, clean finish.</b> This museum-quality paper is <b>extremely consistent</b> and works perfectly with
+									large, full colour graphics or illustrations. The <b>matte finish</b> emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-3.jpg" />
-						<span>Smooth Art Paper</span>
-						<p>
-							A high-quality, smooth matt paper with a light, fine-grain surface texture. This paper is particularly suited to contemporary illustration and photography. Image reproduction is sharp,
-							crisp and vibrant, with great density and vivid colours.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-3.jpg" />
 
-						<img src="/img/fine-art-4.jpg" />
-						<span>Museum Fine Art</span>
-						<p>
-							A gently textured etching paper designed for museum-quality reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of artworks and
-							paintings. Ideal for premium colour and monochrome prints.
-						</p>
+								<p>
+									<b>Smooth Art Paper</b><br />
+									A <b>high-quality</b>, smooth <b>matt paper</b> with a light, <b>fine-grain surface texture.</b> This paper is particularly suited to contemporary illustration and photography. Image
+									reproduction is <b>sharp, crisp and vibrant</b>, with great density and vivid colours.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-6.jpg" />
-						<span>Cold Press Watercolour Paper</span>
-						<p>
-							A rough-textured, coarse-structured surface designed for high-quality art and photographic reproductions using giclée techniques. Particularly well suited to reproducing collages and
-							graphic illustrations featuring solid blocks of colour.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-4.jpg" />
 
-						<img src="/img/fine-art-7.jpg" />
-						<span>Hahnemühle German Etching</span>
-						<p>
-							A heavy-duty paper with a more textured finish than Photorag (HPR), the velvety matt surface is optimised for high-contrast prints and works brilliantly for limited editions. The paper
-							has a warm white hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
-						</p>
+								<p>
+									<b>Museum Fine Art</b><br />
+									A <b>gently textured</b> etching paper designed for <b>museum-quality</b> reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of
+									artworks and paintings. Ideal for premium colour and monochrome prints.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-6.jpg" />
+
+								<p>
+									<b>Cold Press Watercolour Paper</b><br />
+									A <b>rough-textured</b>, coarse-structured surface designed for <b>high-quality</b> art and photographic reproductions using giclée techniques. Particularly well suited to
+									reproducing collages and graphic illustrations featuring solid blocks of colour.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-7.jpg" />
+								<p>
+									<b>Hahnemühle German Etching</b><br />
+									A heavy-duty paper with a <b>more textured finish</b>, the velvety <b>matt surface</b> is optimised for high-contrast prints and works brilliantly for limited editions. The paper has
+									a <b>warm white</b> hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
+								</p>
+							</div>
+						</div>
 					</div>
 
 					<img class="w-100" src="/img/framed-spa-1.jpg" />
-					<span>Our white spacer frame</span>
+					<div class="text-center w-100"><b>Our white spacer frame</b></div>
 
 					<img class="w-100" src="/img/framed-spa-2.jpg" />
-					<span>Back-mounting of the spacer frame</span>
+					<div class="text-center w-100"><b>Back-mounting of the spacer frame</b></div>
 
 					<img class="w-100" src="/img/framed-spa-3.jpg" />
-					<span>Subtle wood grain</span>
+					<div class="text-center w-100"><b>Subtle wood grain</b></div>
 
 					<img class="w-100" src="/img/framed-spa-4.jpg" />
-					<span>Our spacer frame is 33mm deep</span>
+					<div class="text-center w-100"><b>Our spacer frame is 33mm deep</b></div>
 				</div>
-			</div>
-			<div class="catalog-subcategory framed sub-toggle" id="sur" style="display: none;">
-				<h2>Surface</h2>
-				<h4>Full-bleed pictures with a thin stylish profile</h4>
-				<p>
-					The Surface frame provides a subtle, contemporary surround. The frame is very thin, has a smooth satin texture and comes unglazed, with the image front mounted flush to the surface edge.
-					Measures 5mm wide (front face) by 30mm or 50mm deep (depth from wall). Available in black or white.
-				</p>
-				<div>
-					<img src="/img/framed-sur-cut.png" />
 
-					<h2>Highlights</h2>
-					<ul>
-						<li>Exceptional value</li>
-						<li>Solid pine with a smooth satin finish</li>
-						<li>Delivered fully strung, ready for hanging</li>
-						<li>Available in multiple sizes</li>
-					</ul>
-
-					<div class="catalog-substrate">
-						<h4>Paper Types</h4>
-
-						<img src="/img/fine-art-1.jpg" />
-						<span>Budget Art Paper</span>
-						<p>
-							An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most competitive price.
-						</p>
-
-						<img src="/img/fine-art-2.jpg" />
-						<span>Enhanced Matte Art</span>
-						<p>
-							A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour graphics
-							or illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
-						</p>
-
-						<img src="/img/fine-art-3.jpg" />
-						<span>Smooth Art Paper</span>
-						<p>
-							A high-quality, smooth matt paper with a light, fine-grain surface texture. This paper is particularly suited to contemporary illustration and photography. Image reproduction is sharp,
-							crisp and vibrant, with great density and vivid colours.
-						</p>
-
-						<img src="/img/fine-art-4.jpg" />
-						<span>Museum Fine Art</span>
-						<p>
-							A gently textured etching paper designed for museum-quality reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of artworks and
-							paintings. Ideal for premium colour and monochrome prints.
-						</p>
-
-						<img src="/img/fine-art-6.jpg" />
-						<span>Cold Press Watercolour Paper</span>
-						<p>
-							A rough-textured, coarse-structured surface designed for high-quality art and photographic reproductions using giclée techniques. Particularly well suited to reproducing collages and
-							graphic illustrations featuring solid blocks of colour.
-						</p>
-
-						<img src="/img/fine-art-7.jpg" />
-						<span>Hahnemühle German Etching</span>
-						<p>
-							A heavy-duty paper with a more textured finish than Photorag (HPR), the velvety matt surface is optimised for high-contrast prints and works brilliantly for limited editions. The paper
-							has a warm white hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
-						</p>
-					</div>
-
-					<img class="w-100" src="/img/framed-sur-1.jpg" />
-					<span>Our white surface frame</span>
-
-					<img class="w-100" src="/img/framed-sur-2.jpg" />
-					<span>Smooth satin texture, with a depth of either 30 or 50mm</span>
-
-					<img class="w-100" src="/img/framed-sur-3.jpg" />
-					<span>Available in sizes up to 44x32"</span>
-
-					<img class="w-100" src="/img/framed-sur-4.jpg" />
-					<span>The image is front-mounted with no glazing</span>
-				</div>
-			</div>
-			<div class="catalog-subcategory framed sub-toggle" id="swoop" style="display: none;">
-				<h2>Swoop</h2>
-				<h4>Curved profile draws attention to your image</h4>
-				<p>
-					A solid pine frame with a decorative curved profile and a smooth, satin finish. The Swoop is solid, shapely and creates real impact. Measures 45mm wide (front face) by 32mm deep (depth from
-					wall). Available in black or white.
-				</p>
-				<div>
-					<img src="/img/framed-swo-cut.png" />
-
-					<h2>Highlights</h2>
-					<ul>
-						<li>Flush surface mount</li>
-						<li>Matt, gloss or satin laminated finish for added protection</li>
-						<li>Lightweight and robust</li>
-						<li>Delivered fully strung, ready for hanging</li>
-						<li>Available in multiple sizes</li>
-					</ul>
-
-					<div class="catalog-colors">
-						<p>
-							Mount colours Our standard mounts are available at depths of 1.4mm or 2.0mm. All mounts are "conservation grade", FSC certified, 100% acid free, and will not discolour or fade with age.
-						</p>
-						<ul class="mounts">
-							<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
-							<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
-							<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
-						</ul>
-					</div>
-
-					<h4>Framing glaze</h4>
-					<p>
-						Only one choice available for this item: Clear acrylic plexiglass. Plexiglass provides increased UV protection, is extremely robust and offers less glare than float glass.
+				<div class="catalog-subcategory framed sub-toggle" id="sur" style="display: none;">
+					<h1 class="catalog-title-category">Surface Frame</h1>
+					<h4>Full-bleed pictures with a thin stylish profile</h4>
+					<p class="col-8 pl-0">
+						The Surface frame provides a <b>subtle</b>, contemporary surround. The frame is <b>very thin</b>, has a <b>smooth satin texture</b> and comes <b>unglazed</b>, with the image front mounted
+						flush to the surface edge. <br />
+						Measures <b>5mm</b> wide (front face) by <b>30mm</b> or <b>50mm deep</b> (depth from wall). Available in <b>black</b> or <b>white.</b>
 					</p>
+					<div class="row">
+						<div class="col-6 text-center mt-5">
+							<img src="/img/framed-sur-cut.png" />
+						</div>
 
-					<div class="catalog-substrate">
+						<div class="col-6">
+							<h4>Highlights</h4>
+							<ul>
+								<li>Exceptional value</li>
+								<li>Solid pine with a smooth satin finish</li>
+								<li>Delivered fully strung, ready for hanging</li>
+								<li>Available in multiple sizes</li>
+							</ul>
+						</div>
+
 						<h4>Paper Types</h4>
 
-						<img src="/img/fine-art-1.jpg" />
-						<span>Budget Art Paper</span>
-						<p>
-							An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most competitive price.
-						</p>
+						<div class="row">
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-1.jpg" />
+								<p>
+									<b>Budget Art Paper</b><br />
+									An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most <b>competitive price</b>.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-2.jpg" />
-						<span>Enhanced Matte Art</span>
-						<p>
-							A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour graphics
-							or illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-2.jpg" />
 
-						<img src="/img/fine-art-3.jpg" />
-						<span>Smooth Art Paper</span>
-						<p>
-							A high-quality, smooth matt paper with a light, fine-grain surface texture. This paper is particularly suited to contemporary illustration and photography. Image reproduction is sharp,
-							crisp and vibrant, with great density and vivid colours.
-						</p>
+								<p>
+									<b>Enhanced Matte Art</b><br />
+									A <b>premium-quality</b> heavyweight fine art print material with a <b>smooth, clean finish.</b> This museum-quality paper is <b>extremely consistent</b> and works perfectly with
+									large, full colour graphics or illustrations. The <b>matte finish</b> emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-4.jpg" />
-						<span>Museum Fine Art</span>
-						<p>
-							A gently textured etching paper designed for museum-quality reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of artworks and
-							paintings. Ideal for premium colour and monochrome prints.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-3.jpg" />
 
-						<img src="/img/fine-art-6.jpg" />
-						<span>Cold Press Watercolour Paper</span>
-						<p>
-							A rough-textured, coarse-structured surface designed for high-quality art and photographic reproductions using giclée techniques. Particularly well suited to reproducing collages and
-							graphic illustrations featuring solid blocks of colour.
-						</p>
+								<p>
+									<b>Smooth Art Paper</b><br />
+									A <b>high-quality</b>, smooth <b>matt paper</b> with a light, <b>fine-grain surface texture.</b> This paper is particularly suited to contemporary illustration and photography. Image
+									reproduction is <b>sharp, crisp and vibrant</b>, with great density and vivid colours.
+								</p>
+							</div>
 
-						<img src="/img/fine-art-7.jpg" />
-						<span>Hahnemühle German Etching</span>
-						<p>
-							A heavy-duty paper with a more textured finish than Photorag (HPR), the velvety matt surface is optimised for high-contrast prints and works brilliantly for limited editions. The paper
-							has a warm white hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
-						</p>
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-4.jpg" />
+
+								<p>
+									<b>Museum Fine Art</b><br />
+									A <b>gently textured</b> etching paper designed for <b>museum-quality</b> reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of
+									artworks and paintings. Ideal for premium colour and monochrome prints.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-6.jpg" />
+
+								<p>
+									<b>Cold Press Watercolour Paper</b><br />
+									A <b>rough-textured</b>, coarse-structured surface designed for <b>high-quality</b> art and photographic reproductions using giclée techniques. Particularly well suited to
+									reproducing collages and graphic illustrations featuring solid blocks of colour.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-7.jpg" />
+								<p>
+									<b>Hahnemühle German Etching</b><br />
+									A heavy-duty paper with a <b>more textured finish</b>, the velvety <b>matt surface</b> is optimised for high-contrast prints and works brilliantly for limited editions. The paper has
+									a <b>warm white</b> hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
+								</p>
+							</div>
+						</div>
+
+						<img class="w-100" src="/img/framed-sur-1.jpg" />
+						<div class="text-center w-100"><b>Our white surface frame</b></div>
+
+						<img class="w-100" src="/img/framed-sur-2.jpg" />
+						<div class="text-center w-100"><b>Smooth satin texture, with a depth of either 30 or 50mm</b></div>
+
+						<img class="w-100" src="/img/framed-sur-3.jpg" />
+						<div class="text-center w-100"><b>Available in sizes up to 44x32"</b></div>
+
+						<img class="w-100" src="/img/framed-sur-4.jpg" />
+						<div class="text-center w-100"><b>The image is front-mounted with no glazing</b></div>
 					</div>
+				</div>
 
-					<img class="w-100" src="/img/framed-swo-1.jpg" />
-					<span>Our white swoop frame</span>
+				<div class="catalog-subcategory framed sub-toggle" id="swoop" style="display: none;">
+					<h1 class="catalog-title-category">Swoop Frame</h1>
+					<h4>Curved profile draws attention to your image</h4>
+					<p class="col-8 pl-0">
+						A solid <b>pine frame</b> with a <b>decorative curved profile</b> and a <b>smooth, satin finish.</b><br />The Swoop is solid, shapely and creates real impact. Measures <b>45mm</b> wide
+						(front face) by <b>32mm</b> deep (depth from wall). Available in <b>black</b> or <b>white.</b>
+					</p>
+					<div class="row">
+						<div class="col-6 text-center mt-5">
+							<img src="/img/framed-swo-cut.png" />
+						</div>
 
-					<img class="w-100" src="/img/framed-swo-2.jpg" />
-					<span>White swoop frame with snow white mount</span>
+						<div class="col-6">
+							<h4>Highlights</h4>
+							<ul>
+								<li>Flush surface mount</li>
+								<li>Matt, gloss or satin laminated finish for added protection</li>
+								<li>Lightweight and robust</li>
+								<li>Delivered fully strung, ready for hanging</li>
+								<li>Available in multiple sizes</li>
+							</ul>
 
-					<img class="w-100" src="/img/framed-swo-3.jpg" />
-					<span>The smooth satin surface finish of the swoop frame</span>
+							<div class="catalog-colors">
+								<p>
+									Our standard mounts are available at depths of <b>1.4mm</b> or <b>2.0mm.</b> All mounts are "conservation grade", <b>FSC certified, 100% acid free</b>, and will not discolour or fade
+									with age.
+								</p>
+								<ul class="mounts">
+									<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
+									<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
+									<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
+								</ul>
+							</div>
+						</div>
 
-					<img class="w-100" src="/img/framed-swo-4.jpg" />
-					<span>Our swoop framed print in black</span>
+						<h4>Framing glaze</h4>
+						<p>
+							Only one choice available for this item: <b>Clear acrylic plexiglass.</b> Plexiglass provides increased UV protection, is <b>extremely robust</b> and offers <b>less glare</b> than float
+							glass.
+						</p>
+
+						<h4>Paper Types</h4>
+
+						<div class="row">
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-1.jpg" />
+								<p>
+									<b>Budget Art Paper</b><br />
+									An affordable barrier coated poster paper perfect for volume projects requiring the best quality art substrate at the most <b>competitive price</b>.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-2.jpg" />
+
+								<p>
+									<b>Enhanced Matte Art</b><br />
+									A <b>premium-quality</b> heavyweight fine art print material with a <b>smooth, clean finish.</b> This museum-quality paper is <b>extremely consistent</b> and works perfectly with
+									large, full colour graphics or illustrations. The <b>matte finish</b> emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-3.jpg" />
+
+								<p>
+									<b>Smooth Art Paper</b><br />
+									A <b>high-quality</b>, smooth <b>matt paper</b> with a light, <b>fine-grain surface texture.</b> This paper is particularly suited to contemporary illustration and photography. Image
+									reproduction is <b>sharp, crisp and vibrant</b>, with great density and vivid colours.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-4.jpg" />
+
+								<p>
+									<b>Museum Fine Art</b><br />
+									A <b>gently textured</b> etching paper designed for <b>museum-quality</b> reproductions. This beautiful and versatile art paper is particularly suited to giclée reproductions of
+									artworks and paintings. Ideal for premium colour and monochrome prints.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-6.jpg" />
+
+								<p>
+									<b>Cold Press Watercolour Paper</b><br />
+									A <b>rough-textured</b>, coarse-structured surface designed for <b>high-quality</b> art and photographic reproductions using giclée techniques. Particularly well suited to
+									reproducing collages and graphic illustrations featuring solid blocks of colour.
+								</p>
+							</div>
+
+							<div class="catalog-substrate-item col-6">
+								<img class="w-100" src="/img/fine-art-7.jpg" />
+								<p>
+									<b>Hahnemühle German Etching</b><br />
+									A heavy-duty paper with a <b>more textured finish</b>, the velvety <b>matt surface</b> is optimised for high-contrast prints and works brilliantly for limited editions. The paper has
+									a <b>warm white</b> hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
+								</p>
+							</div>
+						</div>
+
+						<img class="w-100" src="/img/framed-swo-1.jpg" />
+						<div class="text-center w-100"><b>Our white swoop frame</b></div>
+
+						<img class="w-100" src="/img/framed-swo-2.jpg" />
+						<div class="text-center w-100"><b>White swoop frame with snow white mount</b></div>
+
+						<img class="w-100" src="/img/framed-swo-3.jpg" />
+						<div class="text-center w-100"><b>The smooth satin surface finish of the swoop frame</b></div>
+
+						<img class="w-100" src="/img/framed-swo-4.jpg" />
+						<div class="text-center w-100"><b>Our swoop framed print in black</b></div>
+					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="catalog-category tab" id="fap" style="display: none;">
+		<div class="catalog-category tab col-10 offset-1" id="fap" style="display: none;">
 			<h1 class="catalog-title-category">Fine Art Prints</h1>
 
-			<h4>A complete range of specialist art and photographic papers.</h4>
+			<h4>A complete range of specialist art papers.</h4>
 
-			<p>
-				Printing is at the heart of everything we do and every product we create. Each fine art print substrate is individually profiled for our printers, ensuring fantastically accurate and
-				consistent reproductions.
+			<p class="col-6 pl-0">
+				Printing is at the heart of everything we do and every product we create.<br />Each fine art print substrate is <b>individually profiled</b> for our printers, ensuring fantastically
+				<b>accurate</b> and
+				<b>consistent reproductions.</b>
 			</p>
 
 			<div class="catalog-subcategory">
-				<div>
-					<h4>Budget fine art papers</h4>
+				<div class="row">
+					<div class="catalog-substrate-item col-6">
+						<h4>Budget fine art papers</h4>
 
-					<img src="/img/fine-art-2.jpg" />
-					<span>Enhanced Matte Art</span>
-					<p>
-						A premium-quality heavyweight fine art print material with a smooth, clean finish. This museum-quality paper is extremely consistent and works perfectly with large, full colour graphics or
-						illustrations. The matte finish emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
-					</p>
+						<img class="w-100" src="/img/fine-art-2.jpg" />
+						<p>
+							<b>Enhanced Matte Art</b><br />
+							A <b>premium-quality</b> heavyweight fine art print material with a <b>smooth, clean finish.</b> This museum-quality paper is <b>extremely consistent</b> and works perfectly with large,
+							full colour graphics or illustrations. The <b>matte finish</b> emphasises different highlights and tones in the source artworks; helping to create stunning works of art.
+						</p>
+					</div>
 
-					<h4>Premium fine art papers</h4>
+					<div class="catalog-substrate-item col-6">
+						<h4>Premium fine art papers</h4>
 
-					<img src="/img/fine-art-7.jpg" />
-					<span>Hahnemühle German Etching</span>
-					<p>
-						A heavy-duty paper with a more textured finish than Photorag (HPR), the velvety matt surface is optimised for high-contrast prints and works brilliantly for limited editions. The paper has
-						a warm white hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
-					</p>
+						<img class="w-100" src="/img/fine-art-7.jpg" />
+						<p>
+							<b>Hahnemühle German Etching</b><br />
+							<b>Hahnemühle German Etching</b><br />
+							A heavy-duty paper with a <b>more textured finish</b>, the velvety <b>matt surface</b> is optimised for high-contrast prints and works brilliantly for limited editions. The paper has a
+							<b>warm white</b> hue providing a perfect surface for reproducing paintings, lithographs and fine art photography.
+						</p>
+					</div>
 				</div>
 
 				<img class="w-100" src="/img/fine-art-8.jpg" />
-				<span>Prodigi fine art</span>
+				<div class="text-center w-100"><b>Prodigi fine art</b></div>
 			</div>
 		</div>
 
-		<div class="catalog-category tab" id="canvas" style="display: none;">
+		<div class="catalog-category tab col-10 offset-1" id="canvas" style="display: none;">
 			<h1 class="catalog-title-category">Canvas</h1>
 			<h4>Handmade by canvas craftsmen</h4>
-			<p>
-				Our enduringly popular fine art canvases transform any image into a beautiful work of art. Each canvas is produced using a 12-colour giclée fine art printing process and hand finished by one
-				of the UK’s most experienced canvas framing teams.
-			</p>
-			<div class="text-center mb-4">
-				<button class="canvas cat-btn tab-btn active" onclick="openSubCategory(this, 'framed-canvas', 'canvas')">Framed</button>
-				<button class="canvas cat-btn tab-btn" onclick="openSubCategory(this, 'stretched', 'canvas')">Stretched</button>
-			</div>
-
-			<div class="catalog-subcategory canvas sub-toggle" id="framed-canvas">
-				<h2>Framed</h2>
-				<h4>Transform a standard canvas into a special work of art</h4>
-				<p>
-					A stretched canvas comes with an internal frame created using specialist canvas stretcher bars. In addition, a framed canvas has a traditional picture frame added around the outside edge of
-					the canvas. The simple addition of a wooden picture frame creates a completely new form of wall art; quite distinct to a standard stretched canvas.
+			<div class="row">
+				<p class="col-6">
+					Our <b>enduringly popular</b> fine art canvases transform any image into a beautiful work of art.<br />
+					Each canvas is produced using a <b>12-colour giclée</b> fine art printing process and <b>hand finished</b> by one of the UK’s most experienced canvas framing teams.
 				</p>
+				<div class="col-6 mt-2 cat-btn-wrap text-center">
+					<h4 class="text-center">Canvas Categories</h4>
+					<button class="canvas cat-btn tab-btn active" onclick="openSubCategory(this, 'framed-canvas', 'canvas')">Framed</button>
+					<button class="canvas cat-btn tab-btn" onclick="openSubCategory(this, 'stretched', 'canvas')">Stretched</button>
+				</div>
+				<hr style="margin: auto; width: 80%;" />
 
-				<div>
-					<img src="/img/canvas-framed-2.jpg" />
-					<span>38mm framed canvas</span>
-					<p>
-						Adding a solid wooden float frame to our standard 38mm canvas creates a unique and original work of art. The thin frame sits approximately 5mm from the edge of the canvas helping create a
-						floating border. Highly recommended for photography and images that make a real statement. The canvas float frame is available in black only for now.
+				<div class="catalog-subcategory canvas sub-toggle" id="framed-canvas">
+					<h1 class="catalog-title-category">Framed Canvas</h1>
+					<h4>Transform a standard canvas into a special work of art</h4>
+					<p class="col-8 pl-0">
+						A <b>stretched canvas</b> comes with an <b>internal frame</b> created using specialist canvas <b>stretcher bars.</b> <br />
+						In addition, a framed canvas has a <b>traditional picture frame</b> added around the outside edge of the canvas. <br />
+						The simple addition of a <b>wooden picture frame</b> creates a completely new form of wall art; quite distinct to a standard stretched canvas.
 					</p>
+
+					<div class="row mt-3">
+						<div class="col-5 offset-1">
+							<img src="/img/canvas-framed-2.jpg" />
+						</div>
+						<div class="col-5 pt-5">
+							<div class="text-center w-100"><h3>38mm framed canvas</h3></div>
+							<p>
+								Adding a <b>solid wooden float frame</b> to our standard <b>38mm</b> canvas creates a unique and original work of art. The <b>thin</b> frame sits approximately <b>5mm</b> from the edge
+								of the canvas helping create a floating border. Highly recommended for images that make a real statement. The canvas float frame is available in <b>black</b> only for now.
+							</p>
+						</div>
+					</div>
+
+					<h4 class="mt-5">Canvas Material</h4>
+					<p class="col-8 pl-0">
+						Our canvas is a <b>finely textured</b> artist-grade <b>cotton substrate</b> which consistently reproduces image details with outstanding <b>clarity and detail.</b> <br />Our most popular
+						canvas and superior to many more expensive branded alternatives.
+					</p>
+
+					<h4>Framing glaze</h4>
+					<p>
+						Only one choice available for this item: <b>Clear acrylic plexiglass.</b><br />
+						Plexiglass provides increased UV protection, is <b>extremely robust</b> and offers <b>less glare</b> than float glass.
+					</p>
+
+					<img class="w-100" src="/img/canvas-framed-7.jpg" />
+					<div class="text-center w-100"><b>An example of our float frame with a 38mm-deep canvas</b></div>
+
+					<img class="w-100" src="/img/canvas-framed-8.jpg" />
+					<div class="text-center w-100"><b>The "floating border" created by the frame sits approximately 5mm from the canvas edge</b></div>
 				</div>
 
-				<div>
-					<img src="/img/canvas-framed-4.jpg" />
-					<h4>Standard Canvas</h4>
+				<div class="catalog-subcategory canvas sub-toggle" id="stretched" style="display: none;">
+					<h1 class="catalog-title-category">Stretched Canvas</h1>
+					<h4>Superior canvas prints designed for trade and retail</h4>
 					<p>
-						Our standard canvas is a finely textured artist-grade cotton substrate which consistently reproduces image details with outstanding clarity and detail. Our most popular canvas and superior
-						to many more expensive branded alternatives.
+						Each stretched canvas begins with a <b>12-colour giclée print</b> produced from one of three individually <b>curated substrates.</b> <br />
+						We then make a <b>custom wooden frame</b> and <b>stretch</b> the rolled canvas print over it.<br />
+						The stretched canvas print is then <b>hand finished</b> by one of the UK’s most experienced canvas framing teams; ensuring each corner fold is <b>perfectly smooth</b>, tight and that all
+						fixing staples are covered with special protective tape.
 					</p>
-				</div>
 
-				<h4>Framing glaze</h4>
-				<p>
-					Only one choice available for this item: Clear acrylic plexiglass. Plexiglass provides increased UV protection, is extremely robust and offers less glare than float glass.
-				</p>
-
-				<img class="w-100" src="/img/canvas-framed-7.jpg" />
-				<span>An example of our float frame with a 38mm-deep canvas</span>
-
-				<img class="w-100" src="/img/canvas-framed-8.jpg" />
-				<span>The "floating border" created by the frame sits approximately 5mm from the canvas edge</span>
-			</div>
-
-			<div class="catalog-subcategory canvas sub-toggle" id="stretched" style="display: none;">
-				<h2>Stretched</h2>
-				<h4>Superior canvas prints designed for trade and retail</h4>
-				<p>
-					Each stretched canvas begins with a 12-colour giclée print produced from one of three individually curated substrates. We then make a custom wooden frame - in any size needed up to a maximum
-					of 3 metres - and stretch the rolled canvas print over it. The stretched canvas print is then hand finished by one of the UK’s most experienced canvas framing teams; ensuring each corner
-					fold is perfectly smooth, tight and that all fixing staples are covered with special protective tape.
-				</p>
-
-				<div>
-					<h2>Highlights</h2>
+					<h4>Highlights</h4>
 					<ul>
 						<li>Pro-lab print process with 100+ year colour guarantee</li>
 						<li>Choice of four different canvas print media</li>
@@ -712,79 +832,84 @@
 						<li>Handmade by some of the UK’s most experienced canvas framers</li>
 					</ul>
 
-					<div>
-						<h2>Canvas Stretcher Bars</h2>
-						<h1>European knotless pine canvas frames</h1>
-						<p>
-							The thickness of your canvas stretcher bar determines how far the canvas print will stand off the wall.
-						</p>
+					<h4 class="mb-1">Canvas Stretcher Bars</h4>
+					<div class="w-100"><b>European knotless pine canvas frames</b></div>
+					<p>
+						The thickness of your canvas stretcher bar determines how far the canvas print will stand off the wall.
+					</p>
+					<div class="row">
+						<div class="col-6">
+							<img src="/img/canvas-stretched-2.jpg" />
+							<b>38mm</b>
+						</div>
 
-						<img src="/img/canvas-stretched-2.jpg" />
-						<span>38mm</span>
-
-						<p>
-							Each canvas frame is milled with a curved profile; minimising contact with the face of the canvas; preventing unsightly impression marks and surface cracking. We use finger-jointed
-							canvas frames which create corner tension helping resist warping. For larger sizes, we add wooden 'wedges' to each corner; ensuring the canvas surface remains taut and allowing easy
-							re-stretching in future years.
+						<p class="col-6 mt-5">
+							Each canvas frame is milled with a <b>curved profile</b>; minimising contact with the face of the canvas; preventing unsightly impression marks and surface cracking. <br />
+							We use <b>finger-jointed</b> canvas frames which create corner tension helping <b>resist warping.</b> <br />
+							For larger sizes, we add wooden 'wedges' to each corner; <b>ensuring the canvas surface remains taut</b> and allowing easy re-stretching in future years.
 						</p>
 					</div>
-				</div>
 
-				<div>
-					<h2>Canvas Substrate</h2>
-
-					<img src="/img/canvas-framed-4.jpg" />
-					<h4>Standard Canvas</h4>
-					<p>
-						Our standard canvas is a finely textured artist-grade cotton substrate which consistently reproduces image details with outstanding clarity and detail. Our most popular canvas and superior
-						to many more expensive branded alternatives.
+					<h4>Canvas Material</h4>
+					<p class="col-8 pl-0">
+						Our canvas is a <b>finely textured</b> artist-grade <b>cotton substrate</b> which consistently reproduces image details with outstanding <b>clarity and detail.</b> <br />Our most popular
+						canvas and superior to many more expensive branded alternatives.
 					</p>
-				</div>
 
-				<div>
-					<h2>Canvas finishes</h2>
-					<h4>A choice of edge profile</h4>
-					<img src="/img/canvas-stretched-4.jpg" />
-					<span>White edge Also called museum wrap.</span>
+					<h4 class="mb-1">Canvas finishes</h4>
+					<b>A choice of edge profile</b>
 
-					<img src="/img/canvas-stretched-5.jpg" />
-					<span>Black edge</span>
+					<div class="row">
+						<div class="col-4 offset-2 text-center">
+							<img src="/img/canvas-stretched-4.jpg" />
+							<div class="text-center w-100"><b>White edge Also called museum wrap.</b></div>
+						</div>
 
-					<img src="/img/canvas-stretched-6.jpg" />
-					<span>Image wrap Image wraps around the sides of the frame. Also called gallery wrap.</span>
+						<div class="col-4 offset-2 text-center">
+							<img src="/img/canvas-stretched-5.jpg" />
+							<div class="text-center w-100"><b>Black edge</b></div>
+						</div>
 
-					<img src="/img/canvas-stretched-7.jpg" />
-					<span>Mirror wrap Image edge reflected on the sides; entire image appears on the front.</span>
+						<div class="col-4 offset-2 text-center">
+							<img src="/img/canvas-stretched-6.jpg" />
+							<div class="text-center w-100"><b>Image wrap Image wraps around the sides of the frame.</b></div>
+						</div>
 
-					<h2>Canvas coatings</h2>
-					<h4>Preserve the integrity of your print</h4>
+						<div class="col-4 offset-2 text-center">
+							<img src="/img/canvas-stretched-7.jpg" />
+							<div class="text-center w-100"><b>Mirror wrap Image edge reflected on the sides; entire image appears on the front.</b></div>
+						</div>
+					</div>
 
-					<p>
-						All our canvas prints can be finished with a matt or gloss varnish coating. Varnishes help to preserve the integrity of your canvas image, protecting against airborne dirt/dust, sun fade,
-						abrasions and fingerprints
+					<h4 class="mb-1">Canvas coatings</h4>
+					<b>Preserve the integrity of your print</b>
+
+					<p class="col-8 pl-0">
+						All our canvas prints can be finished with a <b>matt</b> or <b>gloss varnish coating.</b> <br />
+						Varnishes help to <b>preserve the integrity</b> of your canvas image, protecting against airborne <b>dirt/dust, sun fade, abrasions and fingerprints</b>
 					</p>
+
+					<img class="w-100" src="/img/canvas-stretched-8.jpg" />
+					<div class="text-center w-100"><b>Image-wrap canvas</b></div>
+
+					<img class="w-100" src="/img/canvas-stretched-9.jpg" />
+					<div class="text-center w-100"><b>Professional artist stretcher bars</b></div>
+
+					<img class="w-100" src="/img/canvas-stretched-10.jpg" />
+					<div class="text-center w-100"><b>Stretched canvases are only available in 38mm depths for now (middle one)</b></div>
+
+					<img class="w-100" src="/img/canvas-stretched-11.jpg" />
+					<div class="text-center w-100"><b>Tensioning wedges and finger joints</b></div>
+
+					<img class="w-100" src="/img/canvas-stretched-12.jpg" />
+					<div class="text-center w-100"><b>White-edged stretched canvas</b></div>
+
+					<img class="w-100" src="/img/canvas-stretched-13.jpg" />
+					<div class="text-center w-100"><b>Hand-finished tight corners</b></div>
+
+					<img class="w-100" src="/img/canvas-stretched-14.jpg" />
+					<div class="text-center w-100"><b>Examples of image and black edge wraps</b></div>
 				</div>
-
-				<img class="w-100" src="/img/canvas-stretched-8.jpg" />
-				<span>Image-wrap canvas</span>
-
-				<img class="w-100" src="/img/canvas-stretched-9.jpg" />
-				<span>Professional artist stretcher bars</span>
-
-				<img class="w-100" src="/img/canvas-stretched-10.jpg" />
-				<span>Stretched canvases are only available in 38mm depths for now (middle one)</span>
-
-				<img class="w-100" src="/img/canvas-stretched-11.jpg" />
-				<span>Tensioning wedges and finger joints</span>
-
-				<img class="w-100" src="/img/canvas-stretched-12.jpg" />
-				<span>White-edged stretched canvas</span>
-
-				<img class="w-100" src="/img/canvas-stretched-13.jpg" />
-				<span>Hand-finished tight corners</span>
-
-				<img class="w-100" src="/img/canvas-stretched-14.jpg" />
-				<span>Examples of image and black edge wraps</span>
 			</div>
 		</div>
 	</div>

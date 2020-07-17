@@ -27,7 +27,7 @@ async function infiniteBlogs() {
 									${blog.thumbnail}
 									<div class="blog-overlay">
 									<p>${blog.shortcontent}...</p>
-									<form action="/Blog/${id}"><button class="blog-btn">Lire plus</button></form>
+									<form action="/Blog/${id}"><button class="blog-btn">See More</button></form>
 									</div>
 								</div>`;
 					} else {
@@ -35,7 +35,7 @@ async function infiniteBlogs() {
 								<div class="blog-no-overlay-wrapper">
 									<div class="blog-no-overlay">
 										<p>${blog.shortcontent}...</p>
-										<form action="/Blog/${id}"><button class="blog-btn">Lire plus</button></form>
+										<form action="/Blog/${id}"><button class="blog-btn">See More</button></form>
 									</div>
 								</div>`;
 					}
