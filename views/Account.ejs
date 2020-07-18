@@ -79,24 +79,28 @@
 		</div>
 
 		<div id="lostpw-container" class="tab col-9" style="display: none;">
-			<section class="lostpw-section col-10 offset-1 p-5">
-				<div class="box">
-					<div class="section-heading mb-5">
-						<h2>Récupération de mot de passe</h2>
-						<h6>Nous vous enverrons un mail pour réinitaliser votre mot de passe</h6>
-					</div>
-					<form class="col-8 offset-2" id="lostpw" onsubmit="submitLostpw(event)" method="POST" action="/api/user/lostpw">
-						<input placeholder="Email" class="form-control-test" type="email" id="email-reset" name="email" value="" onkeyup="Validate.Email(this);" required />
-						<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
-
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<div class="text-center">
-							<div class="recaptcha-wrapper"></div>
+			<div class="container p-0 m-0 h-100">
+				<div class="col-10 offset-1 wrapper lostpw-container">
+					<div class="box-lostpw">
+						<div class="section-heading">
+							<h2>Password Recovery</h2>
 						</div>
-						<input type="submit" class="logbtn" value="Envoyer" id="submit-lostpw" />
-					</form>
+						<div id="alert" class="alert alert-info alert-static" role="alert">
+							We'll send you a mail with instructions to reset your password
+						</div>
+						<form class="col-8 offset-2 mt-5" id="lostpw" onsubmit="submitLostpw(event)" method="POST" action="/api/user/lostpw">
+							<input placeholder="Email" class="form-control-test" type="email" id="email-reset" name="email" value="" onkeyup="Validate.Email(this);" required />
+							<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
+
+							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+							<div class="text-center">
+								<div class="recaptcha-wrapper"></div>
+							</div>
+							<input type="submit" class="logbtn" value="Envoyer" id="submit-lostpw" />
+						</form>
+					</div>
 				</div>
-			</section>
+			</div>
 		</div>
 	</div>
 </div>

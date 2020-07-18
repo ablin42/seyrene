@@ -17,7 +17,7 @@ async function infiniteBlogs() {
 					div.setAttribute("id", id);
 					let toAppend = `<h3 class="blog-title"><a href="/Blog/${id}">${blog.shorttitle}...</a></h3> `;
 					toAppend += `
-							<p class="blog-info">posté par 
+							<p class="blog-info">uploaded by
 								<b class="blog-author">${blog.author}</b>,
 								<i class="blog-date">${blog.date}</i>
 							</p>`;

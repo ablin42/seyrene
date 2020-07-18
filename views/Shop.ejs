@@ -2,9 +2,9 @@
 
 <script src="/scripts/shop/infiniteShops.js"></script>
 <script src="/scripts/cart.js"></script>
-    <div class="container">
-        <div class="container-single" id="container-shop">
-            <h1 class="single-title">Toile Originale</h1>
+    <div class="container container-single">
+        <div id="container-shop">
+            <h1 class="single-title text-center mt-2 p-2" style="color: var(--light-shade)">Toile Originale</h1>
             <div id="original" class="tab container-shop">
               <% if (locals.original){ %>
                 <% Object.keys(locals.original).forEach(function (index) { %>
@@ -30,11 +30,12 @@
                 <h1 class="alertEmpty">Plus de toiles originales en stock!</h1>
               <% } %>
           </div>
-          </div>
-          <div class="col-6 offset-3 mt-5">
+           <div class="col-6 offset-3 mt-5">
             <img id="loader" src="/img/loader.gif">
             <input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteShopItems();">
           </div>
+          </div>
+         
       </div>
       
     </div>

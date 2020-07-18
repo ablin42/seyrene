@@ -11,7 +11,7 @@ function openTab(e, item, tabName) {
 	for (let i = 0; i < tab.length; i++) {
 		tab[parseInt(i)].style.display = "none";
 	}
-	document.getElementById(tabName).style.display = "block";
+	document.getElementById(tabName).style.display = "";
 }
 
 function expand(image, e = null, gallery = false) {

@@ -5,70 +5,80 @@
 		<div class="menu col-3">
 			<ul>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link active disabled"><i class="fas fa-cog mr-2"></i> Paramètres <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link"><i class="fas fa-cog mr-2"></i> Parameters <i class="fas fa-chevron-right chev"></i></a>
+				</li>
+					<li>
+					<a href="#" onclick="openTab(event, this, 'delivery')" class="menu-link active disabled"><i class="fas fa-truck mr-2"></i> Delivery Informations <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'purchases')" class="menu-link"><i class="fas fa-truck mr-2"></i> Achats <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'purchases')" class="menu-link"><i class="fa fa-clock-o mr-2"></i> History <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
-					<a href="/shopping-cart"><i class="fas fa-shopping-cart mr-2"></i> Panier</a>
+					<a href="/shopping-cart"><i class="fas fa-shopping-cart mr-2"></i> Cart</a>
 				</li>
 			</ul>
 		</div>
 
-		<div id="parameters" class="tab col-9 row">
-			<section class="user-section col-5">
-				<div class="section-heading">
-					<h2>Compte</h2>
-					<h6>Gardez ces informations pour vous!</h6>
-				</div>
 
+		<div id="parameters" class="tab col-9 row" style="display: none;">
+				<div class="col-10 offset-1 wrapper">
+				<div class="section-heading">
+					<h2>Account</h2>
+				</div>
+				<div id="alert" class="alert alert-warning alert-static w-100 mb-3" role="alert">
+					Remember to keep these informations private
+				</div>
+								
+
+				<div class="col-8 offset-2">
 				<form id="nameform" method="POST" action="/api/user/patch/name">
-					<label class="control-label">Nom de compte</label>
-					<input class="form-control" type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required />
+					<label class="control-label">Username</label>
+					<input type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required />
 					<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
 
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<input type="submit" class="logbtn mt-2" value="Modifier" id="submit-nameform" />
+					<input type="submit" class="logbtn mt-2" value="Save" id="submit-nameform" />
 				</form>
 
 				<form id="emailform" method="POST" action="/api/user/patch/email">
 					<label class="control-label">Email</label>
-					<input class="form-control" type="email" id="email" name="email" value="<% if (locals.user.email) { %><%= locals.user.email %><% } %>" onkeyup="Validate.Email(this);" required />
+					<input  type="email" id="email" name="email" value="<% if (locals.user.email) { %><%= locals.user.email %><% } %>" onkeyup="Validate.Email(this);" required />
 					<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<input type="submit" class="logbtn mt-2" value="Modifier" id="submit-emailform" />
+					<input type="submit" class="logbtn mt-2" value="Save" id="submit-emailform" />
 				</form>
 
 				<form id="passwordform" method="POST" action="/api/user/patch/password">
-					<label class="control-label">Mot de passe <i>(actuel)</i></label>
-					<input class="form-control" type="password" name="cpassword" placeholder="*********" required />
+					<label class="control-label">Password <i>(current)</i></label>
+					<input  type="password" name="cpassword" placeholder="*********" required />
 					<span data-placeholder="Current Password"></span>
 
-					<label class="control-label mt-3">Mot de passe <i>(nouveau)</i></label>
-					<input class="form-control" type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required />
+					<label class="control-label mt-3">Password <i>(new)</i></label>
+					<input type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required />
 					<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
 
-					<label class="control-label">Mot de passe <i>(confirmation)</i></label>
-					<input class="form-control" type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required />
+					<label class="control-label">Password <i>(confirm)</i></label>
+					<input type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required />
 					<span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
 
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<input type="submit" class="logbtn mt-2" value="Modifier" id="submit-passwordform" />
+					<input type="submit" class="logbtn mt-2" value="Save" id="submit-passwordform" />
 				</form>
-			</section>
-			<section class="user-section col-7">
-				<div class="section-heading">
-					<h2>Livraison</h2>
-					<h6>Nous utiliserons ces informations pour livrer vos commandes</h6>
 				</div>
+				</div>
+		</div>
+		<div id="delivery" class="tab col-9 row">
+			<div class="col-10 offset-1 wrapper">
+				<div class="section-heading">
+					<h2>Delivery</h2>
+				</div>
+				<hr />
 				<form id="deliveryform" method="POST" action="/api/user/patch/delivery-info">
 					<div class="row">
 						<div class="col-md-6">
-							<label class="control-label">Nom</label>
+							<label class="control-label">Last Name</label>
 							<input
-								class="form-control"
 								id="lastname"
 								name="lastname"
 								placeholder="Doe"
@@ -79,9 +89,8 @@
 							<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
 						</div>
 						<div class="col-md-6">
-							<label class="control-label">Prénom</label>
+							<label class="control-label">First Name</label>
 							<input
-								class="form-control"
 								id="firstname"
 								name="firstname"
 								placeholder="John"
@@ -93,13 +102,12 @@
 						</div>
 					</div>
 
-					<label class="control-label">Adresse</label>
+					<label class="control-label">Address</label>
 					<input
 						id="autocomplete"
 						name="fulltext_address"
 						placeholder="Enter your address"
 						onFocus="geolocate()"
-						class="form-control"
 						value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>"
 						required
 					/>
@@ -107,9 +115,8 @@
 					<div id="address">
 						<div class="row">
 							<div class="col-md-12">
-								<label class="control-label">Route</label>
+								<label class="control-label">Street</label>
 								<input
-									class="form-control"
 									id="route"
 									placeholder="13 rue de Clignancourt"
 									name="street_name"
@@ -120,13 +127,13 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6">
-								<label class="control-label">Ville</label>
-								<input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" required />
+								<label class="control-label">City</label>
+								<input id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" required />
 							</div>
 							<div class="col-md-6">
-								<label class="control-label">Région</label>
+								<label class="control-label">State</label>
 								<input
-									class="form-control"
+								
 									id="administrative_area_level_1"
 									name="state"
 									placeholder="Île-de-France"
@@ -137,17 +144,20 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6">
-								<label class="control-label">Code Postal</label>
-								<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" required />
+								<label class="control-label">Postal Code</label>
+								<input id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" required />
 							</div>
 							<div class="col-md-6">
-								<label class="control-label">Pays</label>
-								<input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
+								<label class="control-label">Country</label>
+								<input  id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
 							</div>
 							<div class="col-md-12">
-								<label class="control-label">Pays - Code Iso</label>
-								<h6 style="color: red">*We need this to properly state your country to the delivery services.</h6>
-								<select name="country-iso" id="country-iso" required>
+								<label class="control-label">Country - ISO Code</label>
+								<div id="alert" class="alert alert-warning alert-static w-100 mb-3" role="alert">
+									We need this to properly state your country to the delivery services
+								</div>
+								
+								<select class="form-control" name="country-iso" id="country-iso" required>
 									<option selected disabled value="">Select One</option>
 									<% if(locals.countries){ %> <% locals.countries.forEach(function (item, index) { %>
 									<option <% if (item.isoCode === locals.delivery.isoCode) { %> selected <% } %> value="<%= item.isoCode %>"><%= item.name %> - <%= item.isoCode %></option>
@@ -155,29 +165,24 @@
 								</select>
 							</div>
 						</div>
-						<div class="row mt-4">
-							<div class="col-6">
-								<textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..."><% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea>
-							</div>
-							<div class="col-6">
+								<label class="control-label">Additional informations</label>
+								<input type="text" id="instructions" name="instructions" placeholder="Door code or other useful informations..." value="<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %>">
 								<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-								<input type="submit" class="logbtn" value="Enregistrer" id="submit-deliveryform" />
-							</div>
-						</div>
+								<input type="submit" class="logbtn" value="Save" id="submit-deliveryform" />
 					</div>
 				</form>
-			</section>
+			</div>
 		</div>
 
-		<div id="purchases" class="tab col-9" style="display: none;">
-			<section class="purchase-section">
-				<table class="table table-striped table-hover">
+		<div id="purchases" class="tab col-9 row" style="display: none;">
+						<div class="col-10 offset-1 p-0">
+				<table class="table table-striped table-hover mb-0">
 					<thead>
 						<tr>
 							<th scope="col">Date</th>
 							<th scope="col">Status</th>
-							<th scope="col">Prix</th>
-							<th scope="col">Acheteur</th>
+							<th scope="col">Price</th>
+							<th scope="col">Buyer</th>
 							<th scope="col">#ID</th>
 						</tr>
 					</thead>
@@ -194,7 +199,7 @@
 						<% }) %> <% } %>
 					</tbody>
 				</table>
-			</section>
+				</div>
 		</div>
 	</div>
 </div>

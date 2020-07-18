@@ -62,6 +62,7 @@ module.exports.vLostPw = [
 ];
 
 module.exports.vDelivery = [
+	body("instructions").trim(),
 	body("full_address")
 		.trim()
 		.stripLow()

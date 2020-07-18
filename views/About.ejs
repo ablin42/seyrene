@@ -3,179 +3,216 @@
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="/scripts/blog/infiniteBlogs.js"></script>
 <div class="container-with-menu container">
-    <div class="row row-height">
-      <div class="menu col-3">
-        <ul>
-          <li><a href="#" onclick="openTab(event, this, 'blog')" class="menu-link active disabled"><i class="fas fa-scroll mr-2"></i> Blog <i class="fas fa-chevron-right chev"></i></a></li>
-          <li><a href="#" onclick="openTab(event, this, 'bio')" class="menu-link"><i class="fas fa-address-card mr-2"></i> Biographie <i class="fas fa-chevron-right chev"></i></a></li>
-          <li><a href="#" onclick="openTab(event, this, 'contact')" class="menu-link"><i class="fas fa-envelope mr-2"></i> Contact <i class="fas fa-chevron-right chev"></i></a></li>
-          <li><a href="/CGU"  class="menu-link"><i class="fa fa-gavel mr-2"></i> Legal <i class="fas fa-chevron-right chev"></i></a></li>
-        </ul>
+	<div class="row row-height">
+		<div class="menu col-3">
+			<ul>
+				<li>
+					<a href="#" onclick="openTab(event, this, 'blog')" class="menu-link active disabled"><i class="fas fa-scroll mr-2"></i> Blog <i class="fas fa-chevron-right chev"></i></a>
+				</li>
+				<li>
+					<a href="#" onclick="openTab(event, this, 'bio')" class="menu-link"><i class="fas fa-address-card mr-2"></i> Biographie <i class="fas fa-chevron-right chev"></i></a>
+				</li>
+				<li>
+					<a href="#" onclick="openTab(event, this, 'contact')" class="menu-link"><i class="fas fa-envelope mr-2"></i> Contact <i class="fas fa-chevron-right chev"></i></a>
+				</li>
+				<li>
+					<a href="/CGU" class="menu-link"><i class="fa fa-gavel mr-2"></i> Legal <i class="fas fa-chevron-right chev"></i></a>
+				</li>
+			</ul>
 
-        <ul class="footer-list text-center">
-          <li>
-            <a href="#!" class="social-btn"><i class="fab fa-instagram"></i></a>
-          </li>
-          <li>
-            <a href="#!" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-          </li>
-          <li>
-            <a href="#!" class="social-btn"><i class="fab fa-pinterest-p"></i></a>
-          </li>
-        </ul>
-      </div>
-  
-      <div id="contact" class="tab col-9" style="display: none;">
-        <section class="contact-section">
-          <div class="container">
-          <div class="col-10 offset-1 wrapper">
-            <div class="section-heading">
-                <h2>Contact</h2>
-                <h5>Nous avons besoin de ces informations pour pouvoir vous répondre</h5>
-                <h6>Sinon, vous pouvez nous envoyer un mail directement à l'adresse <b>abkarianpatricia@gmail.com</b></h6>
-            </div>
-            <form class="col-10 offset-1 mt-4" id="contact" method="POST" onsubmit="submitContact(event)" action="/api/contact/">
-                <div class="row">
-                    <div class="col-6">
-                        <label class="control-label">Nom</label>
-                        <input placeholder="Jean Dupont" type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required>
-                        <span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
-                    </div>
-                    <div class="col-6">
-                        <label class="control-label">Email</label>
-                        <input  placeholder="jeandupont@gmail.com" type="email" name="email" id="email" onkeyup="Validate.Email(this);" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required>
-                        <span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
-                    </div>
-                </div>
+			<ul class="footer-list text-center">
+				<li>
+					<a href="#!" class="social-btn"><i class="fab fa-instagram"></i></a>
+				</li>
+				<li>
+					<a href="#!" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+				</li>
+				<li>
+					<a href="#!" class="social-btn"><i class="fab fa-pinterest-p"></i></a>
+				</li>
+			</ul>
+		</div>
 
-                <label class="control-label">Objet</label>
-                <input  placeholder="À propos de votre tableau..." type="text" name="title" id="title" onkeyup="Validate.String(this, 10, 256);" value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>" required>
-                <span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
-    
-                <label class="control-label">Message</label>
-                <textarea id="content" onkeyup="Validate.String(this, 64, 2048);" class="instructions-textarea" style="min-height: 175px;" name="content" placeholder="Écrivez votre message ici..." required><% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea>
-                <span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
+		<div id="contact" class="tab col-9" style="display: none;">
+				<div class="col-10 offset-1 wrapper">
+					<div class="section-heading">
+						<h2>Contact</h2>
+						<hr class="hr-pwinty mt-3" />
+					</div>
+					<form class="col-10 offset-1 mt-4" id="contact" method="POST" onsubmit="submitContact(event)" action="/api/contact/">
+						<div class="row">
+							<div class="col-6">
+								<label class="control-label">Name</label>
+								<input
+									placeholder="Jean Dupont"
+									type="text"
+									name="name"
+									id="name"
+									onkeyup="Validate.String(this, 4, 30);"
+									value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>"
+									required
+								/>
+								<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
+							</div>
+							<div class="col-6">
+								<label class="control-label">Email</label>
+								<input
+									placeholder="jeandupont@gmail.com"
+									type="email"
+									name="email"
+									id="email"
+									onkeyup="Validate.Email(this);"
+									value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>"
+									required
+								/>
+								<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
+							</div>
+						</div>
 
-                <div class="text-center">
-                  <div class="g-recaptcha" data-sitekey="6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9"></div>
-                </div>
-                <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-                <input type="submit" class="logbtn mt-3" value="Envoyer" id="submit-contact">
-            </form>
-          </div>
-        </div>
-        </section>
-      </div>
-  
-      <div id="bio" class="tab col-9" style="display: none;">
-        <section>
-            <div class="biography col-10 offset-1">
-                <div class="bio-square square-first">
-                    <img class="square-img" src="https://i.imgur.com/4rBbPSy.png" style="float: left"/>
-                    <h1 class="square-title" style="font-size: 40px;">Maral Abkarian</h1>
-                    <p class="square-txt">
-                      Née durant la seconde moitié du XXème siècle, élevée entre Orient du Levant et Occident tricolore,
-                      établie sur trois continents, Maral a dans la continuité de ses ancêtres déracinés de leur terre natale par le génocide arménien en 1915,
-                      vécu dans différentes contrées à travers le monde.
-                    </p>
-                </div>
-                <div class="bio-square">
-                    <h1 class="square-title">Lorem ipsum dolor sit</h1>
-                    <p class="square-txt">
-                      C’est sous un beau jour printanier d’avril, qu’à peine sa mère débarqua au port de la cité phocéenne,
-                      faisant ses adieux à son Liban natal, qu’elle vit le jour. Dès son plus jeune âge, elle fut remarquée pour son talent artistique et sa sensibilité, 
-                      raflant régulièrement les premiers prix des concours artistiques scolaires, derrière son sourire timide et un caractère espiègle.
-                      <br />
-                      <br />
-                      Le temps passa et la petite fille grandissante devint une adolescente en fleur au pays des cèdres,
-                      contrée d’accueil de ses parents natals. Mais les nuages obscures s’étendant, la guerre civile plongea le chaos, obligeant la fratrie à fuir vers la Syrie, 
-                      s’envolant à nouveau vers les terres d’exil, jusqu’en Amérique.
-                      <br />
-                      <br />
-                      De retour finalement en France, Maral a de ses carnets de voyages cultivé une riche expérience de cultures très diverses,
-                      française, anglo-saxonne, arabo-levantine, arméno-anatolienne et hellénique. 
-                    </p class="square-txt">
-                </div>
-                <div class="bio-square square-last">
-                    <p class="square-txt">
-                      Sa quête artistique est celle d’un beau naturel, dépouillé vers une authenticité directe et accessible à tous,
-                      à l’image de son hypersensibilité, spirituelle. Les figures gracieuses, le partage et l’âpreté de la vie humaine sont mises à nues dans son travail, 
-                      tantôt figuratif, tantôt semi-abstrait, avec le goût du relief et d’un toucher parfois brut, non sans délicatesse.
-                      <br />
-                      <br />
-                      Son goût pour les portraits et les paysages apparaissent régulièrement, témoignant également d’une innocence, sensualité, fraîcheur perdue à notre époque de plus en plus connectée.
-                      L’ancien et le moderne, l’occidental et l’oriental, le spirituel et le terrestre, la vie et l’au-delà, thèmes complémentaires que Maral aime exprimer à travers ses œuvres, 
-                      un message d’espoir et joie, de profondeur, parfois teinté de mélancolie face aux contingences qu’endure l’humain.
-                      <br />
-                      <br />
-                      Soeur de l'acteur Simon Abkarian, Maral Abkarian développe désormais une carrière d'actrice, également connue pour ses talents de gastronome,
-                      à la personnalité démonstrative et chaleureuse, non sans pudeur, seule sœur de ses trois frères.
-                    </p>
-                </div>
-            </div>
-        </section>
-      </div>
+						<label class="control-label">Object</label>
+						<input
+							placeholder="À propos de votre tableau..."
+							type="text"
+							name="title"
+							id="title"
+							onkeyup="Validate.String(this, 10, 256);"
+							value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>"
+							required
+						/>
+						<span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
 
-      <div id="blog" class="tab col-9">
-        <section class="blog-section">
-            <div class="container container-blog">
-              <div class="col-12 wrapper" id="container-blog">
-                <% if (locals.blogs){ %>
-                  <% Object.keys(locals.blogs).forEach(function (index) { %>
-                      <div class="blog-row" id="<%= locals.blogs[index]._id %>">
-                        <h3 class="blog-title"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3> 
-                        <p class="blog-info">posté par 
-                          <b class="blog-author"><%= locals.blogs[index].author %></b>,
-                          <i class="blog-date"><%= locals.blogs[index].date %></i>
-                        </p>
+						<label class="control-label">Message</label>
+						<textarea
+							id="content"
+							onkeyup="Validate.String(this, 64, 2048);"
+							class="instructions-textarea"
+							style="min-height: 175px;"
+							name="content"
+							placeholder="Écrivez votre message ici..."
+							required
+						>
+<% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea
+						>
+						<span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
 
-                      <% if (locals.blogs[index].thumbnail) { %>
-                        <div class="blog-overlay-wrapper">
-                          <div class="blog-overlay">
-                            <div class="content-holder"></div>
-                            <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
-                          </div>
-                        </div>
-                      </div>
-                      <% } else { %>
-                        <div class="blog-no-overlay-wrapper">
-                          <div class="blog-no-overlay">
-                            <div class="content-holder"></div>
-                            <form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
-                          </div>
-                        </div>
-                      </div>
-                      <% } %>
+						<div class="text-center">
+							<div class="g-recaptcha" data-sitekey="6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9"></div>
+						</div>
+						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+						<input type="submit" class="logbtn mt-3" value="Envoyer" id="submit-contact" />
+					</form>
+				</div>
+		</div>
 
-                      <script>
-                        toAppend = "<%= locals.blogs[index].shortcontent %>";
-                        toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-                        document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".content-holder").innerHTML = toAppend;
+		<div id="bio" class="tab col-9" style="display: none;">
+			<div class="biography col-10 offset-1 row">
+				<!--
+				<img class="col-3" src="https://i.imgur.com/4rBbPSy.png" />
+				<div class="col-9">
+					<h1 class="square-title">Maral Abkarian</h1>
+					<p class="square-txt">
+						Née durant la seconde moitié du XXème siècle, élevée entre Orient du Levant et Occident tricolore, établie sur trois continents, Maral a dans la continuité de ses ancêtres déracinés de
+						leur terre natale par le génocide arménien en 1915, vécu dans différentes contrées à travers le monde.
+					</p>
+				</div>-->
 
-                        <% if (locals.blogs[index].thumbnail) { %>
-                          toAppend = "<%= locals.blogs[index].thumbnail %>";
-                          toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-                          document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".blog-overlay-wrapper").innerHTML += toAppend;
-                        <% } %>
-                      </script>
+				<div class="bio-body col-10 offset-1">
+					<img class="bio-img" src="https://i.imgur.com/4rBbPSy.png" />
+					<h1 class="square-title">Maral Abkarian</h1>
+					<p class="square-txt ml-3">
+						Née durant la seconde moitié du XXème siècle, élevée entre Orient du Levant et Occident tricolore, établie sur trois continents, Maral a dans la continuité de ses ancêtres déracinés de
+						leur terre natale par le génocide arménien en 1915, vécu dans différentes contrées à travers le monde.
+					</p>
 
-                  <% }) %>
-                <% } else { %>
-                  <div class="text-center m-5 p-5" style="background: white">
-                    <h1>Blog page is under maintenance, please come back later</h1>
-                  </div>
-                <% } %>
-              </div>
-            </div>
-            <div class="col-6 offset-3 mb-3 mt-3">
-              <img id="loader" src="/img/loader.gif">
-              <input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteBlogs();">
-            </div>
-        </section>
-      </div>
+					<p class="square-txt">
+						C’est sous un beau jour printanier d’avril, qu’à peine sa mère débarqua au port de la cité phocéenne, faisant ses adieux à son Liban natal, qu’elle vit le jour. Dès son plus jeune âge,
+						elle fut remarquée pour son talent artistique et sa sensibilité, raflant régulièrement les premiers prix des concours artistiques scolaires, derrière son sourire timide et un caractère
+						espiègle.
+					</p>
+					<p class="square-txt">
+						Le temps passa et la petite fille grandissante devint une adolescente en fleur au pays des cèdres, contrée d’accueil de ses parents natals. Mais les nuages obscures s’étendant, la guerre
+						civile plongea le chaos, obligeant la fratrie à fuir vers la Syrie, s’envolant à nouveau vers les terres d’exil, jusqu’en Amérique.
+					</p>
+					<p class="square-txt">
+						De retour finalement en France, Maral a de ses carnets de voyages cultivé une riche expérience de cultures très diverses, française, anglo-saxonne, arabo-levantine, arméno-anatolienne et
+						hellénique.
+					</p>
+					<p class="square-txt">
+						Sa quête artistique est celle d’un beau naturel, dépouillé vers une authenticité directe et accessible à tous, à l’image de son hypersensibilité, spirituelle. Les figures gracieuses, le
+						partage et l’âpreté de la vie humaine sont mises à nues dans son travail, tantôt figuratif, tantôt semi-abstrait, avec le goût du relief et d’un toucher parfois brut, non sans délicatesse.
+					</p>
+					<p class="square-txt">
+						Son goût pour les portraits et les paysages apparaissent régulièrement, témoignant également d’une innocence, sensualité, fraîcheur perdue à notre époque de plus en plus connectée.
+						L’ancien et le moderne, l’occidental et l’oriental, le spirituel et le terrestre, la vie et l’au-delà, thèmes complémentaires que Maral aime exprimer à travers ses œuvres, un message
+						d’espoir et joie, de profondeur, parfois teinté de mélancolie face aux contingences qu’endure l’humain.
+					</p>
+					<p class="square-txt">
+						Soeur de l'acteur Simon Abkarian, Maral Abkarian développe désormais une carrière d'actrice, également connue pour ses talents de gastronome, à la personnalité démonstrative et
+						chaleureuse, non sans pudeur, seule sœur de ses trois frères.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="blog" class="tab col-9">
+			<div class="container container-blog h-100 p-0 m-0">
+				<div class="col-10 offset-1 wrapper" id="container-blog">
+					<% if (locals.blogs){ %> <% Object.keys(locals.blogs).forEach(function (index) { %>
+					<div class="blog-row" id="<%= locals.blogs[index]._id %>">
+						<h3 class="blog-title"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3>
+						<p class="blog-info">
+							uploaded by <b class="blog-author"><%= locals.blogs[index].author %></b>,
+							<i class="blog-date"><%= locals.blogs[index].date %></i>
+						</p>
+
+						<% if (locals.blogs[index].thumbnail) { %>
+						<div class="blog-overlay-wrapper">
+							<div class="blog-overlay">
+								<div class="content-holder"></div>
+								<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
+							</div>
+						</div>
+					</div>
+					<% } else { %>
+					<div class="blog-no-overlay-wrapper">
+						<div class="blog-no-overlay">
+							<div class="content-holder"></div>
+							<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
+						</div>
+					</div>
+				</div>
+				<% } %>
+
+				<script>
+					toAppend = "<%= locals.blogs[index].shortcontent %>";
+					toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+					document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".content-holder").innerHTML = toAppend;
+
+					<% if (locals.blogs[index].thumbnail) { %>
+					  toAppend = "<%= locals.blogs[index].thumbnail %>";
+					  toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+					  document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".blog-overlay-wrapper").innerHTML += toAppend;
+					<% } %>
+				</script>
+
+				<% }) %> <% } else { %>
+				<div class="text-center m-5 p-5" style="background: white;">
+					<h1>Blog page is under maintenance, please come back later</h1>
+				</div>
+				<% } %>
+			</div>
+			<div class="col-6 offset-3 mb-3 mt-3">
+				<img id="loader" src="/img/loader.gif" />
+				<input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteBlogs();" />
+			</div>
     </div>
-</div>
+    </div>
+     </div>
+    
 
-<script src="/scripts/frontValidation.js"></script>
-<script src="/scripts/submit-contact.js"></script>
-<% include partials/footer %>
+	</div>
+
+	<script src="/scripts/frontValidation.js"></script>
+	<script src="/scripts/submit-contact.js"></script>
+	<% include partials/footer %>
+</div>
