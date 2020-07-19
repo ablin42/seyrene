@@ -125,8 +125,9 @@ router.post("/complete/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, 
 		if (err || !result) throw new Error(ERROR_MESSAGE.saveError);
 
 		let subject = `Commande complétée #${order._id}`;
-		let content = `Vous avez marqué une commande comme étant complétée <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Lien vers le commande</a>`;
-		if (await mailer(process.env.EMAIL, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		let content = "Vous avez marqué une commande comme étant complétée, cliquez ici pour y accéder";
+		if (await mailer(process.env.EMAIL, subject, content, `${process.env.BASEURL}/Admin/Order/${order._id}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info(`Order completed: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: "La commande à été marquée comme complétée" });
@@ -190,11 +191,13 @@ router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req
 		if (err || !order) throw new Error(ERROR_MESSAGE.fetchError);
 
 		let subject = `Cancelled Order #${order._id}`;
-		let content = `Une commande à été annulée: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Cliquez ici pour voir la commande</a>`;
-		if (await mailer(process.env.EMAIL, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		let content = "Une commande à été annulée, cliquez ici pour y accéder";
+		if (await mailer(process.env.EMAIL, subject, content, `${process.env.BASEURL}/Admin/Order/${order._id}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
-		content = `Your order was cancelled, to see the cancelled order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
-		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		content = "Your order was cancelled, to see the cancelled order, please click the button below (make sure you're logged in)";
+		if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info(`Order cancelled: Order: ${order._id} - User: ${req.user._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.cancelOrderSuccess });

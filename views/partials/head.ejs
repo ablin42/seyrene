@@ -45,28 +45,28 @@
 					<a href="/"><h1 class="logo name-header navbar-text">Maral</h1></a>
 					<ul class="nav-links">
 						<li>
-							<a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>">À propos</a>
+							<a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>">About</a>
 						</li>
 
 						<li>
-							<a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>">Galerie</a>
+							<a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>">Gallery</a>
 						</li>
 
 						<li>
-							<a href="/Catalog" class="navbar-text <%= (locals.active && locals.active == 'Catalog') ? 'active' : '' %>">Catalogue</a>
+							<a href="/Catalog" class="navbar-text <%= (locals.active && locals.active == 'Catalog') ? 'active' : '' %>">Catalog</a>
 						</li>
 
 						<li>
-							<a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>">Boutique</a>
+							<a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>">Shop</a>
 						</li>
 
 						<% if (!locals.user) { %>
 						<li>
-							<a href="/Account" class="navbar-text <%= (locals.active && locals.active == 'Account') ? 'active' : '' %>">Connexion</a>
+							<a href="/Account" class="navbar-text <%= (locals.active && locals.active == 'Account') ? 'active' : '' %>">Log in</a>
 						</li>
 						<% } else { %>
 						<li>
-							<a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>">Compte</a>
+							<a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>">Account</a>
 						</li>
 
 						<% if (locals.user && locals.user.role === "admin") { %>
@@ -76,7 +76,7 @@
 						<% } %>
 
 						<li>
-							<a href="/api/auth/logout" class="navbar-text">Déconnexion</a>
+							<a href="/api/auth/logout" class="navbar-text">Log out</a>
 						</li>
 						<% } %>
 						<li id="cart-qty-li">

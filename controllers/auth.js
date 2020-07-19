@@ -62,8 +62,9 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		let subject = "Account Verification Token for Maral";
-		let content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
-		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		let content = "Hello, Please verify your account by following the link below ";
+		if (await mailer(user.email, subject, content, `${process.env.BASEURL}/api/auth/confirmation/${vToken}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info(`Account created: ${user._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.accountCreated });
@@ -178,8 +179,9 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
 		let subject = "Account Verification Token for Maral";
-		let content = `Hello,\n\n Please verify your account by clicking the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
-		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		let content = "Hello, Please verify your account by clicking the link below ";
+		if (await mailer(user.email, subject, content, `${process.env.BASEURL}/api/auth/confirmation/${vToken}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		req.flash("info", `A verification email has been sent to ${user.email}`);
 		return res.status(200).json({ error: false });

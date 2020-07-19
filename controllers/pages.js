@@ -135,7 +135,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 					price: formatter.format(item.price).substr(2),
 					shortcontent: item.attributes.content.substr(0, 128),
 					shorttitle: item.attributes.title.substr(0, 64),
-					details: "Toile Unique"
+					details: "Unique Painting"
 				};
 				obj.products.push(itemObj);
 			} else {
@@ -337,7 +337,7 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 					price: item.price,
 					shortcontent: item.attributes.content.substr(0, 128),
 					shorttitle: item.attributes.title.substr(0, 64),
-					details: "Toile Unique"
+					details: "Unique Painting"
 				};
 				obj.products.push(itemObj);
 			} else {
@@ -564,7 +564,7 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 					price: item.price,
 					shortcontent: item.attributes.content.substr(0, 128),
 					shorttitle: item.attributes.title.substr(0, 64),
-					details: "Toile Unique"
+					details: "Unique Painting"
 				};
 				obj.products.push(itemObj);
 			} else {

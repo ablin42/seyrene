@@ -1911,6 +1911,7 @@ tbody tr:hover {
 	cursor: pointer;
 	width: 100%;
 	display: grid;
+	transition: ease-in-out 0.3s;
 }
 
 .cat-list:hover {
@@ -2073,6 +2074,7 @@ tbody tr:hover {
 	border-radius: 0;
 	height: 400px;
 	width: unset;
+	max-width: 100%;
 	background-color: var(--brand-blue-p2);
 }
 

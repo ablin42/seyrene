@@ -31,8 +31,8 @@ async function setUser(req, res, next) {
 		req.user = user;
 	}
 
-	let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
-	req.user = user; //
+	//let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
+	//req.user = user; //
 
 	next();
 }
@@ -112,7 +112,7 @@ async function checkAddress(req, res, next) {
 }
 
 async function setDelivery(req, res, next) {
-	const userId = "5d810b9365761c0840e0de25"; //req.session._id;
+	const userId = req.session._id;
 
 	if (userId) {
 		let [err, result] = await utils.to(DeliveryInfo.findOne({ _userId: userId }));

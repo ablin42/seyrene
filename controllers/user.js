@@ -56,8 +56,9 @@ router.post("/lostpw", limiter, vLostPw, checkCaptcha, setUser, notLoggedUser, a
 		}
 
 		const subject = "Password Reset Token for Maral",
-			content = `Hello,\n\n You asked your password to be reset, please follow this link in order to change your password: \n ${process.env.BASEURL}/resetpw/${pwToken._id}/${token}`;
-		if (await mailer(req.body.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+			content = "Hello, You asked your password to be reset, please click the button below in order to change your password";
+		if (await mailer(req.body.email, subject, content, `${process.env.BASEURL}/resetpw/${pwToken._id}/${token}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info(`Lostpw request token: ${user.email}/${user._id}`);
 		req.flash("success", ERROR_MESSAGE.lostpwEmail);
@@ -130,8 +131,9 @@ router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res)
 		if (err || !token) throw new Error(ERROR_MESSAGE.saveError);
 
 		let subject = "Account Verification Token for Maral",
-			content = `Hello,\n\n Please verify your account by following the link: \n${process.env.BASEURL}/api/auth/confirmation/${vToken}`;
-		if (await mailer(newEmail, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+			content = "Hello, Please verify your account by clicking the button below";
+		if (await mailer(newEmail, subject, content, `${process.env.BASEURL}/api/auth/confirmation/${vToken}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info(`Email patched: ${newEmail}/${id}`);
 		req.flash("success", ERROR_MESSAGE.updatedEmail);

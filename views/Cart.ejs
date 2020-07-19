@@ -7,18 +7,17 @@
 		<div class="col-10 offset-1 wrapper">
 			<div class="text-center">
 				<b class="alertEmpty text-center" id="alertEmpty">Your cart is empty!</b>
-				<hr />
 			</div>
 		</div>
 
-		<% } %> <% if(locals.products){ %> <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
+		<% } %> <% if(locals.products && locals.totalPrice != 0 && locals.totalQty != 0){ %> 
 		<div class="col-10 offset-1 p-0">
 			<div class="cart-row" id="cart-row-header">
 				<span class="cart-item cart-header cart-column">ITEM</span>
 				<span class="cart-quantity cart-header cart-column">QUANTITY</span>
 				<span class="cart-price cart-header cart-column">PRICE</span>
 			</div>
-			<% } %> <% Object.keys(locals.products).forEach(function (index) { %>
+			<% Object.keys(locals.products).forEach(function (index) { %>
 			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].isUnique) { %>-<%= index %><% } %>">
 				<div class="cart-item cart-column">
 					<% if (locals.products[index].isUnique === true) { %>
@@ -59,8 +58,8 @@
 					<% } %>
 				</div>
 			</div>
-			<% }) %> <% } %>
-			</div>
+
+			<% }) %></div> <% } %>
 
 
 			<div class="col-10 offset-1 wrapper" style="z-index: 0;">

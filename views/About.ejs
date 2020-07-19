@@ -10,7 +10,7 @@
 					<a href="#" onclick="openTab(event, this, 'blog')" class="menu-link active disabled"><i class="fas fa-scroll mr-2"></i> Blog <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'bio')" class="menu-link"><i class="fas fa-address-card mr-2"></i> Biographie <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'bio')" class="menu-link"><i class="fas fa-address-card mr-2"></i> Bio <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
 					<a href="#" onclick="openTab(event, this, 'contact')" class="menu-link"><i class="fas fa-envelope mr-2"></i> Contact <i class="fas fa-chevron-right chev"></i></a>
@@ -70,7 +70,7 @@
 
 						<label class="control-label">Object</label>
 						<input
-							placeholder="À propos de votre tableau..."
+							placeholder="Hey, I found your painting really great..."
 							type="text"
 							name="title"
 							id="title"
@@ -87,7 +87,7 @@
 							class="instructions-textarea"
 							style="min-height: 175px;"
 							name="content"
-							placeholder="Écrivez votre message ici..."
+							placeholder="Write your message here...."
 							required
 						>
 <% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea
@@ -98,23 +98,13 @@
 							<div class="g-recaptcha" data-sitekey="6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9"></div>
 						</div>
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="logbtn mt-3" value="Envoyer" id="submit-contact" />
+						<input type="submit" class="logbtn mt-3" value="Send" id="submit-contact" />
 					</form>
 				</div>
 		</div>
 
 		<div id="bio" class="tab col-9" style="display: none;">
 			<div class="biography col-10 offset-1 row">
-				<!--
-				<img class="col-3" src="https://i.imgur.com/4rBbPSy.png" />
-				<div class="col-9">
-					<h1 class="square-title">Maral Abkarian</h1>
-					<p class="square-txt">
-						Née durant la seconde moitié du XXème siècle, élevée entre Orient du Levant et Occident tricolore, établie sur trois continents, Maral a dans la continuité de ses ancêtres déracinés de
-						leur terre natale par le génocide arménien en 1915, vécu dans différentes contrées à travers le monde.
-					</p>
-				</div>-->
-
 				<div class="bio-body col-10 offset-1">
 					<img class="bio-img" src="https://i.imgur.com/4rBbPSy.png" />
 					<h1 class="square-title">Maral Abkarian</h1>

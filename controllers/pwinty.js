@@ -268,14 +268,16 @@ router.post("/callback/status", async (req, res) => {
 			if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
 
 			let subject = `Updated Order (Pwinty) #${order._id}`;
-			let content = `Le status d'une commande vient d'être modifié par pwinty: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Voir la commande</a>`;
-			if (await mailer(process.env.EMAIL, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+			let content = "Le status d'une commande vient d'être modifié par pwinty, cliquez ici pour y accéder";
+			if (await mailer(process.env.EMAIL, subject, content, `${process.env.BASEURL}/Admin/Order/${order._id}`))
+				throw new Error(ERROR_MESSAGE.sendMail);
 
 			[err, user] = await utils.to(Order.findOne({ _userId: order._userId }));
 			if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
-			content = `Your order's status was updated, to see your order please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
-			if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+			content = "Your order's status was updated, to see your order please click the button below (make sure you're logged in)";
+			if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
+				throw new Error(ERROR_MESSAGE.sendMail);
 
 			fullLog.info(`Pwinty status updated: ${req.body.orderId} - ${req.body.eventId}`);
 			return res.status(200).send({ error: false, message: "OK" });

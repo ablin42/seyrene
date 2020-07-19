@@ -152,13 +152,15 @@ module.exports = {
 		if (err || !response) throw new Error(ERROR_MESSAGE.submitOrder);
 
 		let subject = `New Order #${order._id}`;
-		let content = `Une nouvelle commande à été approuvée: <hr/><a href="${process.env.BASEURL}/Admin/Order/${order._id}">Cliquez ici pour voir la commande</a>`;
-		if (await mailer(process.env.EMAIL, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		let content = "Une nouvelle commande à été approuvée, cliquez ici pour y accéder";
+		if (await mailer(process.env.EMAIL, subject, content, `${process.env.BASEURL}/Admin/Order/${order._id}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		[err, user] = await utils.to(User.findById(order._userId));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
-		content = `To see your order, please follow the link below (make sure you're logged in): <hr/><a href="${process.env.BASEURL}/Order/${order._id}">CLICK HERE</a>`;
-		if (await mailer(user.email, subject, content)) throw new Error(ERROR_MESSAGE.sendMail);
+		content = "To see your order, please click the button below (make sure you're logged in)";
+		if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
+			throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info("Order saved to DB", order._id);
 		return { err: false, orderId: order._id };

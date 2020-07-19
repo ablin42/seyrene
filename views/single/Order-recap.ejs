@@ -5,7 +5,7 @@
 	<div class="single-wrapper">
 		<div class="col-10 offset-1 wrapper">
 			<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Submitted" && locals.order.status !== "Completed" && locals.order.status !== "awaitingStripePayment") { %>
-			<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn" value="CANCEL ORDER" />
+			<input type="submit" onclick="cancelOrderEN('<%= locals.order._id %>')" class="cancelbtn" value="CANCEL ORDER" />
 			<% } %> <% if (locals.order && locals.order.items) { %>
 			<h1 class="single-title text-center">Your Order</h1>
 

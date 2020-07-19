@@ -98,6 +98,22 @@ async function cancelOrder(orderId) {
 	return;
 }
 
+async function cancelOrderEN(orderId) {
+	if ($("#alert-dialog").length === 0) {
+		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
+                        <h3><b>CANCEL</b> the order</h3><span>This action cannot be reversed</span> \
+                        <button class="tab-btn" onclick="confirmDelete('${orderId}')">Confirm</button><button class="tab-btn" onclick="abortAction()">Abort</button> \
+                      </div>`);
+		$("#alert-dialog").wrap('<div onclick="closeDialog()" class="dialog-wrapper"></div>');
+
+		setTimeout(() => {
+			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");
+			$("#alert-dialog").parent().css("opacity", "1");
+		}, 100);
+	}
+	return;
+}
+
 async function approveOrder(orderId) {
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
