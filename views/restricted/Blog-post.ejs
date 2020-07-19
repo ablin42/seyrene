@@ -1,34 +1,27 @@
 <% include ../partials/head %>
 
 <div class="container container-single">
-	<div class="single-wrapper col-8 offset-2">
-		<h1 class="single-title">Rédiger un post de blog</h1>
-		<form class="col-8 offset-2" id="blog" method="POST" action="/api/blog/">
-			<hr />
-			<div class="form-group">
-				<label class="control-label">Titre</label>
-				<input
-					class="form-control"
-					id="title"
-					type="text"
-					placeholder="Titre"
-					name="title"
-					onkeyup="Validate.String(this, 4, 256);"
-					value="<% if (locals.formData) { %><%= locals.formData.title %><% } %>"
-					required
-				/>
-				<span id="i_title" class="form-info">Title must contain between 4 and 256 characters</span>
-			</div>
+	<div class="single-wrapper">
+		<div class="col-10 offset-1 wrapper">
+			<h1 class="single-title text-center">Rédiger un post de blog</h1>
+			<form id="blog" method="POST" action="/api/blog/">
+				<hr />
+				<div class="form-group">
+					<label class="control-label">Titre</label>
+					<input id="title" type="text" placeholder="Titre" name="title" onkeyup="Validate.String(this, 4, 256);" value="<% if (locals.formData) { %><%= locals.formData.title %><% } %>" required />
+					<span id="i_title" class="form-info">Title must contain between 4 and 256 characters</span>
+				</div>
 
-			<div class="form-group">
-				<div id="editor" style="background-color: white;" onkeyup="saveContent()"></div>
-				<input type="hidden" name="content" id="content" />
-				<span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
-			</div>
+				<div class="form-group">
+					<div id="editor" onkeyup="saveContent()"></div>
+					<input type="hidden" name="content" id="content" />
+					<span id="i_content" class="form-info">Content must contain between 128 and 4096 characters</span>
+				</div>
 
-			<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-			<input type="submit" class="logbtn" value="Valider" id="submit-blog" />
-		</form>
+				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+				<input type="submit" class="logbtn" value="Valider" id="submit-blog" />
+			</form>
+		</div>
 	</div>
 </div>
 

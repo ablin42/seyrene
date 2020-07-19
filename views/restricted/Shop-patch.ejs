@@ -1,25 +1,26 @@
 <% include ../partials/head %>
 
 <div class="container container-single"> 
-    <div class="single-wrapper col-8 offset-2">
-        <h1 class="single-title">Modifier un item de la boutique</h1>
-        <form class="col-8 offset-2" id="shop" method="POST" action="/api/shop/patch/<%= locals.shop._id %>" enctype="multipart/form-data" onsubmit="patchShop(event, '<%= locals.shop._id %>');"> 
+    <div class="single-wrapper">
+        <div class="col-10 offset-1 wrapper">
+        <h1 class="single-title text-center">Modifier un item de la boutique</h1>
+        <form  id="shop" method="POST" action="/api/shop/patch/<%= locals.shop._id %>" enctype="multipart/form-data" onsubmit="patchShop(event, '<%= locals.shop._id %>');"> 
             <hr />
             <div class="form-group">
                 <label class="control-label">Titre</label>
-                <input class="form-control" type="text" name="title" id="title" placeholder="Titre" value="<%= locals.shop.title %>" onkeyup="Validate.String(this, 1, 256);" required>
+                <input  type="text" name="title" id="title" placeholder="Titre" value="<%= locals.shop.title %>" onkeyup="Validate.String(this, 1, 256);" required>
                 <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
             </div>
             
             <div class="form-group">
                 <label class="control-label">Description</label>
-                <textarea class="instructions-textarea" id="content" name="content" class="blog-textarea" placeholder="Your item description here" onkeyup="Validate.String(this, 1, 2048);" required><%= locals.shop.content %></textarea>
+                <textarea class="instructions-textarea" rows="5" id="content" name="content" class="blog-textarea" placeholder="Your item description here" onkeyup="Validate.String(this, 1, 2048);" required><%= locals.shop.content %></textarea>
                 <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
             </div>
 
             <div class="form-group">
                 <label class="control-label">Prix</label>
-                <input placeholder="35.50 (au centième d'euro près)" class="form-control" type="number" min="1" id="price" name="price" value="<%= locals.shop.price %>" step=".01" required>
+                <input placeholder="35.50 (au centième d'euro près)" type="number" min="1" id="price" name="price" value="<%= locals.shop.price %>" step=".01" required>
             </div>
 
             <div class="form-group">
@@ -41,10 +42,11 @@
             <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
             <input type="submit" class="logbtn" value="Mettre à jour" id="submit-shop">
         </form>
-        <form class="col-8 offset-2 mt-4" method="POST" action="/api/shop/delete/<%= locals.shop._id %>">
+        <form class="mt-3" method="POST" action="/api/shop/delete/<%= locals.shop._id %>">
             <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
             <input type="submit" class="delbtn" value="SUPPRIMER DEFINITIVEMENT" id="delete-shop">
         </form>
+    </div>
     </div>
 </div>
 <script src="/scripts/shop/shopScripts.js"></script>

@@ -30,6 +30,11 @@
 	--light-shade-p1: #d6d6d6;
 }
 
+#editor {
+	min-height: 300px;
+	background-color: #e6e6e6;
+}
+
 .table-striped tbody tr:nth-of-type(odd) {
 	background-color: var(--light-shade);
 }
@@ -785,7 +790,7 @@ button:focus {
 	width: 100%;
 	height: 50px;
 	border: none;
-	background: var(--danger);
+	background: var(--danger-color) !important;
 	color: #fff;
 	outline: none;
 	cursor: pointer;
@@ -2248,7 +2253,7 @@ tbody tr:hover {
 }
 
 .action-div a:hover {
-	color: var(--light-shade-m1);
+	color: var(--brand-blue-p1);
 }
 
 /* END ADMIN */
