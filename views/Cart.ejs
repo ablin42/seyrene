@@ -3,15 +3,20 @@
 <script src="/scripts/cart.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper">
-		<div class="col-10 offset-1">
+		<% if (locals.totalPrice == "0" || locals.totalPrice == "0.00" ) { %>
+		<div class="col-10 offset-1 wrapper">
 			<div class="text-center">
-				<b class="alertEmpty text-center" id="alertEmpty" <% if (locals.totalPrice !="0" && locals.totalPrice !="0.00" ) { %> style="display: none;" <% } %>>Votre panier est vide!</b>
+				<b class="alertEmpty text-center" id="alertEmpty">Your cart is empty!</b>
+				<hr />
 			</div>
-			<% if(locals.products){ %> <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
+		</div>
+
+		<% } %> <% if(locals.products){ %> <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
+		<div class="col-10 offset-1 p-0">
 			<div class="cart-row" id="cart-row-header">
 				<span class="cart-item cart-header cart-column">ITEM</span>
-				<span class="cart-quantity cart-header cart-column">QUANTITÉ</span>
-				<span class="cart-price cart-header cart-column">PRIX</span>
+				<span class="cart-quantity cart-header cart-column">QUANTITY</span>
+				<span class="cart-price cart-header cart-column">PRICE</span>
 			</div>
 			<% } %> <% Object.keys(locals.products).forEach(function (index) { %>
 			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].isUnique) { %>-<%= index %><% } %>">
@@ -22,7 +27,7 @@
 					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
 					<% } %>
 					<div class="cart-title-description">
-						<h4 class="cart-item-title"><b><%= locals.products[index].shorttitle %>...</b></h4>
+						<h4 class="cart-item-title"><%= locals.products[index].shorttitle %>...</h4>
 						<p class="cart-item-description"><%= locals.products[index].shortcontent %>...</p>
 						<p><%= locals.products[index].details %></p>
 					</div>
@@ -48,120 +53,110 @@
 				</div>
 
 				<div class="cart-price cart-column">
-					<p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
+					<p class="cart-item-price"><%= locals.products[index].price %>€</p>
 					<% if (locals.products[index].isUnique !== true) { %>
-					<p class="cart-item-unitprice"><b><%= locals.products[index].unitPrice %>€/Unité</b></p>
+					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unité</p>
 					<% } %>
 				</div>
 			</div>
 			<% }) %> <% } %>
-
-			<div class="panel-heading">
-				<h2 class="panel-title">Informations pour la livraison</h2>
-				<h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
-			</div>
-			<div class="row">
-				<div class="col-md-6">
-					<label class="control-label">Nom</label>
-					<input
-						class="form-control"
-						id="lastname"
-						name="lastname"
-						placeholder="Doe"
-						value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>"
-						onkeyup="Validate.String(this, 2, 128);"
-						required
-					/>
-					<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
-				</div>
-				<div class="col-md-6">
-					<label class="control-label">Prénom</label>
-					<input
-						class="form-control"
-						id="firstname"
-						name="firstname"
-						placeholder="John"
-						value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>"
-						onkeyup="Validate.String(this, 2, 128);"
-						required
-					/>
-					<span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
-				</div>
 			</div>
 
-			<label class="control-label">Adresse</label>
-			<input
-				id="autocomplete"
-				name="fulltext_address"
-				placeholder="Enter your address"
-				onFocus="geolocate()"
-				class="form-control"
-				value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>"
-				required
-			/>
 
-			<div id="address">
+			<div class="col-10 offset-1 wrapper" style="z-index: 0;">
+				<h1 class="single-title text-center">Delivery Informations</h1>
+				<div id="alert" class="alert alert-info alert-static w-100 mb-3" role="alert">
+									Make sure these informations are correct, if not, change them <a href="/User">HERE</a>
+								</div>
 				<div class="row">
-					<div class="col-md-12">
-						<label class="control-label">Route</label>
+					<div class="col-md-6">
+						<label class="control-label">Last Name</label>
 						<input
-							class="form-control"
-							id="route"
-							placeholder="13 rue de Clignancourt"
-							name="street_name"
-							value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>"
+							id="lastname"
+							name="lastname"
+							placeholder="Doe"
+							value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>"
+							onkeyup="Validate.String(this, 2, 128);"
 							required
 						/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<label class="control-label">Ville</label>
-						<input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" required />
+						<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
 					</div>
 					<div class="col-md-6">
-						<label class="control-label">Région</label>
+						<label class="control-label">First Name</label>
 						<input
-							class="form-control"
-							id="administrative_area_level_1"
-							name="state"
-							placeholder="Île-de-France"
-							value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>"
+							id="firstname"
+							name="firstname"
+							placeholder="John"
+							value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>"
+							onkeyup="Validate.String(this, 2, 128);"
 							required
 						/>
+						<span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<label class="control-label">Code Postal</label>
-						<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" required />
+
+				<label class="control-label">Address</label>
+				<input
+					id="autocomplete"
+					name="fulltext_address"
+					placeholder="Enter your address"
+					onFocus="geolocate()"
+					value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>"
+					required
+				/>
+
+				<div id="address">
+					<div class="row">
+						<div class="col-md-12">
+							<label class="control-label">Street</label>
+							<input id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>" required />
+						</div>
 					</div>
-					<div class="col-md-6">
-						<label class="control-label">Pays</label>
-						<input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label">City</label>
+							<input id="locality" name="city" placeholder="Paris" value="<% if (locals.delivery.city) { %><%= locals.delivery.city %><% } %>" required />
+						</div>
+						<div class="col-md-6">
+							<label class="control-label">State</label>
+							<input id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>" required />
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label class="control-label">Postal Code</label>
+							<input id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.delivery.zipcode) { %><%= locals.delivery.zipcode %><% } %>" required />
+						</div>
+						<div class="col-md-6">
+							<label class="control-label">Country</label>
+							<input id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row mt-3">
-				<div class="col-md-6">
-					<textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly>
-          <% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %></textarea
-					>
-				</div>
+					<label class="control-label">Additional informations</label>
+				<input
+					id="instructions"
+					name="instructions"
+					placeholder="Door code or other useful informations..."
+					value="<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %>"
+					readonly
+				/>
 
 				<% if (locals.totalPrice != 0 && locals.totalQty != 0) { %>
 				<div class="col-md-6 offset-3 mt-4">
-					<div class="payment-div p-3">
+					<div class="payment-div p-3 text-center">
 						<% if (locals.deliveryPrice && locals.deliveryPrice.response.shippingPriceIncludingTax) { %>
-						<span id="delivery-price-span">shipping(with tax): <b id="delivery-price"> <%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b></span>
+						<span id="delivery-price-span">Shipping Price - <b id="delivery-price"> <%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b></span>
 						<% } else { %>
-						<span id="delivery-price-span">shipping(with tax): <b id="delivery-price">FREE</b></span>
+						<span id="delivery-price-span">Shipping Price - <b id="delivery-price">FREE</b></span>
 						<% } %>
 						<br />
-						<span id="total-price-span">PRIX TOTAL(with tax): <b id="total-price"><%= locals.totalPrice %>€</b></span
-						><br />
-						<span id="total-qty-span">QUANTITÉ TOTALE: <b id="total-qty"><%= locals.totalQty %></b></span>
-						<a href="/Billing" class="linkbtn"><button class="btn-purchase" type="button" id="purchase">Continuer</button></a>
+
+						<span id="total-qty-span">Total Quantity - <b id="total-qty"><%= locals.totalQty %></b></span>
+						<br />
+				
+						<span id="total-price-span">Total Price - <b id="total-price"><%= locals.totalPrice %>€</b></span>
+						<a href="/Billing" class="linkbtn"><button class="logbtn" type="button" id="purchase">Go to Payment</button></a>
 					</div>
 				</div>
 				<% } %>

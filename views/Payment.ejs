@@ -8,27 +8,30 @@
 </script>
 
 <div class="container container-single">
-	<div class="single-wrapper">
-		<div class="payment-form-wrapper col-6 offset-3">
-			<h1 class="payment-price" style="color: white;"><% if (locals.totalPrice) { %><%= locals.totalPrice %><% } %>€</h1>
-			<form action="" method="POST" id="payment-form">
-				<input type="text" id="email" placeholder="Email address" required />
-				<label for="card-element" class="card-label">
-					Credit or debit card
-				</label>
-				<div class="form-row">
-					<div id="card-element">
-						<!-- A Stripe Element will be inserted here. -->
-					</div>
-
-					<!-- Used to display Element errors. -->
-					<div id="card-errors" role="alert" class="card-error"></div>
+	<div class="payment-form-wrapper col-6 offset-3">
+		<h1 class="payment-price single-title"><% if (locals.totalPrice) { %><%= locals.totalPrice %><% } %>€</h1>
+		<form action="" method="POST" id="payment-form">
+			<label class="control-label" for="email">Email</label>
+			<input type="text" id="email" placeholder="Email address" required />
+			<div id="alert" class="alert alert-info alert-static w-100 mb-3" role="alert">
+				Email is needed for receipt and shipping updates
+			</div>
+			<label for="card-element" class="control-label">
+				Credit or debit card
+			</label>
+			<div class="form-row">
+				<div id="card-element">
+					<!-- A Stripe Element will be inserted here. -->
 				</div>
 
-				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<button class="btn-pay mt-3">Submit Payment</button>
-			</form>
-		</div>
+				<!-- Used to display Element errors. -->
+				<div id="card-errors" role="alert" class="card-error"></div>
+			</div>
+
+			<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+			<input type="submit" value="Submit Payment" class="btn-pay mt-3" />
+			<!--<button class="btn-pay mt-3">Submit Payment</button>-->
+		</form>
 	</div>
 </div>
 

@@ -1033,14 +1033,18 @@ div.carousel-item.active {
 .container .blog-row,
 .container .resetpw,
 .container .carousel-container,
-.container .single-wrapper {
+.container .single-wrapper,
+.container .payment-div,
+.container .payment-form-wrapper {
 	position: relative;
 	box-shadow: none;
 }
 
 .container .blog-row:before,
 .container .resetpw:before,
-.container .carousel-container:before {
+.container .carousel-container:before,
+.container .payment-div:before,
+.container .payment-form-wrapper:before {
 	box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
 	content: "";
 	position: absolute;
@@ -1205,28 +1209,6 @@ div.carousel-item.active {
 	padding-top: 10px;
 }
 
-.section-heading {
-	text-align: center;
-}
-.section-heading h2 {
-	color: var(--brand-blue-m2);
-	font-size: 40px;
-}
-.section-heading h6 {
-	margin-top: -2px;
-	color: var(--dark-shade-2);
-	font-style: italic;
-}
-
-.section-heading h6 b {
-	color: var(--brand-blue-m1);
-}
-
-.section-heading h5 {
-	margin-top: -2px;
-	color: var(--dark-shade-2);
-	font-style: italic;
-}
 /* END CONTAINER WITH MENU */
 /* END CONTACT */
 
@@ -1511,6 +1493,7 @@ a.lightbox-close {
 }*/
 
 input,
+#card-element,
 textarea {
 	background-color: #e6e6e6 !important;
 	font-weight: bold;
@@ -1560,19 +1543,6 @@ select:-webkit-autofill {
 	text-decoration: none;
 }
 
-.panel-heading {
-	border-top: 1px solid var(--brand-blue-p1);
-	padding-top: 15px;
-}
-
-.panel-heading h6 {
-	color: var(--light-shade-p1);
-}
-
-.panel-title {
-	color: var(--light-shade);
-}
-
 #total-price {
 	font-weight: bold;
 	font-size: 26px;
@@ -1583,32 +1553,21 @@ select:-webkit-autofill {
 	font-size: 26px;
 }
 
-.btn-purchase {
-	display: block;
-	color: var(--light-shade-m1);
-	background: transparent;
-	border: 1px solid var(--light-shade-m1);
-	font-weight: bold;
-	padding: 10px 30px;
-	margin: auto;
-}
-
-.btn-purchase:hover {
-	color: var(--brand-blue-p2);
-	background-color: var(--light-shade);
-}
-
 .alertEmpty {
 	font-size: 5em;
 	text-align: center;
-	color: var(--light-shade);
+	color: var(--brand-blue);
 }
 
 .payment-div {
-	background: var(--brand-blue-m1);
-	color: var(--light-shade-m1);
-	text-align: center;
-	box-shadow: 0 0 5px 0 #1a7cc1bf;
+	background: #e6e6e6;
+	font-weight: bold;
+	color: var(--brand-blue);
+	font-size: 20px;
+}
+
+.payment-div b {
+	font-size: 24px;
 }
 
 .container-cart {
@@ -1692,24 +1651,97 @@ select:-webkit-autofill {
 	color: var(--light-shade-m1);
 	margin-bottom: 0;
 	font-size: 20px;
+	font-weight: bold;
+}
+
+.cart-item-title {
+	color: var(--light-shade);
+	font-weight: bold;
 }
 
 .cart-item-unitprice {
 	color: var(--light-shade-p1);
 	font-size: 16px;
+	font-weight: bold;
 }
 
 .cart-item-description {
-	color: var(--dark-shade-p1);
-	opacity: 0.8;
+	color: var(--light-shade-p1);
+	opacity: 0.95;
+	text-indent: 15px;
 }
 .cart-item-qty {
 	width: 100%;
 	color: var(--light-shade);
 }
 
-.manage-order {
-	color: var(--light-shade-p1);
+.recap-box {
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+}
+
+.recap-box h4 {
+	display: initial;
+	color: var(--brand-blue-m2);
+	margin: auto;
+}
+
+.cancelbtn {
+	display: block;
+	color: var(--light-shade);
+	background: var(--danger-color) !important;
+	border-color: red !important;
+	text-align: center;
+	font-weight: bold;
+	width: auto;
+	height: 50px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-top: 0;
+}
+
+.cancelbtn:focus {
+	border-color: red !important;
+}
+
+.approvebtn {
+	display: block;
+	color: var(--light-shade);
+	background-color: #28a745 !important;
+	border-color: #28a745 !important;
+	text-align: center;
+	font-weight: bold;
+	width: 270px;
+	height: 50px;
+	position: absolute;
+	top: 55px;
+	right: 0;
+	margin-top: 0;
+}
+
+.approvebtn:focus {
+	border-color: #28a745 !important;
+}
+
+.completebtn {
+	display: block;
+	color: var(--light-shade);
+	background: var(--brand-blue) !important;
+	border-color: var(--brand-blue-p1) !important;
+	text-align: center;
+	font-weight: bold;
+	width: 270px;
+	height: 50px;
+	position: absolute;
+	top: 55px;
+	right: 0;
+	margin-top: 0;
+}
+
+.completebtn:focus {
+	border-color: var(--brand-blue-p1) !important;
 }
 /* END CART */
 
@@ -1729,18 +1761,6 @@ select:-webkit-autofill {
 }
 .menu-link.disabled:hover {
 	color: var(--brand-blue);
-}
-
-.user-section {
-	padding: 20px !important;
-}
-
-.user-section .section-heading {
-	border-bottom: 1px solid var(--brand-blue-p2);
-}
-
-.user-section .section-heading h6 {
-	color: var(--light-shade);
 }
 
 .control-label {
@@ -1787,10 +1807,6 @@ select:-webkit-autofill {
 
 #nameform {
 	margin-top: 0;
-}
-
-#submit-deliveryform {
-	padding: 15px;
 }
 
 /*
@@ -2026,7 +2042,8 @@ tbody tr:hover {
 	display: grid;
 	margin-right: auto;
 	margin-left: auto;
-	background-color: var(--brand-blue-p2);
+	background-color: var(--brand-blue-p1);
+	padding: 10px 30px;
 }
 
 .container-shop {
@@ -2239,20 +2256,20 @@ tbody tr:hover {
 /* PAYMENT */
 
 .payment-form-wrapper {
-	background-color: var(--brand-blue-m1);
-	border: 1px solid var(--brand-blue);
+	background-color: var(--light-shade-m1);
+	box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
+	-webkit-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
+	-moz-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
 	margin-top: 10%;
 	margin-bottom: 10%;
 	padding: 50px 50px 50px 50px;
-	text-align: center;
 }
 
 #card-element,
 .celement {
-	margin: 10px;
+	margin: 5px;
 	padding: 5px;
-	border: 5px solid var(--brand-blue-p1);
-	background-color: var(--light-shade);
+	background-color: #e6e6e6;
 	width: 100%;
 	height: 50%;
 }
@@ -2260,11 +2277,15 @@ tbody tr:hover {
 .btn-pay {
 	display: block;
 	color: var(--light-shade);
-	background-color: #28a745;
-	border-color: #28a745;
+	background-color: #28a745 !important;
+	border-color: #28a745 !important;
 	font-weight: bold;
 	padding: 10px 30px;
 	margin: auto;
+}
+
+.btn-pay:focus {
+	border-color: #28a745 !important;
 }
 
 .btn-pay:hover {
@@ -2276,11 +2297,6 @@ tbody tr:hover {
 .payment-price {
 	text-align: center;
 	margin-bottom: 25px;
-}
-
-.card-label {
-	color: var(--light-shade);
-	font-size: 20px;
 }
 
 .card-error {

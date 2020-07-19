@@ -4,56 +4,56 @@
 
 <div class="container container-single">
 	<div class="single-wrapper">
-		<div class="billing-wrapper col-6 offset-3">
-			<h1>Billing address</h1>
+		<div class="col-10 offset-1 wrapper">
+			<h1 class="single-title text-center">Billing Address</h1>
 			<form id="deliveryform" method="POST" action="" onsubmit="return saveBilling(event);">
 				<div class="row">
 					<div class="col-md-6">
-						<label class="control-label">Nom</label>
-						<input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<%= locals.billing.lastname %>" onkeyup="Validate.String(this, 2, 128);" required />
+						<label class="control-label">Last Name</label>
+						<input id="lastname" name="lastname" placeholder="Doe" value="<%= locals.billing.lastname %>" onkeyup="Validate.String(this, 2, 128);" required />
 						<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
 					</div>
 					<div class="col-md-6">
-						<label class="control-label">Prénom</label>
-						<input class="form-control" id="firstname" name="firstname" placeholder="John" value="<%= locals.billing.firstname %>" onkeyup="Validate.String(this, 2, 128);" required />
+						<label class="control-label">First Name</label>
+						<input id="firstname" name="firstname" placeholder="John" value="<%= locals.billing.firstname %>" onkeyup="Validate.String(this, 2, 128);" required />
 						<span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
 					</div>
 				</div>
 
-				<label class="control-label">Adresse</label>
-				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" class="form-control" value="<%= locals.billing.full_address %>" required />
+				<label class="control-label">Address</label>
+				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" value="<%= locals.billing.full_address %>" required />
 
 				<div id="address">
 					<div class="row">
 						<div class="col-md-12">
-							<label class="control-label">Route</label>
-							<input class="form-control" id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<%= locals.billing.street_name %>" required />
+							<label class="control-label">Street</label>
+							<input id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<%= locals.billing.street_name %>" required />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<label class="control-label">Ville</label>
-							<input class="form-control field" id="locality" name="city" placeholder="Paris" value="<%= locals.billing.city %>" required />
+							<label class="control-label">City</label>
+							<input id="locality" name="city" placeholder="Paris" value="<%= locals.billing.city %>" required />
 						</div>
 						<div class="col-md-6">
-							<label class="control-label">Région</label>
-							<input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<%= locals.billing.state %>" required />
+							<label class="control-label">State</label>
+							<input id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<%= locals.billing.state %>" required />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<label class="control-label">Code Postal</label>
-							<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<%= locals.billing.zipcode %>" required />
+							<label class="control-label">Postal Code</label>
+							<input id="postal_code" name="postal_code" placeholder="75001" value="<%= locals.billing.zipcode %>" required />
 						</div>
 						<div class="col-md-6">
-							<label class="control-label">Pays</label>
-							<input class="form-control" id="country" name="country" placeholder="France" value="<%= locals.billing.country %>" required />
+							<label class="control-label">Country</label>
+							<input id="country" name="country" placeholder="France" value="<%= locals.billing.country %>" required />
 						</div>
 					</div>
 					<div class="row mt-4">
 						<div class="col-6 offset-3">
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-							<input type="submit" class="logbtn" value="Enregistrer" id="submit-deliveryform" />
+							<input type="submit" class="logbtn" value="Save and go to checkout" id="submit-deliveryform" />
 						</div>
 					</div>
 				</div>

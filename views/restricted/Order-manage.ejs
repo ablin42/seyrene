@@ -3,31 +3,36 @@
 <script src="/scripts/order/order.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper">
-		<div class="col-10 offset-1">
-			<div class="manage-order">
-				<h1 class="text-center">Gérer une commande</h1>
-				<% if (locals.order) { %> Identifiant de commande: <b><%= locals.order._id %></b> Prix total: <b><%= locals.order.price %>€</b> <% if (locals.order.status === "awaitingPayment") { %>
-				<h6>AWAITING PAYMENT</h6>
-				<% } %> <% if (locals.deliveryPriceFormatted !== "0.00") { %>
-				<h2>shipping(with tax): <%= locals.deliveryPriceFormatted %>€</h2>
+		<div class="col-10 offset-1 wrapper" style="min-height: 150px;">
+			<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
+			<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn" style="width: 270px;" value="ANNULER LA COMMANDE" />
+			<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
+			<input type="submit" onclick="approveOrder('<%= locals.order._id %>')" class="approvebtn" value="APPROUVER LA COMMANDE" />
+			<% } %> <% if (locals.order.status === "Submitted" ) { %>
+			<input type="submit" onclick="completeOrder('<%= locals.order._id %>')" class="completebtn" value="COMPLETER LA COMMANDE" />
+			<% } %>
+			<h1 class="text-center single-title">Gérer une commande</h1>
+
+			<div class="recap-box" style="position: absolute; bottom: 10px; width: 100%;">
+				<% if (locals.order) { %>
+				<h4>Status - <b><%= locals.order.status %></b></h4>
+				<h4>Total Price - <b><%= locals.order.price %>€</b></h4>
+
+				<% if (locals.deliveryPriceFormatted != "0.00") { %>
+				<h4>Shipping Price - <b><%= locals.deliveryPriceFormatted %>€</b></h4>
 				<% } else { %>
-				<h2>shipping(with tax): FREE</h2>
+				<h4>Shipping Price - <b>FREE</b></h4>
 				<% } %>
-
-				<h2>
-					Status: <b><i><%= locals.order.status %></i></b>
-				</h2>
-
-				<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
-				<i style="color: red; cursor: pointer;" onclick="cancelOrder('<%= locals.order._id %>')" class="far fa-times-circle">ANNULER LA COMMANDE</i><br />
-				<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
-				<i style="color: green; cursor: pointer;" onclick="approveOrder('<%= locals.order._id %>')" class="far fa-times-circle">APPROUVER LA COMMANDE</i><br />
-				<% } %> <% if (locals.order.status === "Submitted" ) { %>
-				<i style="color: orange; cursor: pointer;" onclick="completeOrder('<%= locals.order._id %>')" class="far fa-times-circle">COMPLETER LA COMMANDE</i><br />
-				<% } %>
-				<hr />
 			</div>
 
+			<% if (locals.order.status === "awaitingStripePayment") { %>
+			<div id="alert" class="alert alert-warning alert-static w-100" role="alert">
+				This order has not been paid for - <a href="/Payment"><b>Go to CHECKOUT</b></a>
+			</div>
+			<% } %>
+		</div>
+
+		<div class="col-10 offset-1 p-0">
 			<% if(locals.order.items){ %>
 			<div class="cart-row" id="cart-row-header">
 				<span class="cart-item cart-header cart-column">ITEM</span>
@@ -43,83 +48,80 @@
 					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
 					<% } %>
 					<div class="cart-title-description">
-						<h4 class="cart-item-title"><b><%= locals.products[index].shorttitle %>...</b></h4>
+						<h4 class="cart-item-title"><%= locals.products[index].shorttitle %>...</h4>
 						<p class="cart-item-description"><%= locals.products[index].shortcontent %>...</p>
 						<p><%= locals.products[index].details %></p>
 					</div>
 				</div>
 
-				<div class="cart-quantity cart-column">
-					<h4 class="cart-item-qty"><b><%= locals.products[index].qty %></b></h4>
+				<div class="cart-quantity cart-column text-center">
+					<h4 class="cart-item-qty"><%= locals.products[index].qty %></h4>
 				</div>
 
 				<div class="cart-price cart-column">
-					<p class="cart-item-price"><b><%= locals.products[index].price %>€</b></p>
+					<p class="cart-item-price"><%= locals.products[index].price %>€</p>
 					<% if (locals.products[index].isUnique !== true) { %>
-					<p class="cart-item-unitprice"><b><%= locals.products[index].unitPrice %>€/Unité</b></p>
+					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unité</p>
 					<% } %>
 				</div>
 			</div>
 			<% }) %> <% } %>
+		</div>
 
-			<div class="panel-heading">
-				<h2 class="panel-title">Informations pour la livraison</h2>
-				<h6>Nous utiliserons ces informations pour livrer vos commandes, cliquez <a href="/User">ici</a> pour modifier ces informations</h6>
-			</div>
+		<div class="col-10 offset-1 wrapper">
+			<h1 class="single-title text-center">Coordonnées</h1>
 			<div class="row">
 				<div class="col-md-6">
-					<label class="control-label">Nom</label>
-					<input class="form-control" id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.order.lastname) { %><%= locals.order.lastname %><% } %>" readonly />
+					<label class="control-label">First Name</label>
+					<input id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.order.lastname) { %><%= locals.order.lastname %><% } %>" readonly />
 					<span id="i_lastname" class="form-info">Last Name must contain between 2 and 128 characters</span>
 				</div>
 				<div class="col-md-6">
-					<label class="control-label">Prénom</label>
-					<input class="form-control" id="firstname" name="firstname" placeholder="John" value="<% if (locals.order.firstname) { %><%= locals.order.firstname %><% } %>" readonly />
+					<label class="control-label">Last Name</label>
+					<input id="firstname" name="firstname" placeholder="John" value="<% if (locals.order.firstname) { %><%= locals.order.firstname %><% } %>" readonly />
 					<span id="i_firstname" class="form-info">First Name must contain between 2 and 128 characters</span>
 				</div>
 			</div>
 			<div>
-				<label class="control-label">Adresse</label>
-				<input
-					id="autocomplete"
-					name="fulltext_address"
-					placeholder="Enter your address"
-					class="form-control"
-					value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>"
-					readonly
-				/>
+				<label class="control-label">Address</label>
+				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly />
 				<div id="address">
 					<div class="row">
 						<div class="col-md-12">
-							<label class="control-label">Route</label>
-							<input class="form-control" id="route" name="street_name" value="<% if (locals.order.full_street) { %><%= locals.order.full_street %><% } %>" readonly />
+							<label class="control-label">Street</label>
+							<input id="route" name="street_name" value="<% if (locals.order.full_street) { %><%= locals.order.full_street %><% } %>" readonly />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<label class="control-label">Ville</label>
-							<input class="form-control field" id="locality" name="city" placeholder="Paris" value="<% if (locals.order.city) { %><%= locals.order.city %><% } %>" readonly />
+							<label class="control-label">City</label>
+							<input id="locality" name="city" placeholder="Paris" value="<% if (locals.order.city) { %><%= locals.order.city %><% } %>" readonly />
 						</div>
 						<div class="col-md-6">
-							<label class="control-label">Département</label>
-							<input class="form-control" id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.order.state) { %><%= locals.order.state %><% } %>" readonly />
+							<label class="control-label">State</label>
+							<input id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.order.state) { %><%= locals.order.state %><% } %>" readonly />
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<label class="control-label">Code Postal</label>
-							<input class="form-control" id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.order.zipcode) { %><%= locals.order.zipcode %><% } %>" readonly />
+							<label class="control-label">Postal Code</label>
+							<input id="postal_code" name="postal_code" placeholder="75001" value="<% if (locals.order.zipcode) { %><%= locals.order.zipcode %><% } %>" readonly />
 						</div>
 						<div class="col-md-6">
-							<label class="control-label">Pays</label>
-							<input class="form-control" id="country" name="country" placeholder="France" value="<% if (locals.order.country) { %><%= locals.order.country %><% } %>" readonly />
+							<label class="control-label">Country</label>
+							<input id="country" name="country" placeholder="France" value="<% if (locals.order.country) { %><%= locals.order.country %><% } %>" readonly />
 						</div>
 					</div>
-					<div class="row mt-3">
-						<div class="col-md-6 offset-3">
-							<textarea id="instructions" class="instructions-textarea" name="instructions" placeholder="Door code or other useful informations..." readonly>
-<% if (locals.order.instructions) { %><%= locals.order.instructions %><% } %></textarea
-							>
+					<div class="row">
+						<div class="col-md-12">
+							<label class="control-label">Additional informations</label>
+							<input
+								id="instructions"
+								name="instructions"
+								placeholder="Door code or other useful informations..."
+								value="   <% if (locals.order.instructions) { %><%= locals.order.instructions %><% } %>"
+								readonly
+							/>
 						</div>
 					</div>
 				</div>
