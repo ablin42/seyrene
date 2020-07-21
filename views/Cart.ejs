@@ -35,13 +35,13 @@
 				<div class="cart-quantity cart-column">
 					<% if (locals.products[index].isUnique === true) { %>
 					<i class="fas fa-minus fa-2x qty-update" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
-					<input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty form-control" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly />
+					<input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly />
 					<i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
 					<% } else { %>
 					<i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
 					<input
 						id="qty-<%= locals.products[index].item._id %>-<%= index %>"
-						class="cart-item-qty form-control"
+						class="cart-item-qty "
 						value="<%= locals.products[index].qty %>"
 						name="cart-item-qty"
 						title="Numbers only"

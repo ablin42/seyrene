@@ -87,7 +87,7 @@
 							We'll send you a mail with instructions to reset your password
 						</div>
 						<form class="col-8 offset-2 mt-5" id="lostpw" onsubmit="submitLostpw(event)" method="POST" action="/api/user/lostpw">
-							<input placeholder="Email" class="form-control-test" type="email" id="email-reset" name="email" value="" onkeyup="Validate.Email(this);" required />
+							<input placeholder="Email" type="email" id="email-reset" name="email" value="" onkeyup="Validate.Email(this);" required />
 							<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
 
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
