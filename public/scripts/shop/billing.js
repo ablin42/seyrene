@@ -11,7 +11,8 @@ async function saveBilling(e) {
 		city: $("#locality")[0].value,
 		state: $("#administrative_area_level_1")[0].value,
 		zipcode: $("#postal_code")[0].value,
-		country: $("#country")[0].value
+		country: $("#country")[0].value,
+		tos: $("#agree_tos")[0].checked
 	};
 
 	let data = await fetch("/api/order/billing/save", {

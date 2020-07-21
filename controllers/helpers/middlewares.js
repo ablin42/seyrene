@@ -31,8 +31,8 @@ async function setUser(req, res, next) {
 		req.user = user;
 	}
 
-	let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
-	req.user = user; //
+	//let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
+	//req.user = user; //
 
 	next();
 }
@@ -100,6 +100,7 @@ async function checkAddress(req, res, next) {
 			zipcode: components[6].long_name
 		};
 		if (addressData.instructions) req.address.instructions = addressData.instructions;
+		if (addressData.tos) req.address.tos = addressData.tos;
 
 		next();
 	} catch (err) {

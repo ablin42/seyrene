@@ -50,6 +50,11 @@
 							<input id="country" name="country" placeholder="France" value="<%= locals.billing.country %>" required />
 						</div>
 					</div>
+					<label class="control-label col-12 text-center">
+						By checking this box I hereby declare that I have read and agree to the <a href="/CGU#tos">Terms of Service</a> and <a href="/CGU#sales">Terms of Sales</a>
+					</label>
+					<input type="checkbox" name="agree_tos" id="agree_tos" required />
+
 					<div class="row mt-4">
 						<div class="col-6 offset-3">
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
