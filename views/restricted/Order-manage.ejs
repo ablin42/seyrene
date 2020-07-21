@@ -3,7 +3,8 @@
 <script src="/scripts/order/order.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper">
-		<div class="col-10 offset-1 wrapper" style="min-height: 150px;">
+		<div class="col-md-10 offset-md-1 wrapper" style="min-height: 150px;">
+			<h1 class="text-center single-title">Gérer une commande</h1>
 			<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
 			<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn" style="width: 270px;" value="ANNULER LA COMMANDE" />
 			<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
@@ -11,9 +12,8 @@
 			<% } %> <% if (locals.order.status === "Submitted" ) { %>
 			<input type="submit" onclick="completeOrder('<%= locals.order._id %>')" class="completebtn" value="COMPLETER LA COMMANDE" />
 			<% } %>
-			<h1 class="text-center single-title">Gérer une commande</h1>
 
-			<div class="recap-box" style="position: absolute; bottom: 10px; width: 100%;">
+			<div class="recap-box admin-recap">
 				<% if (locals.order) { %>
 				<h4>Status - <b><%= locals.order.status %></b></h4>
 				<h4>Total Price - <b><%= locals.order.price %>€</b></h4>
@@ -32,7 +32,7 @@
 			<% } %>
 		</div>
 
-		<div class="col-10 offset-1 p-0">
+		<div class="col-md-10 offset-md-1 p-0">
 			<% if(locals.order.items){ %>
 			<div class="cart-row" id="cart-row-header">
 				<span class="cart-item cart-header cart-column">ITEM</span>
@@ -68,7 +68,7 @@
 			<% }) %> <% } %>
 		</div>
 
-		<div class="col-10 offset-1 wrapper">
+		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="single-title text-center">Coordonnées</h1>
 			<div class="row">
 				<div class="col-md-6">
@@ -83,9 +83,13 @@
 				</div>
 			</div>
 			<div>
-				<label class="control-label">Address</label>
-				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly />
 				<div id="address">
+					<div class="row">
+						<div class="col-md-12">
+							<label class="control-label">Address</label>
+							<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly />
+						</div>
+					</div>
 					<div class="row">
 						<div class="col-md-12">
 							<label class="control-label">Street</label>

@@ -3,46 +3,46 @@
 <script src="/scripts/bootstrap-tagsinput.js"></script>
 <div class="container container-single"> 
     <div class="single-wrapper">
-        		<div class="col-10 offset-1 wrapper">
-        <h1 class="single-title text-center">Modifier un item de la galerie</h1>
-        <form  id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event, '<%= locals.gallery._id %>');"> 
-            <hr />
-            <div class="form-group">
-                <label class="control-label">Titre</label>
-                <input type="text" name="title" id="title" placeholder="Titre" value="<%= locals.gallery.title %>" onkeyup="Validate.String(this, 1, 256);" required>
-                <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label">Description</label>
-                <textarea  rows="5" id="content" name="content" placeholder="Description de l'oeuvre.." onkeyup="Validate.String(this, 1, 2048);" required><%= locals.gallery.content %></textarea>
-                <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>  
-            </div>
-
-            <div class="form-group">
-                <div class="form-group text-center">
-                    <label for="img" id="imglabel" class="filebtn">Choisir des images</label>
-                    <input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" multiple>
+        <div class="col-md-10 offset-md-1 wrapper">
+            <h1 class="single-title text-center">Modifier un item de la galerie</h1>
+            <form  id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" onsubmit="patchGallery(event, '<%= locals.gallery._id %>');"> 
+                <hr />
+                <div class="form-group">
+                    <label class="control-label">Titre</label>
+                    <input type="text" name="title" id="title" placeholder="Titre" value="<%= locals.gallery.title %>" onkeyup="Validate.String(this, 1, 256);" required>
+                    <span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
                 </div>
-                <% if (locals.images) { %>
-                    <% locals.images.forEach(function (item) { %>
-                        <img class="w-100 m-1" id="<%= item._id %>" src="/api/image/<%= item._id %>">
-                            <div id="actDiv<%= item._id %>" class="action-div" <% if (item.isMain === true) { %>style="display:none"<% } %>>
-                                <a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
-                                <a id="sel<%= item._id %>" onclick="setMain(event, this);" href="/api/image/select/Gallery/<%= locals.gallery._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
-                            </div>
-                    <% }) %>
-                <% } %>
-            </div>
-            
-            <div class="form-group">
-                <label class="control-label">Tags</label>
-                <input v-bind="selectedTags" type="text" value="" data-role="tagsinput" id="tagInput" >
-                <span data-placeholder="Tags"></span>
-            </div>
 
-            <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-            <input type="submit" class="logbtn" value="Mettre à jour" id="submit-gallery">
+                <div class="form-group">
+                    <label class="control-label">Description</label>
+                    <textarea  rows="5" id="content" name="content" placeholder="Description de l'oeuvre.." onkeyup="Validate.String(this, 1, 2048);" required><%= locals.gallery.content %></textarea>
+                    <span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>  
+                </div>
+
+                <div class="form-group">
+                    <div class="form-group text-center">
+                        <label for="img" id="imglabel" class="filebtn">Choisir des images</label>
+                        <input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" multiple>
+                    </div>
+                    <% if (locals.images) { %>
+                        <% locals.images.forEach(function (item) { %>
+                            <img class="w-100 m-1" id="<%= item._id %>" src="/api/image/<%= item._id %>">
+                                <div id="actDiv<%= item._id %>" <% if (item.isMain === true) { %>style='display:none'<% } %>  class="action-div">
+                                    <a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
+                                    <a id="sel<%= item._id %>" onclick="setMain(event, this);" href="/api/image/select/Gallery/<%= locals.gallery._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
+                                </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+                
+                <div class="form-group">
+                    <label class="control-label">Tags</label>
+                    <input v-bind="selectedTags" type="text" value="" data-role="tagsinput" id="tagInput" >
+                    <span data-placeholder="Tags"></span>
+                </div>
+
+                <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+                <input type="submit" class="logbtn" value="Mettre à jour" id="submit-gallery">
         </form>
         <form class="mt-3" method="POST" action="/api/gallery/delete/<%= locals.gallery._id %>">
            	<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />

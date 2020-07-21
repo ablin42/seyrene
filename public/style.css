@@ -358,6 +358,7 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
 
 .hamburger.toggle {
 	position: fixed;
+	top: 1%;
 	right: 5%;
 }
 
@@ -1716,6 +1717,12 @@ select:-webkit-autofill {
 	flex-wrap: wrap;
 }
 
+.admin-recap {
+	position: absolute;
+	bottom: 10px;
+	width: 100%;
+}
+
 .recap-box h4 {
 	display: initial;
 	color: var(--brand-blue-m2);
@@ -2205,6 +2212,10 @@ tbody tr:hover {
 /* END CATALOG */
 
 /* ADMIN */
+.admin-panel {
+	padding: 200px 100px;
+}
+
 .admin-section-block {
 	display: block;
 	background: var(--brand-blue-p2);
@@ -2326,8 +2337,47 @@ tbody tr:hover {
 }
 /* Medium devices (tablets, 768px and up) */
 @media (max-width: 768px) {
+	.cart-row-item {
+		padding: 2px;
+	}
+	.cart-title-description {
+		margin-top: 10px;
+	}
+	.cart-img {
+		width: 100%;
+	}
+	.cart-item.cart-column {
+		display: block;
+	}
+	.cart-header {
+		padding-left: 5px;
+	}
+	.cancelbtn,
+	.approvebtn,
+	.completebtn {
+		width: 100% !important;
+		position: initial;
+	}
+	#approval,
+	#all {
+		padding: 0;
+	}
+	.alert {
+		width: 100%;
+	}
+	.row {
+		margin-right: 0;
+		margin-left: 0;
+	}
+	.single-title {
+		font-size: 1.75em;
+	}
 	header {
 		background-color: var(--light-shade-m1);
+		margin-bottom: 1em;
+	}
+	.container {
+		margin-top: 0;
 	}
 	.navbar-container {
 		background-color: var(--light-shade-m1);
@@ -2442,6 +2492,12 @@ tbody tr:hover {
 	.err404 {
 		transform: translate(0%, 10%) !important;
 		font-size: 8em !important;
+	}
+	.admin-panel {
+		padding: 10px;
+	}
+	.admin-recap {
+		position: initial;
 	}
 }
 /* Large devices (desktops, 992px and up) */
