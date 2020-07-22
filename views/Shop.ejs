@@ -2,8 +2,8 @@
 
 <script src="/scripts/shop/infiniteShops.js"></script>
 <script src="/scripts/cart.js"></script>
-    <div class="container container-single single-wrapper">
-        <div id="container-shop">
+    <div class="container container-single">
+        <div id="container-shop" class="single-wrapper col-md-12">
             <h1 class="single-title text-center mt-2 p-2" style="color: var(--light-shade)">Original Painting</h1>
             <div class="alert alert-info alert-static w-100 mb-3" role="alert">
 								We also sell great quality reproductions in all sizes and shapes, for more information check the <a href="/Catalog">Catalog</a>
@@ -33,7 +33,7 @@
                 <h1 class="alertEmpty">No more original paintings left, check the catalog to buy reproductions!</h1>
               <% } %>
           </div>
-           <div class="col-6 offset-3 mt-5">
+           <div class="col-md-6 offset-md-3 mt-5">
             <img id="loader" src="/img/loader.gif">
             <input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteShopItems();">
           </div>

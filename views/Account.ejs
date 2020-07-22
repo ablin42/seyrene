@@ -2,23 +2,25 @@
 
 <div class="container-with-menu container">
 	<div class="row row-height">
-		<div class="menu col-3">
+		<div class="menu col-xl-3 col-sm-1">
 			<ul>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'login')" class="menu-link active disabled"><i class="fas fa-sign-in-alt mr-2"></i> Sign up/Log in <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'login')" class="menu-link active disabled">
+						<i class="fas fa-sign-in-alt mr-2"></i> <span>Sign up/Log in</span> <i class="fas fa-chevron-right chev"></i
+					></a>
 				</li>
 				<li>
 					<a href="#" onclick="openTab(event, this, 'lostpw-container')" class="menu-link"
 						><i class="fas fa-key mr-2"></i>
-						<span style="font-size: 20px;">Lost password</span>
+						<span>Lost password</span>
 						<i class="fas fa-chevron-right chev"></i
 					></a>
 				</li>
 			</ul>
 		</div>
 
-		<div id="login" class="tab col-9 row">
-			<div class="container" id="container">
+		<div id="login" class="tab col-xl-9 col-sm-11 row">
+			<div class="container p-0 m-0 h-100" id="container">
 				<div class="form-slider-container sign-up-container">
 					<form class="form-slider" id="register" onsubmit="submitRegister(event)" method="POST" action="/api/auth/register">
 						<h1>Sign up</h1>
@@ -78,15 +80,15 @@
 			</div>
 		</div>
 
-		<div id="lostpw-container" class="tab col-9" style="display: none;">
+		<div id="lostpw-container" class="tab col-xl-9 col-sm-11" style="display: none;">
 			<div class="container p-0 m-0 h-100">
-				<div class="col-10 offset-1 wrapper lostpw-container">
+				<div class="col-md-10 offset-md-1 wrapper lostpw-container">
 					<div class="box-lostpw">
 						<h1 class="single-title text-center">Password Recovery</h1>
 						<div class="alert alert-info alert-static" role="alert">
 							We'll send you a mail with instructions to reset your password
 						</div>
-						<form class="col-8 offset-2 mt-5" id="lostpw" onsubmit="submitLostpw(event)" method="POST" action="/api/user/lostpw">
+						<form class="col-md-8 offset-md-2 mt-5" id="lostpw" onsubmit="submitLostpw(event)" method="POST" action="/api/user/lostpw">
 							<input placeholder="Email" type="email" id="email-reset" name="email" value="" onkeyup="Validate.Email(this);" required />
 							<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
 

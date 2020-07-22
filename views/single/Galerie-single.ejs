@@ -5,9 +5,9 @@
 <script src="/scripts/pwinty/pwinty-products.js"></script>
 
 <div class="container container-single"> 
-  <div class="single-wrapper">
+  <div class="single-wrapper mt-3">
   <% if (locals.gallery) { %>
-    <div class="col-10 offset-1 content-wrapper" id="<%= locals.gallery._id %>">
+    <div class="col-md-10 offset-md-1 content-wrapper" id="<%= locals.gallery._id %>">
       <div class="carousel-container">
         <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
           <div class="carousel-inner" role="listbox">
@@ -33,7 +33,7 @@
           <!--/.Controls-->
         </div>
       </div>
-      <div class="thumbnail-wrapper mb-2 mt-3">
+      <div class="thumbnail-wrapper mb-2 mt-5">
         <ol class="carousel-indicators no-thumb">
           <% if (locals.images) { %>
             <% locals.images.forEach(function (item, index) { %>
@@ -45,8 +45,8 @@
         </ol>
       </div>
 
-      <div class="blog-content col-10 offset-1 mt-3 pt-4">
-         <h3 class="single-title col-12 mb-0"><%= locals.gallery.title %>  <% if (locals.user && locals.user.role === "admin") { %>
+      <div class="blog-content col-md-10 offset-md-1 mt-3 pt-4">
+         <h3 class="single-title col-md-12 mb-0"><%= locals.gallery.title %>  <% if (locals.user && locals.user.role === "admin") { %>
           <a href="/Admin/Galerie/Patch/<%= locals.gallery._id %>"><i class="fas fa-edit"></i></a>
         <% } %> </h3>
         <p class="p-4 mb-0 single-content">
@@ -60,7 +60,7 @@
         <% }) %>
       </div>
 
-      <div class="col-10 offset-1 text-center">
+      <div class="col-md-10 offset-md-1 text-center">
         <div class="alert alert-danger alert-static" role="alert">
             For references, check the catalog <a href="/Catalog" target="_blank">HERE</a>
         </div>
@@ -95,7 +95,7 @@
         </div>
 
         <div style="height: 200px">
-          <div id="purchasebox" class="col-6 offset-3 text-center" style="display: none;">
+          <div id="purchasebox" class="col-md-6 offset-md-3 text-center" style="display: none;">
             <span id="price" class="card-price "></span>
             <input type="submit" class="logbtn" value="Add to cart" onclick="Pwinty.cartAdd('<%= locals.gallery._id %>', this)">
           </div>

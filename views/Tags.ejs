@@ -5,7 +5,7 @@
 <script src="/scripts/cart.js"></script>
 
 <div class="">
-	<form class="col-6 offset-3 mb-4" id="tags" method="GET" action="/Galerie/tags" onkeypress="preventEnter(event, this)" onsubmit="filterByTags(event)">
+	<form class="col-md-6 offset-md-3 mb-4" id="tags" method="GET" action="/Galerie/tags" onkeypress="preventEnter(event, this)" onsubmit="filterByTags(event)">
 		<label class="search-label control-label" style="color: var(--light-shade) !important;">Filter by tags</label>
 		<input type="text" placeholder="Enter tags then press enter..." value="" data-role="tagsinput" id="tagInput" />
 		<span data-placeholder="Tags"></span>
@@ -38,7 +38,7 @@
 		<% }) %> <% } %>
 	</div>
 	<% if (!locals.error) { %>
-	<div class="col-6 offset-3 mb-3 mt-3">
+	<div class="col-md-6 offset-md-3 mb-3 mt-3">
 		<img id="loader" src="/img/loader.gif" style="width: 50px; height: 50px; margin: 5px auto 5px auto; display: none;" />
 		<input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteTags();" />
 	</div>

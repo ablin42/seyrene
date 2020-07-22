@@ -4,7 +4,7 @@
 
 <div class="container container-single">
 	<div class="single-wrapper">
-		<div class="col-10 offset-1 wrapper h-100">
+		<div class="col-md-10 offset-md-1 wrapper h-100">
 			<h1 class="single-title text-center">Billing Address</h1>
 			<form id="deliveryform" method="POST" action="" onsubmit="return saveBilling(event);">
 				<div class="row">
@@ -20,8 +20,12 @@
 					</div>
 				</div>
 
-				<label class="control-label">Address</label>
-				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" value="<%= locals.billing.full_address %>" required />
+				<div class="row">
+					<div class="col-md-12">
+						<label class="control-label">Address</label>
+						<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" value="<%= locals.billing.full_address %>" required />
+					</div>
+				</div>
 
 				<div id="address">
 					<div class="row">
@@ -50,13 +54,16 @@
 							<input id="country" name="country" placeholder="France" value="<%= locals.billing.country %>" required />
 						</div>
 					</div>
-					<label class="control-label col-12 text-center">
-						By checking this box I hereby declare that I have read and agree to the <a href="/CGU#tos">Terms of Service</a> and <a href="/CGU#sales">Terms of Sales</a>
-					</label>
-					<input type="checkbox" name="agree_tos" id="agree_tos" required />
-
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<label class="control-label col-md-12 text-center">
+								By checking this box I hereby declare that I have read and agree to the <a href="/CGU#tos">Terms of Service</a> and <a href="/CGU#sales">Terms of Sales</a>
+							</label>
+							<input type="checkbox" name="agree_tos" id="agree_tos" required />
+						</div>
+					</div>
 					<div class="row mt-4">
-						<div class="col-6 offset-3">
+						<div class="col-md-6 offset-md-3">
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 							<input type="submit" class="logbtn" value="Save and go to checkout" id="submit-deliveryform" />
 						</div>

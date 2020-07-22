@@ -3,8 +3,8 @@
 <div class="container container-single">
 	<% if(locals.blog){ %>
 	<div class="single-wrapper" id="<%= locals.blog._id %>">
-		<div class="col-10 offset-1 content-wrapper pt-0 pb-0">
-			<div class="blog-header text-center p-3 col-10 offset-1">
+		<div class="col-md-10 offset-md-1 content-wrapper pt-0 pb-0">
+			<div class="blog-header text-center p-3 col-md-10 offset-md-1">
 				<h3 class="single-title" style="display: inline;">
 					<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
 					<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
@@ -14,8 +14,8 @@
 				<hr class="hr-pwinty mt-3" />
 			</div>
 
-			<div class="blog-content col-10 offset-1">
-				<div class="col-10 offset-1" id="content-holder"></div>
+			<div class="blog-content col-md-10 offset-md-1">
+				<div class="col-md-10 offset-md-1" id="content-holder"></div>
 			</div>
 		</div>
 	</div>

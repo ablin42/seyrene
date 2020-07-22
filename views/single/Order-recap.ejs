@@ -3,7 +3,7 @@
 <script src="/scripts/order/order.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper">
-		<div class="col-10 offset-1 wrapper">
+		<div class="col-md-10 offset-md-1 wrapper">
 			<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Submitted" && locals.order.status !== "Completed" && locals.order.status !== "awaitingStripePayment") { %>
 			<input type="submit" onclick="cancelOrderEN('<%= locals.order._id %>')" class="cancelbtn" value="CANCEL ORDER" />
 			<% } %> <% if (locals.order && locals.order.items) { %>
@@ -28,7 +28,7 @@
 			<% } %>
 		</div>
 
-		<div class="col-10 offset-1 p-0">
+		<div class="col-md-10 offset-md-1 p-0">
 			<div class="cart-row" id="cart-row-header">
 				<span class="cart-item cart-header cart-column">ITEM</span>
 				<span class="cart-quantity cart-header cart-column">QUANTITY</span>
@@ -63,7 +63,7 @@
 			<% }) %>
 		</div>
 
-		<div class="col-10 offset-1 wrapper">
+		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="single-title text-center">Delivery Informations</h1>
 			<div class="alert alert-info alert-static w-100 mb-3" role="alert">Make sure these informations are correct, if not, change them <a href="/User">HERE</a></div>
 
@@ -80,8 +80,12 @@
 				</div>
 			</div>
 			<div>
-				<label class="control-label">Address</label>
-				<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly />
+				<div class="row">
+					<div class="col-md-12">
+						<label class="control-label">Address</label>
+						<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" value="<% if (locals.order.full_address) { %><%= locals.order.full_address %><% } %>" readonly />
+					</div>
+				</div>
 				<div id="address">
 					<div class="row">
 						<div class="col-md-12">

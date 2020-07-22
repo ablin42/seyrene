@@ -1,20 +1,24 @@
 <% include partials/head %>
 
 <div class="container" style="position: sticky;">
-	<form class="resetpw form-slider col-4 offset-4 mt-5" id="resetpw" method="POST" action="/api/user/resetpw">
-		<h2 class="single-title mb-5">Reset your password</h2>
+	<div class="col-md-8 offset-md-2 mt-5">
+		<div class="row">
+			<form class="resetpw form-slider" id="resetpw" method="POST" action="/api/user/resetpw">
+				<h2 class="single-title mb-5">Reset your password</h2>
 
-		<input placeholder="Password" type="password" id="password" name="password" onkeyup="Validate.Password(this);" required />
-		<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
+				<input placeholder="Password" type="password" id="password" name="password" onkeyup="Validate.Password(this);" required />
+				<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
 
-		<input placeholder="Password (confirmation)" type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required />
-		<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
+				<input placeholder="Password (confirmation)" type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required />
+				<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
 
-		<input type="hidden" name="tokenId" value="<%= locals.tokenId %>" required />
-		<input type="hidden" name="token" value="<%= locals.token %>" required />
-		<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-		<input type="submit" class="logbtn" value="Save" id="submit-resetpw" />
-	</form>
+				<input type="hidden" name="tokenId" value="<%= locals.tokenId %>" required />
+				<input type="hidden" name="token" value="<%= locals.token %>" required />
+				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+				<input type="submit" class="logbtn" value="Save" id="submit-resetpw" />
+			</form>
+		</div>
+	</div>
 </div>
 
 <script src="/scripts/frontValidation.js"></script>
