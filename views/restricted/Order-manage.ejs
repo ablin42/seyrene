@@ -5,13 +5,15 @@
 	<div class="single-wrapper">
 		<div class="col-md-10 offset-md-1 wrapper" style="min-height: 150px;">
 			<h1 class="text-center single-title">Gérer une commande</h1>
-			<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
-			<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn" style="width: 270px;" value="ANNULER LA COMMANDE" />
-			<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
-			<input type="submit" onclick="approveOrder('<%= locals.order._id %>')" class="approvebtn" value="APPROUVER LA COMMANDE" />
-			<% } %> <% if (locals.order.status === "Submitted" ) { %>
-			<input type="submit" onclick="completeOrder('<%= locals.order._id %>')" class="completebtn" value="COMPLETER LA COMMANDE" />
-			<% } %>
+			<div class="col-12 text-center">
+				<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
+				<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn" style="width: 270px;" value="ANNULER LA COMMANDE" />
+				<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
+				<input type="submit" onclick="approveOrder('<%= locals.order._id %>')" class="approvebtn" value="APPROUVER LA COMMANDE" />
+				<% } %> <% if (locals.order.status === "Submitted" ) { %>
+				<input type="submit" onclick="completeOrder('<%= locals.order._id %>')" class="completebtn" value="COMPLETER LA COMMANDE" />
+				<% } %>
+			</div>
 
 			<div class="recap-box admin-recap">
 				<% if (locals.order) { %>
@@ -24,12 +26,6 @@
 				<h4>Shipping Price - <b>FREE</b></h4>
 				<% } %>
 			</div>
-
-			<% if (locals.order.status === "awaitingStripePayment") { %>
-			<div class="alert alert-warning alert-static w-100" role="alert">
-				This order has not been paid for - <a href="/Payment"><b>Go to CHECKOUT</b></a>
-			</div>
-			<% } %>
 		</div>
 
 		<div class="col-md-10 offset-md-1 p-0">

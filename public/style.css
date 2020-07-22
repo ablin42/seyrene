@@ -296,7 +296,7 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
 .nav-links li a {
 	color: var(--light-shade-m1);
 	text-decoration: none;
-	font-size: 20px;
+	font-size: 1.2em;
 	font-weight: 600;
 }
 
@@ -1718,7 +1718,6 @@ select:-webkit-autofill {
 }
 
 .admin-recap {
-	position: absolute;
 	bottom: 10px;
 	width: 100%;
 }
@@ -1730,7 +1729,7 @@ select:-webkit-autofill {
 }
 
 .cancelbtn {
-	display: block;
+	display: inline-block;
 	color: var(--light-shade);
 	background: var(--danger-color) !important;
 	border-color: red !important;
@@ -1738,10 +1737,10 @@ select:-webkit-autofill {
 	font-weight: bold;
 	width: auto;
 	height: 50px;
-	position: absolute;
+	/*position: absolute;
 	top: 0;
 	right: 0;
-	margin-top: 0;
+	margin-top: 0;*/
 }
 
 .cancelbtn:focus {
@@ -1749,7 +1748,7 @@ select:-webkit-autofill {
 }
 
 .approvebtn {
-	display: block;
+	display: inline-block;
 	color: var(--light-shade);
 	background-color: #28a745 !important;
 	border-color: #28a745 !important;
@@ -1757,10 +1756,10 @@ select:-webkit-autofill {
 	font-weight: bold;
 	width: 270px;
 	height: 50px;
-	position: absolute;
-	top: 55px;
+	/*position: absolute;
+	top: 0;
 	right: 0;
-	margin-top: 0;
+	margin-top: 0;*/
 }
 
 .approvebtn:focus {
@@ -2336,7 +2335,7 @@ tbody tr:hover {
 @media (max-width: 576px) {
 }
 /* Medium devices (tablets, 768px and up) */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
 	.cart-row-item {
 		padding: 2px;
 	}
@@ -2495,9 +2494,6 @@ tbody tr:hover {
 	}
 	.admin-panel {
 		padding: 10px;
-	}
-	.admin-recap {
-		position: initial;
 	}
 }
 /* Large devices (desktops, 992px and up) */
