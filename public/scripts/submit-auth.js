@@ -6,7 +6,7 @@ const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribu
 var CaptchaCallback = function () {
 	const captchaDiv = document.querySelectorAll(".recaptcha-wrapper");
 	captchaDiv.forEach(item => {
-		grecaptcha.render(item, { sitekey: "6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9" });
+		grecaptcha.render(item, { sitekey: "6LdI27QZAAAAAMPWWk13a23BiIvOjAfFjI0MJWKl" });
 	});
 };
 

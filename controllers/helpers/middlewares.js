@@ -31,8 +31,8 @@ async function setUser(req, res, next) {
 		req.user = user;
 	}
 
-	let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
-	req.user = user; //
+	//let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
+	//req.user = user; //
 
 	next();
 }

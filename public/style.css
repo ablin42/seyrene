@@ -132,7 +132,7 @@ html {
 	min-width: 500px;
 	background-attachment: fixed;
 	background-color: var(--brand-blue);
-	/*overflow-x: hidden; ERROR FUCKS UP INFINITE LOADING TRIGGERED SCROLLING */
+	scroll-behavior: smooth;
 }
 
 b {
@@ -175,6 +175,7 @@ b {
 	top: 35%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	margin-top: 10%;
 }
 
 .lostpw-form {
@@ -252,7 +253,7 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
 	cursor: pointer;
 	margin-left: auto;
 	margin-right: 0;
-	z-index: 56;
+	z-index: 201;
 }
 
 .line {
@@ -1086,7 +1087,7 @@ div.carousel-item.active {
 .container .single-wrapper,
 .container .payment-div,
 .container .payment-form-wrapper,
-.container .bio-img-wrapper {
+.container .sub-img-wrapper {
 	position: relative;
 	/*box-shadow: none;
 	-webkit-box-shadow: none;
@@ -1098,7 +1099,7 @@ div.carousel-item.active {
 .container .carousel-container:before,
 .container .payment-div:before,
 .container .payment-form-wrapper:before,
-.container .bio-img-wrapper:before {
+.container .sub-img-wrapper:before {
 	box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
 	-webkit-box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
 	-moz-box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
@@ -1161,13 +1162,6 @@ div.carousel-item.active {
 	z-index: -1;
 }
 
-.container .bio-img-wrapper:before {
-	top: -10px;
-	left: 0px;
-	right: 30px;
-	bottom: 20px;
-}
-
 .container .carousel-container:before {
 	transform: skew(1deg, 0deg);
 }
@@ -1210,6 +1204,8 @@ div.carousel-item.active {
 	padding: 10px 13px;
 	height: 100%;
 	background-color: var(--light-shade-m1);
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .bio-body {
@@ -1218,7 +1214,6 @@ div.carousel-item.active {
 }
 
 .bio-img {
-	width: 200px;
 	box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
 	-webkit-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
 	-moz-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
@@ -1253,6 +1248,11 @@ div.carousel-item.active {
 	background-color: var(--brand-blue-p2);
 	border-radius: 10px 0 0 10px;
 	z-index: 5;
+}
+
+.fixed-arrow {
+	position: fixed;
+	margin-left: -15px;
 }
 
 .menu li {
@@ -1491,7 +1491,7 @@ a.lightbox-close {
 }
 .expandable-card:hover .face2 {
 	opacity: 1;
-	z-index: 10000;
+	z-index: 101;
 }
 
 .gallery-description {
@@ -2353,12 +2353,14 @@ tbody tr:hover {
 
 /* Small devices (landscape phones, 576px and up) */
 @media (max-width: 600px) {
-	#lostpw-container,
-	#login {
-		margin-left: -10px;
-	}
 }
 @media (max-width: 768px) {
+	.bio-img-wrapper {
+		margin-bottom: 1em;
+	}
+	#purchases {
+		background-color: #dee2e6;
+	}
 	.content-wrapper .carousel-container {
 		margin: 20px;
 	}
@@ -2367,6 +2369,18 @@ tbody tr:hover {
 	}
 }
 @media (max-width: 1200px) {
+	.fixed-arrow {
+		margin-left: 0;
+	}
+	.footer-list {
+		margin-top: 50px;
+	}
+	.footer-list li {
+		margin: 5px !important;
+	}
+	.social-btn {
+		margin: 0 10px;
+	}
 	.container-with-menu {
 		border-radius: 0;
 	}
@@ -2377,7 +2391,6 @@ tbody tr:hover {
 	.menu {
 		min-width: 50px;
 		padding: 0;
-		max-width: 8.333333%;
 		border-radius: 0;
 		margin-bottom: -1px;
 	}
@@ -2387,14 +2400,27 @@ tbody tr:hover {
 }
 /* Medium devices (tablets, 768px and up) */
 @media (max-width: 992px) {
+	#contact,
+	#blog,
+	#bio,
+	#delivery,
+	#parameters,
+	#purchases,
+	#lostpw-container,
+	#login {
+		padding: 0 !important;
+	}
+
 	.form-slider,
 	.overlay-panel {
 		padding: 0 10px;
 	}
-	#lostpw-container,
+
 	#login {
-		padding: 0;
-		max-width: 91.666667%;
+		padding: 20px;
+	}
+	#lostpw-container {
+		padding: 0 20px;
 	}
 	#lostpw-container .wrapper {
 		box-shadow: none;
@@ -2402,7 +2428,7 @@ tbody tr:hover {
 		-moz-box-shadow: none;
 	}
 	.container-with-menu {
-		background-color: #f8f8f8;
+		/*	background-color: #f8f8f8;*/
 	}
 	.pwinty-wrapper {
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -2469,7 +2495,7 @@ tbody tr:hover {
 		-webkit-clip-path: circle(100px at 90% -15%);
 		transition: all 1s ease-out;
 		pointer-events: none;
-		z-index: 50;
+		z-index: 200;
 	}
 
 	.navbar-container.open {

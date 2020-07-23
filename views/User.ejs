@@ -2,7 +2,7 @@
 
 <div class="container-with-menu container">
 	<div class="row row-height">
-		<div class="menu col-3">
+		<div class="menu col-xl-3 col-2">
 			<ul>
 				<li>
 					<a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link">
@@ -20,18 +20,22 @@
 					<a href="/shopping-cart"><i class="fas fa-shopping-cart mr-2"></i> <span>Cart</span></a>
 				</li>
 			</ul>
+
+			<a href="#header" class="menu-link fixed-arrow mt-5 text-center">
+				<i class="fas fa-arrow-up fa-2x"></i>
+			</a>
 		</div>
 
 
-		<div id="parameters" class="tab col-9" style="display: none;">
-				<div class="col-10 offset-1 wrapper">
+		<div id="parameters" class="tab col-xl-9 col-10" style="display: none;">
+				<div class="col-md-10 offset-md-1 wrapper">
 					<h1 class="single-title text-center">Account</h1>
 				<div class="alert alert-warning alert-static w-100 mb-3" role="alert">
 					Remember to keep these informations private
 				</div>
 								
 
-				<div class="col-8 offset-2">
+				<div class="col-md-8 offset-md-2">
 				<form id="nameform" method="POST" action="/api/user/patch/name">
 					<label class="control-label">Username</label>
 					<input type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required />
@@ -66,13 +70,11 @@
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 					<input type="submit" class="logbtn mt-2" value="Save" id="submit-passwordform" />
 				</form>
-
-				<button class="logbtn delacc" onclick="deleteAccount()">DELETE ACCOUNT</button>
 				</div>
 				</div>
 		</div>
-		<div id="delivery" class="tab col-9">
-			<div class="col-10 offset-1 wrapper">
+		<div id="delivery" class="tab col-xl-9 col-10">
+			<div class="col-md-10 offset-md-1 wrapper">
 					<h1 class="single-title text-center">Delivery</h1>
 				<hr />
 				<form id="deliveryform" method="POST" action="/api/user/patch/delivery-info">
@@ -103,15 +105,20 @@
 						</div>
 					</div>
 
-					<label class="control-label">Address</label>
-					<input
-						id="autocomplete"
-						name="fulltext_address"
-						placeholder="Enter your address"
-						onFocus="geolocate()"
-						value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>"
-						required
-					/>
+					<div class="row">
+						<div class="col-md-12">
+							<label class="control-label">Address</label>
+							<input
+								id="autocomplete"
+								name="fulltext_address"
+								placeholder="Enter your address"
+								onFocus="geolocate()"
+								value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>"
+								required
+							/>
+						</div>
+					</div>
+				
 
 					<div id="address">
 						<div class="row">
@@ -166,17 +173,24 @@
 								</select>
 							</div>
 						</div>
+						
+						<div class="row">
+							<div class="col-md-12">
 								<label class="control-label">Additional informations</label>
 								<input type="text" id="instructions" name="instructions" placeholder="Door code or other useful informations..." value="<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %>">
-								<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-								<input type="submit" class="logbtn" value="Save" id="submit-deliveryform" />
+							</div>
+						</div>
+
+						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+						<input type="submit" class="logbtn" value="Save" id="submit-deliveryform" />
 					</div>
 				</form>
 			</div>
 		</div>
 
-		<div id="purchases" class="tab col-9" style="display: none;">
-			<div class="col-10 offset-1 p-0">
+		<div id="purchases" class="tab col-xl-9 col-10" style="display: none;">
+			<div class="col-md-10 offset-md-1 p-0 ">
+				<div class="table-responsive">
 				<table class="table table-striped table-hover mb-0">
 					<thead>
 						<tr>
@@ -201,11 +215,13 @@
 					</tbody>
 				</table>
 				</div>
+				</div>
 		</div>
 	</div>
 </div>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBluorKuf7tdOULcDK08oZ-98Vw7_12TMI&libraries=places&callback=initAutocomplete" async defer></script>
+	<script src="/scripts/menu-arrow.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDviJbyc_hUTWZLprzV0HApjcdBIQHKTpM&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="scripts/auto-complete.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 <% include partials/footer %>

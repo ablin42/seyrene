@@ -4,7 +4,7 @@
 <script src="/scripts/blog/infiniteBlogs.js"></script>
 <div class="container-with-menu container">
 	<div class="row row-height">
-		<div class="menu col-3">
+		<div class="menu col-xl-3 col-2">
 			<ul>
 				<li>
 					<a href="#" onclick="openTab(event, this, 'blog')" class="menu-link active disabled">
@@ -34,16 +34,20 @@
 					<a href="https://www.pinterest.fr/MaralAbkarian1/" class="social-btn" target="_blank"><i class="fab fa-pinterest-p"></i></a>
 				</li>
 			</ul>
+
+			<a href="#header" class="menu-link fixed-arrow mt-5 text-center">
+				<i class="fas fa-arrow-up fa-2x"></i>
+			</a>
 		</div>
 
-		<div id="contact" class="tab col-9" style="display: none;">
-				<div class="col-10 offset-1 wrapper">
+		<div id="contact" class="tab col-xl-9 col-10" style="display: none;">
+				<div class="col-md-10 offset-md-1 wrapper">
 					
 						<h1 class="single-title text-center">Contact</h1>
 						<hr class="hr-pwinty mt-3" />
-					<form class="col-10 offset-1 mt-4" id="contact" method="POST" onsubmit="submitContact(event)" action="/api/contact/">
+					<form class="col-md-10 offset-md-1 mt-4" id="contact" method="POST" onsubmit="submitContact(event)" action="/api/contact/">
 						<div class="row">
-							<div class="col-6">
+							<div class="col-md-6">
 								<label class="control-label">Name</label>
 								<input
 									placeholder="Jean Dupont"
@@ -56,7 +60,7 @@
 								/>
 								<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
 							</div>
-							<div class="col-6">
+							<div class="col-md-6">
 								<label class="control-label">Email</label>
 								<input
 									placeholder="jeandupont@gmail.com"
@@ -97,7 +101,7 @@
 						<span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
 
 						<div class="text-center">
-							<div class="g-recaptcha" data-sitekey="6Ld8MaUZAAAAAOCR-6L6VcBgFJyBhFWWLnHPInJ9"></div>
+							<div class="g-recaptcha" data-sitekey="6LdI27QZAAAAAMPWWk13a23BiIvOjAfFjI0MJWKl"></div>
 						</div>
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 						<input type="submit" class="logbtn mt-3" value="Send" id="submit-contact" />
@@ -105,19 +109,21 @@
 				</div>
 		</div>
 
-		<div id="bio" class="tab col-9" style="display: none;">
-			<div class="biography col-10 offset-1 row pb-0 pt-4">
-					<div class="bio-img-wrapper col-4" style="z-index: 0; ">
-						<img class="bio-img" src="/img/biopic.png" />
+		<div id="bio" class="tab col-xl-9 col-10" style="display: none;">
+			<div class="biography col-md-10 offset-md-1 wrapper pb-0 pt-4">
+					<div class="bio-img-wrapper col-sm-4" style="z-index: 0; ">
+						<div class="sub-img-wrapper">
+						<img class="bio-img w-100" src="/img/biopic.png" />
+						</div>
 					</div>
-					<div class="first-bio col-8">
+					<div class="first-bio col-sm-8">
 						<h1 class="square-title">Maral Abkarian</h1>
 						<p class="square-txt ml-3">
 							Née durant la seconde moitié du XXème siècle, élevée entre Orient du Levant et Occident tricolore, établie sur trois continents, Maral a dans la continuité de ses ancêtres déracinés de
 							leur terre natale par le génocide arménien en 1915, vécu dans différentes contrées à travers le monde.
 						</p>
 					</div>
-				<div class="bio-body col-10 offset-1">
+				<div class="bio-body col-md-10 offset-md-1">
 				
 
 					<p class="square-txt">
@@ -150,9 +156,10 @@
 			</div>
 		</div>
 
-		<div id="blog" class="tab col-9">
+		<div id="blog" class="tab col-xl-9 col-10">
 			<div class="container container-blog h-100 p-0 m-0">
-				<div class="col-10 offset-1 wrapper" style="z-index: 0;" id="container-blog">
+				<div class="">
+				<div class="col-md-10 offset-md-1 wrapper" style="z-index: 0;" id="container-blog">
 					<% if (locals.blogs){ %> <% Object.keys(locals.blogs).forEach(function (index) { %>
 					<div class="blog-row" id="<%= locals.blogs[index]._id %>">
 						<h3 class="blog-title"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3>
@@ -197,17 +204,17 @@
 				</div>
 				<% } %>
 			</div>
-			<div class="col-6 offset-3 mb-3 mt-3">
+			<div class="col-md-6 offset-md-3 mb-3 mt-3">
 				<img id="loader" src="/img/loader.gif" />
 				<input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteBlogs();" />
+			</div>
 			</div>
     </div>
     </div>
      </div>
-    
-
 	</div>
 
+	<script src="/scripts/menu-arrow.js"></script>
 	<script src="/scripts/frontValidation.js"></script>
 	<script src="/scripts/submit-contact.js"></script>
 	<% include partials/footer %>
