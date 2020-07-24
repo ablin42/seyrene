@@ -88,6 +88,29 @@
 			</nav>
 		</header>
 
+		<div id="cookies-eu-banner" style="display: none;">
+			By continuing to visit this site, you accept the use of cookies by <b>Maral.fr</b> so that the website can function normally<br />
+			<button id="cookies-eu-reject">Reject</button>
+			<button id="cookies-eu-accept">Accept</button><br />
+			<a href="/legals#RGPD" id="cookies-eu-more"><b>Read more</b></a>
+		</div>
+		<script src="/scripts/cookies-eu-banner/src/cookies-eu-banner.js"></script>
+		<script>
+			new CookiesEuBanner(function () {
+				// Your code to launch when user accept cookies
+				//save ip and cookie accepted status?
+				let response = fetch(`/api/auth/cookies/accept`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						"Accept": "application/json"
+					},
+					credentials: "include",
+					mode: "same-origin"
+				});
+			}, true);
+		</script>
+
 		<% if (messages){ %> <% Object.keys(messages).forEach(function (type) { %> <% messages[type].forEach(function (message) { %>
 		<div id="alert" class="alert alert-<%= type %>" role="alert">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close">

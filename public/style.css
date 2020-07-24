@@ -34,6 +34,27 @@
 	width: unset;
 }
 
+#cookies-eu-banner {
+	width: 100%;
+	background-color: #e6e6e6;
+	padding: 10px;
+	margin-top: -15px;
+	text-align: center;
+}
+
+#cookies-eu-banner button {
+	padding: 5px 10px;
+	border: none;
+	font-weight: bold;
+}
+
+#cookies-eu-reject {
+}
+
+#cookies-eu-accept {
+	background-color: #09d263;
+}
+
 #editor {
 	min-height: 300px;
 	background-color: #e6e6e6;
@@ -670,6 +691,7 @@ button:focus {
 	padding: 0 50px;
 	height: 100%;
 	text-align: center;
+	overflow: scroll;
 }
 
 .form-slider-container {

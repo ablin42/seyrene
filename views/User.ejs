@@ -5,16 +5,15 @@
 		<div class="menu col-xl-3 col-2">
 			<ul>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link">
-						<i class="fas fa-cog mr-2"></i> <span>Parameters</span> <i class="fas fa-chevron-right chev"></i></a>
-				</li>
-					<li>
-					<a href="#" onclick="openTab(event, this, 'delivery')" class="menu-link active disabled">
-						<i class="fas fa-truck mr-2"></i> <span>Delivery Informations</span> <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link"> <i class="fas fa-cog mr-2"></i> <span>Parameters</span> <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'purchases')" class="menu-link">
-						<i class="fa fa-clock-o mr-2"></i> <span>History</span> <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'delivery')" class="menu-link active disabled">
+						<i class="fas fa-truck mr-2"></i> <span>Delivery Informations</span> <i class="fas fa-chevron-right chev"></i
+					></a>
+				</li>
+				<li>
+					<a href="#" onclick="openTab(event, this, 'purchases')" class="menu-link"> <i class="fa fa-clock-o mr-2"></i> <span>History</span> <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
 					<a href="/shopping-cart"><i class="fas fa-shopping-cart mr-2"></i> <span>Cart</span></a>
@@ -26,56 +25,57 @@
 			</a>
 		</div>
 
-
 		<div id="parameters" class="tab col-xl-9 col-10" style="display: none;">
-				<div class="col-md-10 offset-md-1 wrapper">
-					<h1 class="single-title text-center">Account</h1>
+			<div class="col-md-10 offset-md-1 wrapper">
+				<h1 class="single-title text-center">Account</h1>
 				<div class="alert alert-warning alert-static w-100 mb-3" role="alert">
 					Remember to keep these informations private
 				</div>
-								
 
 				<div class="col-md-8 offset-md-2">
-				<form id="nameform" method="POST" action="/api/user/patch/name">
-					<label class="control-label">Username</label>
-					<input type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required />
-					<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
+					<form id="nameform" method="POST" action="/api/user/patch/name">
+						<label class="control-label">Username</label>
+						<input type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" onkeyup="Validate.String(this, 4, 30);" required />
+						<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
 
-					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<input type="submit" class="logbtn mt-2" value="Save" id="submit-nameform" />
-				</form>
+						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+						<input type="submit" class="logbtn mt-2" value="Save" id="submit-nameform" />
+					</form>
 
-				<form id="emailform" method="POST" action="/api/user/patch/email">
-					<label class="control-label">Email</label>
-					<input  type="email" id="email" name="email" value="<% if (locals.user.email) { %><%= locals.user.email %><% } %>" onkeyup="Validate.Email(this);" required />
-					<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
+					<form id="emailform" method="POST" action="/api/user/patch/email">
+						<label class="control-label">Email</label>
+						<input type="email" id="email" name="email" value="<% if (locals.user.email) { %><%= locals.user.email %><% } %>" onkeyup="Validate.Email(this);" required />
+						<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 
-					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<input type="submit" class="logbtn mt-2" value="Save" id="submit-emailform" />
-				</form>
+						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+						<input type="submit" class="logbtn mt-2" value="Save" id="submit-emailform" />
+					</form>
 
-				<form id="passwordform" method="POST" action="/api/user/patch/password">
-					<label class="control-label">Password <i>(current)</i></label>
-					<input  type="password" name="cpassword" placeholder="*********" required />
-					<span data-placeholder="Current Password"></span>
+					<form id="passwordform" method="POST" action="/api/user/patch/password">
+						<label class="control-label">Password <i>(current)</i></label>
+						<input type="password" name="cpassword" placeholder="*********" required />
+						<span data-placeholder="Current Password"></span>
 
-					<label class="control-label mt-3">Password <i>(new)</i></label>
-					<input type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required />
-					<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
+						<label class="control-label mt-3">Password <i>(new)</i></label>
+						<input type="password" id="password" name="password" placeholder="*********" onkeyup="Validate.Password(this);" required />
+						<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
 
-					<label class="control-label">Password <i>(confirm)</i></label>
-					<input type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required />
-					<span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
+						<label class="control-label">Password <i>(confirm)</i></label>
+						<input type="password" id="password2" name="password2" placeholder="*********" onkeyup="Validate.Password2(this);" required />
+						<span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
 
-					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<input type="submit" class="logbtn mt-2" value="Save" id="submit-passwordform" />
-				</form>
+						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+						<input type="submit" class="logbtn mt-2" value="Save" id="submit-passwordform" />
+					</form>
+
+					<label class="control-label mt-5">DELETE YOUR ACCOUNT</label>
+					<input type="submit" class="logbtn cancelbtn w-100" value="DELETE PERMANENTLY" onclick="confirmDeletion('<%= locals.user._id %>')" />
 				</div>
-				</div>
+			</div>
 		</div>
 		<div id="delivery" class="tab col-xl-9 col-10">
 			<div class="col-md-10 offset-md-1 wrapper">
-					<h1 class="single-title text-center">Delivery</h1>
+				<h1 class="single-title text-center">Delivery</h1>
 				<hr />
 				<form id="deliveryform" method="POST" action="/api/user/patch/delivery-info">
 					<div class="row">
@@ -118,19 +118,12 @@
 							/>
 						</div>
 					</div>
-				
 
 					<div id="address">
 						<div class="row">
 							<div class="col-md-12">
 								<label class="control-label">Street</label>
-								<input
-									id="route"
-									placeholder="13 rue de Clignancourt"
-									name="street_name"
-									value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>"
-									required
-								/>
+								<input id="route" placeholder="13 rue de Clignancourt" name="street_name" value="<% if (locals.delivery.full_street) { %><%= locals.delivery.full_street %><% } %>" required />
 							</div>
 						</div>
 						<div class="row">
@@ -140,14 +133,7 @@
 							</div>
 							<div class="col-md-6">
 								<label class="control-label">State</label>
-								<input
-								
-									id="administrative_area_level_1"
-									name="state"
-									placeholder="Île-de-France"
-									value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>"
-									required
-								/>
+								<input id="administrative_area_level_1" name="state" placeholder="Île-de-France" value="<% if (locals.delivery.state) { %><%= locals.delivery.state %><% } %>" required />
 							</div>
 						</div>
 						<div class="row">
@@ -157,27 +143,33 @@
 							</div>
 							<div class="col-md-6">
 								<label class="control-label">Country</label>
-								<input  id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
+								<input id="country" name="country" placeholder="France" value="<% if (locals.delivery.country) { %><%= locals.delivery.country %><% } %>" required />
 							</div>
 							<div class="col-md-12">
 								<label class="control-label">Country - ISO Code</label>
 								<div class="alert alert-warning alert-static w-100 mb-3" role="alert">
 									We need this to properly state your country to the delivery services
 								</div>
-								
+
 								<select class="form-control" name="country-iso" id="country-iso" required>
 									<option selected disabled value="">Select One</option>
 									<% if(locals.countries){ %> <% locals.countries.forEach(function (item, index) { %>
-									<option <% if (item.isoCode === locals.delivery.isoCode) { %> selected <% } %> value="<%= item.isoCode %>"><%= item.name %> - <%= item.isoCode %></option>
+										<option <% if (item.isoCode === locals.delivery.isoCode) { %> selected <% } %> value="<%= item.isoCode %>"><%= item.name %> - <%= item.isoCode %></option>
 									<% }) } %>
 								</select>
 							</div>
 						</div>
-						
+
 						<div class="row">
 							<div class="col-md-12">
 								<label class="control-label">Additional informations</label>
-								<input type="text" id="instructions" name="instructions" placeholder="Door code or other useful informations..." value="<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %>">
+								<input
+									type="text"
+									id="instructions"
+									name="instructions"
+									placeholder="Door code or other useful informations..."
+									value="<% if (locals.delivery.instructions) { %><%= locals.delivery.instructions %><% } %>"
+								/>
 							</div>
 						</div>
 
@@ -189,38 +181,94 @@
 		</div>
 
 		<div id="purchases" class="tab col-xl-9 col-10" style="display: none;">
-			<div class="col-md-10 offset-md-1 p-0 ">
+			<div class="col-md-10 offset-md-1 p-0">
 				<div class="table-responsive">
-				<table class="table table-striped table-hover mb-0">
-					<thead>
-						<tr>
-							<th scope="col">Date</th>
-							<th scope="col">Status</th>
-							<th scope="col">Price</th>
-							<th scope="col">Buyer</th>
-							<th scope="col">#ID</th>
-						</tr>
-					</thead>
+					<table class="table table-striped table-hover mb-0">
+						<thead>
+							<tr>
+								<th scope="col">Date</th>
+								<th scope="col">Status</th>
+								<th scope="col">Price</th>
+								<th scope="col">Buyer</th>
+								<th scope="col">#ID</th>
+							</tr>
+						</thead>
 
-					<tbody>
-						<% if (locals.orders) { %> <% Object.keys(locals.orders).forEach(function (index) { %>
-						<tr>
-							<th scope="row" class="date-grid"><%= locals.orders[index].date_f %></th>
-							<td class="status-grid"><%= locals.orders[index].status %></td>
-							<td class="price-grid"><%= locals.orders[index].price %>€</td>
-							<td class="name-grid"><%= locals.orders[index].firstname[0] %>. <%= locals.orders[index].lastname %></td>
-							<td class="id-grid"><a href="/Order/<%= locals.orders[index]._id %>">#<%= locals.orders[index]._id %></a></td>
-						</tr>
-						<% }) %> <% } %>
-					</tbody>
-				</table>
+						<tbody>
+							<% if (locals.orders) { %> <% Object.keys(locals.orders).forEach(function (index) { %>
+							<tr>
+								<th scope="row" class="date-grid"><%= locals.orders[index].date_f %></th>
+								<td class="status-grid"><%= locals.orders[index].status %></td>
+								<td class="price-grid"><%= locals.orders[index].price %>€</td>
+								<td class="name-grid"><%= locals.orders[index].firstname[0] %>. <%= locals.orders[index].lastname %></td>
+								<td class="id-grid"><a href="/Order/<%= locals.orders[index]._id %>">#<%= locals.orders[index]._id %></a></td>
+							</tr>
+							<% }) %> <% } %>
+						</tbody>
+					</table>
 				</div>
-				</div>
+			</div>
 		</div>
 	</div>
 </div>
 
-	<script src="/scripts/menu-arrow.js"></script>
+<script>
+	const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+	function closeDialog() {
+		if ($("#alert-dialog").length !== 0) {
+			$("#alert-dialog").parent().css("opacity", 0);
+			setTimeout(() => {
+				$("#alert-dialog").parent().remove();
+				$("#alert-dialog").remove();
+			}, 300);
+		}
+		return;
+	}
+
+	function abortAction() {
+		closeDialog();
+		return;
+	}
+
+	async function deleteAcc(userId) {
+		closeDialog();
+
+		let response = await fetch(`/api/user/delete/${userId}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json",
+				"CSRF-Token": csrfToken
+			},
+			credentials: "include",
+			mode: "same-origin"
+		});
+		response = await response.json();
+
+		let alertType = "success";
+		if (response.error === true) alertType = "warning";
+
+		let alert = createAlertNode(response.message, alertType);
+		addAlert(alert, "#header");
+		return;
+	}
+
+	function confirmDeletion(userId) {
+		if ($("#alert-dialog").length === 0) {
+			$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
+							<h3><b>DELETE</b> your ACCOUNT</h3><span>This action cannot be reversed</span> \
+							<button class="tab-btn" onclick="deleteAcc('${userId}')">Delete</button><button class="tab-btn" onclick="abortAction()">Abort</button> \
+						</div>`);
+			$("#alert-dialog").wrap('<div onclick="closeDialog()" class="dialog-wrapper"></div>');
+
+			setTimeout(() => {
+				$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");
+				$("#alert-dialog").parent().css("opacity", "1");
+			}, 100);
+		}
+	}
+</script>
+<script src="/scripts/menu-arrow.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDviJbyc_hUTWZLprzV0HApjcdBIQHKTpM&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="scripts/auto-complete.js"></script>
 <script src="/scripts/frontValidation.js"></script>

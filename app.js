@@ -97,7 +97,7 @@ app.use(
 	session({
 		store: new MongoStore({
 			mongooseConnection: mongoose.connection,
-			ttl: 14 * 24 * 60 * 60
+			ttl: 365 * 24 * 60 * 60
 		}),
 		name: "overlord",
 		secret: process.env.SESSION_SECRET,
@@ -107,6 +107,7 @@ app.use(
 		sameSite: "Lax"
 	})
 );
+
 app.use(flash());
 
 // Body-Parser

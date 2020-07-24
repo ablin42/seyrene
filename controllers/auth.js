@@ -11,6 +11,7 @@ const { vRegister, vLogin, vResend } = require("./validators/vAuth");
 const mailer = require("./helpers/mailer");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
+const CookieAccept = require("../models/CookieAccept");
 const Token = require("../models/VerificationToken");
 const { setUser, notLoggedUser, authUser, authToken } = require("./helpers/middlewares");
 const { checkCaptcha } = require("./helpers/captcha");
@@ -46,7 +47,8 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 		const user = new User({
 			name: req.session.formData.name.toLowerCase(),
 			email: req.session.formData.email,
-			password: hashPw
+			password: hashPw,
+			accepted_tos: true
 		});
 
 		const vToken = crypto.randomBytes(16).toString("hex");
@@ -189,6 +191,19 @@ router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, asyn
 		threatLog.error("ERROR SENDING TOKEN:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(200).json({ error: true, message: err.message });
+	}
+});
+
+router.get("/cookies/accept", setUser, async (req, res) => {
+	try {
+		let entry = new CookieAccept({ ip: req.ip });
+		let [err, result] = await utils.to(entry.save());
+		if (err || !result) throw new Error(ERROR_MESSAGE.serverError);
+
+		return res.status(200).json({ error: false });
+	} catch (err) {
+		threatLog.error("ERROR ACCEPTING COOKIES:", err, req.headers, req.ipAddress);
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 

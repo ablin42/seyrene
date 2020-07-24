@@ -25,6 +25,7 @@
 		"bcryptjs": "^2.4.3",
 		"connect-mongo": "^3.2.0",
 		"cookie-parser": "^1.4.5",
+		"cookies-eu-banner": "^2.0.1",
 		"cors": "^2.8.5",
 		"country-list-js": "^3.1.7",
 		"csurf": "^1.11.0",

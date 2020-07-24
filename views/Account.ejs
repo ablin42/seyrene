@@ -46,6 +46,11 @@
 						<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
 
 						<div class="recaptcha-wrapper"></div>
+
+						<label class="control-label text-center">
+							By checking this box I hereby declare that I have read and agree to the <a href="/Legals#tos">Terms of Service</a></a>
+						</label>
+						<input type="checkbox" name="agree_tos" id="agree_tos" required />
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 						<input type="submit" class="logbtn" value="Sign up" id="submit-register" />
 					</form>

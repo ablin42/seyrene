@@ -19,6 +19,7 @@ const PwToken = require("../models/PasswordToken");
 const DeliveryInfo = require("../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
+const sanitize = require("mongo-sanitize");
 require("dotenv").config();
 
 const limiter = rateLimit({
@@ -252,6 +253,27 @@ router.get("/countryCode", setUser, async (req, res) => {
 		}
 	} catch (err) {
 		threatLog.error("USER COUNTRY CODE ERROR", err, req.headers, req.ipAddress);
+		return res.status(400).json({ error: true, message: err.message });
+	}
+});
+
+router.post("/delete/:id", setUser, authUser, async (req, res) => {
+	try {
+		let userId = sanitize(req.params.id);
+
+		if (req.user._id == userId) {
+			[err, result] = await utils.to(User.findOneAndDelete({ _id: userId }));
+			if (err) throw new Error(ERROR_MESSAGE.serverError);
+
+			req.session.destroy(function (err) {
+				if (err) throw new Error(ERROR_MESSAGE.serverError);
+			});
+
+			fullLog.info("ACCOUNT DELETED", userId);
+			return res.status(200).json({ error: false, message: "ACCOUNT DELETED" });
+		} else throw new Error(ERROR_MESSAGE.unauthorized);
+	} catch (err) {
+		threatLog.error("DELETING ACCOUNT ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });
 	}
 });
