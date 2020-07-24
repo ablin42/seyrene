@@ -513,6 +513,18 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 	}
 });
 
+router.get("/Admin/Bio", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		let obj = { active: "Biography Image", user: req.user, csrfToken: req.csrfToken() };
+
+		return res.status(200).render("restricted/Bio", obj);
+	} catch (err) {
+		threatLog.error("BIO EDIT ROUTE ERROR", err, req.headers, req.ipAddress);
+		req.flash("warning", err.message);
+		return res.status(400).redirect("/Shop");
+	}
+});
+
 router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = { active: "Admin Orders", user: req.user, csrfToken: req.csrfToken() };

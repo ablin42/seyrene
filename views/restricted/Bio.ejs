@@ -1,0 +1,51 @@
+<% include ../partials/head %>
+
+<div class="container container-single">
+	<div class="single-wrapper">
+		<div class="col-md-10 offset-md-1 wrapper">
+			<h1 class="single-title text-center">Changer l'image de la biographie</h1>
+			<form id="shop" method="POST" action="/api/front/bio" enctype="multipart/form-data" onsubmit="postBio(event);">
+				<hr />
+				<img class="col-md-6 offset-md-3 mt-3 mb-3" src="/img/upload/biopic.png" />
+				<div class="form-group text-center">
+					<label for="img" id="imglabel" class="filebtn">Choisir une image</label>
+					<input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" required />
+				</div>
+
+				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+				<input type="submit" class="logbtn" value="Valider" id="submit-shop" />
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	async function postBio(e) {
+		e.preventDefault();
+
+		const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+		let formData = new FormData();
+		let img = document.querySelector("#img");
+		formData.append("img", img.files[0]);
+
+		let data = await fetch("/api/front/bio", {
+			method: "POST",
+			mode: "same-origin",
+			body: formData,
+			headers: {
+				"CSRF-Token": csrfToken
+			}
+		});
+		data = await data.json();
+
+		if (data.err === true) {
+			let alert = createAlertNode(data.message, "warning");
+			addAlert(alert, "#header");
+		} else {
+			let alert = createAlertNode(data.message, "success");
+			addAlert(alert, "#header");
+		}
+	}
+</script>
+<script src="/scripts/frontValidation.js"></script>
+<% include ../partials/footer %>

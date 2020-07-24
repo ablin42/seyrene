@@ -105,4 +105,22 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 	}
 });
 
+/* BIO */
+router.post("/bio", upload, errorHandler, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		let oldpath = req.files[0].destination + req.files[0].filename;
+		let newpath = req.files[0].destination + "biopic.png";
+
+		fs.rename(oldpath, newpath, err => {
+			if (err) throw new Error(err);
+		});
+
+		fullLog.info("Bio image updated");
+		return res.status(200).json({ error: false, message: "Image biographique modifiée" });
+	} catch (err) {
+		threatLog.error("BIO IMG UPDATE ERROR", err, req.headers, req.ipAddress);
+		return res.status(400).json({ error: true, message: err.message });
+	}
+});
+
 module.exports = router;
