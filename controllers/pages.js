@@ -399,14 +399,14 @@ router.get("/Catalog", setUser, async (req, res) => {
 	}
 });
 
-router.get("/CGU", setUser, async (req, res) => {
+router.get("/legals", setUser, async (req, res) => {
 	try {
-		let obj = { active: "CGU", csrfToken: req.csrfToken() };
+		let obj = { active: "Legals", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
 
-		return res.status(200).render("CGU", obj);
+		return res.status(200).render("legals", obj);
 	} catch (err) {
-		threatLog.error("CGU ROUTE ERROR", err, req.headers, req.ipAddress);
+		threatLog.error("LEGALS ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect("/Galerie");
 	}
