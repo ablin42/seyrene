@@ -206,10 +206,6 @@ app.use("/", pagesRoute);
 
 // 404 route
 app.get("*", setUser, (req, res) => {
-	let x;
-	while (1) {
-		x++;
-	}
 	try {
 		let obj = { active: "404" };
 		if (req.user) obj.user = req.user;
