@@ -103,7 +103,7 @@ app.use(
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
-		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
+		cookie: { domain: process.env.DOMAIN, path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
 );
@@ -206,6 +206,10 @@ app.use("/", pagesRoute);
 
 // 404 route
 app.get("*", setUser, (req, res) => {
+	let x;
+	while (1) {
+		x++;
+	}
 	try {
 		let obj = { active: "404" };
 		if (req.user) obj.user = req.user;
