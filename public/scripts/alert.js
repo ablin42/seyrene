@@ -19,8 +19,8 @@ function addAlert(alert, where) {
 	$(where).after(node);
 }
 
-function createAlertNode(message, alertType = "info", style = "") {
-	return `<div id="alert" class="alert alert-${alertType}" role="alert" style="${style}">
+function createAlertNode(message, alertType = "info") {
+	return `<div id="alert" class="alert alert-${alertType}" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                 ${message}
             </div>`;

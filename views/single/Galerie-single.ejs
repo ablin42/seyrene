@@ -94,8 +94,8 @@
           <div class="form-group text-center pwinty-wrapper" id="attributes"></div>
         </div>
 
-        <div style="height: 200px">
-          <div id="purchasebox" class="col-md-6 offset-md-3 text-center" style="display: none;">
+        <div class="pbox-wrapper">
+          <div id="purchasebox" class="col-md-6 offset-md-3 text-center nodisplay">
             <span id="price" class="card-price "></span>
             <input type="submit" class="logbtn" value="Add to cart" onclick="Pwinty.cartAdd('<%= locals.gallery._id %>', this)">
           </div>
@@ -111,21 +111,7 @@
   </div>
 </a>
 
-<script>
-  function toggleActive(item, className) {
-    document.querySelectorAll(`.${className}`).forEach(obj => {
-      obj.classList.remove(`${className}`)
-    })
-
-		item.classList.add(`${className}`)
-  }
-</script>
-
-<script>
-$('#carousel-thumb').on('slide.bs.carousel', function (element) {
-  $("div.thumbnail-wrapper > ol > li.active").removeClass("active");
-  $(`div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
-})
-</script>
+<script src="/scripts/gallery/galleryScripts.js"></script>
+<script src="/scripts/carousel-cycle.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 <% include ../partials/footer %>

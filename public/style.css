@@ -30,6 +30,71 @@
 	--light-shade-p1: #d6d6d6;
 }
 
+.align-left {
+	text-align: left !important;
+}
+
+.admincancelbtn {
+	width: 270px;
+}
+
+.no-indent {
+	text-indent: 0;
+}
+
+.justify {
+	text-align: justify;
+}
+
+.plus-unique {
+	color: var(--dark-shade-m1);
+	cursor: default;
+}
+
+.bwhite {
+	background: var(--light-shade-m1);
+}
+
+.cwhite {
+	color: var(--light-shade) !important;
+}
+
+.z-0 {
+	z-index: 0 !important;
+}
+
+.grid {
+	display: grid !important;
+}
+
+.inline {
+	display: inline !important;
+}
+
+.nodisplay {
+	display: none !important;
+}
+
+.display {
+	display: initial !important;
+}
+
+.block {
+	display: block !important;
+}
+
+.inline-b {
+	display: inline-block;
+}
+
+.sticky {
+	position: sticky;
+}
+
+.pbox-wrapper {
+	height: 200px;
+}
+
 #agree_tos {
 	width: unset;
 }
@@ -95,10 +160,9 @@
 
 .alert-static {
 	font-size: 18px;
-}
-
-.alert {
-	border-radius: 0;
+	position: initial !important;
+	margin: 10px auto 0 auto !important;
+	transform: initial !important;
 }
 
 .alert a {
@@ -177,6 +241,7 @@ b {
 
 .container-front {
 	max-width: 1140px !important;
+	position: sticky;
 }
 
 .inputfile {
@@ -518,9 +583,12 @@ footer {
 /* GLOBAL */
 .alert {
 	width: 60%;
-	margin: auto;
 	text-align: center;
-	margin: 10px auto 0 auto;
+	border-radius: 0;
+	position: fixed;
+	z-index: 33;
+	margin: -5% 50% 0 50%;
+	transform: translate(-50%, 0px);
 }
 
 .bootstrap-tagsinput {
@@ -1822,7 +1890,7 @@ input.cart-item-qty {
 }
 
 .completebtn {
-	display: block;
+	display: inline-block;
 	color: var(--light-shade);
 	background: var(--brand-blue) !important;
 	border-color: var(--brand-blue-p1) !important;
@@ -1830,10 +1898,6 @@ input.cart-item-qty {
 	font-weight: bold;
 	width: 270px;
 	height: 50px;
-	position: absolute;
-	top: 55px;
-	right: 0;
-	margin-top: 0;
 }
 
 .completebtn:focus {
@@ -1860,7 +1924,7 @@ input.cart-item-qty {
 }
 
 .control-label {
-	color: var(--brand-blue) !important;
+	color: var(--brand-blue);
 	font-weight: bold;
 	font-size: 18px;
 	margin: 10px 0 2px 3px;
@@ -2259,6 +2323,18 @@ tbody tr:hover {
 	width: 100px;
 	height: 100px;
 	border: 1px solid #ccc;
+}
+
+.mount-white {
+	background-color: rgb(250, 250, 250);
+}
+
+.mount-offwhite {
+	background-color: rgb(236, 227, 222);
+}
+
+.mount-black {
+	background-color: rgb(35, 35, 35);
 }
 
 .mount-label {

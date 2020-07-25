@@ -1,4 +1,4 @@
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+if (typeof csrfToken === "undefined") var csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
 
 async function postGallery(e) {
 	e.preventDefault();
@@ -119,4 +119,12 @@ async function deleteImage(e, item) {
 				${data.message}
 			</div>`;
 	addAlert(alert, "#header");
+}
+
+function toggleActive(item, className) {
+	document.querySelectorAll(`.${className}`).forEach(obj => {
+		obj.classList.remove(`${className}`);
+	});
+
+	item.classList.add(`${className}`);
 }

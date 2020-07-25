@@ -2,12 +2,12 @@
 
 <script src="/scripts/cart.js"></script>
 <div class="container container-single">
-	<div class="alert alert-warning alert-static w-100 mb-3" style="text-align: left;" role="alert">
+	<div class="alert alert-warning alert-static w-100 align-left" role="alert">
 		This is the catalog available and it's options to tailour our reproductions to your needs. <br />
 		Simply go to the <a target="_blank" href="/Galerie"><b>Gallery</b></a
 		>, click the <b>"See More" button</b> for the painting you're interested in, and down below you can chose what options you'd like
 	</div>
-	<div class="container-single container-catalog col-md-12">
+	<div class="container-single container-catalog col-md-12 mt-3">
 		<div class="catalog-wrapper col-md-10 offset-md-1">
 			<div class="text-center mb-4 pt-4">
 				<button class="tab-btn active" onclick="openTab(this, 'framed')">Framed Painting</button>
@@ -17,7 +17,7 @@
 		</div>
 
 		<div class="catalog-category tab col-md-10 offset-md-1" id="framed">
-			<div class="row pb-0">
+			<div class="row pb-0 m-0">
 				<div class="col-md-6 p-0">
 					<h1 class="catalog-title-category">Framed prints</h1>
 					<h4>Handmade by Guild-recognised framers</h4>
@@ -38,7 +38,6 @@
 						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'swoop', 'framed')">Swoop</button>
 					</div>
 				</div>
-				<hr style="margin: auto; width: 80%;" />
 
 				<div class="catalog-subcategory framed sub-toggle" id="box">
 					<h1 class="catalog-title-category">Box Frame</h1>
@@ -69,9 +68,9 @@
 									with age.
 								</p>
 								<ul class="mounts">
-									<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">Snow white</span></li>
-									<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
-									<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
+									<li class="mount"><span class="mount-color mount-white"></span><span class="mount-label">White</span></li>
+									<li class="mount"><span class="mount-color mount-offwhite"></span><span class="mount-label">Off-white</span></li>
+									<li class="mount"><span class="mount-color mount-black"></span><span class="mount-label">Black</span></li>
 								</ul>
 							</div>
 						</div>
@@ -165,7 +164,7 @@
 					<div class="text-center w-100"><b>Solid ash frame</b></div>
 				</div>
 
-				<div class="catalog-subcategory framed sub-toggle" id="classic" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle nodisplay" id="classic">
 					<h1 class="catalog-title-category">Classic Frame</h1>
 					<h4>Our most popular picture frame</h4>
 					<p class="col-md-8 pl-0">
@@ -195,9 +194,9 @@
 									with age.
 								</p>
 								<ul class="mounts">
-									<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">Snow white</span></li>
-									<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
-									<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
+									<li class="mount"><span class="mount-color mount-white"></span><span class="mount-label">White</span></li>
+									<li class="mount"><span class="mount-color mount-offwhite"></span><span class="mount-label">Off-white</span></li>
+									<li class="mount"><span class="mount-color mount-black"></span><span class="mount-label">Black</span></li>
 								</ul>
 							</div>
 						</div>
@@ -283,7 +282,7 @@
 					<div class="text-center w-100"><b>Classic frame with a snow white mount</b></div>
 				</div>
 
-				<div class="catalog-subcategory framed sub-toggle" id="gloss" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle nodisplay" id="gloss">
 					<h1 class="catalog-title-category">Gloss Frame</h1>
 					<h4>Full-bleed pictures with a thin stylish profile</h4>
 					<p class="col-md-8 pl-0">
@@ -385,7 +384,7 @@
 					</div>
 				</div>
 
-				<div class="catalog-subcategory framed sub-toggle" id="spacer" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle nodisplay" id="spacer">
 					<h1 class="catalog-title-category">Spacer Frame</h1>
 					<h4>A contemporary twist on the traditional box frame</h4>
 					<p class="col-md-8 pl-0">
@@ -500,7 +499,7 @@
 					<div class="text-center w-100"><b>Our spacer frame is 33mm deep</b></div>
 				</div>
 
-				<div class="catalog-subcategory framed sub-toggle" id="sur" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle nodisplay" id="sur">
 					<h1 class="catalog-title-category">Surface Frame</h1>
 					<h4>Full-bleed pictures with a thin stylish profile</h4>
 					<p class="col-md-8 pl-0">
@@ -598,7 +597,7 @@
 					</div>
 				</div>
 
-				<div class="catalog-subcategory framed sub-toggle" id="swoop" style="display: none;">
+				<div class="catalog-subcategory framed sub-toggle nodisplay" id="swoop">
 					<h1 class="catalog-title-category">Swoop Frame</h1>
 					<h4>Curved profile draws attention to your image</h4>
 					<p class="col-md-8 pl-0">
@@ -626,9 +625,9 @@
 									with age.
 								</p>
 								<ul class="mounts">
-									<li class="mount"><span class="mount-color" style="background-color: rgb(250, 250, 250);"></span><span class="mount-label">White</span></li>
-									<li class="mount"><span class="mount-color" style="background-color: rgb(236, 227, 222);"></span><span class="mount-label">Off-white</span></li>
-									<li class="mount"><span class="mount-color" style="background-color: rgb(35, 35, 35);"></span><span class="mount-label">Black</span></li>
+									<li class="mount"><span class="mount-color mount-white"></span><span class="mount-label">White</span></li>
+									<li class="mount"><span class="mount-color mount-offwhite"></span><span class="mount-label">Off-white</span></li>
+									<li class="mount"><span class="mount-color mount-black"></span><span class="mount-label">Black</span></li>
 								</ul>
 							</div>
 						</div>
@@ -716,7 +715,7 @@
 			</div>
 		</div>
 
-		<div class="catalog-category tab col-md-10 offset-md-1" id="fap" style="display: none;">
+		<div class="catalog-category tab col-md-10 offset-md-1 nodisplay" id="fap">
 			<h1 class="catalog-title-category">Fine Art Prints</h1>
 
 			<h4>A complete range of specialist art papers.</h4>
@@ -758,7 +757,7 @@
 			</div>
 		</div>
 
-		<div class="catalog-category tab col-md-10 offset-md-1" id="canvas" style="display: none;">
+		<div class="catalog-category tab col-md-10 offset-md-1 nodisplay" id="canvas">
 			<h1 class="catalog-title-category mt-0">Canvas</h1>
 			<h4 class="mt-0">Handmade by canvas craftsmen</h4>
 			<div class="row m-0">
@@ -771,7 +770,6 @@
 					<button class="canvas cat-btn tab-btn active" onclick="openSubCategory(this, 'framed-canvas', 'canvas')">Framed</button>
 					<button class="canvas cat-btn tab-btn" onclick="openSubCategory(this, 'stretched', 'canvas')">Stretched</button>
 				</div>
-				<hr style="margin: auto; width: 80%;" />
 
 				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2" id="framed-canvas">
 					<h1 class="catalog-title-category">Framed Canvas</h1>
@@ -814,7 +812,7 @@
 					<div class="text-center w-100"><b>The "floating border" created by the frame sits approximately 5mm from the canvas edge</b></div>
 				</div>
 
-				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2" id="stretched" style="display: none;">
+				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2 nodisplay" id="stretched">
 					<h1 class="catalog-title-category">Stretched Canvas</h1>
 					<h4>Superior canvas prints designed for trade and retail</h4>
 					<p>
@@ -917,29 +915,5 @@
 	</div>
 </div>
 
-<script>
-	function openTab(btn, tabName) {
-		let tab = document.getElementsByClassName("tab");
-		let buttons = document.querySelectorAll(".catalog-wrapper .tab-btn");
-
-		for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-
-		btn.classList.add("active");
-
-		for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
-
-		document.getElementById(tabName).style.display = "grid";
-	}
-
-	function openSubCategory(btn, tabName, category) {
-		let tab = document.getElementsByClassName(`${category} sub-toggle`);
-		let buttons = document.getElementsByClassName(`${category} cat-btn`);
-
-		for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-		btn.classList.add("active");
-
-		for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
-		document.getElementById(tabName).style.display = "grid";
-	}
-</script>
+<script src="/scripts/catalogTabs.js"></script>
 <% include partials/footer %>

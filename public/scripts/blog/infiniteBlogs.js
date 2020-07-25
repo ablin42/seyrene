@@ -1,8 +1,8 @@
 async function infiniteBlogs() {
 	let nbItem = $(".blog-row").length,
 		page = 1 + Math.floor(nbItem / 6),
-		loader = $("#loader");
-	loader.css("display", "block");
+		loader = document.querySelector("#loader");
+	loader.classList.add("block");
 
 	let data = await fetch(`/api/blog?page=${page}`);
 	data = await data.json();
@@ -57,7 +57,7 @@ async function infiniteBlogs() {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
 	}
-	loader.css("display", "none");
+	loader.classList.remove("block");
 }
 
 $(window).scroll(function () {

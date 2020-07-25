@@ -1,12 +1,12 @@
 async function infiniteTags() {
 	let nbItem = $(".expandable-card").length,
 		page = 1 + Math.floor(nbItem / 12),
-		loader = $("#loader"),
+		loader = document.querySelector("#loader"),
 		urlToFetch = `/api/gallery/tags?page=${page}`,
 		parsedURL = new URL(window.location.href),
 		tagsParam = parsedURL.searchParams.get("t");
 
-	loader.css("display", "block");
+	loader.classList.add("block");
 	if (tagsParam) urlToFetch += `&t=${tagsParam}`;
 	else urlToFetch = `/api/gallery/?page=${page}`;
 
@@ -53,7 +53,7 @@ async function infiniteTags() {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
 	}
-	loader.css("display", "none");
+	loader.classList.remove("block");
 }
 
 $(window).scroll(function () {

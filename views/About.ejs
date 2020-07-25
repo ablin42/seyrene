@@ -40,7 +40,7 @@
 			</a>
 		</div>
 
-		<div id="contact" class="tab col-xl-9 col-10" style="display: none;">
+		<div id="contact" class="tab col-xl-9 col-10 nodisplay">
 				<div class="col-md-10 offset-md-1 wrapper">
 					
 						<h1 class="single-title text-center">Contact</h1>
@@ -91,7 +91,7 @@
 						<textarea
 							id="content"
 							onkeyup="Validate.String(this, 64, 2048);"
-							style="min-height: 175px;"
+							rows="5"
 							name="content"
 							placeholder="Write your message here...."
 							required
@@ -109,9 +109,9 @@
 				</div>
 		</div>
 
-		<div id="bio" class="tab col-xl-9 col-10" style="display: none;">
+		<div id="bio" class="tab col-xl-9 col-10 nodisplay">
 			<div class="biography col-md-10 offset-md-1 wrapper pb-0 pt-4">
-					<div class="bio-img-wrapper col-sm-4" style="z-index: 0; ">
+					<div class="bio-img-wrapper col-sm-4 z-0>
 						<div class="sub-img-wrapper">
 						<img class="bio-img w-100" src="/img/upload/biopic.png" />
 						</div>
@@ -159,7 +159,7 @@
 		<div id="blog" class="tab col-xl-9 col-10">
 			<div class="container container-blog h-100 p-0 m-0">
 				<div class="">
-				<div class="col-md-10 offset-md-1 wrapper" style="z-index: 0;" id="container-blog">
+				<div class="col-md-10 offset-md-1 wrapper z-0" id="container-blog">
 					<% if (locals.blogs){ %> <% Object.keys(locals.blogs).forEach(function (index) { %>
 					<div class="blog-row" id="<%= locals.blogs[index]._id %>">
 						<h3 class="blog-title"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3>
@@ -189,6 +189,7 @@
 				<script>
 					toAppend = "<%= locals.blogs[index].shortcontent %>";
 					toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+
 					document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".content-holder").innerHTML = toAppend;
 
 					<% if (locals.blogs[index].thumbnail) { %>
@@ -199,7 +200,7 @@
 				</script>
 
 				<% }) %> <% } else { %>
-				<div class="text-center m-5 p-5" style="background: white;">
+				<div class="text-center m-5 p-5 bwhite" >
 					<h1>Blog page is under maintenance, please come back later</h1>
 				</div>
 				<% } %>

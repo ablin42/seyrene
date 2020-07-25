@@ -1,5 +1,14 @@
 const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
 
+window.onload = function () {
+	for (let i = 0; i < 5; i++) {
+		let src = $(`#image${i}`)[0].getAttribute("data-uploaded");
+		if (src == "true") {
+			document.querySelector(`#uploadGroup${i}`).classList.add("nodisplay");
+		}
+	}
+};
+
 async function deleteImage(item, e) {
 	e.preventDefault();
 
@@ -8,10 +17,10 @@ async function deleteImage(item, e) {
 
 	removeItem(imageItem);
 	removeItem(item);
-	let groupId = $("#uploadGroup" + item.id.substr(6, 1));
-	let uploadBtnId = $("#uploadbtn" + item.id.substr(6, 1));
-	uploadBtnId.attr("style", "display: none");
-	groupId.attr("style", "display: block");
+	let groupId = document.querySelector("#uploadGroup" + item.id.substr(6, 1));
+	let uploadBtnId = document.querySelector("#uploadbtn" + item.id.substr(6, 1));
+	uploadBtnId.classList.add("nodisplay");
+	groupId.classList.remove("nodisplay");
 
 	if (imageItem.getAttribute("data-uploaded") === "true") {
 		let data = await fetch(`/api/front/delete/${item.id.substr(6, 1)}`, {
@@ -35,7 +44,7 @@ async function deleteImage(item, e) {
 }
 
 function removeItem(item) {
-	item.style = "display: none;";
+	item.classList.add("nodisplay");
 	item.src = "";
 }
 
@@ -50,10 +59,10 @@ function readURL(input) {
 		reader.onload = function (e) {
 			$(targetImgId).attr("src", e.target.result);
 			$(targetImgId).attr("data-uploaded", "false");
-			$(targetImgId).attr("style", "display: block");
-			$(targetDeleteId).attr("style", "display: inline-block");
-			$(targetUploadId).attr("style", "display: block");
-			$(targetBtnId).attr("style", "display: none");
+			document.querySelector(targetImgId).classList.remove("nodisplay");
+			document.querySelector(targetDeleteId).classList.remove("nodisplay");
+			document.querySelector(targetUploadId).classList.remove("nodisplay");
+			document.querySelector(targetBtnId).classList.remove("nodisplay");
 		};
 		reader.readAsDataURL(input.files[0]);
 	}

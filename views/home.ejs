@@ -1,6 +1,6 @@
 <% include partials/head %>
 
-<div class="container container-front" style="position: sticky;"> 
+<div class="container container-front"> 
   <div class="carousel-container">
   <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
     <!--Slides-->
@@ -16,7 +16,7 @@
               <% } %>
           <% } %>
         <% } else { %>
-          <div class="text-center m-5 p-5" style="background: white">
+          <div class="text-center m-5 p-5 bwhite" >
             <h1>Home page is under maintenance, please come back later</h1>
           </div>
         <% } %>
@@ -58,10 +58,5 @@
   </div>
 </a>
 
-<script>
-$('#carousel-thumb').on('slide.bs.carousel', function (element) {
-  $("body > div.container > div.thumbnail-wrapper > ol > li.active").removeClass("active");
-  $(`body > div.container > div.thumbnail-wrapper > ol > li:nth-child(${element.to + 1})`).addClass("active");
-})
-</script>
+<script src="/scripts/carousel-cycle.js"></script>
 <% include partials/footer %>

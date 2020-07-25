@@ -76,6 +76,30 @@ app.use(morgan("combined", { stream: accessLogStream }));
 app.use(helmet());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy({ policy: "same-origin" }));
+/*
+app.use(
+	helmet.contentSecurityPolicy({
+		directives: {
+			reportUri: "/report-violation",
+			defaultSrc: ["'self'"],
+			styleSrc: ["'self'", "stackpath.bootstrapcdn.com", "cdn.quilljs.com", "kit-free.fontawesome.com", "fonts.googleapis.com"],
+			fontSrc: ["'self'", "fonts.googleapis.com", "kit-free.fontawesome.com", "fonts.gstatic.com"],
+			scriptSrc: [
+				"'self'",
+				"cdnjs.cloudflare.com",
+				"kit.fontawesome.com",
+				"stackpath.bootstrapcdn.com",
+				"cdn.quilljs.com",
+				"https://www.google.com/recaptcha/",
+				"www.gstatic.com",
+				"maps.googleapis.com",
+				"maps.gstatic.com",
+			],
+			frameSrc: ["https://www.google.com"],
+			imgSrc: ["'self'", "data:", "maps.gstatic.com"]
+		}
+	})
+);*/
 
 // Set ip object and logs info
 app.use((req, res, next) => {
@@ -133,6 +157,17 @@ app.use(function (err, req, res, next) {
 });
 
 app.use(expressSanitizer());
+
+app.post("/report-violation", (req, res) => {
+	if (req.body) {
+		threatLog.warn("CSP Violation: ", req.ip, req.body);
+	} else {
+		threatLog.error("CSP Violation: No data received!", req.ip);
+	}
+
+	res.status(204).end();
+});
+
 app.use(csrf({ cookie: false }));
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {

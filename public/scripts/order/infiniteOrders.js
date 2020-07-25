@@ -6,9 +6,14 @@ function openTab(btn, tabName) {
 
 	btn.classList.add("active");
 
-	for (let i = 0; i < tab.length; i++) tab[i].style.display = "none";
+	for (let i = 0; i < tab.length; i++) {
+		tab[i].classList.remove("grid");
+		tab[i].classList.add("nodisplay");
+	}
 
-	document.getElementById(tabName).style.display = "grid";
+	document.getElementById(tabName).classList.remove("nodisplay");
+	document.getElementById(tabName).classList.add("grid");
+
 	document.getElementById("infinitebtn").setAttribute("onclick", `infiniteOrders("${tabName}");`);
 	document.getElementById("infinitebtn").setAttribute("value", "Load More");
 	document.getElementById("infinitebtn").removeAttribute("disabled");
@@ -18,9 +23,10 @@ async function infiniteOrders(tab) {
 	if ($(`#container-admin-orders-${tab}`).length === 0) return;
 	let nbItem = $(`#container-admin-orders-${tab} > tr`).length,
 		page = 1 + Math.floor(nbItem / 20),
-		loader = $("#loader"),
+		loader = document.querySelector("#loader"),
 		url = `/api/order?page=${page}&tab=${tab}`;
-	loader.css("display", "block");
+
+	loader.classList.add("block");
 
 	let data = await fetch(url);
 	data = await data.json();
@@ -54,7 +60,7 @@ async function infiniteOrders(tab) {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
 	}
-	loader.css("display", "none");
+	loader.classList.remove("block");
 }
 
 $(window).scroll(function () {

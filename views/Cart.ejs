@@ -36,7 +36,7 @@
 					<% if (locals.products[index].isUnique === true) { %>
 					<i class="fas fa-minus fa-2x qty-update" onclick="cartDel('<%= locals.products[index].item._id %>', this)"></i>
 					<input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly />
-					<i class="fas fa-plus fa-2x qty-update" min="0" style="color: var(--dark-shade-m1); cursor: default;"></i>
+					<i class="fas fa-plus fa-2x qty-update plus-unique" min="0" ></i>
 					<% } else { %>
 					<i class="fas fa-minus fa-2x qty-update" onclick="pwintyCartDel('<%= locals.products[index].item._id %>', '<%= index %>', this)"></i>
 					<input
@@ -62,7 +62,7 @@
 			<% }) %></div> <% } %>
 
 
-			<div class="col-md-10 offset-md-1 wrapper" style="z-index: 0;">
+			<div class="col-md-10 offset-md-1 wrapper z-0">
 				<h1 class="single-title text-center">Delivery Informations</h1>
 				<div class="alert alert-info alert-static w-100 mb-3" role="alert">
 									Make sure these informations are correct, if not, change them <a href="/User">HERE</a>

@@ -3,11 +3,11 @@
 <script src="/scripts/order/order.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper">
-		<div class="col-md-10 offset-md-1 wrapper" style="min-height: 150px;">
+		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="text-center single-title">Gérer une commande</h1>
 			<div class="col-12 text-center">
 				<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
-				<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn" style="width: 270px;" value="ANNULER LA COMMANDE" />
+				<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn admincancelbtn" value="ANNULER LA COMMANDE" />
 				<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
 				<input type="submit" onclick="approveOrder('<%= locals.order._id %>')" class="approvebtn" value="APPROUVER LA COMMANDE" />
 				<% } %> <% if (locals.order.status === "Submitted" ) { %>

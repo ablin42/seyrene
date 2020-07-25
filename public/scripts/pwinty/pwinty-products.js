@@ -300,11 +300,7 @@ class PwintyObject {
 		let response = await this.fetchCountryCode();
 		let countryCode;
 		if (response.error === true) {
-			let alert = createAlertNode(
-				response.message,
-				"warning",
-				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-			);
+			let alert = createAlertNode(response.message, "warning");
 			addAlert(alert, "#header");
 			return;
 		} else countryCode = response.countryCode;
@@ -323,11 +319,7 @@ class PwintyObject {
 		if (data.error === true || data.response.length <= 0) {
 			this.hidePricing();
 
-			let alert = createAlertNode(
-				ERROR_MESSAGE.notFoundCatalog,
-				"warning",
-				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-			);
+			let alert = createAlertNode(ERROR_MESSAGE.notFoundCatalog, "warning");
 			addAlert(alert, "#header");
 		} else {
 			this.price = data.response.unitPriceIncludingTax;
@@ -337,7 +329,7 @@ class PwintyObject {
 
 	displayPricing() {
 		document.getElementById("price").innerHTML = this.price + "€";
-		document.getElementById("purchasebox").setAttribute("style", "display: block");
+		document.getElementById("purchasebox").classList.remove("nodisplay");
 	}
 
 	async fetchCountryCode() {
@@ -365,11 +357,7 @@ class PwintyObject {
 		let response = await this.fetchCountryCode();
 		let countryCode;
 		if (response.error === true) {
-			let alert = createAlertNode(
-				response.message,
-				"warning",
-				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-			);
+			let alert = createAlertNode(response.message, "warning");
 			addAlert(alert, "#header");
 			return;
 		} else countryCode = response.countryCode;
@@ -395,11 +383,7 @@ class PwintyObject {
 		response = await response.json();
 
 		if (response.error === true || response.response.length <= 0) {
-			let alert = createAlertNode(
-				ERROR_MESSAGE.noShipment,
-				"warning",
-				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-			);
+			let alert = createAlertNode(ERROR_MESSAGE.noShipment, "warning");
 			addAlert(alert, "#header");
 			return;
 		} else {
@@ -422,18 +406,14 @@ class PwintyObject {
 				document.getElementById("cartQty").innerText = totalQty;
 			} else alertType = "warning";
 
-			let alert = createAlertNode(
-				response.message,
-				alertType,
-				"position: fixed;z-index: 33;margin: -5% 50% 0 50%;transform: translate(-50%,0px);"
-			);
+			let alert = createAlertNode(response.message, alertType);
 			addAlert(alert, "#header");
 		}
 		return;
 	}
 
 	hidePricing() {
-		document.getElementById("purchasebox").setAttribute("style", "display: none");
+		document.getElementById("purchasebox").classList.add("nodisplay");
 	}
 	printInfo() {
 		console.log(this);

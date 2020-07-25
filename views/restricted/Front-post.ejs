@@ -18,7 +18,7 @@
 					<button id="delete<%= index %>" onclick="deleteImage(this, event);" class="delbtn">SUPPRIMER</button>
 				</div>
 				<input type="hidden" name="referenceId" value="<%= index %>" />
-				<div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
+				<div id="uploadbtn<%= index %>" class="form-group nodisplay">
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 					<button type="submit" name="submit" class="logbtn">Valider</button>
 				</div>
@@ -29,12 +29,12 @@
 					<label for="upload<%= index %>" class="filebtn">Choisir une image</label>
 					<input type="file" name="img" id="upload<%= index %>" class="inputfile" onchange="readURL(this);" />
 				</div>
-				<img class="w-100" id="image<%= index %>" src="" style="display: none;" alt="uploadedImg" data-uploaded="false" />
+				<img class="w-100 nodisplay" id="image<%= index %>" src="" alt="uploadedImg" data-uploaded="false" />
 				<div class="form-group text-center">
-					<button id="delete<%= index %>" onclick="deleteImage(this, event);" class="delbtn" style="display: none;">SUPPRIMER</button>
+					<button id="delete<%= index %>" onclick="deleteImage(this, event);" class="delbtn nodisplay">SUPPRIMER</button>
 				</div>
 				<input type="hidden" name="referenceId" value="<%= index %>" />
-				<div id="uploadbtn<%= index %>" class="form-group" style="display: none;">
+				<div id="uploadbtn<%= index %>" class="form-group nodisplay">
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 					<button type="submit" name="submit" class="logbtn">Valider</button>
 				</div>
@@ -45,12 +45,12 @@
 					<label for="upload0" class="filebtn">Choisir une image</label>
 					<input type="file" name="img" id="upload0" class="inputfile" onchange="readURL(this);" />
 				</div>
-				<img class="w-100" id="image0" src="" style="display: none;" alt="uploadedImg" data-uploaded="false" />
+				<img class="w-100 nodisplay" id="image0" alt="uploadedImg" data-uploaded="false" />
 				<div class="form-group text-center">
-					<button id="delete0" onclick="deleteImage(this, event);" class="delbtn" style="display: none;">Delete</button>
+					<button id="delete0" onclick="deleteImage(this, event);" class="delbtn nodisplay">Delete</button>
 				</div>
 				<input type="hidden" name="referenceId" value="0" />
-				<div id="uploadbtn0" class="form-group" style="display: none;">
+				<div id="uploadbtn0" class="form-group nodisplay">
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 					<button type="submit" name="submit" class="logbtn">Valider</button>
 				</div>
@@ -60,15 +60,5 @@
 	</div>
 </div>
 
-<script>
-	window.onload = function () {
-		for (let i = 0; i < 5; i++) {
-			let src = $(`#image${i}`)[0].getAttribute("data-uploaded");
-			if (src == "true") {
-				$(`#uploadGroup${i}`).attr("style", "display: none");
-			}
-		}
-	};
-</script>
 <script src="/scripts/frontScripts.js"></script>
 <% include ../partials/footer %>

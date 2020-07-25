@@ -75,10 +75,10 @@ async function setMain(e, item) {
 	let type = "success";
 	if (data.err === true) type = "warning";
 	else {
-		let divs = $(".action-div");
-		for (let i = 0; i < divs.length; i++) divs[parseInt(i)].setAttribute("style", "display: block");
+		let divs = document.querySelectorAll(".action-div");
+		for (let i = 0; i < divs.length; i++) divs[parseInt(i)].classList.remove("nodisplay");
 
-		$(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
+		document.querySelector(`#actDiv${item.id.substr(3)}`).classList.add("nodisplay");
 	}
 	let alertErr = `
             <div id="alert" class="alert alert-${type}" role="alert">

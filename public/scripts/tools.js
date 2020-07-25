@@ -9,9 +9,9 @@ function openTab(e, item, tabName) {
 	item.classList.add("disabled");
 	let tab = document.getElementsByClassName("tab");
 	for (let i = 0; i < tab.length; i++) {
-		tab[parseInt(i)].style.display = "none";
+		tab[parseInt(i)].classList.add("nodisplay");
 	}
-	document.getElementById(tabName).style.display = "";
+	document.getElementById(tabName).classList.remove("nodisplay");
 }
 
 function expand(image, e = null, gallery = false) {

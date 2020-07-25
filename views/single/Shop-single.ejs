@@ -64,11 +64,6 @@
 	</div>
 </a>
 
-<script>
-	$("#carousel-thumb").on("slide.bs.carousel", function (element) {
-		$("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
-		$(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
-	});
-</script>
+<script src="/scripts/carousel-cycle.js"></script>
 <script src="/scripts/frontValidation.js"></script>
 <% include ../partials/footer %>

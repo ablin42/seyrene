@@ -1,8 +1,8 @@
 async function infiniteGalleries() {
 	let nbItem = $(".expandable-card").length,
 		page = 1 + Math.floor(nbItem / 12),
-		loader = $("#loader");
-	loader.css("display", "block");
+		loader = document.querySelector("#loader");
+	loader.classList.add("block");
 
 	let data = await fetch(`/api/gallery?page=${page}`);
 	data = await data.json();
@@ -49,7 +49,7 @@ async function infiniteGalleries() {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
 	}
-	loader.css("display", "none");
+	loader.classList.remove("block");
 }
 
 $(window).scroll(function () {

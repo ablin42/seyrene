@@ -1,8 +1,8 @@
 async function infiniteShopItems(tb) {
 	let nbItem = $("#original > .card").length,
 		page = 1 + Math.floor(nbItem / 3),
-		loader = $("#loader");
-	loader.css("display", "block");
+		loader = document.querySelector("#loader");
+	loader.classList.add("block");
 
 	let data = await fetch(`/api/shop?page=${page}`);
 	data = await data.json();
@@ -46,7 +46,7 @@ async function infiniteShopItems(tb) {
 			$("#infinitebtn").attr("onclick", "");
 		}
 	}
-	loader.css("display", "none");
+	loader.classList.remove("block");
 }
 
 $(window).scroll(function () {

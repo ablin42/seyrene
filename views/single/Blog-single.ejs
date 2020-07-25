@@ -5,7 +5,7 @@
 	<div class="single-wrapper" id="<%= locals.blog._id %>">
 		<div class="col-md-10 offset-md-1 content-wrapper pt-0 pb-0">
 			<div class="blog-header text-center p-3 col-md-10 offset-md-1">
-				<h3 class="single-title" style="display: inline;">
+				<h3 class="single-title inline">
 					<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
 					<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
 					<% } %>
@@ -49,10 +49,6 @@
 		item.parentNode.insertBefore(link, item);
 		item.remove();
 	});
-
-	$("#carousel-thumb").on("slide.bs.carousel", function (element) {
-		$("div.thumbnail-wrapper.mb-3 > ol > li.active").removeClass("active");
-		$(`div.thumbnail-wrapper.mb-3 > ol > li:nth-child(${element.to + 1})`).addClass("active");
-	});
 </script>
+<script src="/scripts/carousel-cycle.js"></script>
 <% include ../partials/footer %>
