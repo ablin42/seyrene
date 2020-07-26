@@ -35,6 +35,7 @@ const { fullLog, threatLog } = require("./controllers/helpers/log4");
 const { body } = require("express-validator");
 
 const connection = new WebSocket("/tmp/nginx.socket");
+fs.closeSync(fs.openSync("/tmp/app-initialized", "w"));
 
 //Connect to DB
 mongoose.connect(
