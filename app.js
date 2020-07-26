@@ -76,13 +76,20 @@ app.use(morgan("combined", { stream: accessLogStream }));
 app.use(helmet());
 app.use(helmet.permittedCrossDomainPolicies());
 app.use(helmet.referrerPolicy({ policy: "same-origin" }));
-/*
 app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
 			reportUri: "/report-violation",
 			defaultSrc: ["'self'"],
-			styleSrc: ["'self'", "stackpath.bootstrapcdn.com", "cdn.quilljs.com", "kit-free.fontawesome.com", "fonts.googleapis.com"],
+			styleSrc: [
+				"'self'",
+				"stackpath.bootstrapcdn.com",
+				"cdn.quilljs.com",
+				"kit-free.fontawesome.com",
+				"fonts.googleapis.com",
+				"cdnjs.cloudflare.com"
+				//"https: 'unsafe-inline'"
+			],
 			fontSrc: ["'self'", "fonts.googleapis.com", "kit-free.fontawesome.com", "fonts.gstatic.com"],
 			scriptSrc: [
 				"'self'",
@@ -93,13 +100,15 @@ app.use(
 				"https://www.google.com/recaptcha/",
 				"www.gstatic.com",
 				"maps.googleapis.com",
-				"maps.gstatic.com",
+				"maps.gstatic.com"
+				//"https: 'unsafe-inline'"
 			],
 			frameSrc: ["https://www.google.com"],
 			imgSrc: ["'self'", "data:", "maps.gstatic.com"]
-		}
+		},
+		reportOnly: true
 	})
-);*/
+);
 
 // Set ip object and logs info
 app.use((req, res, next) => {
@@ -136,7 +145,6 @@ app.use(flash());
 
 // Body-Parser
 app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
-//app.use(bodyParser.json({ limit: 100000000 }));
 app.use(
 	bodyParser.json({
 		verify: function (req, res, buf) {

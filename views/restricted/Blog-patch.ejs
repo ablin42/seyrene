@@ -37,12 +37,19 @@
 	    [{ 'indent': '-1'}, { 'indent': '+1' }],
 	    [{ 'size': ['small', false, 'large', 'huge'] }],
 	    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-	    [{ 'color': [] }, { 'background': [] }],
+	    [{ 'color': ["black", "white", "red", "orange", "yellow", "green", "blue", "purple"] }, { 'background': ["black", "white", "red", "orange", "yellow", "green", "blue", "purple"] }],
 	    [{ 'font': [] }],
 	    [{ 'align': [] }],
 	    ['link', 'image'],
 	    ['clean']
 	];
+
+	var BackgroundClass = Quill.import('attributors/class/background');
+	var ColorClass = Quill.import('attributors/class/color');
+	var SizeStyle = Quill.import('attributors/class/size');
+	Quill.register(BackgroundClass, true);
+	Quill.register(ColorClass, true);
+	Quill.register(SizeStyle, true);
 
 	let quill = new Quill('#editor', {
 	    modules: {
@@ -77,5 +84,7 @@
 	    Validate.String(editorData, 128);
 	}
 </script>
-<script src="/scripts/frontValidation.js"></script>
+
+<input type="hidden" value="<%= locals.blog.content %>" id="blogContent" />
+<script src="/scripts/core/frontValidation.js"></script>
 <% include ../partials/footer %>

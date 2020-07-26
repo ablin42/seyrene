@@ -172,11 +172,17 @@
 	</div>
 </div>
 
-<% if(locals.products){ %> <% Object.keys(locals.products).forEach(function (index) { %> <% if (!locals.products[index].item.price) { %>
-<script>
-	PWINTY_DATA["<%= index %>"] = {
-		SKU: "<%= locals.products[index].attributes.SKU %>",
-		attributes: JSON.parse(`<%= locals.products[index].stringifiedAttributes %>`.replace(/&#34;/gi, '"'))
-	};
-</script>
-<% } %> <% }) %> <% } %> <% include partials/footer %>
+<% if(locals.products){ %>
+	 <% Object.keys(locals.products).forEach(function (index) { %>
+		 <% if (!locals.products[index].item.price) { %>
+			<script>
+				PWINTY_DATA["<%= index %>"] = {
+					SKU: "<%= locals.products[index].attributes.SKU %>",
+					attributes: JSON.parse(`<%= locals.products[index].stringifiedAttributes %>`.replace(/&#34;/gi, '"'))
+				};
+			</script>
+		<% } %>
+ 	<% }) %> 
+<% } %> 
+
+<% include partials/footer %>

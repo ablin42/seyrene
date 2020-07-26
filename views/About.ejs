@@ -111,7 +111,7 @@
 
 		<div id="bio" class="tab col-xl-9 col-10 nodisplay">
 			<div class="biography col-md-10 offset-md-1 wrapper pb-0 pt-4">
-					<div class="bio-img-wrapper col-sm-4 z-0>
+					<div class="bio-img-wrapper col-sm-4 z-0">
 						<div class="sub-img-wrapper">
 						<img class="bio-img w-100" src="/img/upload/biopic.png" />
 						</div>
@@ -171,7 +171,7 @@
 						<% if (locals.blogs[index].thumbnail) { %>
 						<div class="blog-overlay-wrapper">
 							<div class="blog-overlay">
-								<div class="content-holder"></div>
+								<div class="content-holder ql-editor"></div>
 								<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
 							</div>
 						</div>
@@ -179,7 +179,7 @@
 					<% } else { %>
 					<div class="blog-no-overlay-wrapper">
 						<div class="blog-no-overlay">
-							<div class="content-holder"></div>
+							<div class="content-holder ql-editor"></div>
 							<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
 						</div>
 					</div>
@@ -216,7 +216,7 @@
 	</div>
 
 	<script src="/scripts/menu-arrow.js"></script>
-	<script src="/scripts/frontValidation.js"></script>
+	<script src="/scripts/core/frontValidation.js"></script>
 	<script src="/scripts/submit-contact.js"></script>
 	<% include partials/footer %>
 </div>
