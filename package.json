@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"preinstall": "npm install pm2 -g",
+		"prestart": "pm2 link mqkv3eaenoghxpn b4gas27al0ac5ig",
 		"start": "pm2-runtime start ecosystem.config.js --env production",
 		"devStart": "nodemon app",
 		"pretest": "eslint controllers/*.js controllers/helpers/*.js controllers/validators/*.js models/*.js public/scripts/*.js public/scripts/blog/*.js public/scripts/gallery/*.js public/scripts/shop/*.js -f table --fix",
