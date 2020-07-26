@@ -34,6 +34,8 @@ const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
 const { fullLog, threatLog } = require("./controllers/helpers/log4");
 const { body } = require("express-validator");
 
+const connection = new WebSocket("/tmp/nginx.socket");
+
 //Connect to DB
 mongoose.connect(
 	process.env.DB_CONNECTION,
@@ -261,5 +263,5 @@ app.get("*", setUser, (req, res) => {
 	}
 });
 
-const port = process.env.PORT || 8089;
+const port = process.env.PORT;
 app.listen(port, () => fullLog.trace(`Listening on port ${port}...`));
