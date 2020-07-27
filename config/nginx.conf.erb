@@ -20,6 +20,7 @@ http {
 	server_tokens off;
 	sendfile on;
 
+	#Must read the body in 5 seconds.
 	client_body_timeout 5;
 
 	log_format  main  	'$remote_addr - $remote_user [$time_local] "$request" '
@@ -29,19 +30,16 @@ http {
 	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
 
-	#Must read the body in 5 seconds.
 	
-	upstream app_server {
-		server unix:/tmp/nginx.socket fail_timeout=0;
-	}
-	 
+	#upstream app_server {
+	#	server unix:/tmp/nginx.socket fail_timeout=0;
+	#}
 
 	server {
 		listen <%= ENV["PORT"] %>;
 		server_name maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
-		root /app/public; ##
-
+		root /app; ##
 
 		location / { ##
 			#try_files $uri @app_server;
@@ -59,6 +57,14 @@ http {
 			#proxy_set_header Connection "upgrade";
 		}
 
+		## location /api
+
+		#location /public {
+		#	try_files  $uri $uri/ =404;
+		#	gzip on;
+		#	gzip_types application/javascript image/* text/css;
+		#}
+
 		location ~* \.(jpg|jpeg|png|gif|ico)$ {
        		expires 30d;
 		}
@@ -66,5 +72,7 @@ http {
 		location ~* \.(css|js)$ {
 			expires 7d;
 		}
+
+		
 	}
 }
