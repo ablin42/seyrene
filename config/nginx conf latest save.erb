@@ -60,9 +60,8 @@ http {
 			proxy_set_header Connection "upgrade";
 			proxy_set_header X-Real-IP $remote_addr;
 			
-			proxy_cache_bypass $http_upgrade;#
 		}
-
+		
 		#location ~* \.(jpg|jpeg|png|gif|ico)$ { #caching
        	#	expires 30d;
 		#}
