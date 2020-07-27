@@ -42,7 +42,7 @@ http {
 		root /app/public;
 
 		location @app_server {
-			proxy_pass http://app_server/;
+			proxy_pass http://app_server;
 		}
 
 		location / {
