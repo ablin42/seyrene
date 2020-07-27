@@ -60,12 +60,14 @@ http {
 			#proxy_set_header Connection "upgrade";
 		}
 
-		location ~* \.(jpg|jpeg|png|gif|ico)$ {
-       		expires 30d;
-		}
+		# location /views
 
-		location ~* \.(css|js)$ {
-			expires 7d;
-		}
+		#location ~* \.(jpg|jpeg|png|gif|ico)$ {
+       	#	expires 30d;
+		#}
+
+		#location ~* \.(css|js)$ {
+		#	expires 7d;
+		#}
 	}
 }
