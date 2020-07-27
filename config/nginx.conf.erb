@@ -60,6 +60,12 @@ http {
 			
 		}
 
+		location /public {
+			try_files  $uri $uri/ @app_server =404;
+			gzip on;
+			gzip_types application/javascript image/* text/css;
+		}
+
 		# location /views
 
 		#location ~* \.(jpg|jpeg|png|gif|ico)$ {
