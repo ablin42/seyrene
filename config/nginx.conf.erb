@@ -41,8 +41,11 @@ http {
 		keepalive_timeout 5;
 		root /app/public;
 
+		location @app_server {
+			proxy_pass http://app_server/;
+		}
+
 		location / {
-			#try_files $uri @app_server;
 			try_files  $uri $uri/ @app_server =404;
 			gzip on;
 			gzip_types application/javascript image/* text/css;
@@ -60,10 +63,6 @@ http {
 			#proxy_http_version 1.1;
 			#proxy_set_header Upgrade $http_upgrade;
 			#proxy_set_header Connection "upgrade";
-		}
-
-		location @app_server {
-			proxy_pass http://app_server;
 		}
 
 		## location /api
