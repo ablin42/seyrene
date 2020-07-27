@@ -4,7 +4,7 @@ module.exports = {
 			name: "Maral",
 			script: "./app.js",
 			instances: "1",
-			exec_mode: "cluster",
+			//exec_mode: "cluster",
 			watch: true,
 			env: {
 				NODE_ENV: "development"
