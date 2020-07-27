@@ -45,7 +45,7 @@ http {
 		tcp_nodelay       on;
 
 		location / {
-			#root /var/tools/public;
+			root /app/public;
 			try_files  $uri $uri/ @app_server =404;
 		}
 
