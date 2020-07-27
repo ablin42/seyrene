@@ -33,8 +33,15 @@ http {
 	access_log <%= ENV['NGINX_ACCESS_LOG_PATH'] || 'logs/nginx/access.log' %> main;
 	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
-	proxy_cache_path /app/nginx levels=1:2 keys_zone=custom_cache:10m inactive=60m;#
+	proxy_cache_path /app/config/nginx-cache levels=1:2 keys_zone=custom_cache:10m inactive=60m;#
 	proxy_cache_key "$scheme$request_method$host$request_uri";#
+
+	#proxy_cache_path /tmp/nginx-cache levels=1:2 keys_zone=staticcache:8m max_size=100m inactive=60m use_temp_path=off;
+        # keyzone size 8MB, cache size 100MB, inactive delete 60min
+    #proxy_cache_key "$scheme$request_method$host$request_uri";
+	proxy_cache_valid 200 302 60m; # cache successful responses for 60 minutes
+    proxy_cache_valid 404 1m; # expire 404 responses 1 minute
+
 
 	upstream app_server {
 		server unix:/tmp/nginx.socket fail_timeout=0;
