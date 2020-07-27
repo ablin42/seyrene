@@ -30,13 +30,8 @@ http {
 	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
 
-	
 	upstream app_server {
 		server unix:/tmp/nginx.socket fail_timeout=0;
-	}
-
-	upstream backend {
-		server maral.herokuapp.com;
 	}
 
 	server {
@@ -44,13 +39,9 @@ http {
 		server_name maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
 
-		location @app_server {
-			proxy_pass http://app_server;
-		}
-
 		root /app/public;
 		location / {
-			try_files  $uri $uri/ @backend =404;
+			try_files  $uri $uri/ @app_server =404;
 			gzip on;
 			gzip_types application/javascript image/* text/css;
 			sendfile on;
@@ -59,7 +50,7 @@ http {
 			tcp_nodelay       on;
     		keepalive_timeout 65;
 			
-			#proxy_pass http://app_server;
+			proxy_pass http://app_server;
 			#proxy_set_header X-Real-IP $remote_addr;
 			#proxy_set_header Host $host;
 			#proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -69,14 +60,6 @@ http {
 			#proxy_set_header Connection "upgrade";
 		}
 
-		## location /api
-
-		#location /public {
-		#	try_files  $uri $uri/ =404;
-		#	gzip on;
-		#	gzip_types application/javascript image/* text/css;
-		#}
-
 		location ~* \.(jpg|jpeg|png|gif|ico)$ {
        		expires 30d;
 		}
@@ -84,7 +67,5 @@ http {
 		location ~* \.(css|js)$ {
 			expires 7d;
 		}
-
-		
 	}
 }
