@@ -45,7 +45,7 @@ http {
 		tcp_nodelay       on;
 
 		location / {
-			root /app/public;
+			alias /app/public;
 			try_files  $uri $uri/ @app_server;
 		}
 
