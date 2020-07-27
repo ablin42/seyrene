@@ -30,10 +30,10 @@ http {
 	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
 
-	upstream app_server {
+	#upstream app_server {
 		#server unix:/tmp/nginx.socket fail_timeout=0;
-		server maral.herokuapp.com;
-	}
+	#	server maral.herokuapp.com;
+	#}
 
 	server {
 		listen <%= ENV["PORT"] %>;
@@ -41,7 +41,7 @@ http {
 		keepalive_timeout 5;
 
 		location / {
-			try_files  $uri $uri/ @app_server =404;
+			try_files  $uri $uri/ maral.herokuapp.com =404;
 			gzip on;
 			gzip_types application/javascript image/* text/css;
 			sendfile on;
@@ -50,7 +50,7 @@ http {
 			tcp_nodelay       on;
     		keepalive_timeout 65;
 			
-			proxy_pass http://app_server;
+			proxy_pass http://maral.herokuapp.com;
 			#proxy_set_header X-Real-IP $remote_addr;
 			#proxy_set_header Host $host;
 			#proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
