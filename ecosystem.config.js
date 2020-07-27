@@ -3,7 +3,7 @@ module.exports = {
 		{
 			name: "Maral",
 			script: "./app.js",
-			instances: "max",
+			instances: "1",
 			exec_mode: "cluster",
 			watch: true,
 			env: {
