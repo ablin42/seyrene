@@ -39,11 +39,11 @@ http {
 		listen <%= ENV["PORT"] %>;
 		server_name maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
-		root /app; ##
+		root /app/public;
 
-		location /public { ##
+		location / {
 			#try_files $uri @app_server;
-			try_files  $uri $uri/ =404;
+			try_files  $uri $uri/ @app_server =404;
 			gzip on;
 			gzip_types application/javascript image/* text/css;
 			sendfile on;
