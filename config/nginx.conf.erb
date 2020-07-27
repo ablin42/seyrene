@@ -39,7 +39,6 @@ http {
 		server_name maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
 
-		root /app/public;
 		location / {
 			try_files  $uri $uri/ @app_server =404;
 			gzip on;
