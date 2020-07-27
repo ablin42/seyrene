@@ -4,8 +4,8 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"prestart": "pm2 link mqkv3eaenoghxpn b4gas27al0ac5ig && touch /tmp/app-initialized",
-		"start": "pm2-runtime start ecosystem.config.js --env production",
+		"prestart": "touch /tmp/app-initialized",
+		"start": "node app",
 		"devStart": "nodemon app",
 		"pretest": "eslint controllers/*.js controllers/helpers/*.js controllers/validators/*.js models/*.js public/scripts/*.js public/scripts/blog/*.js public/scripts/gallery/*.js public/scripts/shop/*.js -f table --fix",
 		"test": "snyk test",
