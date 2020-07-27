@@ -31,7 +31,8 @@ http {
 
 
 	upstream app_server {
-		server unix:/tmp/nginx.socket fail_timeout=0;
+		#server unix:/tmp/nginx.socket fail_timeout=0;
+		server maral.herokuapp.com;
 	}
 
 	server {
