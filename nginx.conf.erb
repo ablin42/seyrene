@@ -9,57 +9,62 @@ events {
 }
 
 http {
-        gzip on;
-        gzip_comp_level 2;
-        gzip_min_length 512;
+	include mime.types;
+	default_type application/octet-stream;
 
+    gzip on;
+    gzip_comp_level 2;
+	gzip_min_length 512;
+	
 	server_tokens off;
+	sendfile on;
 
-	log_format l2met 'measure#nginx.service=$request_time request_id=$http_x_request_id';
+	client_body_timeout 5;
+
+	log_format  main  	'$remote_addr - $remote_user [$time_local] "$request" '
+                    	'$status $body_bytes_sent "$http_referer" '
+                    	'"$http_user_agent" "$http_x_forwarded_for"';
 	access_log <%= ENV['NGINX_ACCESS_LOG_PATH'] || 'logs/nginx/access.log' %> l2met;
 	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
-	include mime.types;
-	default_type application/octet-stream;
-	sendfile on;
 
 	#Must read the body in 5 seconds.
-	client_body_timeout 5;
-
 	
-	location /public {
-		alias /app/public;
-		gzip_static on;
-		expires max;
-		add_header Cache-Control public
-	 }
-
-
-	upstream app_server {
-		server unix:/tmp/nginx.socket fail_timeout=0;
-	 }
+	#upstream app_server {
+	#	server unix:/tmp/nginx.socket fail_timeout=0;
+	# }
 	 
-	root /app/public; # path to your app
-
-	location / {
-		try_files $uri @app_server;
-	}
 
 	server {
 		listen <%= ENV["PORT"] %>;
-		server_name http://maral.herokuapp.com;
+		server_name maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
+		root /app/xDD; 
+
 
 		location / {
-			proxy_pass http://app_server;
-
-			proxy_set_header X-Real-IP $remote_addr;
-			proxy_set_header Host $host;
-			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			#try_files $uri @app_server;
+			try_files  $uri $uri/ =404;
+			gzip on;
+			gzip_types application/javascript image/* text/css;
+			gunzip on;
+			
+			#proxy_pass http://app_server;
+			#proxy_set_header X-Real-IP $remote_addr;
+			#proxy_set_header Host $host;
+			#proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			# Following is necessary for Websocket support
-			proxy_http_version 1.1;
-			proxy_set_header Upgrade $http_upgrade;
-			proxy_set_header Connection "upgrade";
+			#proxy_http_version 1.1;
+			#proxy_set_header Upgrade $http_upgrade;
+			#proxy_set_header Connection "upgrade";
+		}
+
+		location ~* \.(jpg|jpeg|png|gif|ico)$ {
+       		expires 30d;
+		}
+
+		location ~* \.(css|js)$ {
+			expires 7d;
 		}
 	}
 }
