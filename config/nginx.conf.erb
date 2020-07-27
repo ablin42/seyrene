@@ -57,8 +57,6 @@ http {
 			try_files  $uri $uri/ @app_server =404;
 			gzip on;
 			gzip_types application/javascript image/* text/css;
-
-			gunzip on;#
 		}
 
 		#location ~* \.(jpg|jpeg|png|gif|ico)$ { #caching
