@@ -27,10 +27,6 @@ http {
 	client_body_timeout 5;
 
 	
-	upstream backend {
-		server http://maral.herokuapp.com
-	}
-
 	upstream app_server {
 		server unix:/tmp/nginx.socket fail_timeout=0;
 	 }
@@ -46,7 +42,7 @@ http {
 		server_name http://maral.herokuapp.com;
 		keepalive_timeout 5;
 
-		location @backend {
+		location / {
 			proxy_pass http://app_server;
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
