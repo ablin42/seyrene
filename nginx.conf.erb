@@ -31,7 +31,7 @@ http {
 		server unix:/tmp/nginx.socket fail_timeout=0;
 	 }
 	 
-	root "/app/public"; # path to your app
+	root "/xqsxsqdsqc"; # path to your app
 
 	location / {
 		try_files $uri @app_server;
@@ -51,10 +51,6 @@ http {
 			proxy_http_version 1.1;
 			proxy_set_header Upgrade $http_upgrade;
 			proxy_set_header Connection "upgrade";
-
-			
 		}
-
-
 	}
 }
