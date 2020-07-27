@@ -68,13 +68,13 @@ http {
 
 		# location /views
 
-		location ~* \.(jpg|jpeg|png|gif|ico)$ {
-       		expires 30d;
-		}
+		#location ~* \.(jpg|jpeg|png|gif|ico)$ {
+       	#	expires 30d;
+		#}
 
-		location ~* \.(css|js)$ {
-			expires 7d;
-		}
+		#location ~* \.(css|js)$ {
+		#	expires 7d;
+		#}
 
 		#root /app/public;
 	}
