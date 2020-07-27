@@ -35,6 +35,10 @@ http {
 		server unix:/tmp/nginx.socket fail_timeout=0;
 	}
 
+	upstream backend {
+		http://maral.herokuapp.com;
+	}
+
 	server {
 		listen <%= ENV["PORT"] %>;
 		server_name maral.herokuapp.com www.maral.herokuapp.com;
@@ -46,7 +50,7 @@ http {
 
 		root /app/public;
 		location / {
-			try_files  $uri $uri/ @app_server =404;
+			try_files  $uri $uri/ @backend =404;
 			gzip on;
 			gzip_types application/javascript image/* text/css;
 			sendfile on;
