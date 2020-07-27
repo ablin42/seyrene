@@ -5,7 +5,7 @@ worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;
 events {
 	use epoll;
 	accept_mutex on;
-	worker_connections "<%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>";
+	worker_connections <%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>;
 }
 
 http {
@@ -31,7 +31,7 @@ http {
 		server unix:/tmp/nginx.socket fail_timeout=0;
 	 }
 	 
-	root "/xqsxsqdsqc"; # path to your app
+	root /app/public; # path to your app
 
 	location / {
 		try_files $uri @app_server;
