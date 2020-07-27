@@ -56,6 +56,7 @@ const app = express();
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.set("trust proxy", 1);
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
@@ -264,4 +265,4 @@ app.get("*", setUser, (req, res) => {
 });
 
 const port = process.env.PORT;
-app.listen(port, () => fullLog.trace(`Listening on port ${port}...`));
+//app.listen(port, () => fullLog.trace(`Listening on port ${port}...`));
