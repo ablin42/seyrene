@@ -33,6 +33,9 @@ http {
 	access_log <%= ENV['NGINX_ACCESS_LOG_PATH'] || 'logs/nginx/access.log' %> main;
 	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
+	proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=custom_cache:10m inactive=60m;#
+	proxy_cache_key "$scheme$request_method$host$request_uri";#
+
 	upstream app_server {
 		server unix:/tmp/nginx.socket fail_timeout=0;
 	}
