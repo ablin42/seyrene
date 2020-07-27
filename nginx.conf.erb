@@ -5,7 +5,7 @@ worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;
 events {
 	use epoll;
 	accept_mutex on;
-	worker_connections <%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>;
+	worker_connections "<%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>";
 }
 
 http {
@@ -27,7 +27,7 @@ http {
 	client_body_timeout 5;
 
 	upstream app_server {
-		server /tmp/nginx.socket fail_timeout=0;
+		server unix:/tmp/nginx.socket fail_timeout=0;
  	}
 
 	server {
@@ -39,7 +39,9 @@ http {
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			proxy_set_header Host $http_host;
 			proxy_redirect off;
-			proxy_pass http://app_server;
+			proxy_pass "http://app_server";
 		}
+
+		root "/app/public"; # path to your app
 	}
 }
