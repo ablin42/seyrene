@@ -43,9 +43,9 @@ http {
 		#tcp_nodelay       on;
 
 		location / {
-			#try_files  $uri $uri/ @app_server =404;
-			#gzip on;
-			#gzip_types application/javascript image/* text/css;
+			try_files  $uri $uri/ @app_server =404;
+			gzip on;
+			gzip_types application/javascript image/* text/css;
 
 			
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -60,11 +60,7 @@ http {
 			
 		}
 
-		location /public {
-			try_files  $uri $uri/ @app_server =404;
-			gzip on;
-			gzip_types application/javascript image/* text/css;
-		}
+		
 
 		# location /views
 
