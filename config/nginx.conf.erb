@@ -18,6 +18,8 @@ http {
 	
 	server_tokens off;
 	sendfile on;
+	#sendfile_max_chunk 2m;
+
 
 	#Must read the body in 5 seconds.
 	client_body_timeout 5;
@@ -37,25 +39,25 @@ http {
 		listen <%= ENV["PORT"] %>;
 		server_name maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
-		tcp_nopush on;
-		tcp_nodelay       on;
+		#tcp_nopush on;
+		#tcp_nodelay       on;
 
 		location / {
-			try_files  $uri $uri/ @app_server =404;
-			gzip on;
-			gzip_types application/javascript image/* text/css;
-			sendfile on;
-			sendfile_max_chunk 1m;
+			#try_files  $uri $uri/ @app_server =404;
+			#gzip on;
+			#gzip_types application/javascript image/* text/css;
 
 			
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+			proxy_redirect off;
 			proxy_pass http://app_server;
 			# Following is necessary for Websocket support
 			proxy_http_version 1.1;
 			proxy_set_header Upgrade $http_upgrade;
 			proxy_set_header Connection "upgrade";
 			#proxy_set_header X-Real-IP $remote_addr;
-			#proxy_set_header Host $host;
-			#proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			
 		}
 
 		# location /views
@@ -68,6 +70,6 @@ http {
 		#	expires 7d;
 		#}
 
-		root /app/public;
+		#root /app/public;
 	}
 }
