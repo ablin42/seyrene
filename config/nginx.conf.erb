@@ -31,19 +31,19 @@ http {
 
 	#Must read the body in 5 seconds.
 	
-	#upstream app_server {
-	#	server unix:/tmp/nginx.socket fail_timeout=0;
-	# }
+	upstream app_server {
+		server unix:/tmp/nginx.socket fail_timeout=0;
+	}
 	 
 
 	server {
 		listen <%= ENV["PORT"] %>;
 		server_name maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
-		root /; 
+		root /; ##
 
 
-		location /public {
+		location /public { ##
 			#try_files $uri @app_server;
 			try_files  $uri $uri/ =404;
 			gzip on;
