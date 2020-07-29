@@ -216,7 +216,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		mc.get(pricing_key, async function (err, val) {
 			if (err == null && val != null) {
 				// Found it!
-				result = JSON.parse(val.toString());
+				result = JSON.parse(val);
 			} else {
 				// not in cache (calculate and store)
 				items = pHelpers.genPricingObj(req.body.items);
@@ -236,7 +236,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 
 				result = { error: response.error, response: response.formatted };
 
-				mc.set(pricing_key, JSON.stringify(result), { expires: 0 }, function (err, val) {
+				mc.set(pricing_key, "" + JSON.stringify(result), { expires: 0 }, function (err, val) {
 					/* handle error */
 					console.log(err, val);
 				});
