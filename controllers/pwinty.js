@@ -217,7 +217,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 			if (err == null && val != null) {
 				// Found it!
 				console.log("XXXXX", err, val, val.toString());
-				result = JSON.parse(val.toString());
+				result = val.toString();
 			} else {
 				// not in cache (calculate and store)
 				items = pHelpers.genPricingObj(req.body.items);
