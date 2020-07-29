@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-173937073-1"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+			gtag("config", "UA-173937073-1");
+
+			gtag("anonymizeIp", true); //////////might not work
+		</script>
+
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<meta name="csrf-token" content="<%= locals.csrfToken %>" />
@@ -92,7 +105,7 @@
 		</header>
 
 		<div id="cookies-eu-banner" class="nodisplay">
-			By continuing to visit this site, you accept the use of cookies by <b>Maral.fr</b> so that the website can function normally<br />
+			By continuing to visit this site, you accept the use of cookies and Google Analytics by <b>Maral.fr</b> so that the website can function normally<br />
 			<button id="cookies-eu-reject">Reject</button>
 			<button id="cookies-eu-accept">Accept</button><br />
 			<a href="/legals#RGPD" id="cookies-eu-more"><b>Read more</b></a>

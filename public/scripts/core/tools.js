@@ -21,7 +21,6 @@ function expand(image, e = null, gallery = false) {
 			expand.src = image.src;
 			expand.attr("src", image.src);
 		} else {
-			console.log(e.path[0], e.path[0].classList.contains("blog-overlay"), e.path[0].classList);
 			if (e.path[0].classList.contains("blog-overlay")) $(`#${image} img`).click();
 		}
 	}

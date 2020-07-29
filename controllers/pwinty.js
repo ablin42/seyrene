@@ -161,8 +161,6 @@ router.get("/countries", setUser, authToken, async (req, res) => {
 			json: true
 		};
 		let response = await rp(options).catch(function (err) {
-			console.log(err, "xx");
-
 			throw new Error(err.response.body.statusTxt);
 		});
 		if (response.statusCode !== 200) throw new Error(response.statusTxt);

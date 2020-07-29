@@ -96,6 +96,7 @@ app.use(
 			scriptSrc: [
 				"'self'",
 				"cdnjs.cloudflare.com",
+				"www.googletagmanager.com",
 				"kit.fontawesome.com",
 				"stackpath.bootstrapcdn.com",
 				"cdn.quilljs.com",
@@ -263,4 +264,4 @@ app.get("*", setUser, (req, res) => {
 });
 
 const port = process.env.PORT;
-app.listen("/tmp/nginx.socket", () => fullLog.trace(`Listening on port ${port}...`));
+app.listen(port, () => fullLog.trace(`Listening on port ${port}...`));

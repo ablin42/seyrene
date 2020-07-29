@@ -117,7 +117,6 @@ class PwintyObject {
 
 	checkSize(attributeSelect, subcategory, i) {
 		let dimensions = Object.keys(PWINTY_ITEMS[this.category][subcategory]["size"])[i].split("x");
-		console.log(dimensions);
 
 		if (isNaN(parseInt(dimensions[0]))) {
 			for (let j = 0; j < A_FORMAT.length; j++) {
@@ -133,7 +132,6 @@ class PwintyObject {
 			maxDimension = parseInt(dimensions[1]);
 			sizeRatio = Math.round((dimensions[1] / dimensions[0] + Number.EPSILON) * 100) / 100;
 		}
-		console.log(maxDimension, sizeRatio, this.ratio);
 
 		if (this.category !== "FRA") maxDimension = maxDimension * 2.54; //conversion from inches to cm
 
