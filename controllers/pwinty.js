@@ -211,7 +211,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		if (!req.params.countryCode) throw new Error(ERROR_MESSAGE.countryCode);
 		let countryCode = sanitize(req.params.countryCode);
 
-		let pricing_key = "pricing." + countryCode + "." + req.body.items;
+		let pricing_key = "pricing." + countryCode + "." + JSON.stringify(req.body.items);
 		let result;
 		mc.get(pricing_key, async function (err, val) {
 			if (err == null && val != null) {
@@ -245,7 +245,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 				console.log("went through no cache");
 			}
 
-			console.log(result);
+			console.log(result, result.error, result.response);
 			return res.status(200).json({ error: result.error, response: result.response });
 		});
 	} catch (err) {
