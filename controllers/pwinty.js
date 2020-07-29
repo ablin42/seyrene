@@ -231,18 +231,17 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 					body: { items: items },
 					json: true
 				};
-				let responsex = await rp(options);
-				if (responsex.error === true) throw new Error(responsex.message);
+				let response = await rp(options);
+				if (response.error === true) throw new Error(response.message);
 
-				result = responsex.formatted;
+				result = { error: response.error, response: response.formatted };
 
-				mc.set(pricing_key, "" + responsex.formatted, { expires: 0 }, function (err, val) {
+				mc.set(pricing_key, result, { expires: 0 }, function (err, val) {
 					/* handle error */
 					console.log(err, val);
 				});
 			}
-			// Render view with prime
-			return res.status(200).json({ error: response.error, response: result });
+			return res.status(200).json({ error: result.error, response: result.response });
 		});
 	} catch (err) {
 		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ipAddress);
