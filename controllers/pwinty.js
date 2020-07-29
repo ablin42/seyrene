@@ -209,17 +209,15 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 	try {
 		if (!req.body.items) throw new Error(ERROR_MESSAGE.incorrectInput);
 		if (!req.params.countryCode) throw new Error(ERROR_MESSAGE.countryCode);
-		let countryCode = sanitize(req.params.countryCode);
 
+		let countryCode = sanitize(req.params.countryCode);
 		let pricing_key = "pricing." + countryCode + "." + JSON.stringify(req.body.items);
 		let result;
+
 		mc.get(pricing_key, async function (err, val) {
 			if (err == null && val != null) {
-				// Found it!
-				console.log("XXXXX", err, val, val.toString());
 				result = JSON.parse(val.toString());
 			} else {
-				// not in cache (calculate and store)
 				items = pHelpers.genPricingObj(req.body.items);
 				let options = {
 					method: "GET",
@@ -237,15 +235,11 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 
 				result = { error: response.error, response: response.formatted };
 
-				mc.set(pricing_key, "" + JSON.stringify(result), { expires: 0 }, function (err, val) {
-					/* handle error */
-					console.log(err, val);
+				mc.set(pricing_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
+					if (err) throw new Error(ERROR_MESSAGE.serverError);
 				});
-
-				console.log("went through no cache");
 			}
 
-			console.log(result, result.error, result.response);
 			return res.status(200).json({ error: result.error, response: result.response });
 		});
 	} catch (err) {
