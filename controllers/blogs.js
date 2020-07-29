@@ -30,7 +30,6 @@ router.get("/", async (req, res) => {
 
 		mc.get(blog_key, async function (err, val) {
 			if (err == null && val != null) {
-				console.log("cached", val, val.toString());
 				result = JSON.parse(val.toString());
 			} else {
 				result = await bHelpers.getBlogs(options);

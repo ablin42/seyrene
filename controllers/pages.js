@@ -33,6 +33,13 @@ const formatter = new Intl.NumberFormat("de-DE", {
 	currency: "EUR"
 });
 
+const memjs = require("memjs");
+let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
+	failover: true, // default: false
+	timeout: 1, // default: 0.5 (seconds)
+	keepAlive: true // default: false
+});
+
 /* MAIN ROUTES */
 router.get("/", setUser, async (req, res) => {
 	try {
@@ -386,7 +393,25 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 	}
 });
 
-router.get("/Catalog", setUser, async (req, res) => {
+const cacheView = function (req, res, next) {
+	var view_key = "_view_cache_" + req.originalUrl || req.url;
+	mc.get(view_key, function (err, val) {
+		if (err == null && val != null) {
+			res.send(val.toString("utf8"));
+			return;
+		}
+		res.sendRes = res.send;
+		res.send = function (body) {
+			mc.set(view_key, body, { expires: 43200 }, function (err, val) {
+				if (err) throw new Error(ERROR_MESSAGE.serverError);
+			});
+			res.sendRes(body);
+		};
+		next();
+	});
+};
+
+router.get("/Catalog", setUser, cacheView, async (req, res) => {
 	try {
 		let obj = { active: "Catalog", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;

@@ -34,7 +34,6 @@ router.get("/", async (req, res) => {
 
 		mc.get(gallery_key, async function (err, val) {
 			if (err == null && val != null) {
-				console.log("cached", val, val.toString());
 				galleries = JSON.parse(val.toString());
 			} else {
 				let [err, result] = await utils.to(Gallery.paginate({}, options));

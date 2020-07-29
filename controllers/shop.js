@@ -34,7 +34,6 @@ router.get("/", async (req, res) => {
 
 		mc.get(shop_key, async function (err, val) {
 			if (err == null && val != null) {
-				console.log("cached", val, val.toString());
 				shop = JSON.parse(val.toString());
 			} else {
 				let [err, result] = await utils.to(Shop.paginate({ soldOut: false }, options));

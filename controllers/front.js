@@ -11,6 +11,13 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const upload = require("./helpers/multerHelpers");
 const { fullLog, threatLog } = require("./helpers/log4");
 
+const memjs = require("memjs");
+let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
+	failover: true, // default: false
+	timeout: 1, // default: 0.5 (seconds)
+	keepAlive: true // default: false
+});
+
 router.get("/", authToken, async (req, res) => {
 	try {
 		let [err, result] = await utils.to(Front.find());
