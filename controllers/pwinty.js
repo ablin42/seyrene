@@ -240,7 +240,11 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 					/* handle error */
 					console.log(err, val);
 				});
+
+				console.log("went through no cache");
 			}
+
+			console.log(result);
 			return res.status(200).json({ error: result.error, response: result.response });
 		});
 	} catch (err) {
