@@ -43,8 +43,7 @@ router.get("/", setUser, async (req, res) => {
 			method: "GET",
 			uri: `${process.env.BASEURL}/api/front/`,
 			headers: {
-				"X-ACCESS-TOKEN": process.env.ACCESS_TOKEN,
-				"X-pfart": "issoufle"
+				ACCESS_TOKEN: process.env.ACCESS_TOKEN
 			},
 			json: true
 		};
