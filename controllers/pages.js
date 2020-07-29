@@ -397,11 +397,13 @@ const cacheView = function (req, res, next) {
 	var view_key = "_view_cache_" + req.originalUrl || req.url;
 	mc.get(view_key, function (err, val) {
 		if (err == null && val != null) {
+			console.log("working XXXXXXXXX");
 			res.send(val.toString("utf8"));
 			return;
 		}
 		res.sendRes = res.send;
 		res.send = function (body) {
+			console.log("BIDE AAAAA");
 			mc.set(view_key, body, { expires: 43200 }, function (err, val) {
 				if (err) throw new Error(ERROR_MESSAGE.serverError);
 			});
