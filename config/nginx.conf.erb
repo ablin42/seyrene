@@ -21,7 +21,7 @@ http {
 	gzip_disable "MSIE [1-6]\.";
 	underscores_in_headers on;
 	
-	server_tokens off;
+	#server_tokens off;
 	sendfile on;
 	sendfile_max_chunk 2m;
 
@@ -60,6 +60,8 @@ http {
 		location / {
 			alias /app/public;
 			try_files  $uri @app_server;
+				
+			proxy_pass http://app_server;###
 		}
 
 		location @app_server {
