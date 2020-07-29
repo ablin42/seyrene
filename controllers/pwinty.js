@@ -12,6 +12,13 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
+const memjs = require("memjs");
+let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
+	failover: true, // default: false
+	timeout: 1, // default: 0.5 (seconds)
+	keepAlive: true // default: false
+});
+
 router.post("/orders/create", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let options = {
@@ -203,22 +210,40 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		if (!req.body.items) throw new Error(ERROR_MESSAGE.incorrectInput);
 		if (!req.params.countryCode) throw new Error(ERROR_MESSAGE.countryCode);
 		let countryCode = sanitize(req.params.countryCode);
-		items = pHelpers.genPricingObj(req.body.items);
-		let options = {
-			method: "GET",
-			uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
-			headers: {
-				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
-				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
-				"ACCESS_TOKEN": process.env.ACCESS_TOKEN
-			},
-			body: { items: items },
-			json: true
-		};
-		let response = await rp(options);
 
-		if (response.error === true) throw new Error(response.message);
-		return res.status(200).json({ error: response.error, response: response.formatted });
+		let pricing_key = "pricing." + countryCode + "." + req.body.items;
+		let result;
+		mc.get(pricing_key, async function (err, val) {
+			if (err == null && val != null) {
+				// Found it!
+				result = val;
+			} else {
+				// not in cache (calculate and store)
+				items = pHelpers.genPricingObj(req.body.items);
+				let options = {
+					method: "GET",
+					uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
+					headers: {
+						"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+						"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
+						"ACCESS_TOKEN": process.env.ACCESS_TOKEN
+					},
+					body: { items: items },
+					json: true
+				};
+				let response = await rp(options);
+				if (response.error === true) throw new Error(response.message);
+
+				result = response.formatted;
+
+				mc.set(pricing_key, "" + response.formatted, { expires: 0 }, function (err, val) {
+					/* handle error */
+					console.log(err, val);
+				});
+			}
+			// Render view with prime
+			return res.status(200).json({ error: response.error, response: result });
+		});
 	} catch (err) {
 		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });

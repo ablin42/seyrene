@@ -34,8 +34,6 @@ const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
 const { fullLog, threatLog } = require("./controllers/helpers/log4");
 const { body } = require("express-validator");
 
-//fs.closeSync(fs.openSync("/tmp/app-initialized", "w"));
-
 //Connect to DB
 mongoose.connect(
 	process.env.DB_CONNECTION,
@@ -148,14 +146,14 @@ app.use(
 app.use(flash());
 
 // Body-Parser
-app.use(bodyParser.urlencoded({ extended: true, limit: 100000000 }));
+app.use(bodyParser.urlencoded({ extended: true, limit: 25000000 }));
 app.use(
 	bodyParser.json({
 		verify: function (req, res, buf) {
 			let url = req.originalUrl;
 			if (url.startsWith("/api/order/confirm")) req.rawBody = buf.toString();
 		},
-		limit: 100000000
+		limit: 25000000
 	})
 );
 // BP Error handler

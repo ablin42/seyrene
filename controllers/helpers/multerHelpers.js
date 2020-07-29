@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 const upload = multer({
 	storage: storage,
 	limits: {
-		fileSize: 100000000
+		fileSize: 25000000
 	},
 	fileFilter: function (req, file, cb) {
 		utils.sanitizeFile(file, cb);

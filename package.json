@@ -5,7 +5,7 @@
 	"main": "app.js",
 	"scripts": {
 		"prestart": "touch /tmp/app-initialized",
-		"start": "node app",
+		"start": "node --optimize_for_size --max_old_space_size=460 --gc_interval=100 app",
 		"devStart": "nodemon app",
 		"pretest": "eslint controllers/*.js controllers/helpers/*.js controllers/validators/*.js models/*.js public/scripts/*.js public/scripts/blog/*.js public/scripts/gallery/*.js public/scripts/shop/*.js -f table --fix",
 		"test": "snyk test",
@@ -41,6 +41,7 @@
 		"express-validator": "=6.6.0",
 		"helmet": "=3.23.3",
 		"log4js": "=6.3.0",
+		"memjs": "^1.2.2",
 		"money-exchange": "=1.0.0",
 		"mongo-sanitize": "=1.1.0",
 		"mongoose": "=5.9.20",

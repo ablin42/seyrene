@@ -44,6 +44,8 @@ http {
 
 
 	upstream app_server {
+		least_conn; # Give new connection to backend with least active connections (Load balancing)
+		# multiple servers adresses (as many as clusters)
 		server unix:/tmp/nginx.socket fail_timeout=0;
 	}
 
