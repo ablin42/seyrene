@@ -20,6 +20,7 @@ const ROLE = {
 
 async function setUser(req, res, next) {
 	const userId = req.session._id;
+	console.log(req.session._id, "SETUSER MIDDLEWARE");
 
 	if (userId) {
 		let [err, user] = await utils.to(User.findById(userId));
@@ -31,8 +32,8 @@ async function setUser(req, res, next) {
 		req.user = user;
 	}
 
-	let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
-	req.user = user; //
+	//let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
+	//req.user = user; //
 
 	next();
 }
@@ -175,7 +176,6 @@ function checkBilling(req, res, next) {
 
 function authToken(req, res, next) {
 	const token = req.headers["access_token"];
-	console.log("AGLOUGLOU", token, "XXX", process.env.ACCESS_TOKEN, "XXX", token !== process.env.ACCESS_TOKEN);
 	if (!token || token !== process.env.ACCESS_TOKEN)
 		return res.status(200).json({ error: true, message: ERROR_MESSAGE.unauthorized });
 

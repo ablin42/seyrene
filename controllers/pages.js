@@ -38,6 +38,7 @@ router.get("/", setUser, async (req, res) => {
 	try {
 		let obj = { active: "Home", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
+		console.log("AAAAAAAAAAAAAAAAAAAAAAAAA", req.user, "AAAAAAAAAAAAAAAA");
 
 		let options = {
 			method: "GET",
