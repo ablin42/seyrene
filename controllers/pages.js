@@ -43,11 +43,10 @@ router.get("/", setUser, async (req, res) => {
 			method: "GET",
 			uri: `${process.env.BASEURL}/api/front/`,
 			headers: {
-				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+				"X-ACCESS-TOKEN": process.env.ACCESS_TOKEN
 			},
 			json: true
 		};
-		console.log(options);
 		let front = await rp(options);
 
 		if (front.error === false) obj.front = front.data;
