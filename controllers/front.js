@@ -11,9 +11,8 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const upload = require("./helpers/multerHelpers");
 const { fullLog, threatLog } = require("./helpers/log4");
 
-router.get("/", async (req, res) => {
+router.get("/", authToken, async (req, res) => {
 	try {
-		console.log("agligli", req.headers["x-access-token"], "ISSSSSSSSSSSSSOUUUUUUUUUUUUUUUUUUUUUUU");
 		let [err, result] = await utils.to(Front.find());
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
