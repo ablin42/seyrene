@@ -15,6 +15,13 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
+const memjs = require("memjs");
+let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
+	failover: true, // default: false
+	timeout: 1, // default: 0.5 (seconds)
+	keepAlive: true // default: false
+});
+
 router.get("/", async (req, res) => {
 	try {
 		const options = {
@@ -22,12 +29,25 @@ router.get("/", async (req, res) => {
 			limit: 12,
 			sort: { date: -1 }
 		};
-		let [err, result] = await utils.to(Gallery.paginate({}, options));
-		if (err) throw new Error(ERROR_MESSAGE.fetchError);
+		let galleries;
+		let gallery_key = "gallery." + JSON.stringify(options);
 
-		let galleries = result.docs;
-		if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
-		galleries = await gHelpers.fetchMainImg(galleries);
+		mc.get(gallery_key, async function (err, val) {
+			if (err == null && val != null) {
+				galleries = JSON.parse(val.toString());
+			} else {
+				let [err, result] = await utils.to(Gallery.paginate({}, options));
+				if (err) throw new Error(ERROR_MESSAGE.fetchError);
+
+				galleries = result.docs;
+				if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
+				galleries = await gHelpers.fetchMainImg(galleries);
+
+				mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
+					if (err) throw new Error(ERROR_MESSAGE.serverError);
+				});
+			}
+		});
 
 		return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {

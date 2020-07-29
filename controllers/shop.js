@@ -15,6 +15,13 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
+const memjs = require("memjs");
+let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
+	failover: true, // default: false
+	timeout: 1, // default: 0.5 (seconds)
+	keepAlive: true // default: false
+});
+
 router.get("/", async (req, res) => {
 	try {
 		const options = {
@@ -22,11 +29,24 @@ router.get("/", async (req, res) => {
 			limit: 3,
 			sort: { date: -1 }
 		};
-		let [err, result] = await utils.to(Shop.paginate({ soldOut: false }, options));
-		if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
+		let shop;
+		let shop_key = "shop." + JSON.stringify(options);
 
-		let shopItems = result.docs;
-		let shop = await sHelpers.parse(shopItems);
+		mc.get(shop_key, async function (err, val) {
+			if (err == null && val != null) {
+				shop = JSON.parse(val.toString());
+			} else {
+				let [err, result] = await utils.to(Shop.paginate({ soldOut: false }, options));
+				if (err || !result) throw new Error(ERROR_MESSAGE.fetchError);
+
+				let shopItems = result.docs;
+				shop = await sHelpers.parse(shopItems);
+
+				mc.set(shop_key, "" + JSON.stringify(shop), { expires: 86400 }, function (err, val) {
+					if (err) throw new Error(ERROR_MESSAGE.serverError);
+				});
+			}
+		});
 
 		return res.status(200).json({ error: false, shop: shop });
 	} catch (err) {

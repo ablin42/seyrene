@@ -245,9 +245,7 @@ router.get("/countryCode", setUser, async (req, res) => {
 		let country_key = "country." + ip;
 
 		mc.get(country_key, async function (err, val) {
-			console.log("before", err, val);
 			if (err == null && val != null) {
-				console.log(val, "XXXXXXXXXXXXXXDDDDDDDDDDDDDDDDD", val.toString());
 				countryCode = val.toString();
 			} else {
 				if (req.user) {
@@ -267,7 +265,6 @@ router.get("/countryCode", setUser, async (req, res) => {
 				mc.set(country_key, "" + countryCode, { expires: 86400 }, function (err, val) {
 					if (err) throw new Error(ERROR_MESSAGE.serverError);
 				});
-				console.log("had no cache");
 			}
 			return res.status(200).json({ error: false, countryCode: countryCode });
 		});
