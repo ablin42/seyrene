@@ -246,8 +246,8 @@ router.get("/countryCode", setUser, async (req, res) => {
 
 		mc.get(country_key, async function (err, val) {
 			if (err == null && val != null) {
-				console.log(val, "XXXXXXXXXXXXXXDDDDDDDDDDDDDDDDD");
-				countryCode = val;
+				console.log(val, "XXXXXXXXXXXXXXDDDDDDDDDDDDDDDDD", val.toString());
+				countryCode = val.toString();
 			} else {
 				if (req.user) {
 					[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
