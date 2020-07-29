@@ -246,7 +246,7 @@ router.get("/countryCode", setUser, async (req, res) => {
 
 		mc.get(country_key, async function (err, val) {
 			if (err == null && val != null) {
-				console.log(val);
+				console.log(val, "XXXXXXXXXXXXXXDDDDDDDDDDDDDDDDD");
 				countryCode = val;
 			} else {
 				if (req.user) {
