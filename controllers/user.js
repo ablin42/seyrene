@@ -229,6 +229,7 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 });
 
 router.get("/countryCode", setUser, async (req, res) => {
+	//memcache here
 	try {
 		const ip = req.ipAddress;
 		const IPINFO_TOKEN = process.env.IPINFO_TOKEN;
