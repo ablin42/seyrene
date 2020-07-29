@@ -174,7 +174,7 @@ function checkBilling(req, res, next) {
 }
 
 function authToken(req, res, next) {
-	const token = req.headers.ACCESS - TOKEN;
+	const token = req.headers.ACCESSTOKEN;
 	console.log(req.headers, "XXX", process.env.ACCESS_TOKEN, "XXX", token !== process.env.ACCESS_TOKEN);
 	if (!token || token !== process.env.ACCESS_TOKEN)
 		return res.status(200).json({ error: true, message: ERROR_MESSAGE.unauthorized });
