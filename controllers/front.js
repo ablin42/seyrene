@@ -13,7 +13,7 @@ const { fullLog, threatLog } = require("./helpers/log4");
 
 router.get("/", async (req, res) => {
 	try {
-		console.log(req.headers);
+		console.log(req.headers, "ISSSSSSSSSSSSSOUUUUUUUUUUUUUUUUUUUUUUU");
 		let [err, result] = await utils.to(Front.find());
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
