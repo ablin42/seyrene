@@ -20,7 +20,6 @@ const ROLE = {
 
 async function setUser(req, res, next) {
 	const userId = req.session._id;
-	console.log(req.session._id, "SETUSER MIDDLEWARE");
 
 	if (userId) {
 		let [err, user] = await utils.to(User.findById(userId));

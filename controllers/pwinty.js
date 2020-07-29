@@ -231,12 +231,12 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 					body: { items: items },
 					json: true
 				};
-				let response = await rp(options);
-				if (response.error === true) throw new Error(response.message);
+				let responsex = await rp(options);
+				if (responsex.error === true) throw new Error(responsex.message);
 
-				result = response.formatted;
+				result = responsex.formatted;
 
-				mc.set(pricing_key, "" + response.formatted, { expires: 0 }, function (err, val) {
+				mc.set(pricing_key, "" + responsex.formatted, { expires: 0 }, function (err, val) {
 					/* handle error */
 					console.log(err, val);
 				});
