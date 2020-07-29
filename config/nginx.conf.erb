@@ -82,7 +82,6 @@ http {
 			proxy_set_header X-Forwarded-Proto $scheme;#
 
 			proxy_pass http://app_server;
-			proxy_pass_request_headers on;
 		}
 
 		#location ~* \.(jpg|jpeg|png|gif|ico)$ { #caching
