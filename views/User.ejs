@@ -5,15 +5,15 @@
 		<div class="menu col-xl-3 col-2">
 			<ul>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link"> <i class="fas fa-cog mr-2"></i> <span>Parameters</span> <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'parameters')" class="menu-link"> <i class="fas fa-cog mr-2"></i><span>Parameters</span> <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
 					<a href="#" onclick="openTab(event, this, 'delivery')" class="menu-link active disabled">
-						<i class="fas fa-truck mr-2"></i> <span>Delivery Informations</span> <i class="fas fa-chevron-right chev"></i
+						<i class="fas fa-truck mr-2"></i> <span>Delivery Informations</span><i class="fas fa-chevron-right chev"></i
 					></a>
 				</li>
 				<li>
-					<a href="#" onclick="openTab(event, this, 'purchases')" class="menu-link"> <i class="fa fa-clock-o mr-2"></i> <span>History</span> <i class="fas fa-chevron-right chev"></i></a>
+					<a href="#" onclick="openTab(event, this, 'purchases')" class="menu-link"> <i class="fa fa-clock-o mr-2"></i><span>History</span> <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
 					<a href="/shopping-cart"><i class="fas fa-shopping-cart mr-2"></i> <span>Cart</span></a>
@@ -69,7 +69,7 @@
 					</form>
 
 					<label class="control-label mt-5">DELETE YOUR ACCOUNT</label>
-					<input type="submit" class="logbtn cancelbtn w-100" value="DELETE PERMANENTLY" onclick="confirmDeletion('<%= locals.user._id %>')" />
+					<input type="submit" data-id="<%= locals.user._id %>" class="logbtn cancelbtn w-100" value="DELETE PERMANENTLY"  />
 				</div>
 			</div>
 		</div>
@@ -213,7 +213,7 @@
 </div>
 
 <script src="/scripts/user.js"></script>
-<script src="/scripts/menu-arrow.js"></script>
+<script src="/scripts/core/menu-arrow.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDviJbyc_hUTWZLprzV0HApjcdBIQHKTpM&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="/scripts/core/auto-complete.js"></script>
 <script src="/scripts/core/frontValidation.js"></script>

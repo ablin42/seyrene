@@ -21,7 +21,7 @@ log4js.configure({
 		console: { type: "console" }
 	},
 	categories: {
-		complete: { appenders: ["completeLogs", "console"], level: "trace" },
+		complete: { appenders: ["completeLogs"], level: "trace" },
 		threat: { appenders: ["threatLogs", "completeLogs", "console"], level: "warn" },
 		default: { appenders: ["console"], level: "trace" }
 	}

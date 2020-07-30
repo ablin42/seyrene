@@ -9,9 +9,9 @@
 	<div class="container-single container-catalog col-md-12 mt-3">
 		<div class="catalog-wrapper col-md-10 offset-md-1">
 			<div class="text-center mb-4 pt-4">
-				<button class="tab-btn active" onclick="openTab(this, 'framed')">Framed Painting</button>
-				<button class="tab-btn" onclick="openTab(this, 'fap')">Fine Art Print</button>
-				<button class="tab-btn" onclick="openTab(this, 'canvas')">Canvas</button>
+				<button id="framed-btn" class="main-btn tab-btn active">Framed Painting</button>
+				<button id="fap-btn" class="main-btn tab-btn">Fine Art Print</button>
+				<button id="canvas-btn" class="main-btn tab-btn">Canvas</button>
 			</div>
 		</div>
 
@@ -29,12 +29,12 @@
 				<div class="col-md-6 mt-2 cat-btn-wrap">
 					<h4 class="text-center">Frames Categories</h4>
 					<div class="text-center m-0">
-						<button class="framed cat-btn tab-btn active" onclick="openSubCategory(this, 'box', 'framed')">Box</button>
-						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'classic', 'framed')">Classic</button>
-						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'gloss', 'framed')">Gloss</button>
-						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'spacer', 'framed')">Spacer</button>
-						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'sur', 'framed')">Surface</button>
-						<button class="framed cat-btn tab-btn" onclick="openSubCategory(this, 'swoop', 'framed')">Swoop</button>
+						<button id="box-btn" data-category="framed" class="framed cat-btn tab-btn active">Box</button>
+						<button id="classic-btn" data-category="framed" class="framed cat-btn tab-btn">Classic</button>
+						<button id="gloss-btn" data-category="framed" class="framed cat-btn tab-btn">Gloss</button>
+						<button id="spacer-btn" data-category="framed" class="framed cat-btn tab-btn">Spacer</button>
+						<button id="sur-btn" data-category="framed" class="framed cat-btn tab-btn">Surface</button>
+						<button id="swoop-btn" data-category="framed" class="framed cat-btn tab-btn">Swoop</button>
 					</div>
 				</div>
 
@@ -766,8 +766,8 @@
 				</p>
 				<div class="col-sm-6 mt-0 cat-btn-wrap text-center">
 					<h4 class="text-center">Canvas Categories</h4>
-					<button class="canvas cat-btn tab-btn active" onclick="openSubCategory(this, 'framed-canvas', 'canvas')">Framed</button>
-					<button class="canvas cat-btn tab-btn" onclick="openSubCategory(this, 'stretched', 'canvas')">Stretched</button>
+					<button id="framed-canvas-btn" data-category="canvas" class="canvas cat-btn tab-btn active">Framed</button>
+					<button id="stretched-btn" data-category="canvas" class="canvas cat-btn tab-btn">Stretched</button>
 				</div>
 
 				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2" id="framed-canvas">

@@ -1,17 +1,16 @@
 <% include ../partials/head %>
 
-<script src="/scripts/order/order.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper">
 		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="text-center single-title">Gérer une commande</h1>
 			<div class="col-12 text-center">
 				<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
-				<input type="submit" onclick="cancelOrder('<%= locals.order._id %>')" class="cancelbtn admincancelbtn" value="ANNULER LA COMMANDE" />
+				<input type="submit" data-id="<%= locals.order._id %>" class="cancelbtn admincancelbtn" value="ANNULER LA COMMANDE" />
 				<% } %> <% if (locals.order.status === "awaitingApproval" ) { %>
-				<input type="submit" onclick="approveOrder('<%= locals.order._id %>')" class="approvebtn" value="APPROUVER LA COMMANDE" />
+				<input type="submit" data-id="<%= locals.order._id %>" class="approvebtn" value="APPROUVER LA COMMANDE" />
 				<% } %> <% if (locals.order.status === "Submitted" ) { %>
-				<input type="submit" onclick="completeOrder('<%= locals.order._id %>')" class="completebtn" value="COMPLETER LA COMMANDE" />
+				<input type="submit" data-id="<%= locals.order._id %>" class="completebtn" id="ttest" value="COMPLETER LA COMMANDE" />
 				<% } %>
 			</div>
 
@@ -131,4 +130,5 @@
 	</div>
 </div>
 
+<script src="/scripts/order/order.js" defer></script>
 <% include ../partials/footer %>

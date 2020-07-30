@@ -1,4 +1,9 @@
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
+$(".cancelbtn").on("click", function () {
+	confirmDeletion($(".cancelbtn").data("id"));
+});
+
 function closeDialog() {
 	if ($("#alert-dialog").length !== 0) {
 		$("#alert-dialog").parent().css("opacity", 0);
@@ -42,9 +47,18 @@ function confirmDeletion(userId) {
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
 							<h3><b>DELETE</b> your ACCOUNT</h3><span>This action cannot be reversed</span> \
-							<button class="tab-btn" onclick="deleteAcc('${userId}')">Delete</button><button class="tab-btn" onclick="abortAction()">Abort</button> \
+							<button class="tab-btn del-acc">Delete</button><button class="tab-btn abort-btn">Abort</button> \
 						</div>`);
-		$("#alert-dialog").wrap("<div onclick=\"closeDialog()\" class=\"dialog-wrapper\"></div>");
+		$("#alert-dialog").wrap('<div class="dialog-wrapper"></div>');
+		$(".dialog-wrapper").on("click", function () {
+			closeDialog();
+		});
+		$(".abort-btn").on("click", function () {
+			abortAction();
+		});
+		$(".del-acc").on("click", function () {
+			deleteAcc(userId);
+		});
 
 		setTimeout(() => {
 			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");

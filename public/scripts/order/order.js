@@ -1,5 +1,15 @@
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
+$(".completebtn").on("click", function () {
+	completeOrder($(".completebtn").data("id"));
+});
+$(".cancelbtn").on("click", function () {
+	cancelOrder($(".cancelbtn").data("id"));
+});
+$(".approvebtn").on("click", function () {
+	approveOrder($(".cancelbtn").data("id"));
+});
+
 function closeDialog() {
 	if ($("#alert-dialog").length !== 0) {
 		$("#alert-dialog").parent().css("opacity", 0);
@@ -86,9 +96,18 @@ async function cancelOrder(orderId) {
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
                         <h3><b>ANNULER</b> la commande</h3><span>Cette action est irréversible</span> \
-                        <button class="tab-btn" onclick="confirmDelete('${orderId}')">Confirmer</button><button class="tab-btn" onclick="abortAction()">Annuler</button> \
+                        <button class="tab-btn confirm-delete">Confirmer</button><button class="tab-btn abort-btn">Annuler</button> \
                       </div>`);
-		$("#alert-dialog").wrap('<div onclick="closeDialog()" class="dialog-wrapper"></div>');
+		$("#alert-dialog").wrap('<div class="dialog-wrapper"></div>');
+		$(".dialog-wrapper").on("click", function () {
+			closeDialog();
+		});
+		$(".abort-btn").on("click", function () {
+			abortAction();
+		});
+		$(".confirm-delete").on("click", function () {
+			confirmDelete(orderId);
+		});
 
 		setTimeout(() => {
 			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");
@@ -102,9 +121,18 @@ async function cancelOrderEN(orderId) {
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
                         <h3><b>CANCEL</b> the order</h3><span>This action cannot be reversed</span> \
-                        <button class="tab-btn" onclick="confirmDelete('${orderId}')">Confirm</button><button class="tab-btn" onclick="abortAction()">Abort</button> \
+                        <button class="tab-btn confirm-delete">Confirm</button><button class="tab-btn abort-btn">Abort</button> \
                       </div>`);
-		$("#alert-dialog").wrap('<div onclick="closeDialog()" class="dialog-wrapper"></div>');
+		$("#alert-dialog").wrap('<div class="dialog-wrapper"></div>');
+		$(".dialog-wrapper").on("click", function () {
+			closeDialog();
+		});
+		$(".abort-btn").on("click", function () {
+			abortAction();
+		});
+		$(".confirm-delete").on("click", function () {
+			confirmDelete(orderId);
+		});
 
 		setTimeout(() => {
 			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");
@@ -118,9 +146,18 @@ async function approveOrder(orderId) {
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
                         <h3><b>APPROUVER</b> la commande</h3><span>Cette action est irréversible</span> \
-                        <button class="tab-btn" onclick="confirmApproval('${orderId}')">Confirmer</button><button class="tab-btn" onclick="abortAction()">Annuler</button> \
+                        <button class="tab-btn confirm-approval" >Confirmer</button><button class="tab-btn abort-btn">Annuler</button> \
                       </div>`);
-		$("#alert-dialog").wrap('<div onclick="closeDialog()" class="dialog-wrapper"></div>');
+		$("#alert-dialog").wrap('<div class="dialog-wrapper"></div>');
+		$(".dialog-wrapper").on("click", function () {
+			closeDialog();
+		});
+		$(".abort-btn").on("click", function () {
+			abortAction();
+		});
+		$(".confirm-approval").on("click", function () {
+			confirmApproval(orderId);
+		});
 
 		setTimeout(() => {
 			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");
@@ -134,9 +171,18 @@ async function completeOrder(orderId) {
 	if ($("#alert-dialog").length === 0) {
 		$("body").append(`<div id="alert-dialog" class="alert-dialog"> \
                         <h3><b>COMPLETER</b> la commande</h3><span>Cette action est irréversible</span> \
-                        <button class="tab-btn" onclick="confirmCompletion('${orderId}')">Confirmer</button><button class="tab-btn" onclick="abortAction()">Annuler</button> \
+                        <button class="tab-btn complete-order">Confirmer</button><button class="tab-btn abort-btn">Annuler</button> \
                       </div>`);
-		$("#alert-dialog").wrap('<div onclick="closeDialog()" class="dialog-wrapper"></div>');
+		$("#alert-dialog").wrap('<div class="dialog-wrapper"></div>');
+		$(".dialog-wrapper").on("click", function () {
+			closeDialog();
+		});
+		$(".abort-btn").on("click", function () {
+			abortAction();
+		});
+		$(".complete-order").on("click", function () {
+			confirmCompletion(orderId);
+		});
 
 		setTimeout(() => {
 			$("#alert-dialog").parent().css("background-color", "rgba(17,17,17, 0.2)");

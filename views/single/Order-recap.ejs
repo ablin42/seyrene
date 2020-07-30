@@ -1,11 +1,10 @@
 <% include ../partials/head %>
 
-<script src="/scripts/order/order.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper">
 		<div class="col-md-10 offset-md-1 wrapper">
 			<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Submitted" && locals.order.status !== "Completed" && locals.order.status !== "awaitingStripePayment") { %>
-			<input type="submit" onclick="cancelOrderEN('<%= locals.order._id %>')" class="cancelbtn" value="CANCEL ORDER" />
+			<input type="submit" data-id="<%= locals.order._id %>" class="cancelbtn" value="CANCEL ORDER" />
 			<% } %> <% if (locals.order && locals.order.items) { %>
 			<h1 class="single-title text-center">Your Order</h1>
 
@@ -132,4 +131,5 @@
 	</div>
 </div>
 
+<script src="/scripts/order/order.js" defer></script>
 <% include ../partials/footer %>
