@@ -52,25 +52,14 @@ module.exports = {
 		return blogsParsed;
 	},
 	formatBlogData: async function (blogs) {
-		let arr = [];
-		for (let i = 0; i < blogs.length; i++) {
-			let images = blogs[parseInt(i)].content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/);
-			let obj = {
-				_id: blogs[parseInt(i)]._id,
-				title: blogs[parseInt(i)].title,
-				content: blogs[parseInt(i)].content,
-				shorttitle: blogs[parseInt(i)].title.substr(0, 128),
-				shortcontent: blogs[parseInt(i)].content.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "").substr(0, 512),
-				thumbnail: images,
-				date: blogs[parseInt(i)].date,
-				createdAt: blogs[parseInt(i)].createdAt,
-				updatedAt: blogs[parseInt(i)].updatedAt,
-				author: blogs[parseInt(i)].author,
-				__v: blogs[parseInt(i)].__v
-			};
-			if (images && images.length > 1) obj.thumbnail = images[0];
-			arr.push(obj);
-		}
-		return arr;
+		blogs.map(blog => {
+			blog.shorttitle = blog.title.substr(0, 128);
+			blog.shortcontent = blog.content.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "").substr(0, 512);
+			blog.thumbnail = blog.content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/);
+			if (blog.thumbnail && blog.thumbnail > 1) blog.thumbnail = blog.thumbnail[0];
+			return blog;
+		});
+
+		return blogs;
 	}
 };

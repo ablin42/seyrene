@@ -38,6 +38,7 @@ module.exports = {
 			obj.mainImgId = img._id;
 			arr.push(obj);
 		}
+
 		return arr;
 	}
 };

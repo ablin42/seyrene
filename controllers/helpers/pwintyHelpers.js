@@ -1,6 +1,5 @@
 const Money = require("money-exchange");
 const rp = require("request-promise");
-const country = require("country-list-js");
 require("dotenv").config();
 const fx = new Money();
 fx.init();
@@ -8,7 +7,6 @@ const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",
 	currency: "EUR"
 });
-const utils = require("./utils");
 const { ERROR_MESSAGE } = require("./errorMessages");
 const { attributesList } = require("./pwintyData");
 
