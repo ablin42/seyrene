@@ -2,8 +2,8 @@
 
 <div class="container container-single">
 	<div class="text-center mb-4">
-		<button class="tab-btn active" onclick="openTab(this, 'approval')">En attente d'approbation</button>
-		<button class="tab-btn" onclick="openTab(this, 'all')">Toutes les commandes</button>
+		<button class="tab-btn active" id="approval-btn">En attente d'approbation</button>
+		<button class="tab-btn" id="all-btn">Toutes les commandes</button>
 	</div>
 	<div class="single-wrapper">
 		<div id="approval" class="tab col-md-10 offset-md-1">
@@ -63,9 +63,10 @@
 		</div>
 		<div class="col-6 offset-3 mb-3 mt-3">
 			<img id="loader" src="/img/loader.gif" />
-			<input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteOrders('approval');" />
+			<input id="infinitebtn" type="submit" class="logbtn" value="Load more" data-target="approval" />
 		</div>
 	</div>
 </div>
 
+<script src="/scripts/order/infiniteOrders.js" defer></script>
 <% include ../partials/footer %>

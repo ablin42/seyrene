@@ -1,54 +1,54 @@
 <% include partials/head %>
 
-<script src="/scripts/shop/infiniteShops.js"></script>
 <script src="/scripts/cart.js"></script>
-    <div class="container container-single">
-        <div id="container-shop" class="single-wrapper col-md-12">
-            <h1 class="single-title text-center mt-2 p-2 cwhite">Original Painting</h1>
-            <div class="alert alert-info alert-static w-100 mb-3" role="alert">
-								We also sell great quality reproductions in all sizes and shapes, for more information check the <a href="/Catalog">Catalog</a>
-								</div>
-            <div id="original" class="tab container-shop">
-              <% if (locals.original){ %>
-                <% Object.keys(locals.original).forEach(function (index) { %>
-                  <div class="card" id="<%= locals.original[index]._id %>">
-                    <a class="card-img-expand" href="/Shop/<%= locals.original[index]._id %>"><img src="/api/image/<%= locals.original[index].mainImgId %>" class="card-img-top" alt="<%= locals.original[index].title %>"></a class="card-img-expand">
-                    <div class="card-body">
-                      <h5 class="card-title"><i><a href="/Shop/<%= locals.original[index]._id %>"><%= locals.original[index].shorttitle %>...</a></i></h5>
-                      <p class="card-text gallery-description mb-5"><%= locals.original[index].shortcontent %>...</p>
-                      <div class="row shop-price-row mt-4">
-                        <div class="shop-price-col col-6">
-                          <b class="card-price"><%= locals.original[index].price %>€</b>
-                            <b class="isUnique">Unique Painting</b>
-                        </div>
-                     
-                        <div class="col-6">
-                          <input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.original[index]._id %>', this)">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <% }) %>
-              <% } else { %>
-                <h1 class="alertEmpty">No more original paintings left, check the catalog to buy reproductions!</h1>
-              <% } %>
-          </div>
-           <div class="col-md-6 offset-md-3 mt-5">
-            <img id="loader" src="/img/loader.gif">
-            <input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteShopItems();">
-          </div>
-          </div>
-         
-      </div>
-      
-    </div>
+<div class="container container-single">
+	<div id="container-shop" class="single-wrapper col-md-12">
+		<h1 class="single-title text-center mt-2 p-2 cwhite">Original Painting</h1>
+		<div class="alert alert-info alert-static w-100 mb-3" role="alert">
+			We also sell great quality reproductions in all sizes and shapes, for more information check the <a href="/Catalog">Catalog</a>
+		</div>
+		<div id="original" class="tab container-shop">
+			<% if (locals.original){ %> <% Object.keys(locals.original).forEach(function (index) { %>
+			<div class="card" id="<%= locals.original[index]._id %>">
+				<a class="card-img-expand" href="/Shop/<%= locals.original[index]._id %>"
+					><img src="/api/image/<%= locals.original[index].mainImgId %>" class="card-img-top" alt="<%= locals.original[index].title %>"
+				/></a>
+				<div class="card-body">
+					<h5 class="card-title">
+						<i><a href="/Shop/<%= locals.original[index]._id %>"><%= locals.original[index].shorttitle %>...</a></i>
+					</h5>
+					<p class="card-text gallery-description mb-5"><%= locals.original[index].shortcontent %>...</p>
+					<div class="row shop-price-row mt-4">
+						<div class="shop-price-col col-6">
+							<b class="card-price"><%= locals.original[index].price %>€</b>
+							<b class="isUnique">Unique Painting</b>
+						</div>
+
+						<div class="col-6">
+							<input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.original[index]._id %>', this)" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<% }) %> <% } else { %>
+			<div class="text-center bwhite">
+				<h1 class="alertEmpty">No more original paintings left, check the catalog to buy reproductions!</h1>
+			</div>
+
+			<% } %>
+		</div>
+		<div class="col-md-6 offset-md-3 mt-5">
+			<img id="loader" src="/img/loader.gif" />
+			<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
+		</div>
+	</div>
+</div>
 
 <a class="lightbox-close" href="#close">
-  <div class="lightbox-target" id="expand">
-    <% if(locals.original[0]) { %>
-      <img id="expandImg" src="/api/image/<%= locals.original[0].mainImgId %>"/>
-    <% } %>
-  </div>
+	<div class="lightbox-target" id="expand">
+		<img id="expandImg" src="" />
+	</div>
 </a>
 
+<script src="/scripts/shop/infiniteShops.js" defer></script>
 <% include partials/footer %>

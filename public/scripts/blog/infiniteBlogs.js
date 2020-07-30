@@ -1,14 +1,20 @@
+let loadbtn = document.querySelector("#infinitebtn");
+let addClickEvent = function () {
+	infiniteBlogs();
+};
+loadbtn.addEventListener("click", addClickEvent);
+
 async function infiniteBlogs() {
 	let nbItem = $(".blog-row").length,
 		page = 1 + Math.floor(nbItem / 6),
 		loader = document.querySelector("#loader");
-	loader.classList.add("block");
+	if (loader) loader.classList.add("block");
 
 	let data = await fetch(`/api/blog?page=${page}`);
 	data = await data.json();
 
 	if (data.error === false) {
-		if (data.blogs.length > 0) {
+		if (data.blogs && data.blogs.length > 0) {
 			data.blogs.forEach(blog => {
 				let id = blog._id;
 				if ($(`#${id}`).length === 0) {
@@ -45,19 +51,21 @@ async function infiniteBlogs() {
 				} else {
 					$("#infinitebtn").val("Nothing more to load");
 					$("#infinitebtn").attr("disabled");
-					$("#infinitebtn").attr("onclick", "");
+					loadbtn.removeEventListener("click", addClickEvent);
+					if (loader) loader.remove();
 				}
 			});
 		} else {
 			$("#infinitebtn").val("Nothing more to load");
 			$("#infinitebtn").attr("disabled");
-			$("#infinitebtn").attr("onclick", "");
+			loadbtn.removeEventListener("click", addClickEvent);
+			if (loader) loader.remove();
 		}
 	} else {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
 	}
-	loader.classList.remove("block");
+	if (loader) loader.classList.remove("block");
 }
 
 $(window).scroll(function () {

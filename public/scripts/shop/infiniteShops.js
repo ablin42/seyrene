@@ -1,14 +1,20 @@
+let loadbtn = document.querySelector("#infinitebtn");
+let addClickEvent = function () {
+	infiniteShopItems();
+};
+loadbtn.addEventListener("click", addClickEvent);
+
 async function infiniteShopItems(tb) {
 	let nbItem = $("#original > .card").length,
 		page = 1 + Math.floor(nbItem / 3),
 		loader = document.querySelector("#loader");
-	loader.classList.add("block");
+	if (loader) loader.classList.add("block");
 
 	let data = await fetch(`/api/shop?page=${page}`);
 	data = await data.json();
 
 	if (data.error === false) {
-		if (data.shop.length > 0) {
+		if (data.shop && data.shop.length > 0) {
 			data.shop.forEach(shop => {
 				let id = shop._id;
 				if ($(`#${id}`).length === 0) {
@@ -37,16 +43,18 @@ async function infiniteShopItems(tb) {
 				} else {
 					$("#infinitebtn").val("Nothing more to load");
 					$("#infinitebtn").attr("disabled");
-					$("#infinitebtn").attr("onclick", "");
+					loadbtn.removeEventListener("click", addClickEvent);
+					if (loader) loader.remove();
 				}
 			});
 		} else {
 			$("#infinitebtn").val("Nothing more to load");
 			$("#infinitebtn").attr("disabled");
-			$("#infinitebtn").attr("onclick", "");
+			loadbtn.removeEventListener("click", addClickEvent);
+			if (loader) loader.remove();
 		}
 	}
-	loader.classList.remove("block");
+	if (loader) loader.classList.remove("block");
 }
 
 $(window).scroll(function () {

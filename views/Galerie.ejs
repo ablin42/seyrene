@@ -1,6 +1,5 @@
 <% include partials/head %>
 
-<script src="/scripts/gallery/infiniteGalleries.js"></script>
 <script src="/scripts/cart.js"></script>
 <div class="container gallery-mode">
 	<div class="container-gallery" id="container-gallery">
@@ -8,10 +7,10 @@
 		<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
 			<div class="face face1 blog-overlay-wrapper mt-0">
 				<a href="#expand">
-					<img onclick="expand(this);" src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100" alt="<%= locals.galleries[index].title %>" />
+					<img src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100 expandable" alt="<%= locals.galleries[index].title %>" />
 				</a>
 
-				<div class="blog-overlay" onclick="expand('<%= locals.galleries[index]._id %>', event, true)">
+				<div class="blog-overlay expandable" data-id="<%= locals.galleries[index]._id %>" data-isGallery="true">
 					<h4>
 						<i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i>
 					</h4>
@@ -24,18 +23,23 @@
 				</div>
 			</div>
 		</div>
-		<% }) %> <% } %>
+		<% }) %> <% } else { %>
+		<div class="text-center bwhite">
+			<h1>Blog page is under maintenance, please come back later</h1>
+		</div>
+		<% } %>
 	</div>
 	<div class="col-6 offset-3 mb-3 mt-3">
 		<img id="loader" src="/img/loader.gif" />
-		<input id="infinitebtn" type="submit" class="logbtn" value="Load more" onclick="infiniteGalleries();" />
+		<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
 	</div>
 </div>
 
 <a class="lightbox-close" href="#close">
 	<div class="lightbox-target" id="expand">
-		<img id="expandImg" src="/api/image/<%= locals.galleries[0].mainImgId %>" />
+		<img id="expandImg" src="" />
 	</div>
 </a>
 
+<script src="/scripts/gallery/infiniteGalleries.js" defer></script>
 <% include partials/footer %>
