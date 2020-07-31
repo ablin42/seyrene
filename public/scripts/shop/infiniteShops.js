@@ -32,7 +32,7 @@ async function infiniteShopItems(tb) {
 												<b class="card-price">${shop.price}€</b>
 											</div>
 											<div class="col-6">
-												<input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('${id}', this)">
+												<input type="submit" data-addcart="${id}" class="logbtn" value="Add to cart" />
 											</div>
 										</div>
 									</div>`;
@@ -40,6 +40,7 @@ async function infiniteShopItems(tb) {
 					div.innerHTML = toAppend;
 					id++;
 					$("#original").append(div);
+					createListener();
 				} else {
 					$("#infinitebtn").val("Nothing more to load");
 					$("#infinitebtn").attr("disabled");
@@ -65,3 +66,14 @@ $(window).scroll(function () {
 		infiniteShopItems();
 	}
 });
+
+function createListener() {
+	setTimeout(function () {
+		let addUnique = $("input[data-addcart]");
+		addUnique.each(function (i, btn) {
+			$(this).on("click", function (e) {
+				cartAdd(btn.dataset.addcart, btn);
+			});
+		});
+	}, 200);
+}

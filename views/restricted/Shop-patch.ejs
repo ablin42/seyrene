@@ -4,7 +4,7 @@
 	<div class="single-wrapper">
 		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="single-title text-center">Modifier un item de la boutique</h1>
-			<form id="shop" method="POST" action="/api/shop/patch/<%= locals.shop._id %>" enctype="multipart/form-data" onsubmit="patchShop(event, '<%= locals.shop._id %>');">
+			<form id="shop" method="POST" action="/api/shop/patch/<%= locals.shop._id %>" enctype="multipart/form-data" data-patchshop="true" data-id="<%= locals.shop._id %>">
 				<hr />
 				<div class="form-group">
 					<label class="control-label">Titre</label>
@@ -28,13 +28,13 @@
 				<div class="form-group">
 					<div class="form-group text-center">
 						<label for="img" id="imglabel" class="filebtn">Choisir des images</label>
-						<input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" multiple />
+						<input class="inputfile" type="file" name="img" id="img" multiple />
 					</div>
 					<% if (locals.img) { %> <% locals.img.forEach(function (item) { %>
 					<img class="w-100 m-1" id="<%= item._id %>" src="/api/image/<%= item._id %>" />
 					<div id="actDiv<%= item._id %>" class="action-div <% if (item.isMain === true) { %> nodisplay<% } %>">
-						<a id="del<%= item._id %>" onclick="deleteImage(event, this);" href="/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
-						<a id="sel<%= item._id %>" onclick="setMain(event, this);" href="/api/image/select/Shop/<%= locals.shop._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
+						<a id="del<%= item._id %>" data-del="true" href="/api/image/delete/<%= item._id %>"><i class="fas fa-trash-alt"></i></a>
+						<a id="sel<%= item._id %>" data-sel="true" href="/api/image/select/Shop/<%= locals.shop._id %>/<%= item._id %>"><i class="fas fa-star"></i></a>
 					</div>
 					<% }) %> <% } %>
 				</div>
@@ -49,6 +49,7 @@
 		</div>
 	</div>
 </div>
-<script src="/scripts/shop/shopScripts.js"></script>
+
+<script src="/scripts/shop/shopScripts.js" defer></script>
 <script src="/scripts/core/frontValidation.js"></script>
 <% include ../partials/footer %>

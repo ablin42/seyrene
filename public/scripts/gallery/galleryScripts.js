@@ -1,4 +1,29 @@
-if (typeof csrfToken === "undefined") var csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+if (typeof csrfToken === "undefined") var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let inputFile = document.querySelectorAll(".inputfile");
+let delbtn = document.querySelectorAll("a[data-del]");
+let selbtn = document.querySelectorAll("a[data-sel]");
+
+document.querySelector("form[data-patchgal]").addEventListener("submit", function (e) {
+	patchGallery(e, document.querySelector("form[data-patchgal]").dataset.id);
+});
+
+inputFile.forEach(input => {
+	input.addEventListener("change", function () {
+		readURL(input);
+	});
+});
+
+delbtn.forEach(btn => {
+	btn.addEventListener("click", function (e) {
+		deleteImage(e, btn);
+	});
+});
+
+selbtn.forEach(btn => {
+	btn.addEventListener("click", function (e) {
+		setMain(e, btn);
+	});
+});
 
 async function postGallery(e) {
 	e.preventDefault();
@@ -82,9 +107,9 @@ async function setMain(e, item) {
 	if (data.err === true) type = "warning";
 	else {
 		let divs = $(".action-div");
-		for (let i = 0; i < divs.length; i++) divs[parseInt(i)].setAttribute("style", "display: block");
+		for (let i = 0; i < divs.length; i++) divs[parseInt(i)].classList.remove("nodisplay");
 
-		$(`#actDiv${item.id.substr(3)}`).attr("style", "display: none");
+		document.querySelector(`#actDiv${item.id.substr(3)}`).classList.add("nodisplay");
 	}
 	let alertErr = `
 				<div id="alert" class="alert alert-${type}" role="alert">

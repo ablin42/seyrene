@@ -1,4 +1,29 @@
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let inputFile = document.querySelectorAll(".inputfile");
+let delbtn = document.querySelectorAll("a[data-del]");
+let selbtn = document.querySelectorAll("a[data-sel]");
+
+document.querySelector("form[data-patchshop]").addEventListener("submit", function (e) {
+	patchShop(e, document.querySelector("form[data-patchshop]").dataset.id);
+});
+
+inputFile.forEach(input => {
+	input.addEventListener("change", function () {
+		readURL(input);
+	});
+});
+
+delbtn.forEach(btn => {
+	btn.addEventListener("click", function (e) {
+		deleteImage(e, btn);
+	});
+});
+
+selbtn.forEach(btn => {
+	btn.addEventListener("click", function (e) {
+		setMain(e, btn);
+	});
+});
 
 async function postShop(e) {
 	e.preventDefault();

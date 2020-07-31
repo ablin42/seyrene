@@ -3,8 +3,14 @@ const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",
 	currency: "EUR"
 });
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let addUnique = document.querySelectorAll("input[data-addcart]");
 
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+addUnique.forEach(btn => {
+	btn.addEventListener("click", function (e) {
+		cartAdd(btn.dataset.addcart, btn);
+	});
+});
 
 function cooldownBtn(caller, time) {
 	caller.disabled = true;
@@ -16,6 +22,7 @@ function cooldownBtn(caller, time) {
 }
 
 function handleEmptiness() {
+	//////////////////needs to be updated + js instead jquery
 	$(".payment-div").attr("style", "display: none");
 	$("#alertEmpty").attr("style", "display: inline-block");
 	$("#cart-row-header").attr("style", "display: none");

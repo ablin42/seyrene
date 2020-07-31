@@ -35,9 +35,9 @@ const formatter = new Intl.NumberFormat("de-DE", {
 
 const memjs = require("memjs");
 let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
-	failover: true, // default: false
-	timeout: 1, // default: 0.5 (seconds)
-	keepAlive: true // default: false
+	failover: true,
+	timeout: 1,
+	keepAlive: true
 });
 
 const cacheView = function (req, res, next) {

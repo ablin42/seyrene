@@ -1,4 +1,25 @@
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let delbtn = document.querySelectorAll(".delbtn");
+let inputFile = document.querySelectorAll(".inputfile");
+let forms = document.querySelectorAll(".front-form");
+
+delbtn.forEach(btn => {
+	btn.addEventListener("click", function (e) {
+		deleteImage(btn, e);
+	});
+});
+
+inputFile.forEach(input => {
+	input.addEventListener("change", function () {
+		readURL(input);
+	});
+});
+
+forms.forEach(form => {
+	form.addEventListener("submit", function (e) {
+		postFront(e, form);
+	});
+});
 
 window.onload = function () {
 	for (let i = 0; i < 5; i++) {
@@ -72,8 +93,8 @@ async function postFront(e, form) {
 	e.preventDefault();
 
 	let formData = new FormData();
-	formData.append("img", form.querySelector("input[type=\"file\"]").files[0]);
-	formData.append("referenceId", form.querySelector("input[name=\"referenceId\"]").value);
+	formData.append("img", form.querySelector('input[type="file"]').files[0]);
+	formData.append("referenceId", form.querySelector('input[name="referenceId"]').value);
 
 	let data = await fetch("/api/front/post", {
 		method: "POST",

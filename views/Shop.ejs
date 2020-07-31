@@ -1,6 +1,5 @@
 <% include partials/head %>
 
-<script src="/scripts/cart.js"></script>
 <div class="container container-single">
 	<div id="container-shop" class="single-wrapper col-md-12">
 		<h1 class="single-title text-center mt-2 p-2 cwhite">Original Painting</h1>
@@ -25,7 +24,7 @@
 						</div>
 
 						<div class="col-6">
-							<input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.original[index]._id %>', this)" />
+							<input type="submit" data-addcart="<%= locals.original[index]._id %>" class="logbtn" value="Add to cart" />
 						</div>
 					</div>
 				</div>
@@ -51,4 +50,5 @@
 </a>
 
 <script src="/scripts/shop/infiniteShops.js" defer></script>
+<script src="/scripts/cart.js" defer></script>
 <% include partials/footer %>

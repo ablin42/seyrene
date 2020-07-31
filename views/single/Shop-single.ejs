@@ -1,6 +1,5 @@
 <% include ../partials/head %>
 
-<script src="/scripts/cart.js"></script>
 <div class="container container-single">
 	<div class="single-wrapper mt-3">
 		<% if (locals.shop){ %>
@@ -51,7 +50,7 @@
 			<div class="col-md-4 offset-md-4 text-center mt-2">
 				<b class="card-price"><%= locals.shop.price %>€</b>
 				<b class="isUnique">Unique Painting</b>
-				<input type="submit" class="logbtn" value="Add to cart" onclick="cartAdd('<%= locals.shop._id %>', this)" /><!--disabled -->
+				<input type="submit" data-addcart="<%= locals.shop._id %>" class="logbtn" value="Add to cart" />
 			</div>
 			<% } %>
 		</div>
@@ -64,6 +63,7 @@
 	</div>
 </a>
 
+<script src="/scripts/cart.js" defer></script>
 <script src="/scripts/core/carousel-cycle.js"></script>
 <script src="/scripts/core/frontValidation.js"></script>
 <% include ../partials/footer %>
