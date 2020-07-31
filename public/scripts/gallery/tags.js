@@ -1,3 +1,10 @@
+let posttags = document.querySelector("form[data-posttags]");
+
+if (posttags)
+	posttags.addEventListener("submit", function (e) {
+		filterByTags(e);
+	});
+
 let tagInput = $("#tagInput");
 let tags = $("#tagscontent").val();
 tags = tags.split(",");

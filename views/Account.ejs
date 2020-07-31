@@ -22,7 +22,7 @@
 		<div id="login" class="tab col-xl-9 col-md-10 row">
 			<div class="container p-0 m-0 h-100" id="container">
 				<div class="form-slider-container sign-up-container">
-					<form class="form-slider" id="register" onsubmit="submitRegister(event)" method="POST" action="/api/auth/register">
+					<form class="form-slider" id="register" data-subreg="true" method="POST" action="/api/auth/register">
 						<h1>Sign up</h1>
 
 						<input placeholder="Jean75" type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required />
@@ -57,7 +57,7 @@
 				</div>
 
 				<div class="form-slider-container sign-in-container">
-					<form class="form-slider" id="login-form" method="POST" onsubmit="submitLogin(event)" action="/api/auth/login">
+					<form class="form-slider" id="login-form" method="POST" data-sublogin="true" action="/api/auth/login">
 						<h1 class="mb-3">Log in</h1>
 						<input placeholder="Email" type="email" id="login-email" name="email" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
 						<input placeholder="Password" type="password" id="login-pw" name="password" required />
@@ -93,7 +93,7 @@
 						<div class="alert alert-info alert-static" role="alert">
 							We'll send you a mail with instructions to reset your password
 						</div>
-						<form class="col-md-8 offset-md-2 mt-5" id="lostpw" onsubmit="submitLostpw(event)" method="POST" action="/api/user/lostpw">
+						<form class="col-md-8 offset-md-2 mt-5" id="lostpw" data-lostpw="true" method="POST" action="/api/user/lostpw">
 							<input placeholder="Email" type="email" id="email-reset" name="email" value="" onkeyup="Validate.Email(this);" required />
 							<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
 

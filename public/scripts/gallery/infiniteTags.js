@@ -2,7 +2,7 @@ let loadbtn = document.querySelector("#infinitebtn");
 let addClickEvent = function () {
 	infiniteTags();
 };
-loadbtn.addEventListener("click", addClickEvent);
+if (loadbtn) loadbtn.addEventListener("click", addClickEvent);
 
 async function infiniteTags() {
 	let nbItem = $(".expandable-card").length,

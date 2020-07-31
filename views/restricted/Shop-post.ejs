@@ -4,7 +4,7 @@
 	<div class="single-wrapper">
 		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="single-title text-center">Ajouter un item à la boutique</h1>
-			<form id="shop" method="POST" action="/api/shop/post" enctype="multipart/form-data" onsubmit="postShop(event);">
+			<form id="shop" method="POST" action="/api/shop/post" data-postshop="true" enctype="multipart/form-data">
 				<hr />
 				<div class="form-group">
 					<label class="control-label">Titre</label>
@@ -25,7 +25,7 @@
 
 				<div class="form-group text-center">
 					<label for="img" id="imglabel" class="filebtn">Choisir des images</label>
-					<input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" multiple required />
+					<input class="inputfile" type="file" name="img" id="img" multiple required />
 				</div>
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
@@ -35,6 +35,6 @@
 	</div>
 </div>
 
-<script src="/scripts/shop/shopScripts.js"></script>
+<script src="/scripts/shop/shopScripts.js defer"></script>
 <script src="/scripts/core/frontValidation.js"></script>
 <% include ../partials/footer %>

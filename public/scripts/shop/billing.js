@@ -1,4 +1,16 @@
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let geo = document.querySelector("[data-geolocate]");
+let form = document.querySelector("#deliveryform");
+
+if (form)
+	form.addEventListener("submit", function (e) {
+		return saveBilling(e);
+	});
+
+if (geo)
+	geo.addEventListener("focus", function () {
+		geolocate();
+	});
 
 async function saveBilling(e) {
 	e.preventDefault();

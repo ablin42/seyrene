@@ -5,6 +5,42 @@ const formatter = new Intl.NumberFormat("de-DE", {
 });
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 let addUnique = document.querySelectorAll("input[data-addcart]");
+let pwintyAdd = document.querySelectorAll("[data-padd]");
+let pwintyDel = document.querySelectorAll("[data-pdel]");
+let pwintyUpd = document.querySelectorAll("[data-pupd]");
+let inputData = document.querySelectorAll("[data-sku]");
+let delUnique = document.querySelectorAll("[data-delcart]");
+
+delUnique.forEach(item => {
+	item.addEventListener("click", function () {
+		cartDel(item.dataset.delcart, item);
+	});
+});
+
+inputData.forEach(item => {
+	PWINTY_DATA[item.dataset.index] = {
+		SKU: item.dataset.sku,
+		attributes: JSON.parse(item.dataset.attributes.replace(/&#34;/gi, '"'))
+	};
+});
+
+pwintyUpd.forEach(item => {
+	item.addEventListener("change", function (e) {
+		pwintyUpdateValue(e, item, item.dataset.id, item.dataset.reference);
+	});
+});
+
+pwintyDel.forEach(item => {
+	item.addEventListener("click", function () {
+		pwintyCartDel(item.dataset.id, item.dataset.reference, item);
+	});
+});
+
+pwintyAdd.forEach(item => {
+	item.addEventListener("click", function () {
+		pwintyCartAdd(item.dataset.id, item.dataset.reference, item);
+	});
+});
 
 addUnique.forEach(btn => {
 	btn.addEventListener("click", function (e) {
@@ -22,10 +58,9 @@ function cooldownBtn(caller, time) {
 }
 
 function handleEmptiness() {
-	//////////////////needs to be updated + js instead jquery
-	$(".payment-div").attr("style", "display: none");
-	$("#alertEmpty").attr("style", "display: inline-block");
-	$("#cart-row-header").attr("style", "display: none");
+	document.querySelector(".payment-div").classList.add("nodisplay");
+	document.querySelector("#alertEmpty").classList.remove("nodisplay");
+	document.querySelector("#cart-row-header").classList.add("nodisplay");
 }
 
 async function cartAdd(itemId, caller) {
@@ -91,6 +126,7 @@ async function cartDel(itemId, caller) {
 async function pwintyCartAdd(itemId, referenceId, caller) {
 	cooldownBtn(caller, 1500);
 	let alertType = "success";
+	console.log(referenceId);
 
 	if (PWINTY_DATA <= 0) throw new Error(ERROR_MESSAGE.itemNotFound);
 	let SKU = PWINTY_DATA[parseInt(referenceId)].SKU;

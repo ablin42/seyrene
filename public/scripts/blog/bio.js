@@ -1,7 +1,21 @@
+let inputFile = document.querySelectorAll(".inputfile");
+let form = document.querySelector("#bio");
+
+if (form)
+	form.addEventListener("submit", function (e) {
+		postBio(e);
+	});
+
+inputFile.forEach(input => {
+	input.addEventListener("change", function () {
+		readURL(input);
+	});
+});
+
 async function postBio(e) {
 	e.preventDefault();
 
-	const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+	const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 	let formData = new FormData();
 	let img = document.querySelector("#img");
 	formData.append("img", img.files[0]);

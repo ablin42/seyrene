@@ -36,15 +36,27 @@ class PwintyObject {
 		let selection = "";
 		Object.keys(PWINTY_ITEMS[this.category]).forEach(subcategory => {
 			let subcategoryRadio = `<label for="${subcategory}">
-                                    <div class="sku-item unselectable cat-list" onclick="toggleActive(this, 'active-subcat');">
+                                    <div class="sku-item unselectable cat-list" data-classname="active-subcat">
                                         <p>${PWINTY_ITEMS[this.category][subcategory].fullname}</p>
 										<input class="pwinty-input" data-category="${this.category}" 
 										name="pwinty-subcategory" id="${subcategory}" value="${subcategory}"
-										type="radio" onclick="Pwinty.loadSubCategory(this)">
+										type="radio" data-subload="true">
                                     </div>
                                 </label>`;
 			if (subcategory !== "sharedAttributes") selection += subcategoryRadio;
 			document.getElementById("subcategories").innerHTML = selection;
+
+			document.querySelectorAll("[data-classname]").forEach(function (item) {
+				item.addEventListener("click", function () {
+					toggleActive(item, item.dataset.classname);
+				});
+			});
+
+			document.querySelectorAll("[data-subload]").forEach(function (item) {
+				item.addEventListener("click", function () {
+					Pwinty.loadSubCategory(item);
+				});
+			});
 		});
 	}
 

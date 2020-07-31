@@ -1,12 +1,10 @@
 <% include partials/head %>
 
-<script src="/scripts/shop/billing.js"></script>
-
 <div class="container container-single">
 	<div class="single-wrapper">
 		<div class="col-md-10 offset-md-1 wrapper h-100">
 			<h1 class="single-title text-center">Billing Address</h1>
-			<form id="deliveryform" method="POST" action="" onsubmit="return saveBilling(event);">
+			<form id="deliveryform" method="POST" action="">
 				<div class="row">
 					<div class="col-md-6">
 						<label class="control-label">Last Name</label>
@@ -23,7 +21,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<label class="control-label">Address</label>
-						<input id="autocomplete" name="fulltext_address" placeholder="Enter your address" onFocus="geolocate()" value="<%= locals.billing.full_address %>" required />
+						<input id="autocomplete" name="fulltext_address" data-geolocate="true" placeholder="Enter your address" value="<%= locals.billing.full_address %>" required />
 					</div>
 				</div>
 
@@ -72,7 +70,8 @@
 	</div>
 </div>
 
+<script src="/scripts/shop/billing.js" defer></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDviJbyc_hUTWZLprzV0HApjcdBIQHKTpM&libraries=places&callback=initAutocomplete" async defer></script>
-<script src="scripts/auto-complete.js"></script>
+<script src="/scripts/core/auto-complete.js"></script>
 <script src="/scripts/core/frontValidation.js"></script>
 <% include partials/footer %>

@@ -2,10 +2,18 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute
 let inputFile = document.querySelectorAll(".inputfile");
 let delbtn = document.querySelectorAll("a[data-del]");
 let selbtn = document.querySelectorAll("a[data-sel]");
+let patchshop = document.querySelector("form[data-patchshop]");
+let postShop = document.querySelector("form[data-postshop]");
 
-document.querySelector("form[data-patchshop]").addEventListener("submit", function (e) {
-	patchShop(e, document.querySelector("form[data-patchshop]").dataset.id);
-});
+if (postShop)
+	postShop.addEventListener("submit", function (e) {
+		postShop(e);
+	});
+
+if (patchshop)
+	patchshop.addEventListener("submit", function (e) {
+		patchShop(e, document.querySelector("form[data-patchshop]").dataset.id);
+	});
 
 inputFile.forEach(input => {
 	input.addEventListener("change", function () {

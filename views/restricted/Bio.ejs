@@ -4,12 +4,12 @@
 	<div class="single-wrapper">
 		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="single-title text-center">Changer l'image de la biographie</h1>
-			<form id="shop" method="POST" action="/api/front/bio" enctype="multipart/form-data" onsubmit="postBio(event);">
+			<form id="bio" method="POST" action="/api/front/bio" enctype="multipart/form-data">
 				<hr />
 				<img class="col-md-6 offset-md-3 mt-3 mb-3" src="/img/upload/biopic.png" />
 				<div class="form-group text-center">
 					<label for="img" id="imglabel" class="filebtn">Choisir une image</label>
-					<input class="inputfile" type="file" name="img" id="img" onchange="readURL(this)" required />
+					<input class="inputfile" type="file" name="img" id="img" required />
 				</div>
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
@@ -19,6 +19,6 @@
 	</div>
 </div>
 
-<script src="scripts/blog/bio.js"></script>
+<script src="/scripts/blog/bio.js" defer></script>
 <script src="/scripts/core/frontValidation.js"></script>
 <% include ../partials/footer %>

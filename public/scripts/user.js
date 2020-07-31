@@ -1,4 +1,10 @@
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let geo = document.querySelector("[data-geolocate]");
+
+if (geo)
+	geo.addEventListener("focus", function () {
+		geolocate();
+	});
 
 $(".cancelbtn").on("click", function () {
 	confirmDeletion($(".cancelbtn").data("id"));

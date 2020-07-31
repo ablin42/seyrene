@@ -15,7 +15,7 @@
 					<a href="#" id="contact-btn" class="menu-link"> <i class="fas fa-envelope mr-2"></i> <span>Contact</span> <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 				<li>
-					<a href="/Legals" class="menu-link"><i class="fa fa-gavel mr-2"></i> <span>Legals</span> <i class="fas fa-chevron-right chev"></i></a>
+					<a href="/Legals"><i class="fa fa-gavel mr-2"></i> <span>Legals</span> <i class="fas fa-chevron-right chev"></i></a>
 				</li>
 			</ul>
 
@@ -31,7 +31,7 @@
 				</li>
 			</ul>
 
-			<a href="#header" class="menu-link fixed-arrow mt-5 text-center">
+			<a href="#header" class="fixed-arrow mt-5 text-center">
 				<i class="fas fa-arrow-up fa-2x"></i>
 			</a>
 		</div>
@@ -40,7 +40,7 @@
 			<div class="col-md-10 offset-md-1 wrapper">
 				<h1 class="single-title text-center">Contact</h1>
 				<hr class="hr-pwinty mt-3" />
-				<form class="col-md-10 offset-md-1 mt-4" id="contact" method="POST" onsubmit="submitContact(event)" action="/api/contact/">
+				<form class="col-md-10 offset-md-1 mt-4" id="contact" method="POST" action="/api/contact/">
 					<div class="row">
 						<div class="col-md-6">
 							<label class="control-label">Name</label>
@@ -199,9 +199,10 @@
 		</div>
 	</div>
 </div>
+</div>
 
 <script src="/scripts/blog/infiniteBlogs.js" defer></script>
 <script src="/scripts/core/menu-arrow.js"></script>
 <script src="/scripts/core/frontValidation.js"></script>
-<script src="/scripts/submit-contact.js"></script>
+<script src="/scripts/submit-contact.js" defer></script>
 <% include partials/footer %>

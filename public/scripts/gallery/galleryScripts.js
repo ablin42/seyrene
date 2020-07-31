@@ -1,11 +1,39 @@
-if (typeof csrfToken === "undefined") var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+if (typeof csrfToken !== "string") csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 let inputFile = document.querySelectorAll(".inputfile");
 let delbtn = document.querySelectorAll("a[data-del]");
 let selbtn = document.querySelectorAll("a[data-sel]");
+let patchgal = document.querySelector("form[data-patchgal]");
+let togglable = document.querySelectorAll("[data-classname]");
+let pwintyCat = document.querySelectorAll(".pwinty-input");
+let addbtn = document.querySelector("[data-addpwinty]");
+let postGal = document.querySelector("form[data-postgal]");
 
-document.querySelector("form[data-patchgal]").addEventListener("submit", function (e) {
-	patchGallery(e, document.querySelector("form[data-patchgal]").dataset.id);
+if (postGal)
+	postGal.addEventListener("submit", function (e) {
+		postGallery(e);
+	});
+
+if (addbtn)
+	addbtn.addEventListener("click", function () {
+		Pwinty.cartAdd(addbtn.dataset.addpwinty, addbtn);
+	});
+
+togglable.forEach(item => {
+	item.addEventListener("click", function () {
+		toggleActive(item, item.dataset.classname);
+	});
 });
+
+pwintyCat.forEach(item => {
+	item.addEventListener("click", function () {
+		loadCategory(item);
+	});
+});
+
+if (patchgal)
+	patchgal.addEventListener("submit", function (e) {
+		patchGallery(e, document.querySelector("form[data-patchgal]").dataset.id);
+	});
 
 inputFile.forEach(input => {
 	input.addEventListener("change", function () {

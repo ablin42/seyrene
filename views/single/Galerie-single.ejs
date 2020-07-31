@@ -69,23 +69,23 @@
         </div>
         <div class="form-group pwinty-wrapper" id="categories">
             <label for="framed">
-              <div class="sku-item unselectable cat-list" onclick="toggleActive(this, 'active-cat');">
+              <div class="sku-item unselectable cat-list" data-classname="active-cat">
                 <p>Framed Print</p>
-                <input class="pwinty-input" name="pwinty-category" id="framed" value="FRA" type="radio" onclick="loadCategory(this)">
+                <input class="pwinty-input" name="pwinty-category" id="framed" value="FRA" type="radio" >
               </div>
             </label>
     
             <label for="print">
-              <div class="sku-item unselectable cat-list" onclick="toggleActive(this, 'active-cat');">
+              <div class="sku-item unselectable cat-list" data-classname="active-cat">
                 <p>Art Prints</p>
-                <input class="pwinty-input" name="pwinty-category" id="print" value="PRINT" type="radio" onclick="loadCategory(this)">
+                <input class="pwinty-input" name="pwinty-category" id="print" value="PRINT" type="radio" >
               </div>
             </label>
 
             <label for="canvas">
-              <div class="sku-item unselectable cat-list" onclick="toggleActive(this, 'active-cat');">
+              <div class="sku-item unselectable cat-list" data-classname="active-cat">
                 <p>Canvas</p>
-                <input class="pwinty-input" name="pwinty-category" id="canvas" value="CAN" type="radio" onclick="loadCategory(this)">
+                <input class="pwinty-input" name="pwinty-category" id="canvas" value="CAN" type="radio" >
               </div>
             </label>
           </div><hr class="hr-pwinty"/>
@@ -97,7 +97,7 @@
         <div class="pbox-wrapper">
           <div id="purchasebox" class="col-md-6 offset-md-3 text-center nodisplay">
             <span id="price" class="card-price "></span>
-            <input type="submit" class="logbtn" value="Add to cart" onclick="Pwinty.cartAdd('<%= locals.gallery._id %>', this)">
+            <input type="submit" data-addpwinty="<%= locals.gallery._id %>" class="logbtn" value="Add to cart" >
           </div>
         </div>
     </div>
@@ -111,7 +111,7 @@
   </div>
 </a>
 
-<script src="/scripts/gallery/galleryScripts.js"></script>
+<script src="/scripts/gallery/galleryScripts.js" defer></script>
 <script src="/scripts/core/carousel-cycle.js"></script>
 <script src="/scripts/core/frontValidation.js"></script>
 <% include ../partials/footer %>

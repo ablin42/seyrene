@@ -1,4 +1,10 @@
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let form = document.querySelector("#contact");
+
+if (form)
+	form.addEventListener("submit", function (e) {
+		submitContact(e);
+	});
 
 async function submitContact(e) {
 	e.preventDefault();

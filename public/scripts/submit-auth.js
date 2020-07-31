@@ -1,7 +1,25 @@
 const signUpButton = document.getElementById("signUp");
 const signInButton = document.getElementById("signIn");
 const container = document.getElementById("container");
-const csrfToken = document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content");
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let lostpw = document.querySelector("[data-lostpw]");
+let log = document.querySelector("[data-sublogin]");
+let reg = document.querySelector("[data-subreg]");
+
+if (lostpw)
+	lostpw.addEventListener("submit", function (e) {
+		submitRegister(e);
+	});
+
+if (log)
+	log.addEventListener("submit", function (e) {
+		submitLogin(e);
+	});
+
+if (reg)
+	reg.addEventListener("submit", function (e) {
+		submitLostpw(e);
+	});
 
 var CaptchaCallback = function () {
 	const captchaDiv = document.querySelectorAll(".recaptcha-wrapper");

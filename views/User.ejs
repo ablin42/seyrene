@@ -20,7 +20,7 @@
 				</li>
 			</ul>
 
-			<a href="#header" class="menu-link fixed-arrow mt-5 text-center">
+			<a href="#header" class="fixed-arrow mt-5 text-center">
 				<i class="fas fa-arrow-up fa-2x"></i>
 			</a>
 		</div>
@@ -112,7 +112,7 @@
 								id="autocomplete"
 								name="fulltext_address"
 								placeholder="Enter your address"
-								onFocus="geolocate()"
+								data-geolocate="true"
 								value="<% if (locals.delivery.full_address) { %><%= locals.delivery.full_address %><% } %>"
 								required
 							/>
@@ -212,7 +212,7 @@
 	</div>
 </div>
 
-<script src="/scripts/user.js"></script>
+<script src="/scripts/user.js" defer></script>
 <script src="/scripts/core/menu-arrow.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDviJbyc_hUTWZLprzV0HApjcdBIQHKTpM&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="/scripts/core/auto-complete.js"></script>
