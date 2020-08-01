@@ -236,10 +236,12 @@ app.use((req, res, next) => {
 	//DELPROD//
 	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) {
 		req.session.authprod = process.env.ACCESS_TOKEN;
+		console.log("okayyy", req.session.authprod);
 		return next();
+	} else {
+		if (req.path === "/plsauth") return next();
+		return res.status(200).redirect("plsauth");
 	}
-	if (req.path === "/plsauth") return next();
-	return res.status(200).redirect("plsauth");
 });
 
 app.get("/plsauth", (req, res) => {
