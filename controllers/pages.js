@@ -285,7 +285,7 @@ router.get("/About", setUser, async (req, res) => {
 	}
 });
 
-router.get("/Account", setUser, notLoggedUser, cacheView, async (req, res) => {
+router.get("/Account", setUser, notLoggedUser, async (req, res) => {
 	try {
 		let obj = { active: "Account", csrfToken: req.csrfToken() };
 		if (req.session.formData) {
