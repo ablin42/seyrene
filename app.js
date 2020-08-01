@@ -138,8 +138,8 @@ app.use(
 		}),
 		name: "overlord",
 		secret: process.env.SESSION_SECRET,
-		resave: true,
-		saveUninitialized: true,
+		resave: false,
+		saveUninitialized: false,
 		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
@@ -224,9 +224,7 @@ app.use("/api/stripe", stripeRoute);
 
 app.post("/plsauth", (req, res) => {
 	//DELPROD//
-	console.log("in post auth");
 	if (req.body.authlog === process.env.AUTHLOG) {
-		console.log("authorized XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		req.session.authprod = process.env.ACCESS_TOKEN;
 		return res.status(200).redirect("/");
 	} else return res.status(200).redirect("plsauth");
@@ -234,21 +232,15 @@ app.post("/plsauth", (req, res) => {
 
 app.use((req, res, next) => {
 	//DELPROD//
-	//req.session.authprod;
 	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) {
-		console.log("in???");
 		req.session.authprod = process.env.ACCESS_TOKEN;
 		return next();
 	}
-	console.log(req.path, "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOF");
 	if (req.path === "/plsauth") return next();
-
 	return res.status(200).redirect("plsauth");
 });
 
 app.get("/plsauth", (req, res) => {
-	console.log(req.session.authprod, "xD");
-	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) return res.status(200).redirect("/");
 	//DELPROD//
 	return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
 });
