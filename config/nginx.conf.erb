@@ -64,7 +64,7 @@ http {
 			proxy_ssl_name www.maral.fr;
 			
 			alias /app/public;
-			try_files  $uri @app_server;
+			try_files $uri @app_server;
 			expires 7d;
 		}
 
