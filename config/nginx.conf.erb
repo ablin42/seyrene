@@ -62,7 +62,7 @@ http {
 			proxy_cache custom_cache;
 			proxy_cache_revalidate on;
 			proxy_ssl_name www.maral.fr;
-			expires 7d;
+			 add_header Cache-Control "public";
 			alias /app/public;
 			try_files  $uri @app_server;
 		}
@@ -91,13 +91,5 @@ http {
 			proxy_pass http://app_server;
 			proxy_pass_request_headers on;
 		}
-
-		#location ~* \.(jpg|jpeg|png|gif|ico)$ { #caching
-       	#	expires 30d;
-		#}
-
-		#location ~* \.(css|js)$ {
-		#	expires 7d;
-		#}
 	}
 }
