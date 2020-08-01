@@ -59,7 +59,7 @@ http {
 		tcp_nodelay       on;
 
 		location / {
-			proxy_ssl_name maral.fr www.maral.fr maral.herokuapp.com www.maral.herokuapp.com;
+			proxy_ssl_name www.maral.fr;
 			alias /app/public;
 			try_files  $uri @app_server;
 		}
@@ -69,7 +69,7 @@ http {
 			proxy_set_header Host $http_host;
 			proxy_redirect off;
 
-			proxy_ssl_name maral.fr www.maral.fr maral.herokuapp.com www.maral.herokuapp.com;
+			proxy_ssl_name www.maral.fr;
 
 			# Following is necessary for Websocket support
 			proxy_http_version 1.1;
