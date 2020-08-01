@@ -41,7 +41,7 @@ let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
 });
 
 const cacheView = function (req, res, next) {
-	/*var view_key = "_view_cache_" + req.originalUrl || req.url;
+	var view_key = "_view_cache_" + req.originalUrl || req.url;
 	mc.get(view_key, function (err, val) {
 		if (err == null && val != null) {
 			res.send(val.toString("utf8"));
@@ -53,9 +53,9 @@ const cacheView = function (req, res, next) {
 				if (err) throw new Error(ERROR_MESSAGE.serverError);
 			});
 			res.sendRes(body);
-		};*/
-	next();
-	//	});
+		};
+		next();
+	});
 };
 
 /* MAIN ROUTES */

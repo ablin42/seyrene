@@ -13,9 +13,9 @@ const { fullLog, threatLog } = require("./helpers/log4");
 
 const memjs = require("memjs");
 let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
-	failover: true, // default: false
-	timeout: 1, // default: 0.5 (seconds)
-	keepAlive: true // default: false
+	failover: true,
+	timeout: 1,
+	keepAlive: true
 });
 
 router.get("/", authToken, async (req, res) => {

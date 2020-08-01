@@ -12,9 +12,9 @@ const { fullLog, threatLog } = require("./helpers/log4");
 
 const memjs = require("memjs");
 let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
-	failover: true, // default: false
-	timeout: 1, // default: 0.5 (seconds)
-	keepAlive: true // default: false
+	failover: true,
+	timeout: 1,
+	keepAlive: true
 });
 
 //blog pagination
@@ -28,18 +28,18 @@ router.get("/", async (req, res) => {
 		let result;
 		let blog_key = "blog." + JSON.stringify(options);
 
-		/*mc.get(blog_key, async function (err, val) {
+		mc.get(blog_key, async function (err, val) {
 			if (err == null && val != null) {
 				result = JSON.parse(val.toString());
-			} else {*/
-		result = await bHelpers.getBlogs(options);
-		result = await bHelpers.formatBlogData(result);
+			} else {
+				result = await bHelpers.getBlogs(options);
+				result = await bHelpers.formatBlogData(result);
 
-		/*			mc.set(blog_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
+				mc.set(blog_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
 					if (err) throw new Error(ERROR_MESSAGE.serverError);
 				});
 			}
-		});*/
+		});
 
 		return res.status(200).json({ error: false, blogs: result });
 	} catch (err) {

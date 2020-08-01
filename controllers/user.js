@@ -24,9 +24,9 @@ require("dotenv").config();
 
 const memjs = require("memjs");
 let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
-	failover: true, // default: false
-	timeout: 1, // default: 0.5 (seconds)
-	keepAlive: true // default: false
+	failover: true,
+	timeout: 1,
+	keepAlive: true
 });
 
 const limiter = rateLimit({
@@ -237,7 +237,7 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 
 router.get("/countryCode", setUser, async (req, res) => {
 	try {
-		//////
+		/* */
 		req.ipAddress = "90.79.211.103";
 
 		const ip = req.ipAddress;
@@ -247,31 +247,31 @@ router.get("/countryCode", setUser, async (req, res) => {
 		let err, result, data;
 		let country_key = "country." + ip;
 
-		/*mc.get(country_key, async function (err, val) {
+		mc.get(country_key, async function (err, val) {
 			if (err == null && val != null) {
 				countryCode = val.toString();
-			} else {*/
-		if (req.user) {
-			[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
-			if (err) throw new Error(ERROR_MESSAGE.serverError);
-		}
+			} else {
+				if (req.user) {
+					[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
+					if (err) throw new Error(ERROR_MESSAGE.serverError);
+				}
 
-		if (result && result.isoCode) countryCode = result.isoCode;
-		else {
-			let response = await ipinfo.lookupIp(ip);
+				if (result && result.isoCode) countryCode = result.isoCode;
+				else {
+					let response = await ipinfo.lookupIp(ip);
 
-			console.log(response);
-			countryCode = countryList.findByName(utils.toTitleCase(response.country));
-			if (countryCode) countryCode = countryCode.code.iso2;
-			else throw new Error(ERROR_MESSAGE.countryCode);
-		}
+					console.log(response);
+					countryCode = countryList.findByName(utils.toTitleCase(response.country));
+					if (countryCode) countryCode = countryCode.code.iso2;
+					else throw new Error(ERROR_MESSAGE.countryCode);
+				}
 
-		/*	mc.set(country_key, "" + countryCode, { expires: 86400 }, function (err, val) {
+				mc.set(country_key, "" + countryCode, { expires: 86400 }, function (err, val) {
 					if (err) throw new Error(ERROR_MESSAGE.serverError);
 				});
-			}*/
-		return res.status(200).json({ error: false, countryCode: countryCode });
-		//});
+			}
+			return res.status(200).json({ error: false, countryCode: countryCode });
+		});
 	} catch (err) {
 		threatLog.error("USER COUNTRY CODE ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ error: true, message: err.message });

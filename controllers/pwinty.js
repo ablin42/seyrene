@@ -14,9 +14,9 @@ require("dotenv").config();
 
 const memjs = require("memjs");
 let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
-	failover: true, // default: false
-	timeout: 1, // default: 0.5 (seconds)
-	keepAlive: true // default: false
+	failover: true,
+	timeout: 1,
+	keepAlive: true
 });
 
 router.post("/orders/create", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
@@ -212,34 +212,34 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		let pricing_key = "pricing." + countryCode + "." + JSON.stringify(req.body.items);
 		let result;
 
-		/*	mc.get(pricing_key, async function (err, val) {
+		mc.get(pricing_key, async function (err, val) {
 			if (err == null && val != null) {
 				result = JSON.parse(val.toString());
-			} else {*/
-		items = pHelpers.genPricingObj(req.body.items);
-		let options = {
-			method: "GET",
-			uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
-			headers: {
-				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
-				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
-				"ACCESS_TOKEN": process.env.ACCESS_TOKEN
-			},
-			body: { items: items },
-			json: true
-		};
-		let response = await rp(options);
-		if (response.error === true) throw new Error(response.message);
+			} else {
+				items = pHelpers.genPricingObj(req.body.items);
+				let options = {
+					method: "GET",
+					uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
+					headers: {
+						"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+						"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
+						"ACCESS_TOKEN": process.env.ACCESS_TOKEN
+					},
+					body: { items: items },
+					json: true
+				};
+				let response = await rp(options);
+				if (response.error === true) throw new Error(response.message);
 
-		result = { error: response.error, response: response.formatted };
+				result = { error: response.error, response: response.formatted };
 
-		/*	mc.set(pricing_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
+				mc.set(pricing_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
 					if (err) throw new Error(ERROR_MESSAGE.serverError);
 				});
-			}*/
+			}
 
-		return res.status(200).json({ error: result.error, response: result.response });
-		//});
+			return res.status(200).json({ error: result.error, response: result.response });
+		});
 	} catch (err) {
 		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });

@@ -11,7 +11,6 @@ const DeliveryInfo = require("../../models/DeliveryInfo");
 const { ERROR_MESSAGE } = require("./errorMessages");
 const { FRA_sizes, CAN_sizes, PRINT_sizes, FRA_SUR_sizes, attributesList } = require("./pwintyData");
 const { fullLog, threatLog } = require("./log4");
-//const { count } = require("../../models/User");
 
 const ROLE = {
 	ADMIN: "admin",
@@ -31,8 +30,8 @@ async function setUser(req, res, next) {
 		req.user = user;
 	}
 
-	//let [err, user] = await utils.to(User.findById(process.env.USERKEY)); //
-	//req.user = user; //
+	//let [err, user] = await utils.to(User.findById(process.env.USERKEY));
+	//req.user = user;
 
 	next();
 }
