@@ -63,7 +63,7 @@ http {
 			#proxy_cache_revalidate on;
 			#proxy_ssl_name www.maral.fr;
 			
-			#alias /public;
+			alias /app/public;
 			try_files $uri @app_server;
 			expires 7d;
 		}
