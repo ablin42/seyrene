@@ -234,6 +234,7 @@ app.use((req, res, next) => {
 	//DELPROD//
 	//req.session.authprod;
 	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) {
+		console.log("in???");
 		req.session.authprod = process.env.ACCESS_TOKEN;
 		return next();
 	}
@@ -243,6 +244,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/plsauth", (req, res) => {
+	console.log(req.session.authprod, "xD");
 	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) return res.status(200).redirect("/");
 	//DELPROD//
 	return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
