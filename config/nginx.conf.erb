@@ -65,6 +65,7 @@ http {
 			
 			alias /app/public;
 			try_files $uri @app_server;
+			expires 7d;
 		}
 
 		location @app_server {
