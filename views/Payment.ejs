@@ -1,11 +1,9 @@
 <% include partials/head %>
 
 <script src="https://js.stripe.com/v3/"></script>
-<script>
-	const stripePublicKey = "<%= locals.stripePublicKey %>";
-	const stripe = Stripe(stripePublicKey);
-	const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-</script>
+
+<input type="hidden" id="stripePublicKey" value="<%= locals.stripePublicKey %>" />
+<input type="hidden" id="billingInfo" value="<%= locals.billing %>" />
 
 <div class="container container-single">
 	<div class="col-12 col-lg-6 offset-lg-3 mt-5">
@@ -39,113 +37,5 @@
 	</div>
 </div>
 
-<script>
-	let orderId;
-	let clientSecret;
-	let card;
-	let data;
-
-	async function initialize() {
-		data = await fetch("/api/stripe/create-intent", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"CSRF-Token": csrfToken
-			},
-			body: []
-		});
-		data = await data.json();
-
-		if (data.error === true) {
-			let alert = createAlertNode(data.message, "warning");
-			addAlert(alert, "#header");
-			document.querySelector(".btn-pay").disabled = true;
-			return;
-		}
-		orderId = data.orderId;
-		clientSecret = data.clientSecret;
-
-		let elements = stripe.elements();
-		let style = {
-			base: {
-				"color": "#32325d",
-				"fontFamily": '"Helvetica Neue", Helvetica, sans-serif',
-				"fontSmoothing": "antialiased",
-				"fontSize": "16px",
-				"::placeholder": {
-					color: "#aab7c4"
-				}
-			},
-			invalid: {
-				color: "#fa755a",
-				iconColor: "#fa755a"
-			}
-		};
-
-		let card = elements.create("card", { style: style });
-		card.mount("#card-element");
-
-		card.on("change", function (event) {
-			document.querySelector("button").disabled = event.empty;
-			document.querySelector("#card-errors").textContent = event.error ? event.error.message : "";
-		});
-
-		let form = document.getElementById("payment-form");
-		form.addEventListener("submit", function (event) {
-			event.preventDefault();
-			payWithCard(stripe, card, data.clientSecret);
-		});
-	}
-
-	initialize();
-
-	let payWithCard = async function (stripe, card, clientSecret) {
-		let result = await stripe.confirmCardPayment(clientSecret, {
-			receipt_email: document.getElementById("email").value,
-			payment_method: {
-				card: card
-			},
-			shipping: {
-				address: {
-					city: "<%= locals.billing.city %>",
-					country: "<%= locals.billing.country %>",
-					line1: "<%= locals.billing.full_address %>",
-					line2: null,
-					postal_code: "<%= locals.billing.zipcode %>",
-					state: "<%= locals.billing.state %>"
-				},
-				name: "<%= locals.billing.lastname %> <%= locals.billing.firstname %>",
-				phone: null
-			}
-		});
-
-		console.log(result);
-		if (result.error) {
-			let alert = createAlertNode(result.error.message, "warning");
-			addAlert(alert, "#header");
-			return;
-		}
-
-		/**/
-		let confirm = await fetch("/api/order/confirm", {
-			//to remove once live using webhooks
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"CSRF-Token": csrfToken
-			},
-			body: JSON.stringify({ type: "payment_intent.succeeded", data: { object: { id: result.paymentIntent.id } } })
-		});
-
-		if (confirm.error === true) {
-			let alert = createAlertNode(confirm.message);
-			addAlert(alert, "#header");
-			return;
-		} else {
-			setTimeout(function () {
-				window.location.href = `/api/cart/clear/${orderId}`;
-			}, 2000);
-		} /**/
-	};
-</script>
+<script src="/scripts/shop/pay.js" defer></script>
 <% include partials/footer %>

@@ -198,14 +198,14 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 	}
 });
 
-router.get("/Payment", setUser, authUser, setDelivery, isDelivery, async (req, res) => {
+router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling, async (req, res) => {
 	try {
 		let obj = {
 			active: "Payment",
 			stripePublicKey: process.env.STRIPE_PUBLIC,
 			totalPrice: 0,
 			user: req.user,
-			billing: [],
+			billing: JSON.stringify(req.session.billing),
 			csrfToken: req.csrfToken()
 		};
 

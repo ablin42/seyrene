@@ -89,8 +89,9 @@ app.use(
 				"cdn.quilljs.com",
 				"kit-free.fontawesome.com",
 				"fonts.googleapis.com",
-				"cdnjs.cloudflare.com"
-				//"https: 'unsafe-inline'"
+				"cdnjs.cloudflare.com",
+				"'sha256-ajZEDDdILRcc4lWO9JfCUcWV8WPtU5+drQz8E5IfQ0w='",
+				"'sha256-zwHi7E6JKCpD7iSjei/XVSaXpNq1WUE8eBFAiJJV/lA='"
 			],
 			fontSrc: ["'self'", "fonts.googleapis.com", "kit-free.fontawesome.com", "fonts.gstatic.com"],
 			scriptSrc: [
@@ -103,13 +104,13 @@ app.use(
 				"https://www.google.com/recaptcha/",
 				"www.gstatic.com",
 				"maps.googleapis.com",
-				"maps.gstatic.com"
-				//"https: 'unsafe-inline'"
+				"maps.gstatic.com",
+				"js.stripe.com"
 			],
-			frameSrc: ["https://www.google.com"],
+			frameSrc: ["https://www.google.com", "js.stripe.com"],
 			imgSrc: ["'self'", "data:", "maps.gstatic.com"]
 		},
-		reportOnly: true
+		reportOnly: false
 	})
 );
 

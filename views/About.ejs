@@ -84,7 +84,7 @@
 
 					<label class="control-label">Message</label>
 					<textarea id="content" data-vstring="64;2048" rows="5" name="content" placeholder="Write your message here...." required>
-<% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea
+						<% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea
 					>
 					<span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
 
@@ -172,19 +172,8 @@
 					</div>
 					<% } %>
 
-					<script>
-						toAppend = "<%= locals.blogs[index].shortcontent %>";
-						toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-
-						document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".content-holder").innerHTML = toAppend;
-
-						<% if (locals.blogs[index].thumbnail) { %>
-						  toAppend = "<%= locals.blogs[index].thumbnail %>";
-						  toAppend = toAppend.replace(/(\r\n|\n|\r)/gm,"").replace(/&#34;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-						  document.getElementById("<%= locals.blogs[index]._id %>").querySelector(".blog-overlay-wrapper").innerHTML += toAppend;
-						<% } %>
-					</script>
-
+					<input type="hidden" data-id="<%= locals.blogs[index]._id %>" data-append="<%= locals.blogs[index].shortcontent %>" data-thumbnail="<%= locals.blogs[index].thumbnail %>">
+					
 					<% }) %> <% } else { %>
 					<div class="text-center m-5 p-5 bwhite">
 						<h1>Blog page is under maintenance, please come back later</h1>

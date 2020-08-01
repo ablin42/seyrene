@@ -4,6 +4,26 @@ let addClickEvent = function () {
 };
 loadbtn.addEventListener("click", addClickEvent);
 
+let appends = document.querySelectorAll("input[data-append]");
+appends.forEach(function (item) {
+	let thumbnail = item.dataset.thumbnail;
+	let toAppend = item.dataset.append
+		.replace(/(\r\n|\n|\r)/gm, "")
+		.replace(/&#34;/g, '"')
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">");
+	document.getElementById(item.dataset.id).querySelector(".content-holder").innerHTML = toAppend;
+
+	if (thumbnail) {
+		thumbnail = thumbnail
+			.replace(/(\r\n|\n|\r)/gm, "")
+			.replace(/&#34;/g, '"')
+			.replace(/&lt;/g, "<")
+			.replace(/&gt;/g, ">");
+		document.getElementById(item.dataset.id).querySelector(".blog-overlay-wrapper").innerHTML += thumbnail;
+	}
+});
+
 async function infiniteBlogs() {
 	let nbItem = $(".blog-row").length,
 		page = 1 + Math.floor(nbItem / 6),
