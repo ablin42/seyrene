@@ -237,12 +237,13 @@ app.use((req, res, next) => {
 		req.session.authprod = process.env.ACCESS_TOKEN;
 		return next();
 	}
+	console.log(req.path);
 	if (req.path === "/plsauth") return next();
 	return res.status(200).redirect("plsauth");
 });
 
 app.get("/plsauth", (req, res) => {
-	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) return res.status(200).redirect("Home");
+	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) return res.status(200).redirect("/");
 	//DELPROD//
 	return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
 });
