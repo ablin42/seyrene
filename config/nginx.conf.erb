@@ -59,9 +59,9 @@ http {
 		tcp_nodelay       on;
 
 		location /public {
-			proxy_cache custom_cache;
-			proxy_cache_revalidate on;
-			proxy_ssl_name www.maral.fr;
+			#proxy_cache custom_cache;
+			#proxy_cache_revalidate on;
+			#proxy_ssl_name www.maral.fr;
 			
 			alias /app/public;
 			try_files $uri ; # @app_server
