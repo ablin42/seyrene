@@ -58,18 +58,18 @@ http {
 		tcp_nopush on;
 		tcp_nodelay       on;
 
-		location /public {
+		location / {
 			#proxy_cache custom_cache;
 			#proxy_cache_revalidate on;
 			#proxy_ssl_name www.maral.fr;
 			
-			#alias /app/public;
+			alias /app/public;
 			try_files $uri @app_server;
 			expires 7d;
 		}
 
 		location @app_server {
-			#root /app;
+			root /app;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			proxy_set_header Host $http_host;
 			proxy_redirect off;
