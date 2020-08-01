@@ -223,6 +223,7 @@ app.use("/api/pwinty", pwintyRoute);
 app.use("/api/stripe", stripeRoute);
 
 app.post("/plsauth", (req, res) => {
+	console.log(req.body.authlog, req.session, "xxxxxxxxx");
 	//DELPROD//
 	if (req.body.authlog === process.env.AUTHLOG) {
 		req.session.authprod = process.env.ACCESS_TOKEN;
