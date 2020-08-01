@@ -59,13 +59,13 @@ http {
 		tcp_nodelay       on;
 
 		location / {
-			proxy_cache custom_cache;
-			proxy_cache_revalidate on;
+			#proxy_cache custom_cache;
+			#proxy_cache_revalidate on;
 			proxy_ssl_name www.maral.fr;
-			proxy_ignore_headers "Set-Cookie";
-proxy_hide_header "Set-Cookie";
+			
 			alias /app/public;
 			try_files  $uri @app_server;
+			expires 7d;
 		}
 
 		location @app_server {
