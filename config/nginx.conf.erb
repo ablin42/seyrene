@@ -43,6 +43,7 @@ http {
 	proxy_cache_valid 200 302 60m; # cache successful responses for 60 minutes
     proxy_cache_valid 404 1m; # expire 404 responses 1 minute
 
+	proxy_ssl_server_name on;
 
 	upstream app_server {
 		least_conn; # Give new connection to backend with least active connections (Load balancing)
@@ -52,12 +53,13 @@ http {
 
 	server {
 		listen <%= ENV["PORT"] %>;
-		server_name maral.herokuapp.com www.maral.herokuapp.com;
+		server_name maral.fr www.maral.fr maral.herokuapp.com www.maral.herokuapp.com;
 		keepalive_timeout 5;
 		tcp_nopush on;
 		tcp_nodelay       on;
 
 		location / {
+			proxy_ssl_name maral.fr www.maral.fr maral.herokuapp.com www.maral.herokuapp.com;
 			alias /app/public;
 			try_files  $uri @app_server;
 		}
@@ -66,6 +68,8 @@ http {
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			proxy_set_header Host $http_host;
 			proxy_redirect off;
+
+			proxy_ssl_name maral.fr www.maral.fr maral.herokuapp.com www.maral.herokuapp.com;
 
 			# Following is necessary for Websocket support
 			proxy_http_version 1.1;
