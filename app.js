@@ -240,7 +240,7 @@ app.use((req, res, next) => {
 		return next();
 	}
 
-	return res.status(200).redirect("plsauth", { csrfToken: req.csrfToken() });
+	return res.status(200).redirect("plsauth");
 });
 
 app.get("/plsauth", (req, res) => {
