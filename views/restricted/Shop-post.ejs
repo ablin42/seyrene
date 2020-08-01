@@ -8,13 +8,13 @@
 				<hr />
 				<div class="form-group">
 					<label class="control-label">Titre</label>
-					<input type="text" name="title" id="title" placeholder="Titre" onkeyup="Validate.String(this, 1, 256);" required />
+					<input type="text" name="title" id="title" placeholder="Titre" data-vstring="1;256" required />
 					<span id="i_title" class="form-info">Title must contain between 1 and 256 characters</span>
 				</div>
 
 				<div class="form-group">
 					<label class="control-label">Description</label>
-					<textarea rows="5" id="content" name="content" placeholder="Description de l'item..." onkeyup="Validate.String(this, 1, 2048);" required></textarea>
+					<textarea rows="5" id="content" name="content" placeholder="Description de l'item..." data-vstring="1;2048" required></textarea>
 					<span id="i_content" class="form-info">Content must contain between 1 and 2048 characters</span>
 				</div>
 
@@ -35,6 +35,6 @@
 	</div>
 </div>
 
-<script src="/scripts/shop/shopScripts.js defer"></script>
-<script src="/scripts/core/frontValidation.js"></script>
+<script src="/scripts/shop/shopScripts.js" defer></script>
+<script src="/scripts/core/frontValidation.js" defer></script>
 <% include ../partials/footer %>

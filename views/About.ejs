@@ -49,7 +49,7 @@
 								type="text"
 								name="name"
 								id="name"
-								onkeyup="Validate.String(this, 4, 30);"
+								data-vstring="4;30"
 								value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>"
 								required
 							/>
@@ -62,7 +62,7 @@
 								type="email"
 								name="email"
 								id="email"
-								onkeyup="Validate.Email(this);"
+								data-vemail="true"
 								value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>"
 								required
 							/>
@@ -76,14 +76,14 @@
 						type="text"
 						name="title"
 						id="title"
-						onkeyup="Validate.String(this, 10, 256);"
+						data-vstring="10;256"
 						value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>"
 						required
 					/>
 					<span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
 
 					<label class="control-label">Message</label>
-					<textarea id="content" onkeyup="Validate.String(this, 64, 2048);" rows="5" name="content" placeholder="Write your message here...." required>
+					<textarea id="content" data-vstring="64;2048" rows="5" name="content" placeholder="Write your message here...." required>
 <% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea
 					>
 					<span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
@@ -203,6 +203,6 @@
 
 <script src="/scripts/blog/infiniteBlogs.js" defer></script>
 <script src="/scripts/core/menu-arrow.js"></script>
-<script src="/scripts/core/frontValidation.js"></script>
+<script src="/scripts/core/frontValidation.js" defer></script>
 <script src="/scripts/submit-contact.js" defer></script>
 <% include partials/footer %>

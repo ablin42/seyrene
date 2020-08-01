@@ -76,6 +76,7 @@ router.post("/", vBlog, setUser, authUser, authRole(ROLE.ADMIN), async (req, res
 			content: req.body.content
 		};
 		req.session.formData = { title: obj.title, content: obj.content };
+		await utils.checkValidity(req);
 
 		const blog = new Blog(obj);
 		let [err, savedBlog] = await utils.to(blog.save());
@@ -99,6 +100,7 @@ router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), as
 			title: req.body.title,
 			content: req.body.content
 		};
+		await utils.checkValidity(req);
 
 		let [err, patchedBlog] = await utils.to(
 			Blog.updateOne({ _id: blogId }, { $set: { title: req.body.title, content: req.body.content } })
@@ -109,6 +111,7 @@ router.post("/patch/:blogId", vBlog, setUser, authUser, authRole(ROLE.ADMIN), as
 		req.flash("success", ERROR_MESSAGE.itemUploaded);
 		return res.status(200).redirect(`/Blog/${blogId}`);
 	} catch (err) {
+		const blogId = sanitize(req.params.blogId);
 		threatLog.error("PATCH BLOG ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
 		return res.status(400).redirect(`/Admin/Blog/Patch/${blogId}`);

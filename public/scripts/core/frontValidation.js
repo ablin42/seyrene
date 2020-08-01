@@ -1,3 +1,37 @@
+let dstring = document.querySelectorAll("[data-vstring]");
+let demail = document.querySelectorAll("input[data-vemail]");
+let dpw = document.querySelectorAll("input[data-vpw]");
+let dpw2 = document.querySelectorAll("input[data-vpw2]");
+
+if (dstring)
+	dstring.forEach(item => {
+		item.addEventListener("keyup", function () {
+			let val = item.dataset.vstring.split(";");
+			Validate.String(item, val[0], val[1]);
+		});
+	});
+
+if (demail)
+	demail.forEach(item => {
+		item.addEventListener("keyup", function () {
+			Validate.Email(item);
+		});
+	});
+
+if (dpw)
+	dpw.forEach(item => {
+		item.addEventListener("keyup", function () {
+			Validate.Password(item);
+		});
+	});
+
+if (dpw2)
+	dpw2.forEach(item => {
+		item.addEventListener("keyup", function () {
+			Validate.Password2(item);
+		});
+	});
+
 function getInvalid(formId) {
 	let submitId = "submit-" + formId,
 		submit = document.getElementById(submitId),

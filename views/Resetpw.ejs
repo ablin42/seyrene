@@ -6,10 +6,10 @@
 			<form class="resetpw form-slider" id="resetpw" method="POST" action="/api/user/resetpw">
 				<h2 class="single-title mb-5">Reset your password</h2>
 
-				<input placeholder="Password" type="password" id="password" name="password" onkeyup="Validate.Password(this);" required />
+				<input placeholder="Password" type="password" id="password" name="password" data-vpw="true" required />
 				<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
 
-				<input placeholder="Password (confirmation)" type="password" id="password2" name="password2" onkeyup="Validate.Password2(this);" required />
+				<input placeholder="Password (confirmation)" type="password" id="password2" data-vpw2="true" name="password2" required />
 				<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
 
 				<input type="hidden" name="tokenId" value="<%= locals.tokenId %>" required />
@@ -21,5 +21,5 @@
 	</div>
 </div>
 
-<script src="/scripts/core/frontValidation.js"></script>
+<script src="/scripts/core/frontValidation.js" defer></script>
 <% include partials/footer %>

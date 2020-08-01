@@ -1,4 +1,9 @@
 let posttags = document.querySelector("form[data-posttags]");
+let tagform = document.querySelector("form[data-tagform]");
+
+tagform.addEventListener("keydown", function (e) {
+	preventEnter(e, tagform);
+});
 
 if (posttags)
 	posttags.addEventListener("submit", function (e) {

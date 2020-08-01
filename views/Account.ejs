@@ -25,7 +25,7 @@
 					<form class="form-slider" id="register" data-subreg="true" method="POST" action="/api/auth/register">
 						<h1>Sign up</h1>
 
-						<input placeholder="Jean75" type="text" name="name" id="name" onkeyup="Validate.String(this, 4, 30);" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required />
+						<input placeholder="Jean75" type="text" name="name" id="name" data-vstring="4;30" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required />
 						<span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
 
 						<input
@@ -33,16 +33,16 @@
 							type="email"
 							name="email"
 							id="email"
-							onkeyup="Validate.Email(this);"
+							data-vemail="true"
 							value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>"
 							required
 						/>
 						<span id="i_email" class="form-info">E-mail has to be valid</span>
 
-						<input placeholder="Password" type="password" name="password" id="password" onkeyup="Validate.Password(this);" required />
+						<input placeholder="Password" type="password" name="password" id="password" data-vpw="true"  required />
 						<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to beatleast alphanumeric</span>
 
-						<input placeholder="Password (confirm)" type="password" name="password2" id="password2" onkeyup="Validate.Password2(this);" required />
+						<input placeholder="Password (confirm)" type="password" name="password2" id="password2" data-vpw2="true" required />
 						<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
 
 						<div class="recaptcha-wrapper"></div>
@@ -94,7 +94,7 @@
 							We'll send you a mail with instructions to reset your password
 						</div>
 						<form class="col-md-8 offset-md-2 mt-5" id="lostpw" data-lostpw="true" method="POST" action="/api/user/lostpw">
-							<input placeholder="Email" type="email" id="email-reset" name="email" value="" onkeyup="Validate.Email(this);" required />
+							<input placeholder="Email" type="email" id="email-reset" name="email" value="" data-vemail="true" required />
 							<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
 
 							<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
@@ -112,5 +112,5 @@
 
 <script src="/scripts/submit-auth.js"></script>
 <script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&render=explicit" async defer></script>
-<script src="/scripts/core/frontValidation.js"></script>
+<script src="/scripts/core/frontValidation.js" defer></script>
 <% include partials/footer %>
