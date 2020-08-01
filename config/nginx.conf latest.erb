@@ -1,0 +1,122 @@
+daemon off;
+#Heroku dynos have at least 4 cores.
+worker_processes <%= ENV['NGINX_WORKERS'] || 4 %>;
+
+events {
+	use epoll;
+	accept_mutex on;
+	worker_connections <%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>;
+}
+
+http {
+	include mime.types;
+	default_type application/octet-stream;
+
+    gzip on;
+	#gzip_comp_level 2;
+	gzip_vary on;
+	gzip_min_length 1024;
+	gzip_proxied expired no-cache no-store private auth;
+	gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml image/jpeg image/png;
+	gzip_disable "MSIE [1-6]\.";
+	underscores_in_headers on;
+	
+	server_tokens off;
+	sendfile on;
+	sendfile_max_chunk 2m;
+
+	#Must read the body in 5 seconds.
+	client_body_timeout 5;
+
+	log_format  main  	'$remote_addr - $remote_user [$time_local] "$request" '
+                    	'$status $body_bytes_sent "$http_referer" '
+                    	'"$http_user_agent" "$http_x_forwarded_for"';
+	access_log <%= ENV['NGINX_ACCESS_LOG_PATH'] || 'logs/nginx/access.log' %> main;
+	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
+
+	proxy_cache_path /app/config/nginx-cache levels=1:2 keys_zone=custom_cache:10m inactive=60m use_temp_path=off;#
+	proxy_cache_key "$scheme$request_method$host$request_uri";#
+
+	#proxy_cache_path /tmp/nginx-cache levels=1:2 keys_zone=staticcache:8m max_size=100m inactive=60m use_temp_path=off;
+        # keyzone size 8MB, cache size 100MB, inactive delete 60min
+    #proxy_cache_key "$scheme$request_method$host$request_uri";
+	proxy_cache_valid 200 302 60m; # cache successful responses for 60 minutes
+    proxy_cache_valid 404 1m; # expire 404 responses 1 minute
+
+	proxy_ssl_server_name on;
+
+	upstream app_server {
+		least_conn; # Give new connection to backend with least active connections (Load balancing)
+		# multiple servers adresses (as many as clusters)
+		server unix:/tmp/nginx.socket fail_timeout=0;
+	}
+
+	server {
+		listen <%= ENV["PORT"] %>;
+		server_name maral.fr www.maral.fr maral.herokuapp.com www.maral.herokuapp.com;
+		keepalive_timeout 5;
+		tcp_nopush on;
+		tcp_nodelay on;
+
+		# location /public {
+		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
+			#proxy_cache custom_cache;
+			#proxy_cache_revalidate on;
+			#proxy_ssl_name www.maral.fr;
+			
+			alias /app/public;
+			try_files $uri @app_server;
+			expires 7d;
+		}
+
+		location / {
+				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+			proxy_redirect off;
+			add_header X-Cache-Status $upstream_cache_status;
+
+			proxy_ssl_name www.maral.fr;
+
+			# Following is necessary for Websocket support
+			proxy_http_version 1.1;
+			proxy_set_header Upgrade $http_upgrade;
+			proxy_set_header Connection "upgrade";
+			proxy_set_header X-Real-IP $remote_addr;
+			
+			proxy_cache_revalidate on;
+			#proxy_cache_bypass $http_upgrade;##
+			proxy_cache custom_cache;#
+			#proxy_cache_bypass  $http_cache_control;#
+			add_header X-Proxy-Cache $upstream_cache_status;#
+			proxy_set_header X-Forwarded-Proto $scheme;#
+
+			proxy_pass http://app_server;
+			proxy_pass_request_headers on;
+		}
+
+		location @app_server {
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+			proxy_redirect off;
+			add_header X-Cache-Status $upstream_cache_status;
+
+			proxy_ssl_name www.maral.fr;
+
+			# Following is necessary for Websocket support
+			proxy_http_version 1.1;
+			proxy_set_header Upgrade $http_upgrade;
+			proxy_set_header Connection "upgrade";
+			proxy_set_header X-Real-IP $remote_addr;
+			
+			proxy_cache_revalidate on;
+			#proxy_cache_bypass $http_upgrade;##
+			proxy_cache custom_cache;#
+			#proxy_cache_bypass  $http_cache_control;#
+			add_header X-Proxy-Cache $upstream_cache_status;#
+			proxy_set_header X-Forwarded-Proto $scheme;#
+
+			proxy_pass http://app_server;
+			proxy_pass_request_headers on;
+		}
+	}
+}

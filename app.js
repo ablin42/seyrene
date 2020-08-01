@@ -224,8 +224,10 @@ app.use("/api/stripe", stripeRoute);
 
 app.post("/plsauth", (req, res) => {
 	//DELPROD//
+	console.log(req.body);
 	if (req.body.authlog === process.env.AUTHLOG) {
 		req.session.authprod = process.env.ACCESS_TOKEN;
+		console.log(req.session);
 		return res.status(200).redirect("/");
 	} else return res.status(200).redirect("plsauth");
 });
@@ -238,7 +240,7 @@ app.use((req, res, next) => {
 		return next();
 	}
 
-	return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
+	return res.status(200).redirect("plsauth", { csrfToken: req.csrfToken() });
 });
 
 app.get("/plsauth", (req, res) => {
