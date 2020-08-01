@@ -58,12 +58,12 @@ http {
 		tcp_nopush on;
 		tcp_nodelay       on;
 
-		location / {
+		location /public {
 			#proxy_cache custom_cache;
 			#proxy_cache_revalidate on;
 			#proxy_ssl_name www.maral.fr;
 			
-			alias /public;
+			#alias /public;
 			try_files $uri @app_server;
 			expires 7d;
 		}
