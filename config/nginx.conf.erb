@@ -63,12 +63,8 @@ http {
 			proxy_cache_revalidate on;
 			proxy_ssl_name www.maral.fr;
 			
-			 proxy_ignore_headers Cache-Control;
-            proxy_hide_header Cache-Control;
-
 			alias /app/public;
-			try_files $uri @app_server;
-			expires 7d;
+			try_files $uri ; # @app_server
 		}
 
 		location @app_server {
