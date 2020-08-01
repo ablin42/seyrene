@@ -224,7 +224,9 @@ app.use("/api/stripe", stripeRoute);
 
 app.post("/plsauth", (req, res) => {
 	//DELPROD//
+	console.log("in post auth");
 	if (req.body.authlog === process.env.AUTHLOG) {
+		console.log("authorized XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		req.session.authprod = process.env.ACCESS_TOKEN;
 		return res.status(200).redirect("/");
 	} else return res.status(200).redirect("plsauth");
