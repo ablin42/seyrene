@@ -240,8 +240,9 @@ app.use((req, res, next) => {
 		req.session.authprod = process.env.ACCESS_TOKEN;
 		return next();
 	}
-	console.log(req.path);
+	console.log(req.path, "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOF");
 	if (req.path === "/plsauth") return next();
+
 	return res.status(200).redirect("plsauth");
 });
 
