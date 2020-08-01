@@ -59,25 +59,10 @@ http {
 		tcp_nodelay       on;
 
 		location / {
-			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_set_header Host $http_host;
-			proxy_redirect off;
-			add_header X-Cache-Status $upstream_cache_status;
-
-			proxy_http_version 1.1;
-			proxy_set_header Upgrade $http_upgrade;
-			proxy_set_header Connection "upgrade";
-			proxy_set_header X-Real-IP $remote_addr;
-
 			proxy_cache custom_cache;
 			proxy_cache_revalidate on;
 			proxy_ssl_name www.maral.fr;
-			add_header X-Proxy-Cache $upstream_cache_status;#
-			proxy_set_header X-Forwarded-Proto $scheme;#
-			proxy_pass_request_headers on;
-
 			expires 7d;
-
 			alias /app/public;
 			try_files  $uri @app_server;
 		}
