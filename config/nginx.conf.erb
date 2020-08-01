@@ -105,12 +105,12 @@ http {
 			proxy_pass_request_headers on;
 		}
 
-		#location ~* \.(jpg|jpeg|png|gif|ico)$ { #caching
-       	#	expires 30d;
-		#}
+		location ~* \.(jpg|jpeg|png|gif|ico)$ { #caching
+       		expires 30d;
+		}
 
-		#location ~* \.(css|js)$ {
-		#	expires 7d;
-		#}
+		location ~* \.(css|js)$ {
+			expires 7d;
+		}
 	}
 }
