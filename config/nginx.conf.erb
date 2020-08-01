@@ -83,9 +83,9 @@ http {
 			proxy_set_header Connection "upgrade";
 			proxy_set_header X-Real-IP $remote_addr;
 			
-			proxy_cache_revalidate on;
+			#proxy_cache_revalidate on;
 			#proxy_cache_bypass $http_upgrade;##
-			proxy_cache custom_cache;#
+			#proxy_cache custom_cache;#
 			#proxy_cache_bypass  $http_cache_control;#
 			add_header X-Proxy-Cache $upstream_cache_status;#
 			proxy_set_header X-Forwarded-Proto $scheme;#
@@ -108,9 +108,9 @@ http {
 			proxy_set_header Connection "upgrade";
 			proxy_set_header X-Real-IP $remote_addr;
 			
-			proxy_cache_revalidate on;
+			#proxy_cache_revalidate on;
 			#proxy_cache_bypass $http_upgrade;##
-			proxy_cache custom_cache;#
+			#proxy_cache custom_cache;#
 			#proxy_cache_bypass  $http_cache_control;#
 			add_header X-Proxy-Cache $upstream_cache_status;#
 			proxy_set_header X-Forwarded-Proto $scheme;#
