@@ -244,6 +244,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/plsauth", (req, res) => {
+	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) res.status(200).redirect("Home");
 	//DELPROD//
 	res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
 });
