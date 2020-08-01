@@ -227,6 +227,7 @@ app.post("/plsauth", (req, res) => {
 	//DELPROD//
 	if (req.body.authlog === process.env.AUTHLOG) {
 		req.session.authprod = process.env.ACCESS_TOKEN;
+		console.log("INZER", req.session.authprod);
 		return res.status(200).redirect("/");
 	} else return res.status(200).redirect("plsauth");
 });
