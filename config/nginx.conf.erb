@@ -34,7 +34,7 @@ http {
 	access_log <%= ENV['NGINX_ACCESS_LOG_PATH'] || 'logs/nginx/access.log' %> main;
 	error_log <%= ENV['NGINX_ERROR_LOG_PATH'] || 'logs/nginx/error.log' %>;
 
-	proxy_cache_path /app/config/nginx-cache levels=1:2 keys_zone=custom_cache:10m inactive=60m;#
+	proxy_cache_path /app/config/nginx-cache levels=1:2 keys_zone=custom_cache:10m inactive=60m use_temp_path=off;#
 	proxy_cache_key "$scheme$request_method$host$request_uri";#
 
 	#proxy_cache_path /tmp/nginx-cache levels=1:2 keys_zone=staticcache:8m max_size=100m inactive=60m use_temp_path=off;
@@ -59,6 +59,7 @@ http {
 		tcp_nodelay       on;
 
 		location / {
+			proxy_cache_revalidate on;
 			proxy_ssl_name www.maral.fr;
 			alias /app/public;
 			try_files  $uri @app_server;
@@ -68,6 +69,7 @@ http {
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 			proxy_set_header Host $http_host;
 			proxy_redirect off;
+			add_header X-Cache-Status $upstream_cache_status;
 
 			proxy_ssl_name www.maral.fr;
 
@@ -77,6 +79,7 @@ http {
 			proxy_set_header Connection "upgrade";
 			proxy_set_header X-Real-IP $remote_addr;
 			
+			proxy_cache_revalidate on;
 			#proxy_cache_bypass $http_upgrade;##
 			proxy_cache custom_cache;#
 			proxy_cache_bypass  $http_cache_control;#
