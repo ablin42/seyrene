@@ -239,7 +239,7 @@ app.use((req, res, next) => {
 		console.log("okayyy", req.session.authprod);
 		return next();
 	} else {
-		console.log("oopsie", req.path);
+		console.log("oopsie", req.path, req.session.authprod, "x");
 		if (req.path === "/plsauth") return next();
 		return res.status(200).redirect("plsauth");
 	}
