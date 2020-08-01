@@ -140,7 +140,7 @@ app.use(
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
-		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
+		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: true }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
 );
@@ -223,11 +223,9 @@ app.use("/api/pwinty", pwintyRoute);
 app.use("/api/stripe", stripeRoute);
 
 app.post("/plsauth", (req, res) => {
-	console.log(req.body.authlog, req.session, "xxxxxxxxx");
 	//DELPROD//
 	if (req.body.authlog === process.env.AUTHLOG) {
 		req.session.authprod = process.env.ACCESS_TOKEN;
-		console.log("INZER", req.session.authprod);
 		return res.status(200).redirect("/");
 	} else return res.status(200).redirect("plsauth");
 });
@@ -236,10 +234,8 @@ app.use((req, res, next) => {
 	//DELPROD//
 	if (req.session.authprod && req.session.authprod === process.env.ACCESS_TOKEN) {
 		req.session.authprod = process.env.ACCESS_TOKEN;
-		console.log("okayyy", req.session.authprod);
 		return next();
 	} else {
-		console.log("oopsie", req.path, req.session.authprod, "x");
 		if (req.path === "/plsauth") return next();
 		return res.status(200).redirect("plsauth");
 	}

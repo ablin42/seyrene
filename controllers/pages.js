@@ -86,7 +86,7 @@ router.get("/", setUser, async (req, res) => {
 	}
 });
 
-router.get("/Galerie", setUser, async (req, res) => {
+router.get("/Galerie", setUser, cacheView, async (req, res) => {
 	try {
 		let obj = { active: "Galerie", csrfToken: req.csrfToken() };
 		if (req.user) obj.user = req.user;
@@ -286,7 +286,7 @@ router.get("/About", setUser, async (req, res) => {
 	}
 });
 
-router.get("/Account", setUser, notLoggedUser, async (req, res) => {
+router.get("/Account", setUser, notLoggedUser, cacheView, async (req, res) => {
 	try {
 		let obj = { active: "Account", csrfToken: req.csrfToken() };
 		if (req.session.formData) {
