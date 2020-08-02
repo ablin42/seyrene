@@ -181,7 +181,7 @@ app.post("/report-violation", (req, res) => {
 	res.status(204).end();
 });
 
-app.use(csrf({ cookie: false }));
+app.use(csrf({ cookie: true }));
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {
 	if (req.path === "/api/order/confirm" || req.path === "/api/pwinty/callback/status") return next();
