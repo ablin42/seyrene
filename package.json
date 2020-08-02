@@ -40,6 +40,7 @@
 		"express-session": "=1.17.1",
 		"express-validator": "=6.6.0",
 		"helmet": "=3.23.3",
+		"heroku-ssl-redirect": "0.0.4",
 		"log4js": "=6.3.0",
 		"memjs": "=1.2.2",
 		"money-exchange": "=1.0.0",

@@ -34,6 +34,9 @@ const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
 const { fullLog, threatLog } = require("./controllers/helpers/log4");
 const { body } = require("express-validator");
 
+var sslRedirect = require("heroku-ssl-redirect");
+app.use(sslRedirect());
+
 //Connect to DB
 mongoose.connect(
 	process.env.DB_CONNECTION,
