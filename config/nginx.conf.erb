@@ -83,7 +83,7 @@ http {
 			proxy_cache_revalidate on;
 			proxy_cache custom_cache;
 			add_header X-Proxy-Cache $upstream_cache_status;
-			proxy_set_header X-Forwarded-Proto $scheme;
+			proxy_set_header X-Forwarded-Proto https;
 
 			proxy_pass http://app_server;
 			proxy_pass_request_headers on;
