@@ -54,7 +54,7 @@ const app = express();
 //app.use(express.static(__dirname + "/public")); (if re-enabled, change all routes in ejs to remove /public)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.set("trust proxy", 1);
+app.set("trust proxy"); ///1
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
