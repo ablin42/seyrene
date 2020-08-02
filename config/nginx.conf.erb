@@ -62,8 +62,7 @@ http {
 		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
 			#proxy_cache custom_cache;
 			#proxy_cache_revalidate on;
-			proxy_ssl_name www.maral.fr;
-				proxy_set_header X-Forwarded-Proto $scheme;#
+			#proxy_ssl_name www.maral.fr;
 			
 			alias /app/public;
 			try_files $uri @app_server;
@@ -90,9 +89,9 @@ http {
 			#proxy_cache_bypass  $http_cache_control;#
 			add_header X-Proxy-Cache $upstream_cache_status;#
 			proxy_set_header X-Forwarded-Proto $scheme;#
+			proxy_pass_request_headers on;
 
 			proxy_pass http://app_server;
-			proxy_pass_request_headers on;
 		}
 
 		location @app_server {
@@ -115,9 +114,9 @@ http {
 			#proxy_cache_bypass  $http_cache_control;#
 			add_header X-Proxy-Cache $upstream_cache_status;#
 			proxy_set_header X-Forwarded-Proto $scheme;#
+			proxy_pass_request_headers on;
 
 			proxy_pass http://app_server;
-			proxy_pass_request_headers on;
 		}
 	}
 }
