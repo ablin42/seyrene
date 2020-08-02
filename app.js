@@ -116,6 +116,7 @@ app.use(
 
 // Set ip object and logs info
 app.use((req, res, next) => {
+	console.log(req.protocol);
 	req.ipAddress =
 		(req.headers["x-forwarded-for"] || "").split(",")[0] ||
 		req.connection.remoteAddress ||
