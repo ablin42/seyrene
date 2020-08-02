@@ -60,7 +60,7 @@ http {
 
 		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
 			alias /app/public;
-			try_files $uri @app_server;
+			try_files $uri /;
 			expires 7d;
 		}
 
