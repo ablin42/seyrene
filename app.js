@@ -56,10 +56,12 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
 
+/*
 app.use(function (req, res, next) {
+	console.log(req.protocol, "XDDDDDDDDDDDDD");
 	if (req.protocol == "http") return res.redirect("https://maral.fr" + req.url);
 	else return next();
-});
+});*/
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
