@@ -88,6 +88,7 @@ http {
 			#proxy_cache custom_cache;#
 			#proxy_cache_bypass  $http_cache_control;#
 			add_header X-Proxy-Cache $upstream_cache_status;#
+			proxy_set_header X-Forwarded-Proto $scheme;#
 			proxy_set_header X-Forwarded-Proto https;#
 			proxy_pass_request_headers on;
 
@@ -113,6 +114,7 @@ http {
 			#proxy_cache custom_cache;#
 			#proxy_cache_bypass  $http_cache_control;#
 			add_header X-Proxy-Cache $upstream_cache_status;#
+				proxy_set_header X-Forwarded-Proto $scheme;#
 			proxy_set_header X-Forwarded-Proto https;#
 			proxy_pass_request_headers on;
 
