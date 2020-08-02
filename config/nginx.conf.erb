@@ -58,7 +58,11 @@ http {
 		tcp_nopush on;
 		tcp_nodelay on;
 
-		
+		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
+			alias /app/public;
+			try_files $uri /;
+			expires 7d;
+		}
 
 		location / {
  			proxy_cache_bypass $http_upgrade;
@@ -76,19 +80,13 @@ http {
 			proxy_set_header Connection "upgrade";
 			proxy_set_header X-Real-IP $remote_addr;
 			
-			proxy_cache_revalidate on;
-			proxy_cache custom_cache;
-			add_header X-Proxy-Cache $upstream_cache_status;
+			#proxy_cache_revalidate on;
+			#proxy_cache custom_cache;
+			#add_header X-Proxy-Cache $upstream_cache_status;
 			proxy_set_header X-Forwarded-Proto https;
 
 			proxy_pass http://app_server;
 			proxy_pass_request_headers on;
-		}
-
-		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
-			alias /app/public;
-			try_files $uri /;
-			expires 7d;
 		}
 	}
 }
