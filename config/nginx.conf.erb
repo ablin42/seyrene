@@ -62,7 +62,8 @@ http {
 		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
 			#proxy_cache custom_cache;
 			#proxy_cache_revalidate on;
-			#proxy_ssl_name www.maral.fr;
+			proxy_ssl_name www.maral.fr;
+				proxy_set_header X-Forwarded-Proto $scheme;#
 			
 			alias /app/public;
 			try_files $uri @app_server;
