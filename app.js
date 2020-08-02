@@ -116,7 +116,7 @@ app.use(
 
 // Set ip object and logs info
 app.use((req, res, next) => {
-	console.log(req.protocol);
+	console.log(req.protocol, "XDDDDDDD");
 	req.ipAddress =
 		(req.headers["x-forwarded-for"] || "").split(",")[0] ||
 		req.connection.remoteAddress ||
@@ -140,7 +140,7 @@ app.use(
 		name: "overlord",
 		secret: process.env.SESSION_SECRET,
 		resave: false,
-		//proxy: true,
+		proxy: true,
 		saveUninitialized: false,
 		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
