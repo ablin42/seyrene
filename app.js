@@ -54,7 +54,7 @@ const app = express();
 //app.use(express.static(__dirname + "/public")); (if re-enabled, change all routes in ejs to remove /public)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.set("trust proxy"); ///1
+app.set("trust proxy", 1);
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
@@ -141,7 +141,7 @@ app.use(
 		resave: false,
 		//proxy: true,
 		saveUninitialized: false,
-		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: true }, //secure = true (or auto) requires https else it wont work
+		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
 );
@@ -181,7 +181,7 @@ app.post("/report-violation", (req, res) => {
 	res.status(204).end();
 });
 
-app.use(csrf({ cookie: true }));
+app.use(csrf({ cookie: false }));
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {
 	if (req.path === "/api/order/confirm" || req.path === "/api/pwinty/callback/status") return next();
