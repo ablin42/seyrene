@@ -64,7 +64,7 @@ http {
 			expires 7d;
 		}
 
-		location @app_server {
+		location / {
  			proxy_cache_bypass $http_upgrade;
 
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
