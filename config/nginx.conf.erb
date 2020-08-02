@@ -58,11 +58,7 @@ http {
 		tcp_nopush on;
 		tcp_nodelay on;
 
-		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
-			alias /app/public;
-			try_files $uri /;
-			expires 7d;
-		}
+		
 
 		location / {
  			proxy_cache_bypass $http_upgrade;
@@ -87,6 +83,12 @@ http {
 
 			proxy_pass http://app_server;
 			proxy_pass_request_headers on;
+		}
+
+		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
+			alias /app/public;
+			try_files $uri /;
+			expires 7d;
 		}
 	}
 }
