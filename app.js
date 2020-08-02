@@ -140,6 +140,7 @@ app.use(
 		name: "overlord",
 		secret: process.env.SESSION_SECRET,
 		resave: false,
+		key: "sid",
 		proxy: true,
 		saveUninitialized: false,
 		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
