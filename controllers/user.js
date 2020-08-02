@@ -113,6 +113,7 @@ router.post("/patch/name", limiter, vName, setUser, authUser, async (req, res) =
 
 		let [err, user] = await utils.to(User.updateOne({ _id: id }, { $set: { name: name } }));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userUpdate);
+		req.user.name = name;
 
 		fullLog.info(`Username patched: ${name}/${id}`);
 		req.flash("success", ERROR_MESSAGE.updatedUsername);
