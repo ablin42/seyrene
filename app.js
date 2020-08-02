@@ -235,6 +235,7 @@ app.use("/api/image", imageRoute);
 app.use("/api/pwinty", pwintyRoute);
 app.use("/api/stripe", stripeRoute);
 
+/*
 app.post("/plsauth", (req, res) => {
 	//DELPROD//
 	if (req.body.authlog === process.env.AUTHLOG) {
@@ -257,7 +258,7 @@ app.use((req, res, next) => {
 app.get("/plsauth", (req, res) => {
 	//DELPROD//
 	return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
-});
+});*/
 
 //DELPROD// del plsauth.ejs
 
