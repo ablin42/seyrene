@@ -56,13 +56,6 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
 
-app.use(function (req, res, next) {
-	console.log(req.protocol, "XDDDDDDD", req.headers["x-forwarded-proto"]);
-
-	if (req.headers["x-forwarded-proto"] != "https") res.redirect("https://maral.fr" + req.url);
-	else next(); /* Continue to other routes if we're not redirecting */
-});
-
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
 const generator = (time, index) => {
