@@ -150,9 +150,9 @@ app.use(
 		}),
 		name: "overlord",
 		secret: process.env.SESSION_SECRET,
-		resave: false,
+		resave: true,
 		proxy: true,
-		saveUninitialized: false,
+		saveUninitialized: true,
 		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: true }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
@@ -193,7 +193,7 @@ app.post("/report-violation", (req, res) => {
 	res.status(204).end();
 });
 
-app.use(csrf({ cookie: false })); ////
+app.use(csrf({ cookie: true })); ////
 // handle CSRF token errors here
 app.use(function (err, req, res, next) {
 	if (req.path === "/api/order/confirm" || req.path === "/api/pwinty/callback/status") return next();
