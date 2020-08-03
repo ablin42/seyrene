@@ -58,7 +58,7 @@ http {
 		tcp_nopush on;
 		tcp_nodelay on;
 
-		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt)$ {
+		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt|svg)$ {
 			alias /app/public;
 			try_files $uri /;
 			expires 7d;
