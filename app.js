@@ -32,9 +32,6 @@ const pwintyRoute = require("./controllers/pwinty");
 const stripeRoute = require("./controllers/stripe");
 const { ERROR_MESSAGE } = require("./controllers/helpers/errorMessages");
 const { fullLog, threatLog } = require("./controllers/helpers/log4");
-const { body } = require("express-validator");
-
-//var sslRedirect = require("heroku-ssl-redirect");
 
 //Connect to DB
 mongoose.connect(
@@ -53,8 +50,6 @@ mongoose.connect(
 
 // Express
 const app = express();
-
-//app.use(sslRedirect());
 
 //app.use(express.static(__dirname + "/public")); (if re-enabled, change all routes in ejs to remove /public)
 app.set("view engine", "ejs");
