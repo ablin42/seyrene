@@ -24,7 +24,7 @@ if (reg)
 var CaptchaCallback = function () {
 	const captchaDiv = document.querySelectorAll(".recaptcha-wrapper");
 	captchaDiv.forEach(item => {
-		grecaptcha.render(item, { sitekey: "6LdI27QZAAAAAMPWWk13a23BiIvOjAfFjI0MJWKl" });
+		grecaptcha.render(item, { sitekey: "6LdiD7oZAAAAAIMXlnCVHOjQQ7UqvLl8vUtaMMA9" });
 	});
 };
 
