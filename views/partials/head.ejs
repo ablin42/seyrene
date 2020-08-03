@@ -28,11 +28,11 @@
 		<!-- CUSTOM -->
 		<link rel="stylesheet" href="/style.css" />
 		<!-- Quill RTE -->
-		<script src="https://cdn.quilljs.com/1.3.7/quill.core.js"></script>
-		<script src="https://cdn.quilljs.com/1.3.4/quill.js"></script>
+		<script src="/quill/quill.core.js"></script>
+		<script src="/quill/quill.js"></script>
 
-		<link rel="stylesheet" href="https://cdn.quilljs.com/1.3.4/quill.snow.css" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.4/quill.core.css" />
+		<link rel="stylesheet" href="/quill/quill.snow.css" />
+		<link rel="stylesheet" href="/quill/quill.core.css" />
 
 		<script src="/scripts/core/errorMessages.js"></script>
 		<script src="/scripts/core/tools.js" defer></script>
@@ -49,8 +49,8 @@
 
 			<nav class="navbar-container">
 				<nav class="navbar-custom">
-					<a href="/"><h1 class="logo name-header navbar-text">Maral</h1></a
-					><!-- <img class="logo" src="/svg/logo.svg" /> -->
+					<a href="/"><img class="logo" src="/svg/logo.svg" /></a
+					><!-- <h1 class="logo name-header navbar-text">Maral</h1> -->
 					<ul class="nav-links">
 						<li>
 							<a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>">About</a>

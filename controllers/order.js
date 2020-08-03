@@ -257,6 +257,16 @@ router.post("/confirm", async (req, res) => {
 			[err, response] = await utils.to(purchaseData.save());
 			if (err) throw new Error(ERROR_MESSAGE.saveError);
 
+			let subject = `Order is being reviewed #${order._id}`;
+			let content = "Une commande a été placée et doit être traitée, cliquez ici pour y accéder";
+			if (await mailer(process.env.EMAIL, subject, content, `${process.env.BASEURL}/Admin/Order/${order._id}`))
+				throw new Error(ERROR_MESSAGE.sendMail);
+
+			content =
+				"We received your payment and placed your order under review for confirmation, click here to access your order (make sure you're logged in)";
+			if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
+				throw new Error(ERROR_MESSAGE.sendMail);
+
 			fullLog.info(`Order confirmed: Order: ${order._id} - User: ${req.user._id}`);
 			return res.status(200).send("OK");
 		}

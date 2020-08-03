@@ -377,8 +377,8 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
 
 .logo {
 	cursor: pointer;
-	width: 100px;
-	margin: 0;
+	width: 7em;
+	margin: 5px;
 	color: var(--light-shade-m1);
 	transition: ease-in-out 0.3s;
 }

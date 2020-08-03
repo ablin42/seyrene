@@ -36,23 +36,23 @@ module.exports = {
 		let obj = {};
 
 		switch (attributes.category) {
-		case "CAN":
-			{
-				obj.wrap = attributes.wrap;
-			}
-			break;
-		case "FRA":
-			{
-				obj.frameColour = attributes.frameColour;
-				if (
-					attributes.subcategory === "BOX" ||
+			case "CAN":
+				{
+					obj.wrap = attributes.wrap;
+				}
+				break;
+			case "FRA":
+				{
+					obj.frameColour = attributes.frameColour;
+					if (
+						attributes.subcategory === "BOX" ||
 						attributes.subcategory === "CLA" ||
 						attributes.subcategory === "GLO" ||
 						attributes.subcategory === "SWO"
-				)
-					if (attributes.mountColour && attributes.mountType !== "NM") obj.mountColour = attributes.mountColour;
-			}
-			break;
+					)
+						if (attributes.mountColour && attributes.mountType !== "NM") obj.mountColour = attributes.mountColour;
+				}
+				break;
 		}
 
 		return obj;
@@ -151,7 +151,7 @@ module.exports = {
 		);
 		if (err || !response) throw new Error(ERROR_MESSAGE.submitOrder);
 
-		let subject = `New Order #${order._id}`;
+		let subject = `Order Approved #${order._id}`;
 		let content = "Une nouvelle commande à été approuvée, cliquez ici pour y accéder";
 		if (await mailer(process.env.EMAIL, subject, content, `${process.env.BASEURL}/Admin/Order/${order._id}`))
 			throw new Error(ERROR_MESSAGE.sendMail);

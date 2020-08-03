@@ -51,13 +51,13 @@ mongoose.connect(
 // Express
 const app = express();
 
-//app.use(express.static(__dirname + "/public")); (if re-enabled, change all routes in ejs to remove /public)
+//app.use(express.static(__dirname + "/public")); // (if re-enabled, change all routes in ejs to remove /public)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
 
 app.use(function (req, res, next) {
-	if (req.protocol == "http") return res.redirect("https://maral.fr" + req.url);
+	if (req.protocol == "http") return res.redirect("https://" + req.headers.host + req.url);
 	else return next();
 });
 
@@ -91,7 +91,6 @@ app.use(
 			styleSrc: [
 				"'self'",
 				"stackpath.bootstrapcdn.com",
-				"cdn.quilljs.com",
 				"kit-free.fontawesome.com",
 				"fonts.googleapis.com",
 				"cdnjs.cloudflare.com",
@@ -105,7 +104,6 @@ app.use(
 				"www.googletagmanager.com",
 				"kit.fontawesome.com",
 				"stackpath.bootstrapcdn.com",
-				"cdn.quilljs.com",
 				"https://www.google.com/recaptcha/",
 				"www.gstatic.com",
 				"maps.googleapis.com",
