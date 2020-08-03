@@ -51,15 +51,10 @@ mongoose.connect(
 // Express
 const app = express();
 
-//app.use(express.static(__dirname + "/public")); (if re-enabled, change all routes in ejs to remove /public)
+app.use(express.static(__dirname + "/public")); // (if re-enabled, change all routes in ejs to remove /public)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
-
-app.use(function (req, res, next) {
-	if (req.protocol == "http") return res.redirect("https://maral.fr" + req.url);
-	else return next();
-});
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
@@ -115,7 +110,7 @@ app.use(
 			frameSrc: ["https://www.google.com", "js.stripe.com"],
 			imgSrc: ["'self'", "data:", "maps.gstatic.com"]
 		},
-		reportOnly: false
+		reportOnly: true
 	})
 );
 
@@ -271,4 +266,4 @@ app.get("*", setUser, (req, res) => {
 });
 
 const port = process.env.PORT;
-app.listen("/tmp/nginx.socket", () => fullLog.trace(`Listening on port ${port}...`)); //
+app.listen(port, () => fullLog.trace(`Listening on port ${port}...`)); //"/tmp/nginx.socket"
