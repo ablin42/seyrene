@@ -61,7 +61,7 @@ http {
 		location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml|rss|txt|svg)$ {
 			alias /app/public;
 			try_files $uri /;
-			expires 7d;
+			expires modified +7d;
 		}
 
 		location / {

@@ -377,6 +377,7 @@ header:hover .navbar-container .navbar-custom .nav-links li a {
 
 .logo {
 	cursor: pointer;
+	cursor: pointer;
 	width: 7em;
 	margin: 5px;
 	color: var(--light-shade-m1);
