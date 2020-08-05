@@ -1,2 +1,9 @@
 User-agent: *
-Disallow: /
+Disallow: /Admin/
+Disallow: /Payment/
+Disallow: /Billing/
+Disallow: /Resetpw/
+Disallow: /admin/
+Disallow: /payment/
+Disallow: /billing/
+Disallow: /resetpw/
