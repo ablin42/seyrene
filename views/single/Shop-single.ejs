@@ -30,7 +30,7 @@
 				<ol class="carousel-indicators no-thumb">
 					<% if (locals.img) { %> <% locals.img.forEach(function (item, index) { %>
 					<li data-target="#carousel-thumb" data-slide-to="<%= index %>" class="<% if(index == 0) { %>active<% } %>">
-						<img class="d-block w-100" src="/img/grey_circle.png" alt="..." class="img-fluid" />
+						<img class="d-block w-100" src="/img/grey_circle.png" alt="grey circle icon thumbnail" class="img-fluid" />
 					</li>
 					<% }) %> <% } %>
 				</ol>
@@ -59,7 +59,7 @@
 
 <a class="lightbox-close" href="#close">
 	<div class="lightbox-target" id="expand">
-		<img id="expandImg" src="/api/image/<%= locals.img[0]._id %>" />
+		<img alt="Expanded Image" id="expandImg" src="/api/image/<%= locals.img[0]._id %>" />
 	</div>
 </a>
 

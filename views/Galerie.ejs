@@ -7,7 +7,7 @@
 		<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
 			<div class="face face1 blog-overlay-wrapper mt-0">
 				<a href="#expand">
-					<img src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100 expandable" alt="<%= locals.galleries[index].title %>" />
+					<img src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100 expandable" alt="Gallery Image - <%= locals.galleries[index].title %>" />
 				</a>
 
 				<div class="blog-overlay expandable" data-id="<%= locals.galleries[index]._id %>" data-isGallery="true">
@@ -30,14 +30,14 @@
 		<% } %>
 	</div>
 	<div class="col-6 offset-3 mb-3 mt-3">
-		<img id="loader" src="/img/loader.gif" />
+		<img alt="loader gif animation" id="loader" src="/img/loader.gif" />
 		<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
 	</div>
 </div>
 
 <a class="lightbox-close" href="#close">
 	<div class="lightbox-target" id="expand">
-		<img id="expandImg" src="" />
+		<img alt="Expanded Image" id="expandImg" src="" />
 	</div>
 </a>
 

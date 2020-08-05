@@ -144,7 +144,7 @@ app.use(
 		resave: true,
 		proxy: true,
 		saveUninitialized: true,
-		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: true }, //secure = true (or auto) requires https else it wont work
+		cookie: { path: "/", maxAge: 14 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false }, //secure = true (or auto) requires https else it wont work
 		sameSite: "Lax"
 	})
 );
@@ -258,7 +258,11 @@ app.use("/", pagesRoute);
 // 404 route
 app.get("*", setUser, (req, res) => {
 	try {
-		let obj = { active: "404" };
+		let obj = {
+			active: "Maral Abkarian Paintings | 404",
+			description:
+				"Oops! Looks like you got lost on maral.fr... To see our beautiful paintings go back to our Homepage or head to the Gallery"
+		};
 		if (req.user) obj.user = req.user;
 
 		return res.status(404).render("404", obj);

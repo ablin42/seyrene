@@ -2,7 +2,7 @@
 
 <div class="container container-single">
 	<div id="container-shop" class="single-wrapper col-md-12">
-		<h1 class="single-title text-center mt-2 p-2 cwhite">Original Painting</h1>
+		<h1 class="single-title text-center mt-2 p-2 cwhite">Unique Painting</h1>
 		<div class="alert alert-info alert-static w-100 mb-3" role="alert">
 			We also sell great quality reproductions in all sizes and shapes, for more information check the <a href="/Catalog">Catalog</a>
 		</div>
@@ -10,7 +10,7 @@
 			<% if (locals.original){ %> <% Object.keys(locals.original).forEach(function (index) { %>
 			<div class="card" id="<%= locals.original[index]._id %>">
 				<a class="card-img-expand" href="/Shop/<%= locals.original[index]._id %>"
-					><img src="/api/image/<%= locals.original[index].mainImgId %>" class="card-img-top" alt="<%= locals.original[index].title %>"
+					><img src="/api/image/<%= locals.original[index].mainImgId %>" class="card-img-top" alt="Shop painting - <%= locals.original[index].title %>"
 				/></a>
 				<div class="card-body">
 					<h5 class="card-title">
@@ -37,7 +37,7 @@
 			<% } %>
 		</div>
 		<div class="col-md-6 offset-md-3 mt-5">
-			<img id="loader" src="/img/loader.gif" />
+			<img alt="loading animation" id="loader" src="/img/loader.gif" />
 			<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
 		</div>
 	</div>
@@ -45,7 +45,7 @@
 
 <a class="lightbox-close" href="#close">
 	<div class="lightbox-target" id="expand">
-		<img id="expandImg" src="" />
+		<img alt="Expanded Image" id="expandImg" src="" />
 	</div>
 </a>
 

@@ -42,7 +42,7 @@
           <% for (let index = 0; index < 5; index++) { %>
               <% if (locals.front[index] && locals.front[index].null != true) { %>
                 <li data-target="#carousel-thumb" data-slide-to="<%= i %>" <% if(index == 0) { %>class='active'<% } %>> 
-                    <img class="d-block w-100" src="/api/front/image/<%= locals.front[index]._id %>" alt="..." class="img-fluid">
+                    <img class="d-block w-100" src="/api/front/image/<%= locals.front[index]._id %>" alt="Homepage front landing painting" class="img-fluid">
                 </li>
                 <% i = i + 1; %>
               <%  } %>
@@ -54,7 +54,7 @@
 
 <a class="lightbox-close" href="#close">
   <div class="lightbox-target" id="expand">
-    <img id="expandImg" src=""/>
+    <img alt="Expanded Image" id="expandImg" src=""/>
   </div>
 </a>
 

@@ -37,9 +37,9 @@
 			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].isUnique) { %>-<%= index %><% } %>">
 				<div class="cart-item cart-column">
 					<% if (locals.products[index].isUnique === true) { %>
-					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
+					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="Ordered Painting - <%= locals.products[index].item.title %>" />
 					<% } else { %>
-					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="<%= locals.products[index].item.title %>" />
+					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="Ordered Painting - <%= locals.products[index].item.title %>" />
 					<% } %>
 					<div class="cart-title-description">
 						<h4 class="cart-item-title"><%= locals.products[index].shorttitle %>...</h4>
@@ -64,7 +64,7 @@
 
 		<div class="col-md-10 offset-md-1 wrapper">
 			<h1 class="single-title text-center">Delivery Informations</h1>
-			<div class="alert alert-info alert-static w-100 mb-3" role="alert">Make sure these informations are correct, if not, change them <a href="/User">HERE</a></div>
+			<div class="alert alert-info alert-static w-100 mb-3" role="alert">Make sure these informations are correct, if not <a href="/User">change your delivery address</a></div>
 
 			<div class="row">
 				<div class="col-md-6">

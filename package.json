@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"prestart": "touch /tmp/app-initialized",
+		"prestart": "touch /tmp/app-initialized && mkdir /app/tmp && mkdir /app/tmp/log4js",
 		"start": "node --optimize_for_size --max_old_space_size=460 --gc_interval=100 app",
 		"devStart": "nodemon app",
 		"pretest": "eslint controllers/*.js controllers/helpers/*.js controllers/validators/*.js models/*.js public/scripts/*.js public/scripts/blog/*.js public/scripts/gallery/*.js public/scripts/shop/*.js -f table --fix",

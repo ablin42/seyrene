@@ -236,13 +236,13 @@ class PwintyObject {
 
 	hideAttribute(attributeName) {
 		let attributeItem = document.getElementById(attributeName);
-		attributeItem.parentNode.parentNode.setAttribute("style", "display: none");
+		attributeItem.parentNode.parentNode.classList.add("nodisplay");
 		this.attributes[attributeName] = undefined;
 	}
 
 	displayAttribute(attributeName) {
 		let attributeItem = document.getElementById(attributeName);
-		attributeItem.parentNode.parentNode.setAttribute("style", "display: grid");
+		attributeItem.parentNode.parentNode.classList.remove("nodisplay");
 	}
 
 	checkAttributes() {

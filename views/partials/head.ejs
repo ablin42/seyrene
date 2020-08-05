@@ -8,6 +8,10 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<meta name="csrf-token" content="<%= locals.csrfToken %>" />
+		<meta name="description" content="<%= locals.description %>" />
+		<meta name="keywords" content="Art, Arts, Painting, Paintings, Buy, Purchase, Maral, Akbarian, Copy, Unique, Beautiful, Reproduction, Actress, Peinture, Tableaux" />
+		<!-- add keywords -->
+		<meta name="author" content="Maral Abkarian" />
 		<title><%= (locals.active) ? locals.active : 'Maral' %></title>
 		<!-- JQuery -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -49,8 +53,7 @@
 
 			<nav class="navbar-container">
 				<nav class="navbar-custom">
-					<a href="/"><img class="logo" src="/svg/logo.svg" /></a
-					><!-- <h1 class="logo name-header navbar-text">Maral</h1> -->
+					<a href="/"><img al="Maral Abkarian Paiting Logo" class="logo" src="/svg/logo.svg" /></a>
 					<ul class="nav-links">
 						<li>
 							<a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>">About</a>

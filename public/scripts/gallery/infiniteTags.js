@@ -29,7 +29,7 @@ async function infiniteTags() {
 					toAppend = `
                            	<div class="face face1 blog-overlay-wrapper mt-0">
 										<a href="#expand">
-											<img data-imgid="${gallery.mainImgId}" src="/api/image/${gallery.mainImgId}" class="w-100 expandable" alt="${gallery.shorttitle}">
+											<img data-imgid="${gallery.mainImgId}" src="/api/image/${gallery.mainImgId}" class="w-100 expandable" alt="Gallery Paiting - ${gallery.shorttitle}">
 										</a>
                             
                           <div class="blog-overlay expandable" data-id="${gallery.mainImgId}" data-isGallery="true">
