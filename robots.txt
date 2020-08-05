@@ -1,5 +1,0 @@
-User-agent: *
-Disallow: /Admin/
-Disallow: /Payment/
-Disallow: /Billing/
-Disallow: /Resetpw/
