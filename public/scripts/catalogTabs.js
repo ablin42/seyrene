@@ -4,7 +4,7 @@ let sub = document.querySelectorAll(".cat-btn");
 main.forEach(btn => {
 	let target = btn.id.slice(0, -4);
 	btn.addEventListener("click", function () {
-		openTab(btn, target);
+		openTabCat(btn, target);
 	});
 });
 
@@ -16,7 +16,7 @@ sub.forEach(btn => {
 	});
 });
 
-function openTab(btn, tabName) {
+function openTabCat(btn, tabName) {
 	let tab = document.getElementsByClassName("tab");
 	let buttons = document.querySelectorAll(".catalog-wrapper .tab-btn");
 

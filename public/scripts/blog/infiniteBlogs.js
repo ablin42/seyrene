@@ -89,9 +89,11 @@ async function infiniteBlogs() {
 }
 
 $(window).scroll(function () {
-	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
-	const val2 = $(document).height();
-	if (val1 >= val2) {
-		infiniteBlogs();
+	if (!document.getElementById("blog").classList.contains("nodisplay")) {
+		const val1 = Math.ceil($(window).scrollTop() + $(window).height());
+		const val2 = $(document).height();
+		if (val1 >= val2) {
+			infiniteBlogs();
+		}
 	}
 });
