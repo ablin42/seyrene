@@ -96,7 +96,7 @@ router.post("/resetpw", limiter, vPassword, setUser, notLoggedUser, async (req, 
 
 		fullLog.info(`Resetpw success: ${user._id}`);
 		req.flash("success", ERROR_MESSAGE.updatedPw);
-		return res.status(200).redirect("/Account");
+		return res.status(200).redirect("/Login");
 	} catch (err) {
 		threatLog.error("ERROR RESETPW:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);

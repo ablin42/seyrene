@@ -1,45 +1,22 @@
 <% include partials/head %>
 
-<div class="container-with-menu container">
-	<div class="row row-height">
-		<div class="menu col-xl-3 col-2">
-			<ul>
-				<li>
-					<a href="#" id="parameters-btn" class="menu-link"> <i class="fas fa-cog mr-2"></i><span>Parameters</span> <i class="fas fa-chevron-right chev"></i></a>
-				</li>
-				<li>
-					<a href="#" id="delivery-btn" class="menu-link active disabled">
-						<i class="fas fa-truck mr-2"></i> <span>Delivery Informations</span><i class="fas fa-chevron-right chev"></i
-					></a>
-				</li>
-				<li>
-					<a href="#" id="purchases-btn" class="menu-link"><i class="fa fa-clock-o mr-2"></i><span>History</span> <i class="fas fa-chevron-right chev"></i></a>
-				</li>
-				<li>
-					<a href="/shopping-cart"><i class="fas fa-shopping-cart mr-2"></i> <span>Cart</span></a>
-				</li>
-			</ul>
-
-			<a href="#header" class="fixed-arrow mt-5 text-center">
-				<i class="fas fa-arrow-up fa-2x"></i>
-			</a>
-		</div>
-
-		<div id="parameters" class="tab col-xl-9 col-10 nodisplay">
-			<div class="col-md-10 offset-md-1 wrapper">
-				<h1 class="single-title text-center">Settings</h1>
-				<div class="alert alert-warning alert-static w-100 mb-3" role="alert">
+    <div class="full-container" id="container-contact">
+<div class="container container-front"> 
+		<div id="parameters" class="tab col-md-12">
+			<div class="col-md-10 offset-md-1 p-2">
+				<h1 class="square-title text-center">Settings</h1>
+				<div class="alert alert-warning alert-static mb-3" role="alert">
 					Remember to keep these informations private
 				</div>
 
-				<div class="col-md-8 offset-md-2">
+				<div class="col-md-8 offset-md-2 settings">
 					<form id="nameform" method="POST" action="/api/user/patch/name">
 						<label class="control-label">Username</label>
 						<input type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" data-vstring="4;30" required />
 						<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
 
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="logbtn mt-2" value="Save" id="submit-nameform" />
+						<input type="submit" class="submit-btn mt-2" value="Save" id="submit-nameform" />
 					</form>
 
 					<form id="emailform" method="POST" action="/api/user/patch/email">
@@ -48,7 +25,7 @@
 						<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="logbtn mt-2" value="Save" id="submit-emailform" />
+						<input type="submit" class="submit-btn mt-2" value="Save" id="submit-emailform" />
 					</form>
 
 					<form id="passwordform" method="POST" action="/api/user/patch/password">
@@ -65,7 +42,7 @@
 						<span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
 
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="logbtn mt-2" value="Save" id="submit-passwordform" />
+						<input type="submit" class="submit-btn mt-2" value="Save" id="submit-passwordform" />
 					</form>
 
 					<label class="control-label mt-5">DELETE YOUR ACCOUNT</label>
@@ -73,10 +50,14 @@
 				</div>
 			</div>
 		</div>
-		<div id="delivery" class="tab col-xl-9 col-10">
-			<div class="col-md-10 offset-md-1 wrapper">
-				<h1 class="single-title text-center">Delivery Address</h1>
-				<hr />
+		</div>
+	</div>
+	
+	    <div class="full-container" id="container-contact">
+<div class="container container-front"> 
+		<div id="delivery" class="tab col-md-12">
+			<div class="col-md-10 offset-md-1 p-2 delivery">
+				<h1 class="square-title text-center">Delivery Address</h1>
 				<form id="deliveryform" method="POST" action="/api/user/patch/delivery-info">
 					<div class="row">
 						<div class="col-md-6">
@@ -147,11 +128,11 @@
 							</div>
 							<div class="col-md-12">
 								<label class="control-label">Country - ISO Code</label>
-								<div class="alert alert-warning alert-static w-100 mb-3" role="alert">
+								<div class="alert alert-warning alert-static w-100" role="alert">
 									We need this to properly state your country to the delivery services
 								</div>
 
-								<select class="form-control" name="country-iso" id="country-iso" required>
+								<select class="form-control mt-3" name="country-iso" id="country-iso" required>
 									<option selected disabled value="">Select One</option>
 									<% if(locals.countries){ %> <% locals.countries.forEach(function (item, index) { %>
 										<option <% if (item.isoCode === locals.delivery.isoCode) { %> selected <% } %> value="<%= item.isoCode %>"><%= item.name %> - <%= item.isoCode %></option>
@@ -174,13 +155,17 @@
 						</div>
 
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="logbtn" value="Save" id="submit-deliveryform" />
+						<input type="submit" class="submit-btn" value="Save" id="submit-deliveryform" />
 					</div>
 				</form>
 			</div>
 		</div>
+		</div>
+		</div>
 
-		<div id="purchases" class="tab col-xl-9 col-10 nodisplay">
+		    <div class="full-container" id="container-contact">
+<div class="container container-front"> 
+		<div id="purchases" class="tab col-md-12">
 			<div class="col-md-10 offset-md-1 p-0">
 				<div class="table-responsive">
 					<table class="table table-striped table-hover mb-0">
@@ -208,9 +193,8 @@
 					</table>
 				</div>
 			</div>
-		</div>
-	</div>
-</div>
+						</div>
+			</div>
 
 <script src="/scripts/user.js" defer></script>
 <script src="/scripts/core/menu-arrow.js"></script>

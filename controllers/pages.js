@@ -287,7 +287,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 	} catch (err) {
 		threatLog.error("USER ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		res.status(400).redirect("/Account");
+		res.status(400).redirect("/Login");
 	}
 });
 
@@ -376,7 +376,7 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 	} catch (err) {
 		threatLog.error("RESETPW ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(200).redirect("/Account");
+		return res.status(200).redirect("/Login");
 	}
 });
 

@@ -24,7 +24,7 @@ async function setUser(req, res, next) {
 		let [err, user] = await utils.to(User.findById(userId));
 		if (err || user == null) {
 			req.flash("warning", ERROR_MESSAGE.userNotFound);
-			return res.status(401).redirect("/Account");
+			return res.status(401).redirect("/Login");
 		}
 		user.password = undefined;
 		req.user = user;
@@ -39,7 +39,7 @@ async function setUser(req, res, next) {
 function authUser(req, res, next) {
 	if (!req.user) {
 		req.flash("warning", ERROR_MESSAGE.logInNeeded);
-		return res.status(403).redirect("/Account");
+		return res.status(403).redirect("/Login");
 	}
 
 	next();

@@ -1,25 +1,9 @@
 <% include partials/head %>
 
-<div class="container-with-menu container">
-	<div class="row row-height">
-		<div class="menu menu-login col-xl-3 col-md-2">
-			<ul>
-				<li>
-					<a href="#" id="login-btn" class="menu-link active disabled">
-						<i class="fas fa-sign-in-alt mr-2"></i> <span>Sign up/Log in</span> <i class="fas fa-chevron-right chev"></i
-					></a>
-				</li>
-				<li>
-					<a href="#" id="lostpw-container-btn" class="menu-link"
-						><i class="fas fa-key mr-2"></i>
-						<span>Lost password</span>
-						<i class="fas fa-chevron-right chev"></i
-					></a>
-				</li>
-			</ul>
-		</div>
+    <div class="full-container" id="container-contact">
+<div class="container container-front"> 
 
-		<div id="login" class="tab col-xl-9 col-md-10 row">
+		<div id="login" class="tab col-md-10 offset-md-1 row">
 			<div class="container p-0 m-0 h-100" id="container">
 				<div class="form-slider-container sign-up-container">
 					<form class="form-slider" id="register" data-subreg="true" method="POST" action="/api/auth/register">
@@ -55,6 +39,7 @@
 						<input type="submit" class="logbtn" value="Sign up" id="submit-register" />
 					</form>
 				</div>
+		
 
 				<div class="form-slider-container sign-in-container">
 					<form class="form-slider" id="login-form" method="POST" data-sublogin="true" action="/api/auth/login">
@@ -84,12 +69,16 @@
 				</div>
 			</div>
 		</div>
+			</div>
+		</div>
 
-		<div id="lostpw-container" class="tab col-xl-9 col-md-10 nodisplay">
+		    <div class="full-container" id="container-contact">
+<div class="container container-front"> 
+
+		<div id="lostpw-container" class="tab col-md-12">
 			<div class="container p-0 m-0 h-100">
-				<div class="col-md-10 offset-md-1 wrapper lostpw-container">
-					<div class="box-lostpw">
-						<h1 class="single-title text-center">Password Recovery</h1>
+				<div class="col-md-12 wrapper lostpw-container">
+						<h1 class="square-title text-center">Password Recovery</h1>
 						<div class="alert alert-info alert-static" role="alert">
 							We'll send you a mail with instructions to reset your password
 						</div>
@@ -103,7 +92,6 @@
 							</div>
 							<input type="submit" class="logbtn" value="Envoyer" id="submit-lostpw" />
 						</form>
-					</div>
 				</div>
 			</div>
 		</div>

@@ -154,11 +154,11 @@ router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 
 		fullLog.info(`Account verified: ${user._id}`);
 		req.flash("success", ERROR_MESSAGE.verified);
-		return res.status(200).redirect("/Account");
+		return res.status(200).redirect("/Login");
 	} catch (err) {
 		threatLog.error("ERROR CONFIRMATION TOKEN:", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/Account");
+		return res.status(400).redirect("/Login");
 	}
 });
 
