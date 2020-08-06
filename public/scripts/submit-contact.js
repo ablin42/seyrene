@@ -1,6 +1,13 @@
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 let form = document.querySelector("#contact");
 
+let callToGallery = document.querySelector("#goto-gallery");
+
+if (callToGallery)
+	callToGallery.addEventListener("click", function () {
+		window.location.href = "/Galerie";
+	});
+
 if (form)
 	form.addEventListener("submit", function (e) {
 		submitContact(e);

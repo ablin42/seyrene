@@ -1410,11 +1410,15 @@ div.carousel-item.active {
 	height: 50px;
 	border: none !important;
 	background: linear-gradient(160deg, var(--interactive-color), var(--interactive-color-p1));
-	background-size: 200%;
 	color: var(--light-shade);
 	outline: none;
 	cursor: pointer;
-	transition: 0.5s;
+	transition: 0.3s ease-in;
+	opacity: 0.8;
+}
+
+.submit-btn:hover {
+	opacity: 1;
 }
 
 .call-btn {
