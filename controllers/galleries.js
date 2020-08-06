@@ -99,7 +99,7 @@ router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole
 		const obj = { title: req.body.title, content: req.body.content };
 		obj.tags = gHelpers.parseTags(req.body.tags);
 
-		//console.log(req.body.content)
+		console.log;
 
 		const gallery = new Gallery(obj);
 		let [err, result] = await utils.to(gallery.save());
