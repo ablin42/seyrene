@@ -55,6 +55,12 @@
 				<nav class="navbar-custom">
 					<a href="/"><img al="Maral Abkarian Paiting Logo" class="logo" src="/svg/logo.svg" /></a>
 					<ul class="nav-links">
+						<% if (locals.user && locals.user.role === "admin") { %>
+						<li>
+							<a href="/Admin" class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>">ADMIN</a>
+						</li>
+						<% } %>
+
 						<li>
 							<a href="/About" class="navbar-text <%= (locals.active && locals.active == 'About') ? 'active' : '' %>">About</a>
 						</li>
@@ -79,12 +85,6 @@
 						<li>
 							<a href="/User" class="navbar-text <%= (locals.active && locals.active == 'User') ? 'active' : '' %>">Account</a>
 						</li>
-
-						<% if (locals.user && locals.user.role === "admin") { %>
-						<li>
-							<a href="/Admin" class="navbar-text <%= (locals.active && locals.active == 'Admin') ? 'active' : '' %>">ADMIN</a>
-						</li>
-						<% } %>
 
 						<li>
 							<a href="/api/auth/logout" class="navbar-text">Log out</a>

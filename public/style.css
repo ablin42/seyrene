@@ -36,11 +36,12 @@
 }
 
 .full-container:nth-of-type(odd) {
-	background-color: var(--brand-blue);
+	background: linear-gradient(to bottom, var(--brand-blue), var(--brand-blue-p1));
+	/* brand blue brand blue m1 */
 }
 
 .full-container:nth-of-type(even) {
-	background-color: var(--brand-blue-m1);
+	background: linear-gradient(to bottom, var(--brand-blue-m1), var(--brand-blue-p1));
 }
 
 .align-left {
