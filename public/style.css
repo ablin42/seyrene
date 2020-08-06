@@ -41,7 +41,7 @@
 }
 
 .full-container:nth-of-type(even) {
-	background: linear-gradient(to bottom, var(--brand-blue-m1), var(--brand-blue-p1));
+	background: linear-gradient(to bottom, var(--brand-blue-m1), #07499c);
 }
 
 .align-left {
