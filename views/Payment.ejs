@@ -5,17 +5,18 @@
 <input type="hidden" id="stripePublicKey" value="<%= locals.stripePublicKey %>" />
 <input type="hidden" id="billingInfo" value="<%= locals.billing %>" />
 
-<div class="container container-single">
-	<div class="col-12 col-lg-6 offset-lg-3 mt-5">
-		<div class="payment-form-wrapper">
+<div class="full-container">
+	<div class="container container-front">
+		<div class="col-12 col-lg-6 offset-lg-3 mt-5">
 			<div class="row">
-				<h1 class="payment-price single-title"><% if (locals.totalPrice) { %><%= locals.totalPrice %><% } %>€</h1>
-				<form action="" method="POST" id="payment-form">
-					<label class="control-label" for="email">Email</label>
-					<input type="text" id="email" placeholder="Email address" required />
+				<h1 class="payment-price square-title"><% if (locals.totalPrice) { %><%= locals.totalPrice %><% } %>€</h1>
+				<form class="w-100" action="" method="POST" id="payment-form">
 					<div class="alert alert-info alert-static w-100 mb-3" role="alert">
 						Email is needed for receipt and shipping updates
 					</div>
+					<label class="control-label" for="email">Email</label>
+					<input type="text" id="email" placeholder="Email address" required />
+
 					<label for="card-element" class="control-label">
 						Credit or debit card
 					</label>
@@ -29,13 +30,12 @@
 					</div>
 
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<input type="submit" value="Submit Payment" class="btn-pay mt-3" />
+					<input type="submit" value="Submit Payment" class="submit-btn mt-3" />
 					<!--<button class="btn-pay mt-3">Submit Payment</button>-->
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
-
 <script src="/scripts/shop/pay.js" defer></script>
 <% include partials/footer %>

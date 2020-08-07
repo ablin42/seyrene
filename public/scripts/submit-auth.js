@@ -8,7 +8,7 @@ let reg = document.querySelector("[data-subreg]");
 
 if (lostpw)
 	lostpw.addEventListener("submit", function (e) {
-		submitRegister(e);
+		submitLostpw(e);
 	});
 
 if (log)
@@ -18,7 +18,7 @@ if (log)
 
 if (reg)
 	reg.addEventListener("submit", function (e) {
-		submitLostpw(e);
+		submitRegister(e);
 	});
 
 var CaptchaCallback = function () {

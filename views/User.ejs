@@ -10,61 +10,85 @@
 	</div>
 </div>
 
-    <div class="full-container" id="container-settings">
-<div class="container container-front"> 
+<div class="full-container" id="container-settings">
+	<div class="container container-front">
 		<div id="parameters" class="tab col-md-12">
 			<div class="col-md-10 offset-md-1 p-2">
 				<h1 class="square-title text-center">Settings</h1>
+				<!--
 				<div class="alert alert-warning alert-static mb-3" role="alert">
 					Remember to keep these informations private
-				</div>
+				</div>-->
 
-				<div class="col-md-8 offset-md-2 settings">
-					<form id="nameform" method="POST" action="/api/user/patch/name">
-						<label class="control-label">Username</label>
-						<input type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" data-vstring="4;30" required />
-						<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
+				<div class="settings">
+					<div class="row">
+						<div class="col-md-6">
+							<form id="nameform" method="POST" action="/api/user/patch/name">
+								<label class="control-label">Username</label>
+								<input type="text" id="name" name="name" value="<% if (locals.user.name) { %><%= locals.user.name %><% } %>" data-vstring="4;30" required />
+								<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
 
+								<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+								<input type="submit" class="submit-btn mt-2" value="Save" id="submit-nameform" />
+							</form>
+						</div>
+
+						<div class="col-md-6">
+							<form id="emailform" method="POST" action="/api/user/patch/email">
+								<label class="control-label">Email</label>
+								<input type="email" id="email" name="email" value="<% if (locals.user.email) { %><%= locals.user.email %><% } %>" data-vemail="true" required />
+								<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
+
+								<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+								<input type="submit" class="submit-btn" value="Save" id="submit-emailform" />
+							</form>
+						</div>
+					</div>
+
+					<form id="passwordform" class="w-100" method="POST" action="/api/user/patch/password">
+						<div class="row">
+							<div class="col-md-6">
+								<label class="control-label">Password <i>(current)</i></label>
+								<input type="password" name="cpassword" placeholder="*********" required />
+								<span data-placeholder="Current Password"></span>
+							</div>
+
+							<div class="col-md-6">
+								<label class="control-label">Password <i>(new)</i></label>
+								<input type="password" id="password" name="password" placeholder="*********" data-vpw="true" required />
+								<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<label class="control-label">Password <i>(confirm)</i></label>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<input type="password" id="password2" name="password2" placeholder="*********" data-vpw2="true" required />
+								<span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
+							</div>
+							<div class="col-md-6">
+								<input type="submit" class="submit-btn mt-2" value="Save" id="submit-passwordform" />
+							</div>
+						</div>
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="submit-btn mt-2" value="Save" id="submit-nameform" />
 					</form>
 
-					<form id="emailform" method="POST" action="/api/user/patch/email">
-						<label class="control-label">Email</label>
-						<input type="email" id="email" name="email" value="<% if (locals.user.email) { %><%= locals.user.email %><% } %>" data-vemail="true" required />
-						<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
-
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="submit-btn mt-2" value="Save" id="submit-emailform" />
-					</form>
-
-					<form id="passwordform" method="POST" action="/api/user/patch/password">
-						<label class="control-label">Password <i>(current)</i></label>
-						<input type="password" name="cpassword" placeholder="*********" required />
-						<span data-placeholder="Current Password"></span>
-
-						<label class="control-label mt-3">Password <i>(new)</i></label>
-						<input type="password" id="password" name="password" placeholder="*********" data-vpw="true" required />
-						<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
-
-						<label class="control-label">Password <i>(confirm)</i></label>
-						<input type="password" id="password2" name="password2" placeholder="*********" data-vpw2="true" required />
-						<span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
-
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="submit-btn mt-2" value="Save" id="submit-passwordform" />
-					</form>
-
-					<label class="control-label mt-5">DELETE YOUR ACCOUNT</label>
-					<input type="submit" data-id="<%= locals.user._id %>" class="logbtn cancelbtn w-100" value="DELETE PERMANENTLY"  />
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<label class="control-label mt-4">DELETE YOUR ACCOUNT</label>
+							<input type="submit" data-id="<%= locals.user._id %>" class="logbtn cancelbtn w-100" value="DELETE PERMANENTLY" />
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		</div>
 	</div>
-	
-	    <div class="full-container" id="container-delivery">
-<div class="container container-front"> 
+</div>
+
+<div class="full-container" id="container-delivery">
+	<div class="container container-front">
 		<div id="delivery" class="tab col-md-12">
 			<div class="col-md-10 offset-md-1 p-2 delivery">
 				<h1 class="square-title text-center">Delivery Address</h1>
@@ -72,26 +96,12 @@
 					<div class="row">
 						<div class="col-md-6">
 							<label class="control-label">Last Name</label>
-							<input
-								id="lastname"
-								name="lastname"
-								placeholder="Doe"
-								value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>"
-							data-vstring="2;128"
-								required
-							/>
+							<input id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.delivery.lastname) { %><%= locals.delivery.lastname %><% } %>" data-vstring="2;128" required />
 							<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
 						</div>
 						<div class="col-md-6">
 							<label class="control-label">First Name</label>
-							<input
-								id="firstname"
-								name="firstname"
-								placeholder="John"
-								value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>"
-								data-vstring="2;128"
-								required
-							/>
+							<input id="firstname" name="firstname" placeholder="John" value="<% if (locals.delivery.firstname) { %><%= locals.delivery.firstname %><% } %>" data-vstring="2;128" required />
 							<span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
 						</div>
 					</div>
@@ -141,7 +151,6 @@
 								<div class="alert alert-warning alert-static w-100" role="alert">
 									We need this to properly state your country to the delivery services
 								</div>
-
 								<select class="form-control mt-3" name="country-iso" id="country-iso" required>
 									<option selected disabled value="">Select One</option>
 									<% if(locals.countries){ %> <% locals.countries.forEach(function (item, index) { %>
@@ -164,17 +173,21 @@
 							</div>
 						</div>
 
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="submit-btn" value="Save" id="submit-deliveryform" />
+						<div class="row">
+							<div class="col-md-12">
+								<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+								<input type="submit" class="submit-btn" value="Save" id="submit-deliveryform" />
+							</div>
+						</div>
 					</div>
 				</form>
 			</div>
 		</div>
-		</div>
-		</div>
+	</div>
+</div>
 
-		    <div class="full-container" id="container-history">
-<div class="container container-front"> 
+<div class="full-container" id="container-history">
+	<div class="container container-front">
 		<div id="purchases" class="tab col-md-12">
 			<div class="col-md-10 offset-md-1 p-0">
 				<h1 class="text-center square-title">Order History</h1>
@@ -204,12 +217,12 @@
 					</table>
 				</div>
 			</div>
-						</div>
-			</div>
+		</div>
+	</div>
 
-<script src="/scripts/user.js" defer></script>
-<script src="/scripts/core/menu-arrow.js"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEBWHg2gKU3uMKQWSvn4yXWV5RavPm1PU&libraries=places&callback=initAutocomplete" async defer></script>
-<script src="/scripts/core/auto-complete.js"></script>
-<script src="/scripts/core/frontValidation.js" defer></script>
-<% include partials/footer %>
+	<script src="/scripts/user.js" defer></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEBWHg2gKU3uMKQWSvn4yXWV5RavPm1PU&libraries=places&callback=initAutocomplete" async defer></script>
+	<script src="/scripts/core/auto-complete.js"></script>
+	<script src="/scripts/core/frontValidation.js" defer></script>
+	<% include partials/footer %>
+</div>

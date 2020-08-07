@@ -1,23 +1,29 @@
 <% include partials/head %>
 
-<div class="container sticky">
-	<div class="col-md-8 offset-md-2 mt-5">
-		<div class="row">
-			<form class="resetpw form-slider" id="resetpw" method="POST" action="/api/user/resetpw">
-				<h2 class="single-title mb-5">Reset your password</h2>
+<div class="full-container">
+	<div class="container container-front">
+		<form class="col-md-10 offset-md-1" id="resetpw" method="POST" action="/api/user/resetpw">
+			<h2 class="square-title text-center mb-5">Reset your password</h2>
 
-				<input placeholder="Password" type="password" id="password" name="password" data-vpw="true" required />
-				<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
-
-				<input placeholder="Password (confirmation)" type="password" id="password2" data-vpw2="true" name="password2" required />
-				<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
-
-				<input type="hidden" name="tokenId" value="<%= locals.tokenId %>" required />
-				<input type="hidden" name="token" value="<%= locals.token %>" required />
-				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<input type="submit" class="logbtn" value="Save" id="submit-resetpw" />
-			</form>
-		</div>
+			<div class="row">
+				<div class="col-md-6 offset-md-3">
+					<label class="control-label">Password</label>
+					<input placeholder="**********" type="password" id="password" name="password" data-vpw="true" required />
+					<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to be atleast alphanumeric</span>
+				</div>
+				<div class="col-md-6 offset-md-3">
+					<label class="control-label">Password <i>(confirm)</i></label>
+					<input placeholder="**********" type="password" id="password2" data-vpw2="true" name="password2" required />
+					<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
+				</div>
+				<div class="col-md-6 offset-md-3 mt-3">
+					<input type="submit" class="submit-btn" value="Save" id="submit-resetpw" />
+				</div>
+			</div>
+			<input type="hidden" name="tokenId" value="<%= locals.tokenId %>" required />
+			<input type="hidden" name="token" value="<%= locals.token %>" required />
+			<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+		</form>
 	</div>
 </div>
 
