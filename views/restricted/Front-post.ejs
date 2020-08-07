@@ -1,14 +1,14 @@
 <% include ../partials/head %>
 
-<div class="container container-single">
-	<div class="single-wrapper">
-		<div class="col-md-10 offset-md-1 wrapper">
-			<h1 class="single-title text-center">Modifier les images de l'accueil</h1>
+<div class="full-container">
+	<div class="container container-front">
+		<div class="col-md-12">
+			<h1 class="square-title text-center">Modifier les images de l'accueil</h1>
 			<div class="alert alert-info alert-static" role="alert">
 				Pensez à utiliser des images au format paysage...
 			</div>
 			<% if (locals.front) { %> <% for (let index = 0; index < 5; index++) { %> <% if (locals.front[index] && locals.front[index].null != true) { %>
-			<form class="text-center front-form mt-3" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data">
+			<form class="text-center front-form mt-3 <% if (index % 2 === 0) { %>even<% } %>" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data">
 				<div class="form-group" id="uploadGroup<%= index %>">
 					<label for="upload<%= index %>" class="filebtn">Choisir une image</label>
 					<input type="file" name="img" id="upload<%= index %>" class="inputfile" />

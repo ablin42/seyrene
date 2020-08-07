@@ -1,9 +1,9 @@
 <% include ../partials/head %>
 
-<div class="container container-single">
-	<div class="single-wrapper">
-		<div class="col-md-10 offset-md-1 wrapper">
-			<h1 class="text-center single-title">Gérer une commande</h1>
+<div class="full-container">
+	<div class="container container-front">
+		<div class="col-md-10 offset-md-1 p-0">
+			<h1 class="text-center square-title">Gérer une commande</h1>
 			<div class="col-12 text-center">
 				<% if (locals.order.status !== "Cancelled" && locals.order.status !== "Completed") { %>
 				<input type="submit" data-id="<%= locals.order._id %>" class="cancelbtn admincancelbtn" value="ANNULER LA COMMANDE" />
@@ -14,7 +14,7 @@
 				<% } %>
 			</div>
 
-			<div class="recap-box admin-recap">
+			<div class="payment-div admin-recap">
 				<% if (locals.order) { %>
 				<h4>Status - <b><%= locals.order.status %></b></h4>
 				<h4>Total Price - <b><%= locals.order.price %>€</b></h4>
@@ -62,9 +62,12 @@
 			</div>
 			<% }) %> <% } %>
 		</div>
-
-		<div class="col-md-10 offset-md-1 wrapper">
-			<h1 class="single-title text-center">Coordonnées</h1>
+	</div>
+</div>
+<div class="full-container" id="container-cart">
+	<div class="container container-front">
+		<div class="col-md-10 offset-md-1 p-0">
+			<h1 class="square-title text-center">Coordonnées</h1>
 			<div class="row">
 				<div class="col-md-6">
 					<label class="control-label">First Name</label>
@@ -118,7 +121,7 @@
 								id="instructions"
 								name="instructions"
 								placeholder="Door code or other useful informations..."
-								value="   <% if (locals.order.instructions) { %><%= locals.order.instructions %><% } %>"
+								value="<% if (locals.order.instructions) { %><%= locals.order.instructions %><% } %>"
 								readonly
 							/>
 						</div>

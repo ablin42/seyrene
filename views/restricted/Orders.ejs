@@ -1,12 +1,12 @@
 <% include ../partials/head %>
 
-<div class="container container-single">
-	<div class="text-center mb-4">
-		<button class="tab-btn active" id="approval-btn">En attente d'approbation</button>
-		<button class="tab-btn" id="all-btn">Toutes les commandes</button>
-	</div>
-	<div class="single-wrapper">
-		<div id="approval" class="tab col-md-10 offset-md-1">
+<div class="full-container">
+	<div class="container container-front">
+		<div class="text-center mb-4">
+			<button class="tab-btn active" id="approval-btn">En attente d'approbation</button>
+			<button class="tab-btn" id="all-btn">Toutes les commandes</button>
+		</div>
+		<div id="approval" class="tab col-lg-10 offset-lg-1 col-md-12">
 			<section class="purchase-section table-responsive">
 				<table class="table table-striped table-hover">
 					<thead>
@@ -34,7 +34,7 @@
 			</section>
 		</div>
 
-		<div id="all" class="tab col-md-10 offset-md-1 nodisplay">
+		<div id="all" class="tab col-lg-10 offset-lg-1 col-md-12 nodisplay">
 			<section class="purchase-section table-responsive">
 				<table class="table table-striped table-hover">
 					<thead>

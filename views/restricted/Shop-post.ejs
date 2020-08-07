@@ -1,11 +1,10 @@
 <% include ../partials/head %>
 
-<div class="container container-single">
-	<div class="single-wrapper">
-		<div class="col-md-10 offset-md-1 wrapper">
-			<h1 class="single-title text-center">Ajouter un item à la boutique</h1>
+<div class="full-container" id="container-admin">
+	<div class="container container-front">
+		<div class="col-md-10 offset-md-1">
+			<h1 class="square-title text-center">Ajouter à la boutique</h1>
 			<form id="shop" method="POST" action="/api/shop/post" data-postshop="true" enctype="multipart/form-data">
-				<hr />
 				<div class="form-group">
 					<label class="control-label">Titre</label>
 					<input type="text" name="title" id="title" placeholder="Titre" data-vstring="1;256" required />
@@ -29,7 +28,7 @@
 				</div>
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<input type="submit" class="logbtn" value="Valider" id="submit-shop" />
+				<input type="submit" class="submit-btn" value="Valider" id="submit-shop" />
 			</form>
 		</div>
 	</div>

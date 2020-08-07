@@ -1,11 +1,11 @@
 <% include ../partials/head %>
 
-<div class="container container-single">
-	<div class="single-wrapper mt-3">
+<div class="full-container" id="container-landing">
+	<div class="container container-front">
 		<% if (locals.shop){ %>
-		<div class="col-md-10 offset-md-1 content-wrapper" id="<%= locals.shop._id %>">
+		<div class="col-md-12 content-wrapper" id="<%= locals.shop._id %>">
 			<div class="carousel-container">
-				<div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
+				<div id="carousel-thumb" class="carousel slide carousel-thumbnails" data-ride="carousel">
 					<div class="carousel-inner" role="listbox">
 						<% if (locals.img) { %> <% locals.img.forEach(function (item, index) { %>
 						<div class="carousel-item <% if(index == 0) { %>active<% } %>">

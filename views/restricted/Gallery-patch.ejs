@@ -1,12 +1,11 @@
 <% include ../partials/head %>
 
 <script src="/scripts/core/bootstrap-tagsinput.js"></script>
-<div class="container container-single">
-	<div class="single-wrapper">
-		<div class="col-md-10 offset-md-1 wrapper">
-			<h1 class="single-title text-center">Modifier un item de la galerie</h1>
+<div class="full-container" id="container-admin">
+	<div class="container container-front">
+		<div class="col-md-10 offset-md-1">
+			<h1 class="square-title text-center">Modifier la galerie</h1>
 			<form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" data-patchgal="true" data-id="<%= locals.gallery._id %>">
-				<hr />
 				<div class="form-group">
 					<label class="control-label">Titre</label>
 					<input type="text" name="title" id="title" placeholder="Titre" value="<%= locals.gallery.title %>" data-vstring="1;256" required />
@@ -40,7 +39,7 @@
 				</div>
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<input type="submit" class="logbtn" value="Mettre à jour" id="submit-gallery" />
+				<input type="submit" class="submit-btn" value="Mettre à jour" id="submit-gallery" />
 			</form>
 			<form class="mt-3" method="POST" action="/api/gallery/delete/<%= locals.gallery._id %>">
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />

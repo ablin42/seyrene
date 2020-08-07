@@ -9,7 +9,7 @@
   <% if (locals.gallery) { %>
     <div class="col-md-10 offset-md-1 content-wrapper" id="<%= locals.gallery._id %>">
       <div class="carousel-container">
-        <div id="carousel-thumb" class="carousel slide carousel-fade carousel-thumbnails" data-ride="carousel">
+        <div id="carousel-thumb" class="carousel slide carousel-thumbnails" data-ride="carousel">
           <div class="carousel-inner" role="listbox">
             <% if (locals.images) { %>
               <% locals.images.forEach(function (item, index) { %>

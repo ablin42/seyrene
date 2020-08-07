@@ -1,11 +1,10 @@
 <% include ../partials/head %>
 
-<div class="container container-single">
-	<div class="single-wrapper">
-		<div class="col-md-10 offset-md-1 wrapper">
-			<h1 class="single-title text-center">Rédiger un post de blog</h1>
+<div class="full-container" id="container-admin">
+	<div class="container container-front">
+		<div class="col-md-10 offset-md-1">
+			<h1 class="square-title text-center">Nouveau blog</h1>
 			<form id="blog" method="POST" action="/api/blog/">
-				<hr />
 				<div class="form-group">
 					<label class="control-label">Titre</label>
 					<input id="title" type="text" placeholder="Titre" name="title" data-vstring="1;256" value="<% if (locals.formData) { %><%= locals.formData.title %><% } %>" required />
@@ -19,7 +18,7 @@
 				</div>
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<input type="submit" class="logbtn" value="Valider" id="submit-blog" />
+				<input type="submit" class="submit-btn" value="Valider" id="submit-blog" />
 			</form>
 		</div>
 	</div>
