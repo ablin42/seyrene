@@ -24,7 +24,7 @@
 						</div>
 
 						<div class="col-6">
-							<input type="submit" data-addcart="<%= locals.original[index]._id %>" class="logbtn" value="Add to cart" />
+							<input type="submit" data-addcart="<%= locals.original[index]._id %>" class="submit-btn" value="Add to cart" />
 						</div>
 					</div>
 				</div>
@@ -38,9 +38,10 @@
 		</div>
 		<div class="col-md-6 offset-md-3 mt-5">
 			<img alt="loading animation" id="loader" src="/img/loader.gif" />
-			<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
+			<input id="infinitebtn" type="submit" class="submit-btn" value="Load more" />
 		</div>
 	</div>
+	<% include partials/footer %>
 </div>
 
 <a class="lightbox-close" href="#close">
@@ -51,4 +52,3 @@
 
 <script src="/scripts/shop/infiniteShops.js" defer></script>
 <script src="/scripts/cart.js" defer></script>
-<% include partials/footer %>

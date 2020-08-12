@@ -25,7 +25,7 @@
 						<label class="control-label text-center"> By checking this box I hereby declare that I have read and agree to the <a href="/Legals#tos">Terms of Service</a> </label>
 						<input type="checkbox" name="agree_tos" id="agree_tos" required />
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="logbtn" value="Sign up" id="submit-register" />
+						<input type="submit" class="submit-btn" value="Sign up" id="submit-register" />
 					</form>
 				</div>
 
@@ -37,7 +37,7 @@
 
 						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 						<div class="recaptcha-wrapper"></div>
-						<input type="submit" class="logbtn" value="Log in" id="submit-login" />
+						<input type="submit" class="submit-btn" value="Log in" id="submit-login" />
 					</form>
 				</div>
 
@@ -94,9 +94,9 @@
 			</div>
 		</div>
 	</div>
+	<% include partials/footer %>
 </div>
 
 <script src="/scripts/submit-auth.js"></script>
 <script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&render=explicit" async defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>
-<% include partials/footer %>

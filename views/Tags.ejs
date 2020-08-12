@@ -3,45 +3,47 @@
 <script src="/scripts/core/bootstrap-tagsinput.js"></script>
 <script src="/scripts/cart.js"></script>
 
-<div>
-	<form class="col-md-6 offset-md-3 mb-4 mt-2 p-0" id="tags" method="GET" action="/Galerie/tags" data-tagform="true" data-posttags="true">
-		<label class="search-label control-label cwhite">Filter by tags</label>
-		<input type="text" placeholder="Enter tags then press enter..." value="" data-role="tagsinput" id="tagInput" />
-		<span data-placeholder="Tags"></span>
+<div class="full-container">
+	<h1 class="square-title text-center">Search paintings by tags</h1>
+	<div>
+		<form class="col-md-6 offset-md-3 mb-4 mt-2 p-0" id="tags" method="GET" action="/Galerie/tags" data-tagform="true" data-posttags="true">
+			<input type="text" placeholder="Separate each tag with a comma..." value="" data-role="tagsinput" id="tagInput" />
+			<span data-placeholder="Tags"></span>
 
-		<input type="submit" class="logbtn mb-2 mt-0" value="Filter" id="submit-tags" />
-	</form>
-</div>
-<div class="container gallery-mode">
-	<div class="container-gallery" id="container-gallery">
-		<% if(locals.galleries){ %> <% Object.keys(locals.galleries).forEach(function (index) { %>
-		<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
-			<div class="face face1 blog-overlay-wrapper mt-0">
-				<a href="#expand">
-					<img src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100 expandable" alt="Tag Searched Painting - <%= locals.galleries[index].title %>" />
-				</a>
+			<input type="submit" class="submit-btn mb-2 mt-0" value="Filter" id="submit-tags" />
+		</form>
+	</div>
+	<div class="container">
+		<div class="container-gallery" id="container-gallery">
+			<% if(locals.galleries){ %> <% Object.keys(locals.galleries).forEach(function (index) { %>
+			<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
+				<div class="face face1 blog-overlay-wrapper mt-0">
+					<a href="#expand">
+						<img src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100 expandable" alt="Tag Searched Painting - <%= locals.galleries[index].title %>" />
+					</a>
 
-				<div class="blog-overlay expandable" data-id="<%= locals.galleries[index]._id %>" data-isGallery="true">
-					<h4>
-						<i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i>
-					</h4>
-					<div class="gallery-tags mt-2">
-						<% locals.galleries[index].tags.forEach(function (tag) { %>
-						<a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
-						<% }) %>
+					<div class="blog-overlay expandable" data-id="<%= locals.galleries[index]._id %>" data-isGallery="true">
+						<h4>
+							<i><a href="/Galerie/<%= locals.galleries[index]._id %>"><%= locals.galleries[index].shorttitle %></a></i>
+						</h4>
+						<div class="gallery-tags mt-2">
+							<% locals.galleries[index].tags.forEach(function (tag) { %>
+							<a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
+							<% }) %>
+						</div>
+						<form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">See More</button></form>
 					</div>
-					<form action="/Galerie/<%= locals.galleries[index]._id %>"><button class="blog-btn">See More</button></form>
 				</div>
 			</div>
+			<% }) %> <% } %>
 		</div>
-		<% }) %> <% } %>
+		<% if (!locals.error) { %>
+		<div class="col-md-6 offset-md-3 mb-3 mt-3">
+			<img alt="loading animation" id="loader" src="/img/loader.gif" />
+			<input id="infinitebtn" type="submit" class="submit-btn" value="Load more" />
+		</div>
+		<% } %>
 	</div>
-	<% if (!locals.error) { %>
-	<div class="col-md-6 offset-md-3 mb-3 mt-3">
-		<img alt="loading animation" id="loader" src="/img/loader.gif" />
-		<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
-	</div>
-	<% } %>
 </div>
 
 <a class="lightbox-close" href="#close">

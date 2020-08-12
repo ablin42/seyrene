@@ -109,7 +109,7 @@ async function submitLostpw(e) {
 		body: JSON.stringify({ email: email, captcha: captcha })
 	});
 	response = await response.json();
-	if (response.error === false) return (window.location.href = "/");
+	if (response.error === false) return (window.location.href = "/Login");
 
 	let alert = createAlertNode(response.message, "warning");
 	addAlert(alert, "#header");

@@ -1,7 +1,7 @@
 <% include ../partials/head %>
 
 <div class="full-container">
-	<div class="container container-front">
+	<div class="container">
 		<div class="col-md-12">
 			<h1 class="square-title text-center">Modifier les images de l'accueil</h1>
 			<div class="alert alert-info alert-static" role="alert">
@@ -20,7 +20,7 @@
 				<input type="hidden" name="referenceId" value="<%= index %>" />
 				<div id="uploadbtn<%= index %>" class="form-group nodisplay">
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<button type="submit" name="submit" class="logbtn">Valider</button>
+					<button type="submit" name="submit" class="submit-btn">Valider</button>
 				</div>
 			</form>
 			<% } else { %>
@@ -36,7 +36,7 @@
 				<input type="hidden" name="referenceId" value="<%= index %>" />
 				<div id="uploadbtn<%= index %>" class="form-group nodisplay">
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<button type="submit" name="submit" class="logbtn">Valider</button>
+					<button type="submit" name="submit" class="submit-btn">Valider</button>
 				</div>
 			</form>
 			<% } %> <% } %> <% } else { %>
@@ -52,7 +52,7 @@
 				<input type="hidden" name="referenceId" value="0" />
 				<div id="uploadbtn0" class="form-group nodisplay">
 					<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-					<button type="submit" name="submit" class="logbtn">Valider</button>
+					<button type="submit" name="submit" class="submit-btn">Valider</button>
 				</div>
 			</form>
 			<% } %>

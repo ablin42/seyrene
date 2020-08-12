@@ -3,10 +3,10 @@ let inputFile = document.querySelectorAll(".inputfile");
 let delbtn = document.querySelectorAll("a[data-del]");
 let selbtn = document.querySelectorAll("a[data-sel]");
 let patchshop = document.querySelector("form[data-patchshop]");
-let postShop = document.querySelector("form[data-postshop]");
+let postShopForm = document.querySelector("form[data-postshop]");
 
-if (postShop)
-	postShop.addEventListener("submit", function (e) {
+if (postShopForm)
+	postShopForm.addEventListener("submit", function (e) {
 		postShop(e);
 	});
 

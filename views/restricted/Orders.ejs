@@ -1,7 +1,8 @@
 <% include ../partials/head %>
 
 <div class="full-container">
-	<div class="container container-front">
+	<div class="container">
+		<h1 class="square-title text-center">Commandes</h1>
 		<div class="text-center mb-4">
 			<button class="tab-btn active" id="approval-btn">En attente d'approbation</button>
 			<button class="tab-btn" id="all-btn">Toutes les commandes</button>
@@ -61,9 +62,9 @@
 				</table>
 			</section>
 		</div>
-		<div class="col-6 offset-3 mb-3 mt-3">
+		<div class="col-md-6 offset-md-3 mb-3">
 			<img id="loader" src="/img/loader.gif" />
-			<input id="infinitebtn" type="submit" class="logbtn" value="Load more" data-target="approval" />
+			<input id="infinitebtn" type="submit" class="submit-btn" value="Load more" data-target="approval" />
 		</div>
 	</div>
 </div>

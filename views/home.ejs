@@ -42,16 +42,6 @@
 		</div>
 		<h1 class="square-title text-center">Want to see more?</h1>
 		<input type="submit" class="submit-btn call-btn" value="Take me to the Gallery" id="goto-gallery" />
-		<!--/.Controls
-		<div class="thumbnail-wrapper mt-5">
-			<ol class="carousel-indicators">
-				<% if (locals.front) { %> <% i = 0; %> <% for (let index = 0; index < 5; index++) { %> <% if (locals.front[index] && locals.front[index].null != true) { %>
-				<li data-target="#carousel-thumb" data-slide-to="<%= i %>" class="<% if(index == 0) { %>active<% } %>">
-					<img class="d-block w-100" src="/api/front/image/<%= locals.front[index]._id %>" alt="Homepage front landing painting" class="img-fluid" />
-				</li>
-				<% i = i + 1; %> <% } %> <% } %> <% } %>
-			</ol>
-		</div>-->
 	</div>
 </div>
 
@@ -172,6 +162,7 @@
 			</li>
 		</ul>
 	</div>
+	<% include partials/footer %>
 </div>
 
 <a class="lightbox-close" href="#close">
@@ -183,4 +174,3 @@
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="/scripts/submit-contact.js" defer></script>
 <script src="/scripts/core/carousel-cycle.js"></script>
-<% include partials/footer %>

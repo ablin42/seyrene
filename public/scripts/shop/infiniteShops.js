@@ -32,7 +32,7 @@ async function infiniteShopItems(tb) {
 												<b class="card-price">${shop.price}€</b>
 											</div>
 											<div class="col-6">
-												<input type="submit" data-addcart="${id}" class="logbtn" value="Add to cart" />
+												<input type="submit" data-addcart="${id}" class="submit-btn" value="Add to cart" />
 											</div>
 										</div>
 									</div>`;
