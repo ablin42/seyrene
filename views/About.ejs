@@ -4,44 +4,47 @@
 
 <div class="container container-front">
 	<div class="container container-blog h-100 p-0 m-0">
-		<div class="col-md-12 wrapper z-0" id="container-blog">
+		<div class="col-md-12 wrapper p-0" id="container-blog">
 			<% if (locals.blogs){ %> <% Object.keys(locals.blogs).forEach(function (index) { %>
-			<div class="blog-row" id="<%= locals.blogs[index]._id %>">
-				<h3 class="blog-title"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3>
-				<p class="blog-info">
-					uploaded by <b class="blog-author"><%= locals.blogs[index].author %></b>,
-					<i class="blog-date"><%= locals.blogs[index].date %></i>
-				</p>
+			<div class="full-container blog-container <% if (index % 2 === 0) { %>even<% } %>">
+				<div class="container m-0">
+					<div class="blog-row" id="<%= locals.blogs[index]._id %>">
+						<h3 class="blog-title"><a href="/Blog/<%= locals.blogs[index]._id %>"><%= locals.blogs[index].shorttitle %>...</a></h3>
+						<p class="blog-info">
+							uploaded by <b class="blog-author"><%= locals.blogs[index].author %></b>,
+							<i class="blog-date"><%= locals.blogs[index].date %></i>
+						</p>
 
-				<% if (locals.blogs[index].thumbnail) { %>
-				<div class="blog-overlay-wrapper">
-					<div class="blog-overlay">
-						<div class="content-holder ql-editor"></div>
-						<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
+						<% if (locals.blogs[index].thumbnail) { %>
+						<div class="blog-overlay-wrapper">
+							<div class="blog-overlay">
+								<div class="content-holder ql-editor"></div>
+								<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
+							</div>
+						</div>
+						<% } else { %>
+						<div class="blog-no-overlay-wrapper">
+							<div class="blog-no-overlay">
+								<div class="content-holder ql-editor"></div>
+								<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
+							</div>
+						</div>
+						<% } %>
 					</div>
 				</div>
+
+				<input type="hidden" data-id="<%= locals.blogs[index]._id %>" data-append="<%= locals.blogs[index].shortcontent %>" data-thumbnail="<%= locals.blogs[index].thumbnail %>" />
 			</div>
-			<% } else { %>
-			<div class="blog-no-overlay-wrapper">
-				<div class="blog-no-overlay">
-					<div class="content-holder ql-editor"></div>
-					<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
-				</div>
+			<% }) %> <% } else { %>
+			<div class="text-center m-5 p-5 bwhite">
+				<h1>Blog page is under maintenance, please come back later</h1>
+			</div>
+			<% } %>
+			<div class="col-md-6 offset-md-3 mb-3 mt-3">
+				<img alt="gif animation loading" id="loader" src="/img/loader.gif" />
+				<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
 			</div>
 		</div>
-		<% } %>
-
-		<input type="hidden" data-id="<%= locals.blogs[index]._id %>" data-append="<%= locals.blogs[index].shortcontent %>" data-thumbnail="<%= locals.blogs[index].thumbnail %>" />
-
-		<% }) %> <% } else { %>
-		<div class="text-center m-5 p-5 bwhite">
-			<h1>Blog page is under maintenance, please come back later</h1>
-		</div>
-		<% } %>
-	</div>
-	<div class="col-md-6 offset-md-3 mb-3 mt-3">
-		<img alt="gif animation loading" id="loader" src="/img/loader.gif" />
-		<input id="infinitebtn" type="submit" class="logbtn" value="Load more" />
 	</div>
 </div>
 

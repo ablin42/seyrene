@@ -36,13 +36,13 @@
 				</ol>
 			</div>
 
-			<div class="blog-content col-md-10 offset-md-1 mt-3 pt-4">
-				<h3 class="single-title col-md-12 mb-0">
+			<div class="blog-content col-md-10 offset-md-1 mt-2">
+				<h1 class="single-title col-md-12 mb-0">
 					<%= locals.shop.title %> <% if (locals.user && locals.user.role === "admin") { %>
 					<a href="/Admin/Shop/Patch/<%= locals.shop._id %>"><i class="fas fa-edit"></i></a>
 					<% } %>
-				</h3>
-				<p class="p-4 mb-0 single-content">
+				</h1>
+				<p class="single-content">
 					<%= locals.shop.content %>
 				</p>
 			</div>
@@ -50,7 +50,7 @@
 			<div class="col-md-4 offset-md-4 text-center mt-2">
 				<b class="card-price"><%= locals.shop.price %>€</b>
 				<b class="isUnique">Unique Painting</b>
-				<input type="submit" data-addcart="<%= locals.shop._id %>" class="logbtn" value="Add to cart" />
+				<input type="submit" data-addcart="<%= locals.shop._id %>" class="submit-btn" value="Add to cart" />
 			</div>
 			<% } %>
 		</div>

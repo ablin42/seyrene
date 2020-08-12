@@ -1,34 +1,35 @@
 <% include ../partials/head %>
 
-<div class="container container-single">
-	<% if(locals.blog){ %>
-	<div class="single-wrapper" id="<%= locals.blog._id %>">
-		<div class="col-md-10 offset-md-1 content-wrapper pt-0 pb-0">
-			<div class="blog-header text-center p-3 col-md-10 offset-md-1">
-				<h3 class="single-title inline">
-					<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
-					<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
-					<% } %>
-				</h3>
-				<p class="blog-info pb-2">by <b class="blog-author"><%= locals.blog.author %></b>, <i class="blog-date"><%= locals.blog.date %></i></p>
-				<hr class="hr-pwinty mt-3" />
-			</div>
+<div class="full-container" id="container-landing">
+	<div class="container container-front">
+		<% if(locals.blog){ %>
+		<div class="single-wrapper" id="<%= locals.blog._id %>">
+			<div class="col-md-12 p-0">
+				<div class="p-3 col-md-10 offset-md-1">
+					<h1 class="single-title inline">
+						<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
+						<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
+						<% } %>
+					</h1>
+					<p class="blog-info pb-2">by <b class="blog-author"><%= locals.blog.author %></b>, <i class="blog-date"><%= locals.blog.date %></i></p>
+				</div>
 
-			<div class="blog-content col-md-10 offset-md-1">
-				<div class="col-md-10 offset-md-1 ql-editor" id="content-holder"></div>
+				<div class="blog-content col-md-12">
+					<div class="col-md-10 offset-md-1 ql-editor" id="content-holder"></div>
+				</div>
 			</div>
 		</div>
+		<% } %>
 	</div>
-	<% } %>
+
+	<a class="lightbox-close" href="#close">
+		<div class="lightbox-target" id="expand">
+			<img alt="Expanded Image" id="expandImg" src="" />
+		</div>
+	</a>
+
+	<input type="hidden" value="<%= locals.blog.content %>" id="blogContent" />
+	<script src="/scripts/blog/quill.js"></script>
+	<script src="/scripts/core/carousel-cycle.js"></script>
+	<% include ../partials/footer %>
 </div>
-
-<a class="lightbox-close" href="#close">
-	<div class="lightbox-target" id="expand">
-		<img alt="Expanded Image" id="expandImg" src="" />
-	</div>
-</a>
-
-<input type="hidden" value="<%= locals.blog.content %>" id="blogContent" />
-<script src="/scripts/blog/quill.js"></script>
-<script src="/scripts/core/carousel-cycle.js"></script>
-<% include ../partials/footer %>
