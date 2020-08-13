@@ -4,17 +4,16 @@
 	<div class="container container-front">
 		<% if(locals.blog){ %>
 		<div class="single-wrapper" id="<%= locals.blog._id %>">
+			<div class="blog-single-header col-md-12">
+				<h1 class="single-title mb-0">
+					<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
+					<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
+					<% } %>
+				</h1>
+				<p class="blog-info ml-5 pb-2">by <b class="blog-author"><%= locals.blog.author %></b>, <i class="blog-date"><%= locals.blog.date %></i></p>
+			</div>
 			<div class="col-md-12 p-0">
-				<div class="p-3 col-md-10 offset-md-1">
-					<h1 class="single-title inline">
-						<%= locals.blog.title %> <% if (locals.user && locals.user.role === "admin") { %>
-						<a href="/Admin/Blog/Patch/<%= locals.blog._id %>"><i class="fas fa-edit"></i></a>
-						<% } %>
-					</h1>
-					<p class="blog-info pb-2">by <b class="blog-author"><%= locals.blog.author %></b>, <i class="blog-date"><%= locals.blog.date %></i></p>
-				</div>
-
-				<div class="blog-content col-md-12">
+				<div class="blog-content pb-4 col-md-12">
 					<div class="col-md-10 offset-md-1 ql-editor" id="content-holder"></div>
 				</div>
 			</div>
@@ -31,5 +30,5 @@
 	<input type="hidden" value="<%= locals.blog.content %>" id="blogContent" />
 	<script src="/scripts/blog/quill.js"></script>
 	<script src="/scripts/core/carousel-cycle.js"></script>
-	<% include ../partials/footer %>
 </div>
+<% include ../partials/footer %>

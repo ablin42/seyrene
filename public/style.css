@@ -1126,6 +1126,10 @@ div.carousel-item.active {
 	display: block;
 }
 
+.blog-single-header {
+	padding: 15px 30px;
+}
+
 .blog-row {
 	background: transparent;
 	display: flex;
@@ -1184,8 +1188,6 @@ div.carousel-item.active {
 	font-style: italic;
 	color: var(--brand-blue-m1);
 	display: inline;
-	position: relative;
-	bottom: -7px;
 	text-indent: 30px;
 }
 
@@ -1373,8 +1375,9 @@ div.carousel-item.active {
 
 .blog-content {
 	background-color: var(--light-shade-m1);
-	word-break: break-all;
 	overflow-wrap: break-word;
+	word-break: break-word;
+	font-size: 18px;
 }
 
 .single-blog-img {
@@ -2156,8 +2159,8 @@ tbody tr:hover {
 .sku-item {
 	padding: 2em 1em;
 	margin: 2px;
-	border: 2px solid var(--brand-blue-m1);
-	background-color: var(--brand-blue-p1);
+	border: 2px solid var(--brand-blue-p1);
+	background-color: var(--brand-blue-p2);
 	color: var(--light-shade);
 	font-weight: bold;
 	border-radius: 2px;
@@ -2166,7 +2169,7 @@ tbody tr:hover {
 
 .active-cat,
 .active-subcat {
-	background-color: var(--brand-blue-m1) !important;
+	background-color: var(--interactive-color) !important;
 }
 
 .select-list {
@@ -2182,7 +2185,7 @@ tbody tr:hover {
 }
 
 .cat-list:hover {
-	background-color: var(--brand-blue-m1) !important;
+	background-color: var(--interactive-color) !important;
 }
 
 #subcategories,
@@ -2261,9 +2264,6 @@ tbody tr:hover {
 	color: var(--light-shade-m1);
 	border: 0;
 	transition: ease-in-out 0.3s;
-	box-shadow: 2px 2px 5px 1px rgba(16, 15, 15, 0.19), -2px -2px 5px 1px rgba(140, 140, 140, 0.13);
-	-webkit-box-shadow: 2px 2px 5px 1px rgba(16, 15, 15, 0.19), -2px -2px 5px 1px rgba(140, 140, 140, 0.13);
-	-moz-box-shadow: 2px 2px 5px 1px rgba(16, 15, 15, 0.19), -2px -2px 5px 1px rgba(140, 140, 140, 0.13);
 }
 
 .tab-btn.active {
@@ -2357,8 +2357,13 @@ tbody tr:hover {
 }
 
 .card-price {
-	font-size: 27px;
+	font-size: 37px;
 	color: var(--brand-blue-m2);
+}
+
+.card-price-gallery {
+	font-size: 37px;
+	color: var(--light-shade-m1);
 }
 
 .isUnique {

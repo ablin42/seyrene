@@ -60,7 +60,15 @@
         <% }) %>
       </div>
 
-      <div class="col-md-10 offset-md-1 text-center p-0">
+      
+  <% } %>
+  </div>
+</div>
+
+<div class="full-container even" id="container-landing">
+	<div class="container container-front">
+    <h1 class="square-title text-center">Buy a reproduction</h1>
+    <div class="col-md-10 offset-md-1 text-center p-0">
         <div class="alert alert-danger alert-static w-100" role="alert">
             For references, check the <a href="/Catalog" target="_blank">CATALOG</a>
         </div>
@@ -90,20 +98,21 @@
             </label>
           </div>
 
-          <div class="form-group text-center pwinty-wrapper" id="subcategories"></div>
-          <div class="form-group text-center pwinty-wrapper" id="attributes"></div>
+          <div class="form-group text-center pwinty-wrapper" id="subcategories">
+          </div>
+          <div class="form-group text-center pwinty-wrapper" id="attributes">
+          </div>
         </div>
 
         <div class="pbox-wrapper">
           <div id="purchasebox" class="col-md-6 offset-md-3 text-center nodisplay">
-            <span id="price" class="card-price "></span>
+            <span id="price" class="card-price-gallery"></span>
             <input type="submit" data-addpwinty="<%= locals.gallery._id %>" class="submit-btn" value="Add to cart" >
           </div>
         </div>
     </div>
-  <% } %>
-  </div>
-</div>
+    </div>
+    </div>
 
 <a class="lightbox-close" href="#close">
   <div class="lightbox-target" id="expand">
