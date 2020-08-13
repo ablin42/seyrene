@@ -1,7 +1,69 @@
 <% include partials/head %>
 
+<div class="anchor-list">
+	<div class="col-md-6 offset-md-3">
+		<ul class="nav-anchor w-100">
+			<li><a href="#header" class="anchor-text">Log in</a></li>
+			<li><a href="#container-register" class="anchor-text">Sign up</a></li>
+			<li><a href="#container-lostpw" class="anchor-text">Lost password</a></li>
+		</ul>
+	</div>
+</div>
+
 <div class="full-container" id="container-login">
 	<div class="container container-front">
+		<h1 class="square-title text-center">Log in</h1>
+
+		<form class="col-md-6 offset-md-3 text-center" id="login-form" method="POST" data-sublogin="true" action="/api/auth/login">
+			<div class="row">
+				<label class="control-label">Email</label>
+				<input placeholder="Email" type="email" id="login-email" name="email" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
+
+				<label class="control-label">Password</label>
+				<input placeholder="Password" type="password" id="login-pw" name="password" required />
+
+				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+				<div class="w-100 text-center">
+					<div class="recaptcha-wrapper"></div>
+				</div>
+				<input type="submit" class="submit-btn" value="Log in" id="submit-login" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="full-container even" id="container-register">
+	<div class="container container-front">
+		<h1 class="square-title text-center">Sign up</h1>
+		<form class="col-md-6 offset-md-3 text-center" id="register" data-subreg="true" method="POST" action="/api/auth/register">
+			<div class="row">
+				<label class="control-label">Username</label>
+				<input placeholder="Jean75" type="text" name="name" id="name" data-vstring="4;30" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required />
+				<span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
+
+				<label class="control-label">Email</label>
+				<input placeholder="jeandupont@gmail.com" type="email" name="email" id="email" data-vemail="true" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
+				<span id="i_email" class="form-info">E-mail has to be valid</span>
+
+				<label class="control-label">Password</label>
+				<input placeholder="Password" type="password" name="password" id="password" data-vpw="true" required />
+				<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to beatleast alphanumeric</span>
+
+				<label class="control-label">Password <i>(confirm)</i></label>
+				<input placeholder="Password (confirm)" type="password" name="password2" id="password2" data-vpw2="true" required />
+				<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
+
+				<div class="w-100 text-center">
+					<div class="recaptcha-wrapper"></div>
+					<label class="control-label text-center"> By checking this box I hereby declare that I have read and agree to the <a href="/Legals#tos">Terms of Service</a> </label>
+					<input type="checkbox" name="agree_tos" id="agree_tos" required />
+				</div>
+
+				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+				<input type="submit" class="submit-btn" value="Sign up" id="submit-register" />
+			</div>
+		</form>
+		<!--
 		<div id="login" class="tab col-lg-10 offset-lg-1 row">
 			<div class="container p-0 m-0 h-100" id="container">
 				<div class="form-slider-container sign-up-container">
@@ -56,43 +118,29 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>-->
 	</div>
 </div>
 
-<div class="full-container even" id="container-lostpw">
+<div class="full-container" id="container-lostpw">
 	<div class="container container-front">
-		<div id="lostpw-container" class="tab col-md-12">
-			<div class="container p-0 m-0 h-100">
-				<div class="col-md-12 wrapper lostpw-container">
-					<h1 class="square-title text-center">Password Recovery</h1>
+		<h1 class="square-title text-center">Password Recovery</h1>
 
-					<form class="col-md-10 offset-md-1" id="lostpw" data-lostpw="true" method="POST" action="/api/user/lostpw">
-						<div class="row">
-							<div class="col-lg-10 offset-lg-1">
-								<div class="alert alert-info alert-static w-100" role="alert">
-									We'll send you a mail with instructions to reset your password
-								</div>
-							</div>
-							<div class="col-lg-10 offset-lg-1 mt-2 mb-2">
-								<label class="control-label">Email</label>
-								<input placeholder="youremail@gmail.com" type="email" id="email-reset" name="email" value="" data-vemail="true" required />
-								<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
-							</div>
-						</div>
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<div class="row captcha-row">
-							<div class="col-lg-5 offset-lg-1">
-								<div class="recaptcha-wrapper"></div>
-							</div>
-							<div class="col-lg-5">
-								<input type="submit" class="submit-btn captcha-btn" value="Send" id="submit-lostpw" />
-							</div>
-						</div>
-					</form>
+		<form class="col-md-6 offset-md-3 text-center" id="lostpw" data-lostpw="true" method="POST" action="/api/user/lostpw">
+			<div class="row">
+				<div class="alert alert-warning alert-static w-100" role="alert">
+					We'll send you a mail with instructions to reset your password
 				</div>
+				<label class="control-label">Email</label>
+				<input placeholder="youremail@gmail.com" type="email" id="email-reset" name="email" value="" data-vemail="true" required />
+				<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
+				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+				<div class="w-100 text-center">
+					<div class="recaptcha-wrapper"></div>
+				</div>
+				<input type="submit" class="submit-btn captcha-btn" value="Send" id="submit-lostpw" />
 			</div>
-		</div>
+		</form>
 	</div>
 	<% include partials/footer %>
 </div>

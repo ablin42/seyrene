@@ -1425,7 +1425,9 @@ div.carousel-item.active {
 #payment-form .control-label,
 #deliveryform .control-label,
 #container-cart .control-label,
-#container-admin .control-label {
+#container-admin .control-label,
+#container-login .control-label,
+#container-register .control-label {
 	color: var(--light-shade);
 }
 
