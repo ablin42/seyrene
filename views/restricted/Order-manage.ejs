@@ -1,7 +1,7 @@
 <% include ../partials/head %>
 
 <div class="full-container">
-	<div class="container container-front">
+	<div class="container">
 		<div class="col-md-10 offset-md-1 p-0">
 			<h1 class="text-center square-title">Gérer une commande</h1>
 			<div class="col-12 text-center">
@@ -16,14 +16,15 @@
 
 			<div class="payment-div admin-recap">
 				<% if (locals.order) { %>
-				<h4>Status - <b><%= locals.order.status %></b></h4>
-				<h4>Total Price - <b><%= locals.order.price %>€</b></h4>
+				<h3>STATUS - <b><%= locals.order.status %></b></h3>
 
 				<% if (locals.deliveryPriceFormatted != "0.00") { %>
-				<h4>Shipping - <b><%= locals.deliveryPriceFormatted %>€</b></h4>
+				<h3>SHIPPING FEE - <b><%= locals.deliveryPriceFormatted %>€</b></h3>
 				<% } else { %>
-				<h4>Shipping - <b>FREE</b></h4>
+				<h3>SHIPPING FEE - <b>FREE</b></h3>
 				<% } %>
+
+				<h3>TOTAL - <b><%= locals.order.price %>€</b></h3>
 			</div>
 		</div>
 
@@ -65,7 +66,7 @@
 	</div>
 </div>
 <div class="full-container even" id="container-cart">
-	<div class="container container-front">
+	<div class="container">
 		<div class="col-md-10 offset-md-1 p-0">
 			<h1 class="square-title text-center">Coordonnées</h1>
 			<div class="row">
