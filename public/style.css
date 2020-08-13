@@ -1220,10 +1220,12 @@ div.carousel-item.active {
 	flex-grow: 1;
 	margin-top: 15px;
 	text-align: center;
+	background: var(--dark-shade-m1);
 }
 
 .blog-overlay-wrapper img {
 	max-width: 100%;
+	width: 100%; /* care stretchy */
 	max-height: 70vh;
 }
 

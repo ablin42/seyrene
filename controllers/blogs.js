@@ -129,11 +129,11 @@ router.post("/delete/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (r
 
 		fullLog.info(`Blog deleted: ${blogId}`);
 		req.flash("success", ERROR_MESSAGE.itemDeleted);
-		return res.status(200).redirect("/About");
+		return res.status(200).redirect("/Blog");
 	} catch (err) {
 		threatLog("DELETE BLOG ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/About");
+		return res.status(400).redirect("/Blog");
 	}
 });
 

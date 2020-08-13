@@ -38,12 +38,19 @@ async function infiniteBlogs() {
 			data.blogs.forEach(blog => {
 				let id = blog._id;
 				if ($(`#${id}`).length === 0) {
+					let fc = document.createElement("div");
+					let container = document.createElement("div");
+					fc.setAttribute("class", "full-container blog-container");
+					if ($(".blog-row").length % 2 === 0) fc.setAttribute("class", "full-container blog-container even");
+
+					container.setAttribute("class", "container m-0");
 					let div = document.createElement("div");
 					div.setAttribute("class", "blog-row");
 					div.setAttribute("id", id);
+
 					let toAppend = `<h3 class="blog-title"><a href="/Blog/${id}">${blog.shorttitle}...</a></h3> `;
 					toAppend += `
-							<p class="blog-info">uploaded by
+							<p class="blog-info mb-0">uploaded by
 								<b class="blog-author">${blog.author}</b>,
 								<i class="blog-date">${blog.date}</i>
 							</p>`;
@@ -66,8 +73,11 @@ async function infiniteBlogs() {
 								</div>`;
 					}
 					div.innerHTML = toAppend;
+					container.appendChild(div);
+					fc.appendChild(container);
 					id++;
-					$("#container-blog").append(div);
+
+					$("#container-blog").append(fc);
 				} else {
 					$("#infinitebtn").val("Nothing more to load");
 					$("#infinitebtn").attr("disabled");
@@ -89,11 +99,9 @@ async function infiniteBlogs() {
 }
 
 $(window).scroll(function () {
-	if (!document.getElementById("blog").classList.contains("nodisplay")) {
-		const val1 = Math.ceil($(window).scrollTop() + $(window).height());
-		const val2 = $(document).height();
-		if (val1 >= val2) {
-			infiniteBlogs();
-		}
+	const val1 = Math.ceil($(window).scrollTop() + $(window).height());
+	const val2 = $(document).height();
+	if (val1 >= val2) {
+		infiniteBlogs();
 	}
 });

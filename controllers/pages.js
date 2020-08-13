@@ -291,10 +291,10 @@ router.get("/User", setUser, authUser, async (req, res) => {
 	}
 });
 
-router.get("/About", setUser, async (req, res) => {
+router.get("/Blog", setUser, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | About Me",
+			active: "Maral Abkarian Paintings | Blog List",
 			description:
 				"Maral Akbarian Art and Paintings. Check out my biography to know me better and my blog where I talk about my art.. You can contact me aswell.",
 			csrfToken: req.csrfToken()
@@ -557,7 +557,7 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 	} catch (err) {
 		threatLog.error("BLOG ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(200).redirect("/About");
+		return res.status(200).redirect("/Blog");
 	}
 });
 
