@@ -5,9 +5,7 @@
 <div class="full-container">
 	<div class="container">
 		<h1 class="square-title text-center">Art Gallery</h1>
-		<div class="alert alert-info alert-static w-100" role="alert">
-			Reproductions of these paintings are available for sale by clicking on the "See more" button
-		</div>
+		<div class="alert alert-info alert-static w-100" role="alert">Reproductions of these paintings are available for sale by clicking on the "<b>See more</b>" button</div>
 		<div class="container-gallery mt-3" id="container-gallery">
 			<% if (locals.galleries){ %> <% Object.keys(locals.galleries).forEach(function (index) { %>
 			<div class="expandable-card" id="<%= locals.galleries[index]._id %>">

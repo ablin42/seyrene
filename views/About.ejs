@@ -21,14 +21,14 @@
 							<div class="blog-overlay-wrapper">
 								<div class="blog-overlay">
 									<div class="content-holder ql-editor"></div>
-									<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
+									<form class="text-center mt-1" action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Read the full ticket</button></form>
 								</div>
 							</div>
 							<% } else { %>
 							<div class="blog-no-overlay-wrapper">
 								<div class="blog-no-overlay">
 									<div class="content-holder ql-editor"></div>
-									<form action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">See More</button></form>
+									<form class="text-center" action="/Blog/<%= locals.blogs[index]._id %>"><button class="blog-btn">Read the full ticket</button></form>
 								</div>
 							</div>
 							<% } %>

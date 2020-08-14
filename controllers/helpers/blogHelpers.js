@@ -56,7 +56,7 @@ module.exports = {
 			blog.shorttitle = blog.title.substr(0, 128);
 			blog.shortcontent = blog.content.replace(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g, "").substr(0, 512);
 			blog.thumbnail = blog.content.match(/<img src=(["'])(?:(?=(\\?))\2.)*?\1>/g);
-			if (blog.thumbnail && blog.thumbnail > 1) blog.thumbnail = blog.thumbnail[0];
+			if (blog.thumbnail && blog.thumbnail.length > 1) blog.thumbnail = blog.thumbnail[0];
 			return blog;
 		});
 

@@ -60,7 +60,7 @@ async function infiniteBlogs() {
 									${blog.thumbnail}
 									<div class="blog-overlay">
 									<p>${blog.shortcontent}...</p>
-									<form action="/Blog/${id}"><button class="blog-btn">See More</button></form>
+									<form class="text-center mt-1" action="/Blog/${id}"><button class="blog-btn">Read the full ticket</button></form>
 									</div>
 								</div>`;
 					} else {
@@ -68,7 +68,7 @@ async function infiniteBlogs() {
 								<div class="blog-no-overlay-wrapper">
 									<div class="blog-no-overlay">
 										<p>${blog.shortcontent}...</p>
-										<form action="/Blog/${id}"><button class="blog-btn">See More</button></form>
+										<form class="text-center" action="/Blog/${id}"><button class="blog-btn">Read the full ticket</button></form>
 									</div>
 								</div>`;
 					}

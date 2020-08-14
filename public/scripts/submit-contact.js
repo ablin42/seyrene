@@ -2,6 +2,12 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute
 let form = document.querySelector("#contact");
 
 let callToGallery = document.querySelector("#goto-gallery");
+let callToBlog = document.querySelector("#goto-blog");
+
+if (callToBlog)
+	callToBlog.addEventListener("click", function () {
+		window.location.href = "/Blog";
+	});
 
 if (callToGallery)
 	callToGallery.addEventListener("click", function () {

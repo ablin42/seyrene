@@ -1154,18 +1154,18 @@ div.carousel-item.active {
 	margin-bottom: 0;
 }
 
+.blog-overlay .ql-editor {
+	height: 80%;
+}
+
 .blog-btn {
 	padding: 10px 15px;
-	width: 200px;
+	min-width: 200px;
 	background-color: var(--brand-blue-m2);
 	color: var(--light-shade-m1);
 	border: 0;
 	line-height: unset;
 
-	bottom: 5%;
-	left: 50%;
-	transform: translate(-50%, 0) !important;
-	position: absolute;
 	transition: ease-in-out 0.3s;
 }
 .blog-btn:hover {
@@ -1174,6 +1174,10 @@ div.carousel-item.active {
 
 #container-gallery .blog-btn {
 	line-height: normal;
+	bottom: 5%;
+	left: 50%;
+	transform: translate(-50%, 0) !important;
+	position: absolute;
 }
 
 .blog-overlay h4 {
@@ -2879,6 +2883,15 @@ tbody tr:hover {
 	}
 	.admin-panel {
 		padding: 10px;
+	}
+	.blog-row {
+		margin: 0;
+	}
+	.blog-no-overlay-wrapper {
+		padding: 0;
+	}
+	.blog-overlay {
+		padding: 5px;
 	}
 }
 /* Large devices (desktops, 992px and up) */
