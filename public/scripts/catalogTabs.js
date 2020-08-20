@@ -18,7 +18,7 @@ sub.forEach(btn => {
 
 function openTabCat(btn, tabName) {
 	let tab = document.getElementsByClassName("tab");
-	let buttons = document.querySelectorAll(".catalog-wrapper .tab-btn");
+	let buttons = document.querySelectorAll(".main-btn");
 
 	for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
 

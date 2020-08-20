@@ -264,11 +264,11 @@ input[type="radio"] {
 html {
 	background: linear-gradient(to bottom, var(--primary-light), var(--primary-dark));
 	/*
-	background: #028cb2; 
+	background: #028cb2;
 	background: -moz-linear-gradient(top, #028cb2 0%, #025a7f 39%, #004460 100%);
-	background: -webkit-linear-gradient(top, #028cb2 0%, #025a7f 39%, #004460 100%); 
+	background: -webkit-linear-gradient(top, #028cb2 0%, #025a7f 39%, #004460 100%);
 	background: linear-gradient(to bottom, #023e7d 0%, #002855 39%, #001845 100%);
-	
+
 		--brand-blue-m1: #023e7d;
 	--brand-blue: #002855;
 	--brand-blue-p1: #001845;
@@ -1041,6 +1041,8 @@ button:focus {
 /* END FORMS  */
 
 /* HOME */
+.bio-img-wrapper {height: fit-content}
+
 .thumbnail-wrapper {
 	display: block;
 	border-radius: 2px;
