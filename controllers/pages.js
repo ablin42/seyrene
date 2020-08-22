@@ -63,7 +63,8 @@ const cacheView = function (req, res, next) {
 router.get("/", setUser, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Home",
+			active: "Home",
+			headtitle: "Maral Abkarian Paintings | Home",
 			description:
 				"Maral Akbarian Art and Paintings. Discover my gallery and purchase original paintings or customize your copy.",
 			csrfToken: req.csrfToken()
@@ -94,7 +95,8 @@ router.get("/", setUser, async (req, res) => {
 router.get("/Galerie", setUser, cacheView, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Art Gallery ",
+			active: "Galerie",
+			headtitle: "Maral Abkarian Paintings | Art Gallery ",
 			description: "Maral Akbarian Art and Paintings. Check out the gallery and purchase customizable copies!",
 			csrfToken: req.csrfToken()
 		};
@@ -120,7 +122,8 @@ router.get("/Galerie", setUser, cacheView, async (req, res) => {
 router.get("/Galerie/Tags", setUser, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Art Gallery Tags",
+			active: "Galerie",
+			headtitle: "Maral Abkarian Paintings | Art Gallery Tags",
 			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable copies!",
 			csrfToken: req.csrfToken()
 		};
@@ -138,7 +141,7 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 		return res.status(200).render("Tags", obj);
 	} catch (err) {
 		let obj = {
-			active: "Maral Abkarian Paintings | Art Gallery Tags",
+			headtitle: "Maral Abkarian Paintings | Art Gallery Tags",
 			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable copies!"
 		};
 		if (req.query.t) {
@@ -156,7 +159,8 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 	try {
 		let cart = new Cart(req.session.cart ? req.session.cart : {});
 		let obj = {
-			active: "Maral Abkarian Paintings | Cart",
+			active: "Cart",
+			headtitle: "Maral Abkarian Paintings | Cart",
 			description: "Maral Akbarian Art and Paintings. Verify your cart and proceed to checkout to buy beautiful paintings",
 			products: [],
 			totalPrice: formatter.format(cart.price.totalIncludingTax).substr(2),
@@ -200,7 +204,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Add Billing",
+			headtitle: "Maral Abkarian Paintings | Add Billing",
 			description: "Maral Akbarian Art and Paintings. Add your billing information to buy beautiful paintings!",
 			user: req.user,
 			billing: {},
@@ -220,7 +224,7 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Payment",
+			headtitle: "Maral Abkarian Paintings | Payment",
 			description: "Maral Akbarian Art and Paintings. The last step needed to obtain these incredible art pieces.",
 			stripePublicKey: process.env.STRIPE_PUBLIC,
 			totalPrice: 0,
@@ -246,7 +250,8 @@ router.get("/User", setUser, authUser, async (req, res) => {
 	try {
 		let err, result, orders;
 		let obj = {
-			active: "Maral Abkarian Paintings | User",
+			active: "User",
+			headtitle: "Maral Abkarian Paintings | User",
 			description:
 				"Maral Akbarian Art and Paintings. Update your delivery informations, account informations and check your order history",
 			csrfToken: req.csrfToken(),
@@ -294,7 +299,8 @@ router.get("/User", setUser, authUser, async (req, res) => {
 router.get("/Blog", setUser, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Blog List",
+			active: "Blog",
+			headtitle: "Maral Abkarian Paintings | Blog List",
 			description:
 				"Maral Akbarian Art and Paintings. Check out my biography to know me better and my blog where I talk about my art.. You can contact me aswell.",
 			csrfToken: req.csrfToken()
@@ -320,7 +326,8 @@ router.get("/Blog", setUser, async (req, res) => {
 router.get("/Login", setUser, notLoggedUser, cacheView, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Register - Log In",
+			active: "Account",
+			headtitle: "Maral Abkarian Paintings | Register - Log In",
 			description: "Maral Akbarian Art and Paintings. Create an account and log in to buy any paintings you want!",
 			csrfToken: req.csrfToken()
 		};
@@ -340,7 +347,8 @@ router.get("/Login", setUser, notLoggedUser, cacheView, async (req, res) => {
 router.get("/Shop", setUser, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Buy Unique",
+			active: "Shop",
+			headtitle: "Maral Abkarian Paintings | Buy Unique",
 			description:
 				"Maral Akbarian Art and Paintings. UNIQUE paintings only. All of the paintings presented here are made by myself only once",
 			csrfToken: req.csrfToken()
@@ -362,7 +370,7 @@ router.get("/Shop", setUser, async (req, res) => {
 router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Reset password",
+			headtitle: "Maral Abkarian Paintings | Reset password",
 			description: "Maral Akbarian Art and Paintings. Reset your password here, just in case you lost it",
 			tokenId: sanitize(req.params.tokenId),
 			token: sanitize(req.params.token),
@@ -386,7 +394,7 @@ router.get("/Resetpw/:tokenId/:token", setUser, notLoggedUser, async (req, res) 
 router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Your Order",
+			headtitle: "Maral Abkarian Paintings | Your Order",
 			description: "Maral Akbarian Art and Paintings. Check out the paintings you purchased and the status of your order!",
 			csrfToken: req.csrfToken(),
 			products: [],
@@ -426,7 +434,7 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let obj = {
-			active: "Maral Abkarian Paintings | Customize Copy",
+			headtitle: "Maral Abkarian Paintings | Customize Copy",
 			description: "Maral Akbarian Art and Paintings. Check out this beautiful painting and buy customizable copies if you want!",
 			csrfToken: req.csrfToken()
 		};
@@ -461,7 +469,8 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 router.get("/Catalog", setUser, cacheView, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Catalog Frames & Paper",
+			active: "Catalog",
+			headtitle: "Maral Abkarian Paintings | Catalog Frames & Paper",
 			description:
 				"Maral Akbarian Art and Paintings. The catalog that references our attributes to customize the copy of the painting you want!",
 			csrfToken: req.csrfToken()
@@ -479,7 +488,7 @@ router.get("/Catalog", setUser, cacheView, async (req, res) => {
 router.get("/legals", setUser, cacheView, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Legals",
+			headtitle: "Maral Abkarian Paintings | Legals",
 			description: "Maral Akbarian Art and Paintings. Legals informations, RGPD, terms of sale.",
 			csrfToken: req.csrfToken()
 		};
@@ -497,7 +506,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let obj = {
-			active: "Maral Abkarian Paintings | Buy this painting!",
+			headtitle: "Maral Abkarian Paintings | Buy this painting!",
 			description: "Maral Akbarian Art and Paintings. A beautiful and unique painting waiting for its buyer",
 			csrfToken: req.csrfToken()
 		};
@@ -533,7 +542,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 router.get("/Blog/:id", setUser, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Blog ticket",
+			headtitle: "Maral Abkarian Paintings | Blog ticket",
 			description: "Maral Akbarian Art and Paintings. One of my blog tickets about art..",
 			csrfToken: req.csrfToken()
 		};
@@ -567,7 +576,8 @@ router.get("/Blog/:id", setUser, async (req, res) => {
 router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Admin",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Admin",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -584,7 +594,8 @@ router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Update Homepage",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Update Homepage",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -615,7 +626,8 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 router.get("/Admin/Bio", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Biography Image",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Biography Image",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -632,7 +644,8 @@ router.get("/Admin/Bio", setUser, authUser, authRole(ROLE.ADMIN), async (req, re
 router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Admin Orders",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Admin Orders",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -667,7 +680,8 @@ router.get("/Admin/Orders", setUser, authUser, authRole(ROLE.ADMIN), async (req,
 router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder, authGetOrder, async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Order Manage",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Order Manage",
 			description: "Maral Akbarian Art and Paintings",
 			products: [],
 			user: req.user,
@@ -706,7 +720,8 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Post a gallery item",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Post a gallery item",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -722,7 +737,12 @@ router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async
 
 router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
-		let obj = { active: "Edit a gallery item", description: "Maral Akbarian Art and Paintings", csrfToken: req.csrfToken() };
+		let obj = {
+			active: "Admin",
+			headtitle: "Edit a gallery item",
+			description: "Maral Akbarian Art and Paintings",
+			csrfToken: req.csrfToken()
+		};
 		const galleryId = sanitize(req.params.galleryId);
 
 		let [err, result] = await utils.to(Gallery.findOne({ _id: galleryId }));
@@ -752,7 +772,8 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Post a shop item",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Post a shop item",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -769,7 +790,8 @@ router.get("/Admin/Shop/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Edit a shop item",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Edit a shop item",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -803,7 +825,8 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Post a blog",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Post a blog",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()
@@ -825,7 +848,8 @@ router.get("/Admin/Blog/Post", setUser, authUser, authRole(ROLE.ADMIN), async (r
 router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | Edit a blog",
+			active: "Admin",
+			headtitle: "Maral Abkarian Paintings | Edit a blog",
 			description: "Maral Akbarian Art and Paintings",
 			user: req.user,
 			csrfToken: req.csrfToken()

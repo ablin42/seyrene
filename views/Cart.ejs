@@ -8,22 +8,21 @@
 			</div>
 		</div>
 		<% if(locals.products && locals.totalPrice != 0 && locals.totalQty != 0){ %>
-		<div class="col-md-10 offset-md-1 p-0">
+		<div class="col-md-10 offset-md-1 p-0" data-cartrecap="true">
 			<h1 class="square-title text-center">Your Cart</h1>
 			<!-- add no display here when emptying cart-->
 
-			<div id="cart-row-todp">
-				<div class="payment-div">
-					<h3>
-						SHIPPING FEE - <% if (locals.deliveryPrice && locals.deliveryPrice.response.shippingPriceIncludingTax) { %> <b><%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b> <% } else
-						{ %>
-						<b>FREE</b>
-					</h3>
-					<% } %>
-					<h3>TOTAL QTY - <b><%= locals.totalQty %></b></h3>
-					<h3>TOTAL - <b><%= locals.totalPrice %>€</b></h3>
-				</div>
-				<!--<div class="payment-div">
+			<div class="payment-div">
+				<h3>
+					SHIPPING FEE = <% if (locals.deliveryPrice && locals.deliveryPrice.response.shippingPriceIncludingTax) { %>
+					<b data-deliveryprice="true"><%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b> <% } else { %>
+					<b data-deliveryprice="true">FREE</b>
+				</h3>
+				<% } %>
+				<h3>TOTAL QTY = <b data-totalqty="true"><%= locals.totalQty %></b></h3>
+				<h3>TOTAL = <b data-totalprice="true"><%= locals.totalPrice %>€</b></h3>
+			</div>
+			<!--<div class="payment-div">
 					<% if (locals.deliveryPrice && locals.deliveryPrice.response.shippingPriceIncludingTax) { %>
 					<h4><%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</h4>
 					<% } else { %>
@@ -32,7 +31,7 @@
 					<h4><%= locals.totalQty %></h4>
 					<h4><%= locals.totalPrice %>€</h4>
 				</div>-->
-				<!--
+			<!--
 				<div class="cart-row">
 					<span class="cart-item cart-header cart-column">SHIPPING FEE</span>
 					<span class="cart-quantity cart-header cart-column">TOTAL QTY</span>
@@ -48,7 +47,6 @@
 					<span class="cart-price cart-header cart-column"><%= locals.totalPrice %>€</span>
 				</div>
 				-->
-			</div>
 
 			<div class="cart-row" id="cart-row-header">
 				<span class="cart-item cart-header cart-column">ITEM</span>
@@ -59,9 +57,9 @@
 			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].isUnique) { %>-<%= index %><% } %>">
 				<div class="cart-item cart-column">
 					<% if (locals.products[index].isUnique === true) { %>
-					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="Cart Image - <%= locals.products[index].item.title %>" />
+					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="Cart Image = <%= locals.products[index].item.title %>" />
 					<% } else { %>
-					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="Cart Image - <%= locals.products[index].item.title %>" />
+					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="Cart Image = <%= locals.products[index].item.title %>" />
 					<% } %>
 					<div class="cart-title-description">
 						<h4 class="cart-item-title"><%= locals.products[index].shorttitle %>...</h4>
@@ -71,9 +69,9 @@
 				</div>
 
 				<div class="cart-quantity cart-column">
-					<% if (locals.products[index].isUnique === true) { %>
+					<% if (locals.products[index].isUnique == true) { %>
 					<i class="fas fa-minus fa-2x qty-update" data-delcart="<%= locals.products[index].item._id %>"></i>
-					<input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly />
+					<input id="qty-<%= locals.products[index].item._id %>" class="cart-item-qty" value="<%= locals.products[index].qty %>" name="cart-item-qty" title="Numbers only" readonly disabled />
 					<i class="fas fa-plus fa-2x qty-update plus-unique" min="0"></i>
 					<% } else { %>
 					<i class="fas fa-minus fa-2x qty-update" data-pdel="true" data-id="<%= locals.products[index].item._id %>" data-reference="<%= index %>"></i>
@@ -92,24 +90,24 @@
 				</div>
 
 				<div class="cart-price cart-column">
-					<p class="cart-item-price"><%= locals.products[index].price %>€</p>
+					<p class="cart-item-price" id="price-<%= locals.products[index].item._id %>-<%= index %>"><%= locals.products[index].price %>€</p>
 					<% if (locals.products[index].isUnique !== true) { %>
-					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unité</p>
+					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unit</p>
 					<% } %>
 				</div>
 			</div>
 
 			<% }) %> <% if (locals.totalPrice != 0 && locals.totalQty != 0) { %> <% } %>
 
-			<div class="payment-div">
+			<div class="payment-div" data-cartrecap="true">
 				<h3>
-					SHIPPING FEE - <% if (locals.deliveryPrice && locals.deliveryPrice.response.shippingPriceIncludingTax) { %> <b><%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b> <% } else {
-					%>
-					<b>FREE</b>
+					SHIPPING FEE = <% if (locals.deliveryPrice && locals.deliveryPrice.response.shippingPriceIncludingTax) { %>
+					<b data-deliveryprice="true"><%= locals.deliveryPrice.response.shippingPriceIncludingTax %>€</b> <% } else { %>
+					<b data-deliveryprice="true">FREE</b>
 				</h3>
 				<% } %>
-				<h3>TOTAL QTY - <b><%= locals.totalQty %></b></h3>
-				<h3>TOTAL - <b><%= locals.totalPrice %>€</b></h3>
+				<h3>TOTAL QTY = <b data-totalqty="true"><%= locals.totalQty %></b></h3>
+				<h3>TOTAL = <b data-totalprice="true"><%= locals.totalPrice %>€</b></h3>
 			</div>
 		</div>
 		<% } %>
@@ -198,6 +196,7 @@
 			<% } %>
 		</div>
 	</div>
+	<% include partials/footer %>
 </div>
 
 <% if(locals.products){ %> <% Object.keys(locals.products).forEach(function (index) { %> <% if (!locals.products[index].item.price) { %>
@@ -205,4 +204,3 @@
 <% } %> <% }) %> <% } %>
 
 <script src="/scripts/cart.js" defer></script>
-<% include partials/footer %>

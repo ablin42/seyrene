@@ -52,7 +52,7 @@
 				<div class="sub-img-wrapper mt-5">
 					<img alt="Biography Picture - Portrait Image" class="bio-img w-100" src="/img/upload/biopic.png" />
 				</div>
-		</div>
+			</div>
 			<div class="first-bio col-md-8">
 				<h1 class="square-title">Maral Abkarian</h1>
 				<p class="square-txt ml-3">
@@ -122,19 +122,19 @@
 							value="<% if (locals.formData) { %><%= locals.formData.subject %><% } %>"
 							required
 						/>
-						<span id="i_title" class="form-info">Title must contain between 10 and 256 characters</span>
+						<span id="i_title" class="form-info"><b>Title</b> must contain between <b>10 and 256 characters</b></span>
 					</div>
 
 					<div class="col-md-12">
 						<label class="control-label">Message</label>
-						<textarea id="content" data-vstring="64;2048" rows="5" name="content" placeholder="Write your message here...." required>
+						<textarea class="mb-0" id="content" data-vstring="64;2048" rows="5" name="content" placeholder="Write your message here...." required>
 <% if (locals.formData) { %><%= locals.formData.content %><% } %></textarea
 						>
-						<span id="i_content" class="form-info">Content must contain between 64 and 2048 characters</span>
+						<span id="i_content" class="form-info"><b>Content</b> must contain between <b>64 and 2048 characters</b></span>
 					</div>
 				</div>
 
-				<div class="row captcha-row">
+				<div class="row captcha-row mt-2">
 					<div class="col-lg-5 offset-lg-1">
 						<div class="g-recaptcha" data-sitekey="6LdiD7oZAAAAAIMXlnCVHOjQQ7UqvLl8vUtaMMA9"></div>
 					</div>
@@ -174,4 +174,5 @@
 
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="/scripts/submit-contact.js" defer></script>
+<script src="/scripts/core/frontValidation.js" defer></script>
 <script src="/scripts/core/carousel-cycle.js"></script>

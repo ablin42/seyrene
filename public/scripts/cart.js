@@ -10,6 +10,11 @@ let pwintyDel = document.querySelectorAll("[data-pdel]");
 let pwintyUpd = document.querySelectorAll("[data-pupd]");
 let inputData = document.querySelectorAll("[data-sku]");
 let delUnique = document.querySelectorAll("[data-delcart]");
+let totalPriceDOM = document.querySelectorAll("[data-totalprice]");
+let totalQtyDOM = document.querySelectorAll("[data-totalqty]");
+let deliveryPriceDOM = document.querySelectorAll("[data-deliveryprice]");
+let cartQtyBadge = document.getElementById("cartQty");
+let recaps = document.querySelectorAll("[data-cartrecap]");
 
 delUnique.forEach(item => {
 	item.addEventListener("click", function () {
@@ -61,6 +66,9 @@ function handleEmptiness() {
 	document.querySelector(".payment-div").classList.add("nodisplay");
 	document.querySelector("#alertEmpty").classList.remove("nodisplay");
 	document.querySelector("#cart-row-header").classList.add("nodisplay");
+	recaps.forEach(item => {
+		item.classList.add("nodisplay");
+	});
 }
 
 async function cartAdd(itemId, caller) {
@@ -113,9 +121,13 @@ async function cartDel(itemId, caller) {
 		rowId.remove();
 		if (totalQty === 0) handleEmptiness();
 
-		document.getElementById("total-price").innerText = totalPrice;
-		document.getElementById("total-qty").innerText = totalQty;
-		document.getElementById("cartQty").innerText = totalQty;
+		totalPriceDOM.forEach(item => {
+			item.innerText = totalPrice;
+		});
+		totalQtyDOM.forEach(item => {
+			item.innerText = totalQty;
+		});
+		cartQtyBadge.innerText = totalQty;
 	} else alertType = "warning";
 
 	let alert = createAlertNode(response.message, alertType);
@@ -126,7 +138,6 @@ async function cartDel(itemId, caller) {
 async function pwintyCartAdd(itemId, referenceId, caller) {
 	cooldownBtn(caller, 1500);
 	let alertType = "success";
-	console.log(referenceId);
 
 	if (PWINTY_DATA <= 0) throw new Error(ERROR_MESSAGE.itemNotFound);
 	let SKU = PWINTY_DATA[parseInt(referenceId)].SKU;
@@ -151,12 +162,18 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 		let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
 		if (rowId.classList.contains("cart-row-item")) {
-			$(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
-			rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(",", ".");
-			document.getElementById("total-price").innerText = totalPrice;
-			document.getElementById("total-qty").innerText = totalQty;
+			document.querySelector(`#qty-${itemId}-${referenceId}`).value = response.item.qty;
+			document.querySelector(`#price-${itemId}-${referenceId}`).innerText = formatter
+				.format(response.item.price)
+				.replace(",", ".");
+			totalPriceDOM.forEach(item => {
+				item.innerText = totalPrice;
+			});
+			totalQtyDOM.forEach(item => {
+				item.innerText = totalQty;
+			});
 		}
-		document.getElementById("cartQty").innerText = totalQty;
+		cartQtyBadge.innerText = totalQty;
 	} else alertType = "warning";
 
 	let alert = createAlertNode(response.message, alertType);
@@ -199,15 +216,23 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 		if (response.cart.items[SKU]) {
 			if (response.item.qty === 0) rowId.remove();
 			else {
-				$(`#qty-${itemId}-${referenceId}`).val(response.item.qty);
-				rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(",", ".");
+				document.querySelector(`#qty-${itemId}-${referenceId}`).value = response.item.qty;
+				document.querySelector(`#price-${itemId}-${referenceId}`).innerText = formatter
+					.format(response.item.price)
+					.replace(",", ".");
 			}
 		} else rowId.remove();
 
-		document.getElementById("total-price").innerText = totalPrice;
-		document.getElementById("delivery-price").innerText = deliveryPrice;
-		document.getElementById("total-qty").innerText = totalQty;
-		document.getElementById("cartQty").innerText = totalQty;
+		deliveryPriceDOM.forEach(item => {
+			item.innerText = deliveryPrice;
+		});
+		totalPriceDOM.forEach(item => {
+			item.innerText = totalPrice;
+		});
+		totalQtyDOM.forEach(item => {
+			item.innerText = totalQty;
+		});
+		cartQtyBadge.innerText = totalQty;
 	} else alertType = "warning";
 
 	let alert = createAlertNode(response.message, alertType);
@@ -249,15 +274,24 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 
 		if (totalQty === 0) handleEmptiness();
 
-		document.getElementById("total-price").innerText = totalPrice;
-		document.getElementById("delivery-price").innerText = deliveryPrice;
-		document.getElementById("total-qty").innerText = totalQty;
-		document.getElementById("cartQty").innerText = totalQty;
+		deliveryPriceDOM.forEach(item => {
+			item.innerText = deliveryPrice;
+		});
+		totalPriceDOM.forEach(item => {
+			item.innerText = totalPrice;
+		});
+		totalQtyDOM.forEach(item => {
+			item.innerText = totalQty;
+		});
+		cartQtyBadge.innerText = totalQty;
 
 		if (qty === 0) document.getElementById(`${itemId}-${referenceId}`).remove();
 		else {
-			item.value = response.item.qty;
-			rowId.childNodes[5].childNodes[1].childNodes[0].innerText = formatter.format(response.item.price).replace(",", ".");
+			//item.value = response.item.qty;
+			document.querySelector(`#qty-${itemId}-${referenceId}`).value = response.item.qty;
+			document.querySelector(`#price-${itemId}-${referenceId}`).innerText = formatter
+				.format(response.item.price)
+				.replace(",", ".");
 		}
 	} else alertType = "warning";
 

@@ -8,38 +8,40 @@ let reg = document.querySelector("[data-subreg]");
 
 // Cache selectors
 var topMenu = $("#top-menu"),
-    topMenuHeight = topMenu.outerHeight()+15,
-    // All list items
-    menuItems = topMenu.find("a"),
-    // Anchors corresponding to menu items
-    scrollItems = menuItems.map(function(){
-      var item = $($(this).attr("href"));
-      if (item.length) { return item; }
-    });
+	topMenuHeight = topMenu.outerHeight() + 15,
+	// All list items
+	menuItems = topMenu.find("a"),
+	// Anchors corresponding to menu items
+	scrollItems = menuItems.map(function () {
+		var item = $($(this).attr("href"));
+		if (item.length) {
+			return item;
+		}
+	});
 
 // Bind to scroll
-$(window).scroll(function(){
-   // Get container scroll position
-   var fromTop = $(this).scrollTop()+topMenuHeight;
+$(window).scroll(function () {
+	// Get container scroll position
+	var fromTop = $(this).scrollTop() + topMenuHeight;
 
-   // Get id of current scroll item
-   var cur = scrollItems.map(function(){
-     if ($(this).offset().top < fromTop)
-       return this;
-   });
-   // Get the id of the current element
-   cur = cur[cur.length-1];
-   var id = cur && cur.length ? cur[0].id : "";
+	// Get id of current scroll item
+	var cur = scrollItems.map(function () {
+		if ($(this).offset().top < fromTop) return this;
+	});
+	// Get the id of the current element
+	cur = cur[cur.length - 1];
+	var id = cur && cur.length ? cur[0].id : "";
 
-   // Set/remove active class
-	 menuItems
-     .removeClass("active")
-     .filter("[href='#"+id+"']").addClass("active");
+	// Set/remove active class
+	menuItems
+		.removeClass("active")
+		.filter("[href='#" + id + "']")
+		.addClass("active");
 
-     if($(window).scrollTop() + $(window).height() == $(document).height()) {
-       menuItems.removeClass("active")
-       menuItems[menuItems.length - 1].classList.add("active");
-     }
+	if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+		menuItems.removeClass("active");
+		menuItems[menuItems.length - 1].classList.add("active");
+	}
 });
 
 if (lostpw)
@@ -79,7 +81,7 @@ async function submitRegister(e) {
 	const email = document.querySelector("#email").value;
 	const password = document.querySelector("#password").value;
 	const password2 = document.querySelector("#password2").value;
-	const captcha = grecaptcha.getResponse(0);
+	const captcha = grecaptcha.getResponse(1);
 
 	let response = await fetch("/api/auth/register", {
 		method: "POST",
@@ -111,7 +113,7 @@ async function submitLogin(e) {
 
 	const email = document.querySelector("#login-email").value;
 	const password = document.querySelector("#login-pw").value;
-	const captcha = grecaptcha.getResponse(1);
+	const captcha = grecaptcha.getResponse(0);
 
 	let response = await fetch("/api/auth/login", {
 		method: "POST",

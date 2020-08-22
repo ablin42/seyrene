@@ -13,8 +13,8 @@ module.exports.vShop = [
 		.not()
 		.isEmpty()
 		.withMessage("La description ne peut pas être vide")
-		.isLength({ max: 2048 })
-		.withMessage("La description doit faire 2048 caractères maximum"),
+		.isLength({ max: 4096 })
+		.withMessage("La description doit faire 4096 caractères maximum"),
 	body("price")
 		.toFloat()
 		.trim()

@@ -3,6 +3,7 @@ const { ERROR_MESSAGE } = require("./errorMessages");
 
 async function checkCaptcha(req, res, next) {
 	const captcha = req.body.captcha;
+	console.log(req.body);
 
 	if (!captcha) return res.status(200).json({ error: true, message: ERROR_MESSAGE.failedCaptcha });
 

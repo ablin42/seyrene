@@ -39,23 +39,23 @@
 			<div class="row">
 				<label class="control-label">Username</label>
 				<input placeholder="Jean75" type="text" name="name" id="name" data-vstring="4;30" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required />
-				<span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
+				<span id="i_name" class="form-info"><b>Username</b> must contain between <b>4 and 30 characters</b></span>
 
 				<label class="control-label">Email</label>
 				<input placeholder="jeandupont@gmail.com" type="email" name="email" id="email" data-vemail="true" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
-				<span id="i_email" class="form-info">E-mail has to be valid</span>
+				<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 
 				<label class="control-label">Password</label>
 				<input placeholder="Password" type="password" name="password" id="password" data-vpw="true" required />
-				<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to beatleast alphanumeric</span>
+				<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
 
 				<label class="control-label">Password <i>(confirm)</i></label>
 				<input placeholder="Password (confirm)" type="password" name="password2" id="password2" data-vpw2="true" required />
-				<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
+				<span id="i_password2" class="form-info"><b>Password Confirmation</b> doesn't match <b>password</b></span>
 
-				<div class="w-100 text-center">
+				<div class="w-100 text-center mt-2">
 					<div class="recaptcha-wrapper"></div>
-					<label class="control-label text-center"> By checking this box I hereby declare that I have read and agree to the <a href="/Legals#tos">Terms of Service</a> </label>
+					<label class="control-label text-center">By checking this box I hereby declare that I have read and agree to the <a href="/Legals#tos">Terms of Service</a> </label>
 					<input type="checkbox" name="agree_tos" id="agree_tos" required />
 				</div>
 
@@ -80,7 +80,7 @@
 						<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to beatleast alphanumeric</span>
 
 						<input placeholder="Password (confirm)" type="password" name="password2" id="password2" data-vpw2="true" required />
-						<span id="i_password2" class="form-info">Password has to be the same as the one you just entered</span>
+						<span id="i_password2" class="form-info"><b>Password Confirmation</b> doesn't match <b>password</b></span>
 
 						<div class="recaptcha-wrapper"></div>
 
@@ -133,9 +133,9 @@
 				</div>
 				<label class="control-label">Email</label>
 				<input placeholder="youremail@gmail.com" type="email" id="email-reset" name="email" value="" data-vemail="true" required />
-				<span id="i_email-reset" class="form-info">E-mail has to be valid</span>
+				<span id="i_email-reset" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<div class="w-100 text-center">
+				<div class="w-100 text-center mt-2">
 					<div class="recaptcha-wrapper"></div>
 				</div>
 				<input type="submit" class="submit-btn captcha-btn" value="Send" id="submit-lostpw" />

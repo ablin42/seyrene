@@ -66,7 +66,7 @@
 						<div class="row">
 							<div class="col-md-6">
 								<input type="password" id="password2" name="password2" placeholder="*********" data-vpw2="true" required />
-								<span id="i_password2" class="form-info"><b>Password</b> has to be the <b>identical</b> to the one you just entered</span>
+								<span id="i_password2" class="form-info"><b>Password Confirmation</b> doesn't match <b>password</b></span>
 							</div>
 							<div class="col-md-6">
 								<input type="submit" class="submit-btn mt-2" value="Save" id="submit-passwordform" />
@@ -79,8 +79,6 @@
 		</div>
 	</div>
 </div>
-
-
 
 <div class="full-container even" id="container-delivery">
 	<div class="container container-front">
@@ -214,25 +212,23 @@
 			</div>
 		</div>
 	</div>
-
-
 </div>
 
 <div class="full-container even">
 	<div class="container container-front">
 		<h1 class="square-title">DELETE YOUR ACCOUNT</h1>
 		<div class="col-md-10 offset-md-1">
-		<div class="row">
-						<div class="col-md-12 text-center">
-
-							<input type="submit" data-id="<%= locals.user._id %>" class="submit-btn cancelbtn w-100" value="DELETE PERMANENTLY" />
-						</div>
-					</div>
-	</div></div>
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<input type="submit" data-id="<%= locals.user._id %>" class="submit-btn cancelbtn w-100" value="DELETE PERMANENTLY" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<% include partials/footer %>
 </div>
 
 <script src="/scripts/user.js" defer></script>
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEBWHg2gKU3uMKQWSvn4yXWV5RavPm1PU&libraries=places&callback=initAutocomplete" async defer></script>
-	<script src="/scripts/core/auto-complete.js"></script>
-	<script src="/scripts/core/frontValidation.js" defer></script>
-	<% include partials/footer %>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEBWHg2gKU3uMKQWSvn4yXWV5RavPm1PU&libraries=places&callback=initAutocomplete" async defer></script>
+<script src="/scripts/core/auto-complete.js"></script>
+<script src="/scripts/core/frontValidation.js" defer></script>

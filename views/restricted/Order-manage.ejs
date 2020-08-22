@@ -57,7 +57,7 @@
 				<div class="cart-price cart-column">
 					<p class="cart-item-price"><%= locals.products[index].price %>€</p>
 					<% if (locals.products[index].isUnique !== true) { %>
-					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unité</p>
+					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unit</p>
 					<% } %>
 				</div>
 			</div>
@@ -73,12 +73,12 @@
 				<div class="col-md-6">
 					<label class="control-label">First Name</label>
 					<input id="lastname" name="lastname" placeholder="Doe" value="<% if (locals.order.lastname) { %><%= locals.order.lastname %><% } %>" readonly />
-					<span id="i_lastname" class="form-info">Last Name must contain between 2 and 128 characters</span>
+					<span id="i_lastname" class="form-info"><b>Last Name</b> must contain between <b>2 and 128 characters</b></span>
 				</div>
 				<div class="col-md-6">
 					<label class="control-label">Last Name</label>
 					<input id="firstname" name="firstname" placeholder="John" value="<% if (locals.order.firstname) { %><%= locals.order.firstname %><% } %>" readonly />
-					<span id="i_firstname" class="form-info">First Name must contain between 2 and 128 characters</span>
+					<span id="i_firstname" class="form-info"><b>First Name</b> must contain between <b>2 and 128 characters</b></span>
 				</div>
 			</div>
 			<div>
@@ -132,7 +132,7 @@
 			<% } %>
 		</div>
 	</div>
+	<% include ../partials/footer %>
 </div>
 
 <script src="/scripts/order/order.js" defer></script>
-<% include ../partials/footer %>
