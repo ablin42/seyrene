@@ -1,4 +1,5 @@
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+let cancelEN = $("[data-cancelbtn]");
 
 $(".completebtn").on("click", function () {
 	completeOrder($(".completebtn").data("id"));
@@ -6,8 +7,16 @@ $(".completebtn").on("click", function () {
 $(".cancelbtn").on("click", function () {
 	cancelOrder($(".cancelbtn").data("id"));
 });
+
+if (cancelEN) {
+	cancelEN.prop("onclick", null).off("click");
+	cancelEN.on("click", function () {
+		cancelOrderEN($(".cancelbtn").data("id"));
+	});
+}
+
 $(".approvebtn").on("click", function () {
-	approveOrder($(".cancelbtn").data("id"));
+	approveOrder($(".approvebtn").data("id"));
 });
 
 function closeDialog() {

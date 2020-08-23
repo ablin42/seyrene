@@ -116,12 +116,10 @@ router.post("/patch/name", limiter, vName, setUser, authUser, async (req, res) =
 		req.user.name = name;
 
 		fullLog.info(`Username patched: ${name}/${id}`);
-		req.flash("success", ERROR_MESSAGE.updatedUsername);
-		return res.status(200).redirect("/User");
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.updatedUsername });
 	} catch (err) {
 		threatLog.error("ERROR PATCHING NAME:", err, req.headers, req.ipAddress);
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/User");
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -145,12 +143,10 @@ router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res)
 			throw new Error(ERROR_MESSAGE.sendMail);
 
 		fullLog.info(`Email patched: ${newEmail}/${id}`);
-		req.flash("success", ERROR_MESSAGE.updatedEmail);
-		return res.status(200).redirect("/User");
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.updatedEmail });
 	} catch (err) {
 		threatLog.error("ERROR PATCHING EMAIL:", err, req.headers, req.ipAddress);
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/User");
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -171,12 +167,10 @@ router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req
 		if (err || !result) throw new Error(ERROR_MESSAGE.userUpdate);
 
 		fullLog.info(`Password patched: ${user._id}`);
-		req.flash("success", ERROR_MESSAGE.updatedPw);
-		return res.status(200).redirect("/User");
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.updatedPw });
 	} catch (err) {
 		threatLog.error("ERROR PATCHING PASSWORD:", err, req.headers, req.ipAddress);
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/User");
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 
@@ -227,12 +221,10 @@ router.post("/patch/delivery-info", limiter, vDelivery, setUser, authUser, check
 		}
 
 		fullLog.info(`Delivery info patched: ${obj._userId}`);
-		req.flash("success", ERROR_MESSAGE.updatedDelivery);
-		return res.status(200).redirect("/User");
+		return res.status(200).json({ error: false, message: ERROR_MESSAGE.updatedDelivery });
 	} catch (err) {
 		threatLog.error("ERROR PATCHING PASSWORD:", err, req.headers, req.ipAddress);
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/User");
+		return res.status(400).json({ error: true, message: err.message });
 	}
 });
 

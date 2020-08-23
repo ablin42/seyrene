@@ -26,7 +26,7 @@ async function setUser(req, res, next) {
 			req.flash("warning", ERROR_MESSAGE.userNotFound);
 			return res.status(401).redirect("/Login");
 		}
-		user.password = undefined;
+		//user.password = undefined; fails bcrypt if enabled
 		req.user = user;
 	}
 
@@ -104,10 +104,7 @@ async function checkAddress(req, res, next) {
 		next();
 	} catch (err) {
 		threatLog.error("CHECK ADDRESS ERROR:", err, req.headers, req.ipAddress);
-		if (req.body.billing) return res.status(200).json({ error: true, message: err.message });
-
-		req.flash("warning", err.message);
-		return res.status(400).redirect("/User");
+		return res.status(200).json({ error: true, message: err.message });
 	}
 }
 
