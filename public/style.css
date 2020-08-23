@@ -274,10 +274,10 @@ a {
 	font-size: 20px;
 }
 
-::-webkit-scrollbar {
+/*::-webkit-scrollbar {
 	width: 0px; /* Remove scrollbar space */
-	background: transparent; /* Optional: just make scrollbar invisible */
-}
+/*	background: transparent; /* Optional: just make scrollbar invisible */
+/*}*/
 
 input[type="checkbox"],
 input[type="radio"] {
@@ -326,6 +326,7 @@ html {
 
 	height: auto;
 	width: 100vw;
+	max-width: 100%;
 	min-width: 500px;
 
 	scroll-behavior: smooth;

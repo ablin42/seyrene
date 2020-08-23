@@ -95,7 +95,8 @@ app.use(
 				"fonts.googleapis.com",
 				"cdnjs.cloudflare.com",
 				"'sha256-ajZEDDdILRcc4lWO9JfCUcWV8WPtU5+drQz8E5IfQ0w='",
-				"'sha256-zwHi7E6JKCpD7iSjei/XVSaXpNq1WUE8eBFAiJJV/lA='"
+				"'sha256-zwHi7E6JKCpD7iSjei/XVSaXpNq1WUE8eBFAiJJV/lA='",
+				"'sha256-2tmqUQz4XHnCf/FsD37KyOheoO1zwbDqUd/zUCFPqW0='"
 			],
 			fontSrc: ["'self'", "fonts.googleapis.com", "kit-free.fontawesome.com", "fonts.gstatic.com"],
 			scriptSrc: [

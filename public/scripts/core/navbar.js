@@ -5,12 +5,12 @@ const logo = document.querySelector(".logo");
 const header = document.querySelector("#header");
 
 header.addEventListener("mouseover", function () {
-	logo.setAttribute('src', '/svg/logo_blue.svg')
-})
+	logo.setAttribute("src", "/svg/logo_blue.svg");
+});
 
 header.addEventListener("mouseout", function () {
-	logo.setAttribute('src', '/svg/logo_white.svg')
-})
+	logo.setAttribute("src", "/svg/logo_white.svg");
+});
 
 hamburger.addEventListener("click", () => {
 	hamburger.classList.toggle("toggle");
@@ -20,3 +20,8 @@ hamburger.addEventListener("click", () => {
 	});
 	logo.classList.toggle("fading");
 });
+
+let Scrollbar = window.Scrollbar;
+let options = {};
+
+Scrollbar.init(document.querySelector("#body-smooth"), options);
