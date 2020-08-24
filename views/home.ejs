@@ -136,13 +136,7 @@
 					</div>
 				</div>
 
-				<div class="row captcha-row mt-2">
-					<div class="col-lg-5 offset-lg-1">
-						<div class="g-recaptcha" data-sitekey="6LdiD7oZAAAAAIMXlnCVHOjQQ7UqvLl8vUtaMMA9"></div>
-					</div>
-					<div class="col-lg-5">
-						<input type="submit" class="submit-btn captcha-btn" value="Send" id="submit-contact" />
-					</div>
+					<input type="submit" class="submit-btn" value="Send" id="submit-contact" />
 				</div>
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
 			</form>
@@ -174,7 +168,6 @@
 	</div>
 </a>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="/scripts/submit-contact.js" defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>
 <script src="/scripts/core/carousel-cycle.js"></script>

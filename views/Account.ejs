@@ -23,9 +23,6 @@
 				<input placeholder="Password" type="password" id="login-pw" name="password" required />
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<div class="w-100 text-center">
-					<div class="recaptcha-wrapper"></div>
-				</div>
 				<input type="submit" class="submit-btn" value="Log in" id="submit-login" />
 			</div>
 		</form>
@@ -54,7 +51,6 @@
 				<span id="i_password2" class="form-info"><b>Password Confirmation</b> doesn't match <b>password</b></span>
 
 				<div class="w-100 text-center mt-2">
-					<div class="recaptcha-wrapper"></div>
 					<label class="control-label text-center">By checking this box I hereby declare that I have read and agree to the <a href="/Legals#tos">Terms of Service</a> </label>
 					<input type="checkbox" name="agree_tos" id="agree_tos" required />
 				</div>
@@ -63,62 +59,6 @@
 				<input type="submit" class="submit-btn" value="Sign up" id="submit-register" />
 			</div>
 		</form>
-		<!--
-		<div id="login" class="tab col-lg-10 offset-lg-1 row">
-			<div class="container p-0 m-0 h-100" id="container">
-				<div class="form-slider-container sign-up-container">
-					<form class="form-slider" id="register" data-subreg="true" method="POST" action="/api/auth/register">
-						<h1>Sign up</h1>
-
-						<input placeholder="Jean75" type="text" name="name" id="name" data-vstring="4;30" value="<% if (locals.formData) { %><%= locals.formData.name %><% } %>" required />
-						<span id="i_name" class="form-info">Username must contain between 4 and 30 characters</span>
-
-						<input placeholder="jeandupont@gmail.com" type="email" name="email" id="email" data-vemail="true" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
-						<span id="i_email" class="form-info">E-mail has to be valid</span>
-
-						<input placeholder="Password" type="password" name="password" id="password" data-vpw="true" required />
-						<span id="i_password" class="form-info">Password must contain between 8 and 256 characters and has to beatleast alphanumeric</span>
-
-						<input placeholder="Password (confirm)" type="password" name="password2" id="password2" data-vpw2="true" required />
-						<span id="i_password2" class="form-info"><b>Password Confirmation</b> doesn't match <b>password</b></span>
-
-						<div class="recaptcha-wrapper"></div>
-
-						<label class="control-label text-center"> By checking this box I hereby declare that I have read and agree to the <a href="/Legals#tos">Terms of Service</a> </label>
-						<input type="checkbox" name="agree_tos" id="agree_tos" required />
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<input type="submit" class="submit-btn" value="Sign up" id="submit-register" />
-					</form>
-				</div>
-
-				<div class="form-slider-container sign-in-container">
-					<form class="form-slider" id="login-form" method="POST" data-sublogin="true" action="/api/auth/login">
-						<h1 class="mb-3">Log in</h1>
-						<input placeholder="Email" type="email" id="login-email" name="email" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
-						<input placeholder="Password" type="password" id="login-pw" name="password" required />
-
-						<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-						<div class="recaptcha-wrapper"></div>
-						<input type="submit" class="submit-btn" value="Log in" id="submit-login" />
-					</form>
-				</div>
-
-				<div class="overlay-container">
-					<div class="overlay">
-						<div class="overlay-panel overlay-left">
-							<h1>Welcome!</h1>
-							<p>To access your account, please log in using this button</p>
-							<button class="ghost" id="signIn">Log in</button>
-						</div>
-						<div class="overlay-panel overlay-right">
-							<h1>No account yet?</h1>
-							<p>Create an account in less than a minute</p>
-							<button class="ghost" id="signUp">Sign up</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>-->
 	</div>
 </div>
 
@@ -135,10 +75,7 @@
 				<input placeholder="youremail@gmail.com" type="email" id="email-reset" name="email" value="" data-vemail="true" required />
 				<span id="i_email-reset" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-				<div class="w-100 text-center mt-2">
-					<div class="recaptcha-wrapper"></div>
-				</div>
-				<input type="submit" class="submit-btn captcha-btn" value="Send" id="submit-lostpw" />
+				<input type="submit" class="submit-btn" value="Send" id="submit-lostpw" />
 			</div>
 		</form>
 	</div>
@@ -146,5 +83,4 @@
 </div>
 
 <script src="/scripts/submit-auth.js"></script>
-<script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&render=explicit" async defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>

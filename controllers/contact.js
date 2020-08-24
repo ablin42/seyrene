@@ -5,7 +5,6 @@ const rateLimit = require("express-rate-limit");
 const MongoStore = require("rate-limit-mongo");
 
 const { setUser } = require("./helpers/middlewares");
-const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const mailer = require("./helpers/mailer");
 require("dotenv").config();
@@ -15,17 +14,17 @@ const limiter = rateLimit({
 	store: new MongoStore({
 		uri: process.env.DB_CONNECTION,
 		collectionName: "contactRateLimit",
-		expireTimeMs: 15 * 60 * 1000
+		expireTimeMs: 6 * 60 * 60 * 1000
 	}),
-	windowMs: 15 * 60 * 1000,
-	max: 20,
+	windowMs: 6 * 60 * 60 * 1000,
+	max: 5,
 	handler: function (req, res) {
 		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
 	}
 });
 
 // Send us a mail
-router.post("/", limiter, vContact, setUser, checkCaptcha, async (req, res) => {
+router.post("/", limiter, vContact, setUser, async (req, res) => {
 	try {
 		const subject = `FROM ${req.body.name}, [${req.body.email}] - ${req.body.title}`;
 		const content = req.body.content;

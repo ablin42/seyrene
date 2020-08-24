@@ -14,7 +14,6 @@ const User = require("../models/User");
 const CookieAccept = require("../models/CookieAccept");
 const Token = require("../models/VerificationToken");
 const { setUser, notLoggedUser, authUser, authToken } = require("./helpers/middlewares");
-const { checkCaptcha } = require("./helpers/captcha");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
@@ -23,16 +22,44 @@ const limiter = rateLimit({
 	store: new MongoStore({
 		uri: process.env.DB_CONNECTION,
 		collectionName: "authRateLimit",
-		expireTimeMs: 15 * 60 * 1000
+		expireTimeMs: 6 * 60 * 60 * 1000
 	}),
-	windowMs: 15 * 60 * 1000,
-	max: 50,
+	windowMs: 6 * 60 * 60 * 1000,
+	max: 20,
 	handler: function (req, res) {
 		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
 	}
 });
 
-router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
+const authlimiter = rateLimit({
+	store: new MongoStore({
+		uri: process.env.DB_CONNECTION,
+		collectionName: "loginLimit",
+		expireTimeMs: 6 * 60 * 60 * 1000
+	}),
+	windowMs: 6 * 60 * 60 * 1000,
+	max: 10,
+	handler: function (req, res) {
+		console.log(req.rateLimit);
+		res.status(400).json({ error: true, message: "Too many login attempts, please try again later" });
+	},
+	skipSuccessfulRequests: true
+});
+
+const registerlimiter = rateLimit({
+	store: new MongoStore({
+		uri: process.env.DB_CONNECTION,
+		collectionName: "registerLimit",
+		expireTimeMs: 6 * 60 * 60 * 1000
+	}),
+	windowMs: 6 * 60 * 60 * 1000,
+	max: 15,
+	handler: function (req, res) {
+		res.status(400).json({ error: true, message: "Too many register attempts, please try again later" });
+	}
+});
+
+router.post("/register", registerlimiter, vRegister, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, result;
 		req.session.formData = {
@@ -76,7 +103,7 @@ router.post("/register", limiter, vRegister, checkCaptcha, setUser, notLoggedUse
 	}
 });
 
-router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
+router.post("/login", authlimiter, vLogin, setUser, notLoggedUser, async (req, res) => {
 	try {
 		req.session.formData = { email: req.body.email };
 
@@ -119,7 +146,7 @@ router.post("/login", limiter, vLogin, checkCaptcha, setUser, notLoggedUser, asy
 	}
 });
 
-router.get("/logout", limiter, setUser, authUser, (req, res) => {
+router.get("/logout", setUser, authUser, (req, res) => {
 	try {
 		req.session.destroy(function (err) {
 			if (err) throw new Error(ERROR_MESSAGE.serverError);
@@ -163,7 +190,7 @@ router.get("/confirmation/:token", limiter, setUser, async (req, res) => {
 });
 
 // Resend account confirmation token
-router.post("/resend", limiter, vResend, authToken, setUser, notLoggedUser, async (req, res) => {
+router.post("/resend", vResend, authToken, setUser, notLoggedUser, async (req, res) => {
 	try {
 		await utils.checkValidity(req);
 

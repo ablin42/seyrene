@@ -3,39 +3,40 @@ let form = document.querySelector("#contact");
 
 // Cache selectors
 var topMenu = $("#top-menu"),
-    topMenuHeight = topMenu.outerHeight()+15,
-    // All list items
-    menuItems = topMenu.find("a"),
-    // Anchors corresponding to menu items
-    scrollItems = menuItems.map(function(){
-      var item = $($(this).attr("href"));
-      if (item.length) { return item; }
-    });
-
+	topMenuHeight = topMenu.outerHeight() + 15,
+	// All list items
+	menuItems = topMenu.find("a"),
+	// Anchors corresponding to menu items
+	scrollItems = menuItems.map(function () {
+		var item = $($(this).attr("href"));
+		if (item.length) {
+			return item;
+		}
+	});
 
 // Bind to scroll
-$(window).scroll(function(){
-   // Get container scroll position
-   var fromTop = $(this).scrollTop()+topMenuHeight;
+$(window).scroll(function () {
+	// Get container scroll position
+	var fromTop = $(this).scrollTop() + topMenuHeight;
 
-   // Get id of current scroll item
-   var cur = scrollItems.map(function(){
-     if ($(this).offset().top < fromTop)
-       return this;
-   });
-   // Get the id of the current element
-   cur = cur[cur.length-1];
-   var id = cur && cur.length ? cur[0].id : "";
+	// Get id of current scroll item
+	var cur = scrollItems.map(function () {
+		if ($(this).offset().top < fromTop) return this;
+	});
+	// Get the id of the current element
+	cur = cur[cur.length - 1];
+	var id = cur && cur.length ? cur[0].id : "";
 
-   // Set/remove active class
-   menuItems
-     .removeClass("active")
-     .filter("[href='#"+id+"']").addClass("active");
+	// Set/remove active class
+	menuItems
+		.removeClass("active")
+		.filter("[href='#" + id + "']")
+		.addClass("active");
 
-		if($(window).scrollTop() + $(window).height() == $(document).height()) {
-			menuItems.removeClass("active")
-			menuItems[menuItems.length - 1].classList.add("active");
-		}
+	if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+		menuItems.removeClass("active");
+		menuItems[menuItems.length - 1].classList.add("active");
+	}
 });
 
 let callToGallery = document.querySelector("#goto-gallery");
@@ -63,7 +64,6 @@ async function submitContact(e) {
 	const email = document.querySelector("#email").value;
 	const title = document.querySelector("#title").value;
 	const content = document.querySelector("#content").value;
-	const captcha = document.querySelector("#g-recaptcha-response").value;
 
 	let response = await fetch("/api/contact/", {
 		method: "POST",
@@ -72,7 +72,7 @@ async function submitContact(e) {
 			"Content-Type": "application/json",
 			"CSRF-Token": csrfToken
 		},
-		body: JSON.stringify({ name: name, email: email, title: title, content: content, captcha: captcha })
+		body: JSON.stringify({ name: name, email: email, title: title, content: content })
 	});
 	response = await response.json();
 

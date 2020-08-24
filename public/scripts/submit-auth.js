@@ -59,13 +59,6 @@ if (reg)
 		submitRegister(e);
 	});
 
-var CaptchaCallback = function () {
-	const captchaDiv = document.querySelectorAll(".recaptcha-wrapper");
-	captchaDiv.forEach(item => {
-		grecaptcha.render(item, { sitekey: "6LdiD7oZAAAAAIMXlnCVHOjQQ7UqvLl8vUtaMMA9" });
-	});
-};
-
 /*
 signUpButton.addEventListener("click", () => {
 	container.classList.add("right-panel-active");
@@ -81,7 +74,6 @@ async function submitRegister(e) {
 	const email = document.querySelector("#email").value;
 	const password = document.querySelector("#password").value;
 	const password2 = document.querySelector("#password2").value;
-	const captcha = grecaptcha.getResponse(1);
 
 	let response = await fetch("/api/auth/register", {
 		method: "POST",
@@ -90,7 +82,7 @@ async function submitRegister(e) {
 			"Content-Type": "application/json",
 			"CSRF-Token": csrfToken
 		},
-		body: JSON.stringify({ name: name, email: email, password: password, password2: password2, captcha: captcha })
+		body: JSON.stringify({ name: name, email: email, password: password, password2: password2 })
 	});
 	response = await response.json();
 
@@ -113,7 +105,6 @@ async function submitLogin(e) {
 
 	const email = document.querySelector("#login-email").value;
 	const password = document.querySelector("#login-pw").value;
-	const captcha = grecaptcha.getResponse(0);
 
 	let response = await fetch("/api/auth/login", {
 		method: "POST",
@@ -122,7 +113,7 @@ async function submitLogin(e) {
 			"Content-Type": "application/json",
 			"CSRF-Token": csrfToken
 		},
-		body: JSON.stringify({ email: email, password: password, captcha: captcha })
+		body: JSON.stringify({ email: email, password: password })
 	});
 	response = await response.json();
 
@@ -136,7 +127,6 @@ async function submitLostpw(e) {
 	e.preventDefault();
 
 	const email = document.querySelector("#email-reset").value;
-	const captcha = grecaptcha.getResponse(2);
 
 	let response = await fetch("/api/user/lostpw", {
 		method: "POST",
@@ -145,7 +135,7 @@ async function submitLostpw(e) {
 			"Content-Type": "application/json",
 			"CSRF-Token": csrfToken
 		},
-		body: JSON.stringify({ email: email, captcha: captcha })
+		body: JSON.stringify({ email: email })
 	});
 	response = await response.json();
 	if (response.error === false) return (window.location.href = "/Login");

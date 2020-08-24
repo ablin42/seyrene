@@ -11,7 +11,6 @@ const rp = require("request-promise");
 
 const mailer = require("./helpers/mailer");
 const { setUser, authUser, checkAddress, notLoggedUser } = require("./helpers/middlewares");
-const { checkCaptcha } = require("./helpers/captcha");
 const utils = require("./helpers/utils");
 const User = require("../models/User");
 const Token = require("../models/VerificationToken");
@@ -32,17 +31,30 @@ let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
 const limiter = rateLimit({
 	store: new MongoStore({
 		uri: process.env.DB_CONNECTION,
-		collectionName: "userRateLimit",
-		expireTimeMs: 15 * 60 * 1000
+		collectionName: "userPatchRateLimit",
+		expireTimeMs: 6 * 60 * 60 * 1000
 	}),
-	windowMs: 15 * 60 * 1000,
-	max: 50,
+	windowMs: 6 * 60 * 60 * 1000,
+	max: 30,
 	handler: function (req, res) {
 		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
 	}
 });
 
-router.post("/lostpw", limiter, vLostPw, checkCaptcha, setUser, notLoggedUser, async (req, res) => {
+const lostpwlimiter = rateLimit({
+	store: new MongoStore({
+		uri: process.env.DB_CONNECTION,
+		collectionName: "lostPwLimit",
+		expireTimeMs: 5 * 60 * 60 * 1000
+	}),
+	windowMs: 5 * 60 * 60 * 1000,
+	max: 5,
+	handler: function (req, res) {
+		res.status(200).json({ error: true, message: "Too many requests, please try again later" });
+	}
+});
+
+router.post("/lostpw", lostpwlimiter, vLostPw, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, user, pwToken, result;
 		await utils.checkValidity(req);
