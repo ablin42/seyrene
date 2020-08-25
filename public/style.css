@@ -332,6 +332,10 @@ html {
 	scroll-behavior: smooth;
 }
 
+html {
+	height: 1px;
+}
+
 b {
 	color: var(--brand-blue-m1);
 }
@@ -724,7 +728,7 @@ footer {
 	border-radius: 0;
 	position: fixed;
 	z-index: 99999;
-	margin: 0 50%;
+	margin: 80px 50% 0 50%;
 	transform: translate(-50%, 0px);
 }
 
@@ -1129,15 +1133,9 @@ div.carousel-item.active {
 	border: 0px !important;
 }
 
-.carousel-item {
-	text-align: center;
-	background: var(--dark-shade-m1);
-}
-
 .carousel-item img {
 	/*this needs to be changed to responsive */
-
-	max-height: 580px;
+	height: 580px;
 	min-width: auto;
 }
 /* END HOME */
@@ -1543,11 +1541,6 @@ div.carousel-item.active {
 	background-color: var(--brand-blue-p2);
 	border-radius: 10px 0 0 10px;
 	z-index: 5;
-}
-
-.fixed-arrow {
-	position: fixed;
-	margin-left: -15px;
 }
 
 .menu li {
@@ -2691,9 +2684,6 @@ tbody tr:hover {
 	}
 }
 @media (max-width: 1200px) {
-	.fixed-arrow {
-		margin-left: 0;
-	}
 	.footer-list {
 		margin-top: 50px;
 	}

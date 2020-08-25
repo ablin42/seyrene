@@ -20,8 +20,3 @@ hamburger.addEventListener("click", () => {
 	});
 	logo.classList.toggle("fading");
 });
-
-let Scrollbar = window.Scrollbar;
-let options = {};
-
-Scrollbar.init(document.querySelector("#body-smooth"), options);

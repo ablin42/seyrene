@@ -27,8 +27,8 @@
 		</div>
 	</a>
 
-	<input type="hidden" value="<%= locals.blog.content %>" id="blogContent" />
-	<script src="/scripts/blog/quill.js"></script>
-	<script src="/scripts/core/carousel-cycle.js"></script>
+	<% include ../partials/footer %>
 </div>
-<% include ../partials/footer %>
+<input type="hidden" value="<%= locals.blog.content %>" id="blogContent" />
+<script src="/scripts/blog/quill.js"></script>
+<script src="/scripts/core/carousel-cycle.js"></script>

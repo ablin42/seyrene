@@ -1,6 +1,24 @@
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 let form = document.querySelector("#contact");
 
+let callToGallery = document.querySelector("#goto-gallery");
+let callToBlog = document.querySelector("#goto-blog");
+
+if (callToBlog)
+	callToBlog.addEventListener("click", function () {
+		window.location.href = "/Blog";
+	});
+
+if (callToGallery)
+	callToGallery.addEventListener("click", function () {
+		window.location.href = "/Galerie";
+	});
+
+if (form)
+	form.addEventListener("submit", function (e) {
+		submitContact(e);
+	});
+
 // Cache selectors
 var topMenu = $("#top-menu"),
 	topMenuHeight = topMenu.outerHeight() + 15,
@@ -38,24 +56,6 @@ $(window).scroll(function () {
 		menuItems[menuItems.length - 1].classList.add("active");
 	}
 });
-
-let callToGallery = document.querySelector("#goto-gallery");
-let callToBlog = document.querySelector("#goto-blog");
-
-if (callToBlog)
-	callToBlog.addEventListener("click", function () {
-		window.location.href = "/Blog";
-	});
-
-if (callToGallery)
-	callToGallery.addEventListener("click", function () {
-		window.location.href = "/Galerie";
-	});
-
-if (form)
-	form.addEventListener("submit", function (e) {
-		submitContact(e);
-	});
 
 async function submitContact(e) {
 	e.preventDefault();

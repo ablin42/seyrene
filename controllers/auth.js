@@ -40,7 +40,6 @@ const authlimiter = rateLimit({
 	windowMs: 6 * 60 * 60 * 1000,
 	max: 10,
 	handler: function (req, res) {
-		console.log(req.rateLimit);
 		res.status(400).json({ error: true, message: "Too many login attempts, please try again later" });
 	},
 	skipSuccessfulRequests: true
@@ -55,7 +54,7 @@ const registerlimiter = rateLimit({
 	windowMs: 6 * 60 * 60 * 1000,
 	max: 15,
 	handler: function (req, res) {
-		res.status(400).json({ error: true, message: "Too many register attempts, please try again later" });
+		res.status(200).json({ error: true, message: "Too many register attempts, please try again later" });
 	}
 });
 

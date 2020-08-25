@@ -7,21 +7,21 @@ function dismissAlert(closeBtn) {
 
 function addAlert(alert, where) {
 	let node = document.createElement("div"),
-		alertDiv = document.getElementById("alert"),
-		wrap = document.getElementById("alertwrapper");
+		alertDiv = document.getElementById("alert");
 
-	node.setAttribute("id", "alertwrapper");
+	node.setAttribute("id", "alert");
+	node.setAttribute("class", `alert alert-${alert.alertType}`);
+	node.setAttribute("role", "alert");
 	if (alertDiv) {
-		if (wrap) wrap.remove();
 		alertDiv.remove();
 	}
-	node.innerHTML += alert;
+	node.innerHTML += alert.content;
 	$(where).after(node);
 }
 
 function createAlertNode(message, alertType = "info") {
-	return `<div id="alert" class="alert alert-${alertType}" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${message}
-            </div>`;
+	return {
+		alertType: alertType,
+		content: `<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>${message}`
+	};
 }

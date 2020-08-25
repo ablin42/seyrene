@@ -19,7 +19,7 @@
 				<div class="carousel-inner" role="listbox">
 					<% if (locals.front) { %> <% i = 0; %> <% for (let index = 0; index < 5; index++) { %> <% if (locals.front[index] && locals.front[index].null != true) { %>
 					<div class="carousel-item <% if(index == 0) { %>active<% } %>">
-						<a href="#expand"><img class="w-100 expandable" src="/api/front/image/<%= locals.front[index]._id %>" alt="<%= i %>slide" /></a>
+						<a class="href="#expand"><img class="w-100 expandable" src="/api/front/image/<%= locals.front[index]._id %>" alt="<%= i %>slide" /></a>
 					</div>
 					<% i = i + 1; %> <% } %> <% } %> <% } else { %>
 					<div class="text-center m-5 p-5 bwhite">

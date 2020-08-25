@@ -59,14 +59,6 @@ if (reg)
 		submitRegister(e);
 	});
 
-/*
-signUpButton.addEventListener("click", () => {
-	container.classList.add("right-panel-active");
-});
-signInButton.addEventListener("click", () => {
-	container.classList.remove("right-panel-active");
-});*/
-
 async function submitRegister(e) {
 	e.preventDefault();
 

@@ -89,7 +89,7 @@ router.post("/lostpw", lostpwlimiter, vLostPw, setUser, notLoggedUser, async (re
 	}
 });
 
-router.post("/resetpw", limiter, vPassword, setUser, notLoggedUser, async (req, res) => {
+router.post("/resetpw", vPassword, setUser, notLoggedUser, async (req, res) => {
 	try {
 		let err, pwToken, user;
 		await utils.checkValidity(req);

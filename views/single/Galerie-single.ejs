@@ -6,121 +6,112 @@
 
 <div class="full-container" id="container-landing">
 	<div class="container container-front">
-  <% if (locals.gallery) { %>
-    <div class="col-md-12 content-wrapper" id="<%= locals.gallery._id %>">
-      <div class="carousel-container">
-        <div id="carousel-thumb" class="carousel slide carousel-thumbnails" data-ride="carousel">
-          <div class="carousel-inner" role="listbox">
-            <% if (locals.images) { %>
-              <% locals.images.forEach(function (item, index) { %>
-                <div class="carousel-item img-fluid <% if(index == 0) { %>active<% } %>">
-                  <a href="#expand"><img class="expandable" src="/api/image/<%= item._id %>" alt="<%= index %>slide"></a>
-                  <div class="carousel-caption d-none d-md-block">
-                  </div>
-                </div>
-              <% }) %>
-            <% } %>
-          </div>       
-          <!--Controls-->
-          <a class="carousel-control-prev" href="#carousel-thumb" role="button" data-slide="prev">
-            <span><i class="fas fa-chevron-left fa-4x"></i></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carousel-thumb" role="button" data-slide="next">
-            <span><i class="fas fa-chevron-right fa-4x"></i></span>
-            <span class="sr-only">Next</span>
-          </a>
-          <!--/.Controls-->
-        </div>
-      </div>
-      <div class="thumbnail-wrapper mb-2 mt-5">
-        <ol class="carousel-indicators no-thumb">
-          <% if (locals.images) { %>
-            <% locals.images.forEach(function (item, index) { %>
-              <li data-target="#carousel-thumb" data-slide-to="<%= index %>" <% if(index == 0) { %>class='active'<% } %>> 
-                <img class="d-block w-100" src="/img/grey_circle.png" alt="grey circle icon thumbnail" class="img-fluid">
-              </li>
-            <% }) %>
-          <% } %>
-        </ol>
-      </div>
+		<% if (locals.gallery) { %>
+		<div class="col-md-12 content-wrapper" id="<%= locals.gallery._id %>">
+			<div class="carousel-container">
+				<div id="carousel-thumb" class="carousel slide carousel-thumbnails" data-ride="carousel">
+					<div class="carousel-inner" role="listbox">
+						<% if (locals.images) { %> <% locals.images.forEach(function (item, index) { %>
+						<div class="carousel-item img-fluid <% if(index == 0) { %>active<% } %>">
+							<a href="#expand"><img class="expandable" src="/api/image/<%= item._id %>" alt="<%= index %>slide" /></a>
+							<div class="carousel-caption d-none d-md-block"></div>
+						</div>
+						<% }) %> <% } %>
+					</div>
+					<!--Controls-->
+					<a class="carousel-control-prev" href="#carousel-thumb" role="button" data-slide="prev">
+						<span><i class="fas fa-chevron-left fa-4x"></i></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="carousel-control-next" href="#carousel-thumb" role="button" data-slide="next">
+						<span><i class="fas fa-chevron-right fa-4x"></i></span>
+						<span class="sr-only">Next</span>
+					</a>
+					<!--/.Controls-->
+				</div>
+			</div>
+			<div class="thumbnail-wrapper mb-2 mt-5">
+				<ol class="carousel-indicators no-thumb">
+          <% if (locals.images) { %> <% locals.images.forEach(function (item, index) { %>    
+            <li data-target="#carousel-thumb" data-slide-to="<%= index %>" <% if(index == 0) { %>class='active'<% } %>> 
+              <img class="d-block w-100" src="/img/grey_circle.png" alt="grey circle icon thumbnail" class="img-fluid">
+            </li><% }) %> <% } %>
+				</ol>
+			</div>
 
-      <div class="blog-content col-md-10 offset-md-1 mt-2">
-         <h1 class="single-title col-md-12 mb-0"><%= locals.gallery.title %>  <% if (locals.user && locals.user.role === "admin") { %>
-          <a href="/Admin/Galerie/Patch/<%= locals.gallery._id %>"><i class="fas fa-edit"></i></a>
-        <% } %> </h1>
-        <p class="single-content">
-          <%= locals.gallery.content %>
-        </p>
-      </div>
+			<div class="blog-content col-md-10 offset-md-1 mt-2">
+				<h1 class="single-title col-md-12 mb-0">
+					<%= locals.gallery.title %> <% if (locals.user && locals.user.role === "admin") { %>
+					<a href="/Admin/Galerie/Patch/<%= locals.gallery._id %>"><i class="fas fa-edit"></i></a>
+					<% } %>
+				</h1>
+				<p class="single-content">
+					<%= locals.gallery.content %>
+				</p>
+			</div>
 
-      <div class="text-center tags-wrapper mb-3">
-        <% locals.gallery.tags.forEach(function (tag) { %>
-          <a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
-        <% }) %>
-      </div>
+			<div class="text-center tags-wrapper mb-3">
+				<% locals.gallery.tags.forEach(function (tag) { %>
+				<a href="/Galerie/Tags?t=<%= tag %>">#<%= tag %></a>
+				<% }) %>
+			</div>
+			<% } %>
+		</div>
+	</div>
 
-      
-  <% } %>
-  </div>
+	<div class="full-container even" id="container-landing">
+		<div class="container container-front">
+			<h1 class="square-title text-center">Buy a reproduction</h1>
+			<div class="col-md-10 offset-md-1 text-center p-0">
+				<div class="alert alert-danger alert-static w-100" role="alert">For references, check the <a href="/Catalog" target="_blank">CATALOG</a></div>
+				<div class="alert alert-warning alert-static w-100" role="alert">
+					Please note that the image might get cropped a bit depending on the format size you choose and the actual aspect ratio of the image, although we do our best to provide you with exact
+					reproductions!
+				</div>
+				<div class="form-group pwinty-wrapper" id="categories">
+					<label for="framed">
+						<div class="sku-item unselectable cat-list" data-classname="active-cat">
+							<p>Framed Print</p>
+							<input class="pwinty-input" name="pwinty-category" id="framed" value="FRA" type="radio" />
+						</div>
+					</label>
+
+					<label for="print">
+						<div class="sku-item unselectable cat-list" data-classname="active-cat">
+							<p>Art Prints</p>
+							<input class="pwinty-input" name="pwinty-category" id="print" value="PRINT" type="radio" />
+						</div>
+					</label>
+
+					<label for="canvas">
+						<div class="sku-item unselectable cat-list" data-classname="active-cat">
+							<p>Canvas</p>
+							<input class="pwinty-input" name="pwinty-category" id="canvas" value="CAN" type="radio" />
+						</div>
+					</label>
+				</div>
+
+				<div class="form-group text-center pwinty-wrapper" id="subcategories"></div>
+				<div class="form-group text-center pwinty-wrapper" id="attributes"></div>
+			</div>
+
+			<div class="pbox-wrapper">
+				<div id="purchasebox" class="col-md-6 offset-md-3 text-center nodisplay">
+					<span id="price" class="card-price-gallery"></span>
+					<input type="submit" data-addpwinty="<%= locals.gallery._id %>" class="submit-btn" value="Add to cart" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<% include ../partials/footer %>
 </div>
 
-<div class="full-container even" id="container-landing">
-	<div class="container container-front">
-    <h1 class="square-title text-center">Buy a reproduction</h1>
-    <div class="col-md-10 offset-md-1 text-center p-0">
-        <div class="alert alert-danger alert-static w-100" role="alert">
-            For references, check the <a href="/Catalog" target="_blank">CATALOG</a>
-        </div>
-        <div class="alert alert-warning alert-static w-100" role="alert">
-            Please note that the image might get cropped a bit depending on the format size you choose and the actual aspect ratio of the image, although we do our best to provide you with exact reproductions!
-        </div>
-        <div class="form-group pwinty-wrapper" id="categories">
-            <label for="framed">
-              <div class="sku-item unselectable cat-list" data-classname="active-cat">
-                <p>Framed Print</p>
-                <input class="pwinty-input" name="pwinty-category" id="framed" value="FRA" type="radio" >
-              </div>
-            </label>
-    
-            <label for="print">
-              <div class="sku-item unselectable cat-list" data-classname="active-cat">
-                <p>Art Prints</p>
-                <input class="pwinty-input" name="pwinty-category" id="print" value="PRINT" type="radio" >
-              </div>
-            </label>
-
-            <label for="canvas">
-              <div class="sku-item unselectable cat-list" data-classname="active-cat">
-                <p>Canvas</p>
-                <input class="pwinty-input" name="pwinty-category" id="canvas" value="CAN" type="radio" >
-              </div>
-            </label>
-          </div>
-
-          <div class="form-group text-center pwinty-wrapper" id="subcategories">
-          </div>
-          <div class="form-group text-center pwinty-wrapper" id="attributes">
-          </div>
-        </div>
-
-        <div class="pbox-wrapper">
-          <div id="purchasebox" class="col-md-6 offset-md-3 text-center nodisplay">
-            <span id="price" class="card-price-gallery"></span>
-            <input type="submit" data-addpwinty="<%= locals.gallery._id %>" class="submit-btn" value="Add to cart" >
-          </div>
-        </div>
-    </div>
-    </div>
-    </div>
-
 <a class="lightbox-close" href="#close">
-  <div class="lightbox-target" id="expand">
-    <img alt="Expanded Image" id="expandImg" src="/api/image/<%= locals.images[0]._id %>"/>
-  </div>
+	<div class="lightbox-target" id="expand">
+		<img alt="Expanded Image" id="expandImg" src="/api/image/<%= locals.images[0]._id %>" />
+	</div>
 </a>
 
 <script src="/scripts/gallery/galleryScripts.js" defer></script>
 <script src="/scripts/core/carousel-cycle.js"></script>
 <script src="/scripts/core/frontValidation.js" defer></script>
-<% include ../partials/footer %>
