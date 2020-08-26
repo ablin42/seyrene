@@ -62,43 +62,55 @@ module.exports = {
 	sumUnitWithTax: function (items) {
 		let total = 0;
 		items.forEach(item => {
-			total += this.calculateMargin(item.unitPriceIncludingTax);
+			total += parseFloat(item.unitPriceIncludingTax) * item.quantity;
 		});
 
-		return total;
+		return total * 100;
 	},
 	sumUnitWithoutTax: function (items) {
 		let total = 0;
 		items.forEach(item => {
-			total += this.calculateMargin(item.unitPriceExcludingTax);
+			total += parseFloat(item.unitPriceExcludingTax) * item.quantity;
 		});
 
-		return total;
+		return total * 100;
 	},
 	addMargin: function (shipmentOption) {
 		let appliedMargin = {
 			unitPriceIncludingTax: this.calculateMargin(shipmentOption.shipments[0].items[0].unitPriceIncludingTax),
-			//might be an addition of multiple items with different margin range
-			totalPriceIncludingTax: this.sumUnitWithTax(shipmentOption.shipments[0].items) + shipmentOption.shippingPriceIncludingTax,
-			//might be an addition of multiple items with different margin range
-			totalPriceExcludingTax:
-				this.sumUnitWithoutTax(shipmentOption.shipments[0].items) + shipmentOption.shippingPriceExcludingTax,
-			shippingPriceIncludingTax: shipmentOption.shippingPriceIncludingTax,
-			shippingPriceExcludingTax: shipmentOption.shippingPriceExcludingTax,
+
+			shippingPriceIncludingTax: this.convertPrice(shipmentOption.shippingPriceIncludingTax),
+			shippingPriceExcludingTax: this.convertPrice(shipmentOption.shippingPriceExcludingTax),
 			shipments: shipmentOption.shipments
 		};
-		appliedMargin.shipments[0].items[0].unitPriceIncludingTax = this.calculateMargin(
-			appliedMargin.shipments[0].items[0].unitPriceIncludingTax
+		appliedMargin.shipments[0].shippingPriceIncludingTax = this.convertPrice(
+			appliedMargin.shipments[0].shippingPriceIncludingTax
 		);
-		appliedMargin.shipments[0].items[0].unitPriceExcludingTax = this.calculateMargin(
-			appliedMargin.shipments[0].items[0].unitPriceExcludingTax
+		appliedMargin.shipments[0].shippingPriceExcludingTax = this.convertPrice(
+			appliedMargin.shipments[0].shippingPriceExcludingTax
 		);
-		appliedMargin.shipments[0].items[0].totalPriceIncludingTax = this.calculateMargin(
-			appliedMargin.shipments[0].items[0].totalPriceIncludingTax
-		);
-		appliedMargin.shipments[0].items[0].totalPriceExcludingTax = this.calculateMargin(
-			appliedMargin.shipments[0].items[0].totalPriceExcludingTax
-		);
+
+		let items = [];
+		shipmentOption.shipments[0].items.forEach(item => {
+			let obj = {
+				identifier: item.identifier,
+				sku: item.sku,
+				unitPriceIncludingTax: this.add99ct(this.convertPrice(this.calculateMargin(item.unitPriceIncludingTax))),
+				unitPriceExcludingTax: this.convertPrice(this.calculateMargin(item.unitPriceExcludingTax)),
+				quantity: item.quantity
+			};
+			obj.totalPriceIncludingTax = obj.unitPriceIncludingTax * obj.quantity;
+			obj.totalPriceExcludingTax = obj.unitPriceExcludingTax * obj.quantity;
+
+			items.push(obj);
+		});
+		appliedMargin.shipments[0].items = items;
+
+		appliedMargin.totalPriceIncludingTax =
+			(this.sumUnitWithTax(appliedMargin.shipments[0].items) + parseFloat(appliedMargin.shippingPriceIncludingTax) * 100) / 100;
+		appliedMargin.totalPriceExcludingTax =
+			(this.sumUnitWithoutTax(appliedMargin.shipments[0].items) + parseFloat(appliedMargin.shippingPriceExcludingTax) * 100) /
+			100;
 
 		return appliedMargin;
 	},
@@ -117,16 +129,16 @@ module.exports = {
 
 				formatted = {
 					isAvailable: shipmentOption.isAvailable,
-					unitPriceIncludingTax: this.add99ct(this.convertPrice(margined.shipments[0].items[0].unitPriceIncludingTax)),
+					unitPriceIncludingTax: this.add99ct(this.convertPrice(margined.unitPriceIncludingTax)),
 
-					totalPriceIncludingTax: this.convertPrice(margined.totalPriceIncludingTax), // needs total unit price converted and with 99 cumulated + shipping
-					totalPriceExcludingTax: this.convertPrice(margined.totalPriceExcludingTax), //same but exc
+					totalPriceIncludingTax: margined.totalPriceIncludingTax,
+					totalPriceExcludingTax: margined.totalPriceExcludingTax,
 
 					shippingMethod: shipmentOption.shippingMethod,
-					shippingPriceIncludingTax: this.convertPrice(margined.shippingPriceIncludingTax),
-					shippingPriceExcludingTax: this.convertPrice(margined.shippingPriceExcludingTax),
+					shippingPriceIncludingTax: margined.shippingPriceIncludingTax,
+					shippingPriceExcludingTax: margined.shippingPriceExcludingTax,
 
-					shipments: margined.shipments //items contained here needs convert and 99ct (maybe)
+					shipments: margined.shipments
 				};
 			}
 		});

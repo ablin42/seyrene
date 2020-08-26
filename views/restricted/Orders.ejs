@@ -25,7 +25,7 @@
 						<tr>
 							<th scope="row" class="date-grid"><%= locals.approval[index].date_f %></th>
 							<td class="status-grid"><%= locals.approval[index].status %></td>
-							<td class="price-grid"><%= locals.approval[index].price %>€</td>
+							<td class="price-grid"><%= locals.approval[index].price %> €</td>
 							<td class="name-grid"><%= locals.approval[index].firstname[0] %>. <%= locals.approval[index].lastname %></td>
 							<td class="id-grid"><a id="approval-<%= locals.approval[index]._id %>" href="/Admin/Order/<%= locals.approval[index]._id %>">#<%= locals.approval[index]._id %></a></td>
 						</tr>
@@ -53,7 +53,7 @@
 						<tr>
 							<th scope="row" class="date-grid"><%= locals.all[index].date_f %></th>
 							<td class="status-grid"><%= locals.all[index].status %></td>
-							<td class="price-grid"><%= locals.all[index].price %>€</td>
+							<td class="price-grid"><%= locals.all[index].price %> €</td>
 							<td class="name-grid"><%= locals.all[index].firstname[0] %>. <%= locals.all[index].lastname %></td>
 							<td class="id-grid"><a id="all-<%= locals.all[index]._id %>" href="/Admin/Order/<%= locals.all[index]._id %>">#<%= locals.all[index]._id %></a></td>
 						</tr>
