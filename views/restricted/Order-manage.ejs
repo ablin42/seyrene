@@ -24,7 +24,7 @@
 				<h3>SHIPPING FEE - <b>FREE</b></h3>
 				<% } %>
 
-				<h3>TOTAL - <b><%= locals.order.price %> €</b></h3>
+				<h3>TOTAL - <b><%= locals.order.price %>€</b></h3>
 			</div>
 		</div>
 
@@ -55,9 +55,9 @@
 				</div>
 
 				<div class="cart-price cart-column">
-					<p class="cart-item-price"><%= locals.products[index].price %> €</p>
+					<p class="cart-item-price"><%= locals.products[index].price %>€</p>
 					<% if (locals.products[index].isUnique !== true) { %>
-					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %> €/Unit</p>
+					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unit</p>
 					<% } %>
 				</div>
 			</div>

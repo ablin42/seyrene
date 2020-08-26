@@ -115,7 +115,7 @@ async function cartDel(itemId, caller) {
 
 	if (response.error === false) {
 		let totalQty = response.cart.totalQty;
-		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".");
+		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".").replace(" ", "");
 		let rowId = document.getElementById(itemId);
 
 		rowId.remove();
@@ -158,14 +158,15 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 
 	if (response.error === false) {
 		let totalQty = response.cart.totalQty;
-		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".");
+		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".").replace(" ", "");
 		let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
 		if (rowId.classList.contains("cart-row-item")) {
 			document.querySelector(`#qty-${itemId}-${referenceId}`).value = response.item.qty;
 			document.querySelector(`#price-${itemId}-${referenceId}`).innerText = formatter
 				.format(response.item.price)
-				.replace(",", ".");
+				.replace(",", ".")
+				.replace(" ", "");
 			totalPriceDOM.forEach(item => {
 				item.innerText = totalPrice;
 			});
@@ -204,12 +205,12 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 
 	if (response.error === false) {
 		let totalQty = response.cart.totalQty;
-		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".");
+		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".").replace(" ", "");
 		let deliveryPrice = response.cart.price.shippingIncludingTax;
 		let rowId = document.getElementById(`${itemId}-${referenceId}`);
 
 		if (deliveryPrice === 0) deliveryPrice = "FREE";
-		else deliveryPrice = formatter.format(response.cart.price.shippingIncludingTax).replace(",", ".");
+		else deliveryPrice = formatter.format(response.cart.price.shippingIncludingTax).replace(",", ".").replace(" ", "");
 
 		if (totalQty === 0) handleEmptiness();
 
@@ -219,7 +220,8 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 				document.querySelector(`#qty-${itemId}-${referenceId}`).value = response.item.qty;
 				document.querySelector(`#price-${itemId}-${referenceId}`).innerText = formatter
 					.format(response.item.price)
-					.replace(",", ".");
+					.replace(",", ".")
+					.replace(" ", "");
 			}
 		} else rowId.remove();
 
@@ -265,12 +267,12 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 
 	if (response.error === false) {
 		let totalQty = response.cart.totalQty;
-		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".");
+		let totalPrice = formatter.format(response.cart.price.totalIncludingTax).replace(",", ".").replace(" ", "");
 		let rowId = document.getElementById(`${itemId}-${referenceId}`);
 		let deliveryPrice = response.cart.price.shippingIncludingTax;
 
 		if (deliveryPrice === 0) deliveryPrice = "FREE";
-		else deliveryPrice = formatter.format(response.cart.price.shippingIncludingTax).replace(",", ".");
+		else deliveryPrice = formatter.format(response.cart.price.shippingIncludingTax).replace(",", ".").replace(" ", "");
 
 		if (totalQty === 0) handleEmptiness();
 
@@ -291,7 +293,8 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 			document.querySelector(`#qty-${itemId}-${referenceId}`).value = response.item.qty;
 			document.querySelector(`#price-${itemId}-${referenceId}`).innerText = formatter
 				.format(response.item.price)
-				.replace(",", ".");
+				.replace(",", ".")
+				.replace(" ", "");
 		}
 	} else alertType = "warning";
 

@@ -20,7 +20,7 @@
 				</h3>
 				<% } %>
 				<h3>TOTAL QTY = <b data-totalqty="true"><%= locals.totalQty %></b></h3>
-				<h3>TOTAL = <b data-totalprice="true"><%= locals.totalPrice %> €</b></h3>
+				<h3>TOTAL = <b data-totalprice="true"><%= locals.totalPrice %>€</b></h3>
 			</div>
 			<!--<div class="payment-div">
 					<% if (locals.deliveryPrice && locals.deliveryPrice.response.shippingPriceIncludingTax) { %>
@@ -29,7 +29,7 @@
 					<h4>FREE</h4>
 					<% } %>
 					<h4><%= locals.totalQty %></h4>
-					<h4><%= locals.totalPrice %> €</h4>
+					<h4><%= locals.totalPrice %>€</h4>
 				</div>-->
 			<!--
 				<div class="cart-row">
@@ -44,7 +44,7 @@
 					<span class="cart-item cart-header cart-column">FREE</span>
 					<% } %>
 					<span class="cart-quantity cart-header cart-column"><%= locals.totalQty %></span>
-					<span class="cart-price cart-header cart-column"><%= locals.totalPrice %> €</span>
+					<span class="cart-price cart-header cart-column"><%= locals.totalPrice %>€</span>
 				</div>
 				-->
 
@@ -90,9 +90,9 @@
 				</div>
 
 				<div class="cart-price cart-column">
-					<p class="cart-item-price" id="price-<%= locals.products[index].item._id %>-<%= index %>"><%= locals.products[index].price %> €</p>
+					<p class="cart-item-price" id="price-<%= locals.products[index].item._id %>-<%= index %>"><%= locals.products[index].price %>€</p>
 					<% if (locals.products[index].isUnique !== true) { %>
-					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %> €/Unit</p>
+					<p class="cart-item-unitprice"><%= locals.products[index].unitPrice %>€/Unit</p>
 					<% } %>
 				</div>
 			</div>
@@ -107,7 +107,7 @@
 				</h3>
 				<% } %>
 				<h3>TOTAL QTY = <b data-totalqty="true"><%= locals.totalQty %></b></h3>
-				<h3>TOTAL = <b data-totalprice="true"><%= locals.totalPrice %> €</b></h3>
+				<h3>TOTAL = <b data-totalprice="true"><%= locals.totalPrice %>€</b></h3>
 			</div>
 		</div>
 		<% } %>
