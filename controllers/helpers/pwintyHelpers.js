@@ -100,8 +100,13 @@ module.exports = {
 			appliedMargin.shipments[0].items[0].totalPriceExcludingTax
 		);
 
-		console.log(appliedMargin, appliedMargin.shipments[0].items[0]);
 		return appliedMargin;
+	},
+	convertPrice: function (price) {
+		return formatter
+			.format(fx.convert(price / 100, "GBP", "EUR"))
+			.substr(2)
+			.replace(",", "");
 	},
 	treatShipment: function (shipmentOptions) {
 		let formatted = [];
@@ -112,30 +117,17 @@ module.exports = {
 
 				formatted = {
 					isAvailable: shipmentOption.isAvailable,
-					unitPriceIncludingTax: formatter
-						.format(fx.convert(margined.shipments[0].items[0].unitPriceIncludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					totalPriceIncludingTax: formatter
-						.format(fx.convert(margined.totalPriceIncludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					totalPriceExcludingTax: formatter
-						.format(fx.convert(margined.totalPriceExcludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
+					unitPriceIncludingTax: this.add99ct(this.convertPrice(margined.shipments[0].items[0].unitPriceIncludingTax)),
+
+					totalPriceIncludingTax: this.convertPrice(margined.totalPriceIncludingTax), // needs total unit price converted and with 99 cumulated + shipping
+					totalPriceExcludingTax: this.convertPrice(margined.totalPriceExcludingTax), //same but exc
+
 					shippingMethod: shipmentOption.shippingMethod,
-					shippingPriceIncludingTax: formatter
-						.format(fx.convert(margined.shippingPriceIncludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					shippingPriceExcludingTax: formatter
-						.format(fx.convert(margined.shippingPriceExcludingTax / 100, "GBP", "EUR"))
-						.substr(2)
-						.replace(",", ""),
-					shipments: margined.shipments
+					shippingPriceIncludingTax: this.convertPrice(margined.shippingPriceIncludingTax),
+					shippingPriceExcludingTax: this.convertPrice(margined.shippingPriceExcludingTax),
+
+					shipments: margined.shipments //items contained here needs convert and 99ct (maybe)
 				};
-				console.log(formatted.unitPriceIncludingTax);
 			}
 		});
 

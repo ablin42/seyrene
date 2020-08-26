@@ -26,6 +26,7 @@
 			</form>
 		</div>
 	</div>
+	<% include ../partials/footer %>
 </div>
 
 <input type="hidden" value="<%= locals.blog.content %>" id="blogContent" />
@@ -34,4 +35,3 @@
 <% } %>
 <script src="/scripts/blog/patchquill.js" defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>
-<% include ../partials/footer %>
