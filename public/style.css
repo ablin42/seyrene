@@ -1133,6 +1133,11 @@ div.carousel-item.active {
 	border: 0px !important;
 }
 
+.carousel-item {
+	background: var(--dark-shade-m1);
+	text-align: center;
+}
+
 .carousel-item img {
 	/*this needs to be changed to responsive */
 	height: 580px;
@@ -2290,7 +2295,7 @@ tbody tr:hover {
 	right: 0;
 	z-index: 99;
 	max-height: 300px;
-	overflow: scroll;
+	overflow-y: scroll;
 }
 
 /* Hide the items when the select box is closed: */

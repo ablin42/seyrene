@@ -31,36 +31,111 @@ module.exports = {
 		});
 		return result;
 	},
+	add99ct: function (price) {
+		let priceWith99 = price.toString().slice(0, -2);
+		priceWith99 = priceWith99 + 99;
+
+		return priceWith99;
+	},
+	calculateMargin: function (price) {
+		switch (true) {
+			case price < 3500:
+				return price * 1.35;
+				break;
+			case price >= 3500 && price < 5000:
+				return price * 1.3;
+				break;
+			case price >= 5000 && price < 8000:
+				return price * 1.4;
+				break;
+			case price >= 8000 && price < 10000:
+				return price * 1.45;
+				break;
+			case price >= 10000:
+				return price * 1.5;
+				break;
+			default:
+				return price * 1.35;
+				break;
+		}
+	},
+	sumUnitWithTax: function (items) {
+		let total = 0;
+		items.forEach(item => {
+			total += this.calculateMargin(item.unitPriceIncludingTax);
+		});
+
+		return total;
+	},
+	sumUnitWithoutTax: function (items) {
+		let total = 0;
+		items.forEach(item => {
+			total += this.calculateMargin(item.unitPriceExcludingTax);
+		});
+
+		return total;
+	},
+	addMargin: function (shipmentOption) {
+		let appliedMargin = {
+			unitPriceIncludingTax: this.calculateMargin(shipmentOption.shipments[0].items[0].unitPriceIncludingTax),
+			//might be an addition of multiple items with different margin range
+			totalPriceIncludingTax: this.sumUnitWithTax(shipmentOption.shipments[0].items) + shipmentOption.shippingPriceIncludingTax,
+			//might be an addition of multiple items with different margin range
+			totalPriceExcludingTax:
+				this.sumUnitWithoutTax(shipmentOption.shipments[0].items) + shipmentOption.shippingPriceExcludingTax,
+			shippingPriceIncludingTax: shipmentOption.shippingPriceIncludingTax,
+			shippingPriceExcludingTax: shipmentOption.shippingPriceExcludingTax,
+			shipments: shipmentOption.shipments
+		};
+		appliedMargin.shipments[0].items[0].unitPriceIncludingTax = this.calculateMargin(
+			appliedMargin.shipments[0].items[0].unitPriceIncludingTax
+		);
+		appliedMargin.shipments[0].items[0].unitPriceExcludingTax = this.calculateMargin(
+			appliedMargin.shipments[0].items[0].unitPriceExcludingTax
+		);
+		appliedMargin.shipments[0].items[0].totalPriceIncludingTax = this.calculateMargin(
+			appliedMargin.shipments[0].items[0].totalPriceIncludingTax
+		);
+		appliedMargin.shipments[0].items[0].totalPriceExcludingTax = this.calculateMargin(
+			appliedMargin.shipments[0].items[0].totalPriceExcludingTax
+		);
+
+		console.log(appliedMargin, appliedMargin.shipments[0].items[0]);
+		return appliedMargin;
+	},
 	treatShipment: function (shipmentOptions) {
 		let formatted = [];
 
 		shipmentOptions.forEach(shipmentOption => {
 			if (shipmentOption.isAvailable && shipmentOption.shippingMethod === "Standard") {
+				let margined = this.addMargin(shipmentOption);
+
 				formatted = {
 					isAvailable: shipmentOption.isAvailable,
 					unitPriceIncludingTax: formatter
-						.format(fx.convert(shipmentOption.shipments[0].items[0].unitPriceIncludingTax / 100, "GBP", "EUR"))
+						.format(fx.convert(margined.shipments[0].items[0].unitPriceIncludingTax / 100, "GBP", "EUR"))
 						.substr(2)
 						.replace(",", ""),
 					totalPriceIncludingTax: formatter
-						.format(fx.convert(shipmentOption.totalPriceIncludingTax / 100, "GBP", "EUR"))
+						.format(fx.convert(margined.totalPriceIncludingTax / 100, "GBP", "EUR"))
 						.substr(2)
 						.replace(",", ""),
 					totalPriceExcludingTax: formatter
-						.format(fx.convert(shipmentOption.totalPriceExcludingTax / 100, "GBP", "EUR"))
+						.format(fx.convert(margined.totalPriceExcludingTax / 100, "GBP", "EUR"))
 						.substr(2)
 						.replace(",", ""),
 					shippingMethod: shipmentOption.shippingMethod,
 					shippingPriceIncludingTax: formatter
-						.format(fx.convert(shipmentOption.shippingPriceIncludingTax / 100, "GBP", "EUR"))
+						.format(fx.convert(margined.shippingPriceIncludingTax / 100, "GBP", "EUR"))
 						.substr(2)
 						.replace(",", ""),
 					shippingPriceExcludingTax: formatter
-						.format(fx.convert(shipmentOption.shippingPriceExcludingTax / 100, "GBP", "EUR"))
+						.format(fx.convert(margined.shippingPriceExcludingTax / 100, "GBP", "EUR"))
 						.substr(2)
 						.replace(",", ""),
-					shipments: shipmentOption.shipments
+					shipments: margined.shipments
 				};
+				console.log(formatted.unitPriceIncludingTax);
 			}
 		});
 

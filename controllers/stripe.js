@@ -32,7 +32,7 @@ router.post("/create-intent", setUser, authUser, checkBilling, async (req, res) 
 			}
 
 			let paymentIntent = await stripe.paymentIntents.create({
-				amount: Math.round(total * 100), //add delivery price here (and taxes)
+				amount: Math.round(total * 100),
 				currency: "eur",
 				description: "Charging for purchase @ maral"
 			});
