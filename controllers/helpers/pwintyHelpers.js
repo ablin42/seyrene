@@ -65,7 +65,7 @@ module.exports = {
 			total += parseFloat(item.unitPriceIncludingTax) * item.quantity;
 		});
 
-		return total * 100;
+		return parseInt(total * 100);
 	},
 	sumUnitWithoutTax: function (items) {
 		let total = 0;
@@ -73,7 +73,7 @@ module.exports = {
 			total += parseFloat(item.unitPriceExcludingTax) * item.quantity;
 		});
 
-		return total * 100;
+		return parseInt(total * 100);
 	},
 	addMargin: function (shipmentOption) {
 		let appliedMargin = {
@@ -81,36 +81,38 @@ module.exports = {
 
 			shippingPriceIncludingTax: this.convertPrice(shipmentOption.shippingPriceIncludingTax),
 			shippingPriceExcludingTax: this.convertPrice(shipmentOption.shippingPriceExcludingTax),
-			shipments: shipmentOption.shipments
+			shipments: shipmentOption.shipments,
+
+			totalPriceIncludingTax: 0,
+			totalPriceExcludingTax: 0
 		};
-		appliedMargin.shipments[0].shippingPriceIncludingTax = this.convertPrice(
-			appliedMargin.shipments[0].shippingPriceIncludingTax
-		);
-		appliedMargin.shipments[0].shippingPriceExcludingTax = this.convertPrice(
-			appliedMargin.shipments[0].shippingPriceExcludingTax
-		);
 
-		let items = [];
-		shipmentOption.shipments[0].items.forEach(item => {
-			let obj = {
-				identifier: item.identifier,
-				sku: item.sku,
-				unitPriceIncludingTax: this.add99ct(this.convertPrice(this.calculateMargin(item.unitPriceIncludingTax))),
-				unitPriceExcludingTax: this.convertPrice(this.calculateMargin(item.unitPriceExcludingTax)),
-				quantity: item.quantity
-			};
-			obj.totalPriceIncludingTax = obj.unitPriceIncludingTax * obj.quantity;
-			obj.totalPriceExcludingTax = obj.unitPriceExcludingTax * obj.quantity;
+		shipmentOption.shipments.forEach((shipment, index) => {
+			appliedMargin.shipments[index].shippingPriceIncludingTax = this.convertPrice(shipment.shippingPriceIncludingTax);
+			appliedMargin.shipments[index].shippingPriceExcludingTax = this.convertPrice(shipment.shippingPriceExcludingTax);
 
-			items.push(obj);
+			let items = [];
+			shipment.items.forEach(item => {
+				let obj = {
+					identifier: item.identifier,
+					sku: item.sku,
+					unitPriceIncludingTax: this.add99ct(this.convertPrice(this.calculateMargin(item.unitPriceIncludingTax))),
+					unitPriceExcludingTax: this.convertPrice(this.calculateMargin(item.unitPriceExcludingTax)),
+					quantity: item.quantity
+				};
+				obj.totalPriceIncludingTax += obj.unitPriceIncludingTax * obj.quantity;
+				obj.totalPriceExcludingTax += obj.unitPriceExcludingTax * obj.quantity;
+
+				items.push(obj);
+			});
+			appliedMargin.shipments[index].items = items;
+
+			appliedMargin.totalPriceIncludingTax += parseFloat(this.sumUnitWithTax(appliedMargin.shipments[index].items) / 100);
+			appliedMargin.totalPriceIncludingTax += parseFloat(shipment.shippingPriceIncludingTax);
+
+			appliedMargin.totalPriceExcludingTax += parseFloat(this.sumUnitWithoutTax(appliedMargin.shipments[index].items) / 100);
+			appliedMargin.totalPriceExcludingTax += parseFloat(shipment.shippingPriceExcludingTax);
 		});
-		appliedMargin.shipments[0].items = items;
-
-		appliedMargin.totalPriceIncludingTax =
-			(this.sumUnitWithTax(appliedMargin.shipments[0].items) + parseFloat(appliedMargin.shippingPriceIncludingTax) * 100) / 100;
-		appliedMargin.totalPriceExcludingTax =
-			(this.sumUnitWithoutTax(appliedMargin.shipments[0].items) + parseFloat(appliedMargin.shippingPriceExcludingTax) * 100) /
-			100;
 
 		return appliedMargin;
 	},

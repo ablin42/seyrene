@@ -112,7 +112,8 @@ const attributesList = [
 	"subcategory",
 	"SKU",
 	"depth",
-	"wrap"
+	"wrap",
+	"mountType"
 ];
 
 module.exports = {

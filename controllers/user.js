@@ -265,7 +265,6 @@ router.get("/countryCode", setUser, async (req, res) => {
 		else {
 			let response = await ipinfo.lookupIp(ip);
 
-			console.log(response);
 			countryCode = countryList.findByName(utils.toTitleCase(response.country));
 			if (countryCode) countryCode = countryCode.code.iso2;
 			else throw new Error(ERROR_MESSAGE.countryCode);
