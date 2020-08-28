@@ -298,7 +298,7 @@ router.post("/callback/status", async (req, res) => {
 			[err, user] = await utils.to(Order.findOne({ _userId: order._userId }));
 			if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
 
-			content = "Your order's status was updated, to see your order please click the button below (make sure you're logged in)";
+			content = "Your order's status was updated, to see your order please click the link below (make sure you're logged in)";
 			if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
 				throw new Error(ERROR_MESSAGE.sendMail);
 

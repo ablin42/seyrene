@@ -158,7 +158,7 @@ module.exports = {
 
 		[err, user] = await utils.to(User.findById(order._userId));
 		if (err || !user) throw new Error(ERROR_MESSAGE.userNotFound);
-		content = "To see your order, please click the button below (make sure you're logged in)";
+		content = "To see your order, please click the link below (make sure you're logged in)";
 		if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
 			throw new Error(ERROR_MESSAGE.sendMail);
 

@@ -195,7 +195,7 @@ router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req
 		if (await mailer(process.env.EMAIL, subject, content, `${process.env.BASEURL}/Admin/Order/${order._id}`))
 			throw new Error(ERROR_MESSAGE.sendMail);
 
-		content = "Your order was cancelled, to see the cancelled order, please click the button below (make sure you're logged in)";
+		content = "Your order was cancelled, to see the cancelled order, please click the link below (make sure you're logged in)";
 		if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
 			throw new Error(ERROR_MESSAGE.sendMail);
 

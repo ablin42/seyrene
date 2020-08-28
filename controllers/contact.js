@@ -9,6 +9,7 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const mailer = require("./helpers/mailer");
 require("dotenv").config();
 const { fullLog, threatLog } = require("./helpers/log4");
+const utils = require("./helpers/utils");
 
 const limiter = rateLimit({
 	store: new MongoStore({

@@ -76,7 +76,7 @@ router.post("/lostpw", lostpwlimiter, vLostPw, setUser, notLoggedUser, async (re
 		}
 
 		const subject = "Password Reset Token for Maral",
-			content = "Hello, You asked your password to be reset, please click the button below in order to change your password";
+			content = "Hello, You asked your password to be reset, please click the link below in order to change your password";
 		if (await mailer(req.body.email, subject, content, `${process.env.BASEURL}/resetpw/${pwToken._id}/${token}`))
 			throw new Error(ERROR_MESSAGE.sendMail);
 
@@ -150,7 +150,7 @@ router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res)
 		if (err || !token) throw new Error(ERROR_MESSAGE.saveError);
 
 		let subject = "Account Verification Token for Maral",
-			content = "Hello, Please verify your account by clicking the button below";
+			content = "Hello, Please verify your account by clicking the link below";
 		if (await mailer(newEmail, subject, content, `${process.env.BASEURL}/api/auth/confirmation/${vToken}`))
 			throw new Error(ERROR_MESSAGE.sendMail);
 
