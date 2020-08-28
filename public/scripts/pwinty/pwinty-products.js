@@ -232,6 +232,7 @@ class PwintyObject {
 	}
 
 	updateAttribute(attribute, optionValue = "") {
+		this.hidePricing();
 		if (optionValue === "") this.attributes[attribute.name] = attribute.options[attribute.selectedIndex].value;
 		else this.attributes[attribute.name] = optionValue;
 

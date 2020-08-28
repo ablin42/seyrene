@@ -1,6 +1,14 @@
 let posttags = document.querySelector("form[data-posttags]");
 let tagform = document.querySelector("form[data-tagform]");
 
+function preventEnter(e, item) {
+	let keyCode = e.keyCode || e.which;
+	if (keyCode === 13) {
+		e.preventDefault();
+		return false;
+	}
+}
+
 tagform.addEventListener("keydown", function (e) {
 	preventEnter(e, tagform);
 });
@@ -12,7 +20,9 @@ if (posttags)
 
 let tagInput = $("#tagInput");
 let tags = $("#tagscontent").val();
-tags = tags.split(",");
+if (tags) tags = tags.split(",");
 
-tagInput.tagsinput("add", "");
-for (i = 0; i < tags.length; i++) tagInput.tagsinput("add", tags[i]);
+if (tagInput) {
+	tagInput.tagsinput("add", "");
+	if (tags) for (i = 0; i < tags.length; i++) tagInput.tagsinput("add", tags[i]);
+}

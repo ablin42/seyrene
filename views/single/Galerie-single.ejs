@@ -1,6 +1,5 @@
 <% include ../partials/head %>
 
-<script src="/scripts/core/bootstrap-tagsinput.js"></script>
 <script src="/scripts/pwinty/pwinty-exports.js"></script>
 <script src="/scripts/pwinty/pwinty-products.js"></script>
 
@@ -97,14 +96,15 @@
 
 			<h1 class="pwinty-title mt-2 nodisplay" data-subcategories>Subcategories</h1>
 			<div class="form-group text-center pwinty-wrapper" id="subcategories"></div>
+
 			<h1 class="pwinty-title mt-2 nodisplay" data-attributes>Options</h1>
 			<div class="form-group text-center pwinty-wrapper" id="attributes"></div>
-		</div>
 
-		<div class="pbox-wrapper">
-			<div id="purchasebox" class="col-md-6 offset-md-3 text-center nodisplay">
-				<span id="price" class="card-price-gallery"></span>
-				<input type="submit" data-addpwinty="<%= locals.gallery._id %>" class="submit-btn" value="Add to cart" />
+			<div class="pbox-wrapper">
+				<div id="purchasebox" class="col-md-6 offset-md-3 text-center nodisplay">
+					<span id="price" class="card-price-gallery"></span>
+					<input type="submit" data-addpwinty="<%= locals.gallery._id %>" class="submit-btn" value="Add to cart" />
+				</div>
 			</div>
 		</div>
 	</div>

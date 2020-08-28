@@ -5,7 +5,7 @@
 	<div class="container container-front">
 		<div class="col-md-10 offset-md-1">
 			<h1 class="square-title text-center">Modifier la galerie</h1>
-			<form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" enctype="multipart/form-data" data-patchgal="true" data-id="<%= locals.gallery._id %>">
+			<form id="gallery" method="POST" action="/api/gallery/patch/<%= locals.gallery._id %>" data-tagform="true" enctype="multipart/form-data" data-patchgal="true" data-id="<%= locals.gallery._id %>">
 				<div class="form-group">
 					<label class="control-label">Titre</label>
 					<input type="text" name="title" id="title" placeholder="Titre" value="<%= locals.gallery.title %>" data-vstring="1;256" required />
@@ -50,5 +50,8 @@
 	<% include ../partials/footer %>
 </div>
 
+<input type="hidden" id="tagscontent" value="<%= locals.gallery.tags %>" />
+
+<script src="/scripts/gallery/tags.js" defer></script>
 <script src="/scripts/gallery/galleryScripts.js" defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>

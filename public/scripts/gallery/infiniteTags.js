@@ -90,14 +90,6 @@ async function filterByTags(e) {
 	window.location.href = `/Galerie/Tags${tags}`;
 }
 
-function preventEnter(e, item) {
-	let keyCode = e.keyCode || e.which;
-	if (keyCode === 13) {
-		e.preventDefault();
-		return false;
-	}
-}
-
 function createListener() {
 	setTimeout(function () {
 		let imgExp = $(".expandable");

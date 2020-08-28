@@ -164,6 +164,8 @@ a {
 }
 
 .pbox-wrapper {
+	display: flex;
+	align-items: flex-end;
 	height: 200px;
 }
 

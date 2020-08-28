@@ -762,6 +762,8 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 		if (response.error === false) obj.images = response.images;
 		else throw new Error(response.message);
 
+		console.log(obj.gallery);
+
 		return res.status(200).render("restricted/Gallery-patch", obj);
 	} catch (err) {
 		threatLog.error("GALLERY PATCH ROUTE ERROR", err, req.headers, req.ipAddress);
