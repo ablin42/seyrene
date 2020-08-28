@@ -1,6 +1,6 @@
 <% include ../partials/head %>
 
-<div class="full-container" id="container-landing">
+<div class="full-container full-container-one" id="container-landing">
 	<div class="container container-front">
 		<% if (locals.shop){ %>
 		<div class="col-md-12 content-wrapper" id="<%= locals.shop._id %>">
@@ -42,9 +42,7 @@
 					<a href="/Admin/Shop/Patch/<%= locals.shop._id %>"><i class="fas fa-edit"></i></a>
 					<% } %>
 				</h1>
-				<p class="single-content">
-					<%= locals.shop.content %>
-				</p>
+				<p class="single-content"><%= locals.shop.content %></p>
 			</div>
 
 			<div class="col-md-4 offset-md-4 text-center mt-2">

@@ -144,6 +144,7 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 			headtitle: "Maral Abkarian Paintings | Art Gallery Tags",
 			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable replicas!"
 		};
+		if (req.user) obj.user = req.user;
 		if (req.query.t) {
 			obj.error = true;
 			obj.tags = req.query.t;
@@ -742,6 +743,7 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 			active: "Admin",
 			headtitle: "Edit a gallery item",
 			description: "Maral Akbarian Art and Paintings",
+			user: req.user,
 			csrfToken: req.csrfToken()
 		};
 		const galleryId = sanitize(req.params.galleryId);
@@ -761,8 +763,6 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 		let response = await rp(options);
 		if (response.error === false) obj.images = response.images;
 		else throw new Error(response.message);
-
-		console.log(obj.gallery);
 
 		return res.status(200).render("restricted/Gallery-patch", obj);
 	} catch (err) {

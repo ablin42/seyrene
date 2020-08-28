@@ -78,6 +78,11 @@ a {
 	background: linear-gradient(to bottom, var(--primary-light), var(--primary-dark));
 }
 
+.full-container-one {
+	display: flex;
+	flex-direction: column;
+}
+
 .full-container .square-title {
 	color: var(--light-shade);
 	text-shadow: 2px 2px var(--brand-blue);
@@ -618,6 +623,7 @@ header:hover .navbar-text.active {
 footer {
 	min-height: 33px;
 	width: 100%;
+	align-self: end;
 }
 
 .footer-links {
