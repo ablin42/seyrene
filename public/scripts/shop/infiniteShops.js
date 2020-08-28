@@ -4,6 +4,13 @@ let addClickEvent = function () {
 };
 loadbtn.addEventListener("click", addClickEvent);
 
+let callToGallery = document.querySelector("#goto-gallery");
+
+if (callToGallery)
+	callToGallery.addEventListener("click", function () {
+		window.location.href = "/Galerie";
+	});
+
 async function infiniteShopItems(tb) {
 	let nbItem = $("#original > .card").length,
 		page = 1 + Math.floor(nbItem / 3),

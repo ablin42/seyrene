@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 		<meta name="csrf-token" content="<%= locals.csrfToken %>" />
 		<meta name="description" content="<%= locals.description %>" />
-		<meta name="keywords" content="Art, Arts, Painting, Paintings, Buy, Purchase, Maral, Akbarian, Copy, Unique, Beautiful, Reproduction, Actress, Peinture, Tableaux" />
+		<meta name="keywords" content="Art, Arts, Painting, Paintings, Buy, Purchase, Maral, Akbarian, Copy, Replica, Replicas, Copies, Unique, Beautiful, Reproduction, Actress, Peinture, Tableaux" />
 		<!-- add keywords -->
 		<meta name="author" content="Maral Abkarian" />
 		<title><%= (locals.headtitle) ? locals.headtitle : 'Maral' %></title>
@@ -63,11 +63,11 @@
 						<% } %>
 
 						<li>
-							<a href="/Blog" class="navbar-text <%= (locals.active && locals.active == 'Blog') ? 'active' : '' %>">Blog</a>
+							<a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>">Gallery</a>
 						</li>
 
 						<li>
-							<a href="/Galerie" class="navbar-text <%= (locals.active && locals.active == 'Galerie') ? 'active' : '' %>">Gallery</a>
+							<a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>">Shop</a>
 						</li>
 
 						<li>
@@ -75,7 +75,7 @@
 						</li>
 
 						<li>
-							<a href="/Shop" class="navbar-text <%= (locals.active && locals.active == 'Shop') ? 'active' : '' %>">Shop</a>
+							<a href="/Blog" class="navbar-text <%= (locals.active && locals.active == 'Blog') ? 'active' : '' %>">Blog</a>
 						</li>
 
 						<% if (!locals.user) { %>

@@ -31,6 +31,7 @@ class PwintyObject {
 
 		document.getElementById("subcategories").innerHTML = "";
 		document.getElementById("attributes").innerHTML = "";
+		document.querySelector("[data-attributes]").classList.add("nodisplay");
 		this.hidePricing();
 
 		let selection = "";
@@ -45,6 +46,7 @@ class PwintyObject {
                                 </label>`;
 			if (subcategory !== "sharedAttributes") selection += subcategoryRadio;
 			document.getElementById("subcategories").innerHTML = selection;
+			document.querySelector("[data-subcategories]").classList.remove("nodisplay");
 
 			document.querySelectorAll("[data-classname]").forEach(function (item) {
 				item.addEventListener("click", function () {
@@ -124,6 +126,8 @@ class PwintyObject {
 		});
 
 		document.getElementById("attributes").innerHTML = selection;
+		document.querySelector("[data-attributes]").classList.remove("nodisplay");
+
 		this.selectScript();
 	}
 

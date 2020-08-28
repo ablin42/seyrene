@@ -4,6 +4,13 @@ let addClickEvent = function () {
 };
 loadbtn.addEventListener("click", addClickEvent);
 
+let callToShop = document.querySelector("#goto-shop");
+
+if (callToShop)
+	callToShop.addEventListener("click", function () {
+		window.location.href = "/Shop";
+	});
+
 async function infiniteGalleries() {
 	let nbItem = $(".expandable-card").length,
 		page = 1 + Math.floor(nbItem / 12),

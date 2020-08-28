@@ -66,7 +66,7 @@ router.get("/", setUser, async (req, res) => {
 			active: "Home",
 			headtitle: "Maral Abkarian Paintings | Home",
 			description:
-				"Maral Akbarian Art and Paintings. Discover my gallery and purchase original paintings or customize your copy.",
+				"Maral Akbarian Art and Paintings. Discover my gallery and purchase original paintings or customize your replica.",
 			csrfToken: req.csrfToken()
 		};
 		if (req.user) obj.user = req.user;
@@ -97,7 +97,7 @@ router.get("/Galerie", setUser, cacheView, async (req, res) => {
 		let obj = {
 			active: "Galerie",
 			headtitle: "Maral Abkarian Paintings | Art Gallery ",
-			description: "Maral Akbarian Art and Paintings. Check out the gallery and purchase customizable copies!",
+			description: "Maral Akbarian Art and Paintings. Check out the gallery and purchase customizable replicas!",
 			csrfToken: req.csrfToken()
 		};
 		if (req.user) obj.user = req.user;
@@ -124,7 +124,7 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 		let obj = {
 			active: "Galerie",
 			headtitle: "Maral Abkarian Paintings | Art Gallery Tags",
-			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable copies!",
+			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable replicas!",
 			csrfToken: req.csrfToken()
 		};
 		if (req.user) obj.user = req.user;
@@ -142,7 +142,7 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 	} catch (err) {
 		let obj = {
 			headtitle: "Maral Abkarian Paintings | Art Gallery Tags",
-			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable copies!"
+			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable replicas!"
 		};
 		if (req.query.t) {
 			obj.error = true;
@@ -434,8 +434,9 @@ router.get("/Galerie/:id", setUser, async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
 		let obj = {
-			headtitle: "Maral Abkarian Paintings | Customize Copy",
-			description: "Maral Akbarian Art and Paintings. Check out this beautiful painting and buy customizable copies if you want!",
+			headtitle: "Maral Abkarian Paintings | Customize Replica",
+			description:
+				"Maral Akbarian Art and Paintings. Check out this beautiful painting and buy customizable replicas if you want!",
 			csrfToken: req.csrfToken()
 		};
 		if (req.user) obj.user = req.user;
@@ -472,7 +473,7 @@ router.get("/Catalog", setUser, cacheView, async (req, res) => {
 			active: "Catalog",
 			headtitle: "Maral Abkarian Paintings | Catalog Frames & Paper",
 			description:
-				"Maral Akbarian Art and Paintings. The catalog that references our attributes to customize the copy of the painting you want!",
+				"Maral Akbarian Art and Paintings. The catalog that references our attributes to customize the replica of the painting you want!",
 			csrfToken: req.csrfToken()
 		};
 		if (req.user) obj.user = req.user;

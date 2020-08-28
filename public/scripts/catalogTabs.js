@@ -1,6 +1,13 @@
 let main = document.querySelectorAll(".main-btn");
 let sub = document.querySelectorAll(".cat-btn");
 
+let callToGallery = document.querySelector("#goto-gallery");
+
+if (callToGallery)
+	callToGallery.addEventListener("click", function () {
+		window.location.href = "/Galerie";
+	});
+
 main.forEach(btn => {
 	let target = btn.id.slice(0, -4);
 	btn.addEventListener("click", function () {
