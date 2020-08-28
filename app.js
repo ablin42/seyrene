@@ -259,7 +259,8 @@ app.use("/", pagesRoute);
 app.get("*", setUser, (req, res) => {
 	try {
 		let obj = {
-			active: "Maral Abkarian Paintings | 404",
+			active: "404",
+			headtitle: "Maral Abkarian Paintings | 404",
 			description:
 				"Oops! Looks like you got lost on maral.fr... To see our beautiful paintings go back to our Homepage or head to the Gallery"
 		};
@@ -267,8 +268,16 @@ app.get("*", setUser, (req, res) => {
 
 		return res.status(404).render("404", obj);
 	} catch (err) {
+		let obj = {
+			active: "404",
+			headtitle: "Maral Abkarian Paintings | 404",
+			description:
+				"Oops! Looks like you got lost on maral.fr... To see our beautiful paintings go back to our Homepage or head to the Gallery"
+		};
+		if (req.user) obj.user = req.user;
+
 		threatLog.error("404 ROUTE ERROR", err, req.headers, req.ipAddress);
-		return res.status(404).render("404", { active: "404" });
+		return res.status(404).render("404", obj);
 	}
 });
 

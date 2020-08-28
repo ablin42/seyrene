@@ -86,9 +86,18 @@ router.get("/", setUser, async (req, res) => {
 
 		return res.status(200).render("home", obj);
 	} catch (err) {
+		let obj = {
+			active: "Home",
+			headtitle: "Maral Abkarian Paintings | Home",
+			description:
+				"Maral Akbarian Art and Paintings. Discover my gallery and purchase original paintings or customize your replica.",
+			csrfToken: req.csrfToken()
+		};
+		if (req.user) obj.user = req.user;
+
 		threatLog.error("HOME ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).render("home");
+		return res.status(400).render("home", obj);
 	}
 });
 
@@ -141,8 +150,10 @@ router.get("/Galerie/Tags", setUser, async (req, res) => {
 		return res.status(200).render("Tags", obj);
 	} catch (err) {
 		let obj = {
+			active: "Galerie",
 			headtitle: "Maral Abkarian Paintings | Art Gallery Tags",
-			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable replicas!"
+			description: "Maral Akbarian Art and Paintings. Find paintings using key words and purchase customizable replicas!",
+			csrfToken: req.csrfToken()
 		};
 		if (req.user) obj.user = req.user;
 		if (req.query.t) {
@@ -218,7 +229,7 @@ router.get("/Billing", setUser, authUser, setDelivery, isDelivery, async (req, r
 	} catch (err) {
 		threatLog.error("BILLING ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/");
+		return res.status(400).redirect("/shopping-cart");
 	}
 });
 
@@ -589,7 +600,7 @@ router.get("/Admin", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) =
 	} catch (err) {
 		threatLog.error("ADMIN ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/");
+		return res.status(400).redirect("/Login");
 	}
 });
 
@@ -715,7 +726,7 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 	} catch (err) {
 		threatLog.error("ORDER RECAP ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/");
+		return res.status(400).redirect("/Admin");
 	}
 });
 
@@ -733,7 +744,7 @@ router.get("/Admin/Galerie/Post", setUser, authUser, authRole(ROLE.ADMIN), async
 	} catch (err) {
 		threatLog.error("GALLERY POST ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/Galerie");
+		return res.status(400).redirect("/Admin");
 	}
 });
 
@@ -766,9 +777,11 @@ router.get("/Admin/Galerie/Patch/:galleryId", setUser, authUser, authRole(ROLE.A
 
 		return res.status(200).render("restricted/Gallery-patch", obj);
 	} catch (err) {
+		const galleryId = sanitize(req.params.galleryId);
+
 		threatLog.error("GALLERY PATCH ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/Galerie");
+		return res.status(400).redirect(`/Galerie/${galleryId}`);
 	}
 });
 
@@ -819,9 +832,11 @@ router.get("/Admin/Shop/Patch/:shopId", setUser, authUser, authRole(ROLE.ADMIN),
 
 		return res.status(200).render("restricted/Shop-patch", obj);
 	} catch (err) {
+		const shopId = sanitize(req.params.shopId);
+
 		threatLog.error("SHOP PATCH ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/Shop");
+		return res.status(400).redirect(`/Shop/${shopId}`);
 	}
 });
 
@@ -869,9 +884,11 @@ router.get("/Admin/Blog/Patch/:blogId", setUser, authUser, authRole(ROLE.ADMIN),
 
 		return res.status(200).render("restricted/Blog-patch", obj);
 	} catch (err) {
+		const blogId = sanitize(req.params.blogId);
+
 		threatLog.error("BLOG PATCH ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(200).redirect("/");
+		return res.status(200).redirect(`/Blog/${blogId}`);
 	}
 });
 
