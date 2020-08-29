@@ -2272,7 +2272,7 @@ tbody tr:hover {
 
 .active-cat,
 .active-subcat {
-	background-color: var(--interactive-color) !important;
+	background-color: var(--brand-blue-m2) !important;
 }
 
 .select-list {
@@ -2506,6 +2506,26 @@ tbody tr:hover {
 	font-weight: bold;
 }
 
+.catalog-title-category-main {
+	color: var(--brand-blue-m2);
+	margin-bottom: 0;
+	font-weight: bold;
+	font-size: 3rem;
+	width: 100%;
+}
+
+.category-header {
+	padding: 20px 35px;
+	margin: 0;
+	background-color: #f3f3f3;
+}
+
+.subcat-header {
+	margin: -20px -35px 0 -35px;
+	padding: 20px 35px;
+	background-color: #f3f3f3;
+}
+
 .catalog-subcategory {
 	display: grid;
 	padding: 0;
@@ -2524,7 +2544,15 @@ tbody tr:hover {
 }
 
 .catalog-category ul {
-	margin-left: 20px;
+	margin-left: 30px;
+}
+
+.no-indent {
+	text-indent: 0px !important;
+}
+
+.catalog-glass {
+	line-height: 25px;
 }
 
 .catalog-category li {
@@ -2539,6 +2567,7 @@ tbody tr:hover {
 
 .mounts {
 	text-align: center;
+	margin-left: 0 !important;
 }
 
 .catalog-category {
@@ -2546,7 +2575,8 @@ tbody tr:hover {
 	padding: 20px 35px;
 }
 
-.catalog-category h4 {
+.catalog-category h4,
+.category-header h4 {
 	font-weight: bold;
 	color: var(--brand-blue);
 	margin-bottom: 15px;
@@ -2554,19 +2584,6 @@ tbody tr:hover {
 
 .cat-btn {
 	margin: 5px;
-}
-
-.cat-btn-wrap {
-	border-left: 1px solid var(--light-shade-p1);
-}
-
-.attributes-wrapper {
-}
-
-.catalog-attribute {
-}
-
-.attribute-detail {
 }
 
 .mount {

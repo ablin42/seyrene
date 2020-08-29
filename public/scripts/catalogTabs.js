@@ -8,6 +8,13 @@ if (callToGallery)
 		window.location.href = "/Galerie";
 	});
 
+let callToPapers = document.querySelector("#goto-papers");
+
+if (callToPapers)
+	callToPapers.addEventListener("click", function () {
+		window.location.href = "#framed-papers";
+	});
+
 main.forEach(btn => {
 	let target = btn.id.slice(0, -4);
 	btn.addEventListener("click", function () {

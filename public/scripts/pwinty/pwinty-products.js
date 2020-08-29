@@ -63,6 +63,8 @@ class PwintyObject {
 	}
 
 	loadSubCategory(subcategory) {
+		if (this.subcategory == subcategory.value) return;
+
 		this.hidePricing();
 		this.subcategory = subcategory.value;
 		this.attributes = {};
@@ -435,8 +437,12 @@ class PwintyObject {
 	}
 }
 
+var current;
 let Pwinty;
 function loadCategory(item) {
+	if (current == item) return;
+	current = item;
+
 	Pwinty = new PwintyObject(item);
 	return;
 }
