@@ -83,16 +83,14 @@ let payWithCard = async function (stripe, card, clientSecret) {
 		}
 	});
 
-	console.log(result);
 	if (result.error) {
 		let alert = createAlertNode(result.error.message, "warning");
 		addAlert(alert, "#header");
 		return;
 	}
 
-	/**/
 	let confirm = await fetch("/api/order/confirm", {
-		//to remove once live using webhooks
+		// to remove once live using webhooks
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -109,5 +107,5 @@ let payWithCard = async function (stripe, card, clientSecret) {
 		setTimeout(function () {
 			window.location.href = `/api/cart/clear/${orderId}`;
 		}, 2000);
-	} /**/
+	}
 };

@@ -309,7 +309,6 @@ class PwintyObject {
 			this.SKU += this.attributes["size"];
 		}
 
-		console.log(this.SKU);
 		this.generatePricing();
 	}
 

@@ -182,9 +182,8 @@ async function patchDelivery(e) {
 		},
 		body: JSON.stringify(obj)
 	});
-	console.log(response);
 	response = await response.json();
-	console.log(response);
+
 	let alertType = "success";
 	if (response.error === true) alertType = "warning";
 
