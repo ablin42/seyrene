@@ -262,6 +262,19 @@ a {
 	margin: auto;
 }
 
+i[data-type="showpw"] {
+	color: var(--light-shade-m1);
+	cursor: pointer;
+}
+
+i[data-type="showpw"]:hover {
+	color: var(--info-color);
+}
+
+.active-showpw {
+	color: var(--info-color) !important;
+}
+
 * {
 	margin: 0;
 	padding: 0;

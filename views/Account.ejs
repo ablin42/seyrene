@@ -19,7 +19,7 @@
 				<label class="control-label">Email</label>
 				<input placeholder="Email" type="email" id="login-email" name="email" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
 
-				<label class="control-label">Password</label>
+				<label class="control-label">Password <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="login-pw" aria-hidden="true"></i></label>
 				<input placeholder="Password" type="password" id="login-pw" name="password" required />
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
@@ -42,11 +42,11 @@
 				<input placeholder="jeandupont@gmail.com" type="email" name="email" id="email" data-vemail="true" value="<% if (locals.formData) { %><%= locals.formData.email %><% } %>" required />
 				<span id="i_email" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
 
-				<label class="control-label">Password</label>
+				<label class="control-label">Password <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="password" aria-hidden="true"></i></label>
 				<input placeholder="Password" type="password" name="password" id="password" data-vpw="true" required />
 				<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
 
-				<label class="control-label">Password <i>(confirm)</i></label>
+				<label class="control-label">Password <i>(confirm)</i> <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="password2" aria-hidden="true"></i></label>
 				<input placeholder="Password (confirm)" type="password" name="password2" id="password2" data-vpw2="true" required />
 				<span id="i_password2" class="form-info"><b>Password Confirmation</b> doesn't match <b>password</b></span>
 
@@ -68,9 +68,7 @@
 
 		<form class="col-md-6 offset-md-3 text-center" id="lostpw" data-lostpw="true" method="POST" action="/api/user/lostpw">
 			<div class="row">
-				<div class="alert alert-warning alert-static w-100" role="alert">
-					We'll send you a mail with instructions to reset your password
-				</div>
+				<div class="alert alert-warning alert-static w-100" role="alert">We'll send you a mail with instructions to reset your password</div>
 				<label class="control-label">Email</label>
 				<input placeholder="youremail@gmail.com" type="email" id="email-reset" name="email" value="" data-vemail="true" required />
 				<span id="i_email-reset" class="form-info"><b>E-mail</b> has to be <b>valid</b></span>
@@ -82,5 +80,6 @@
 	<% include partials/footer %>
 </div>
 
+<script src="/scripts/core/togglePwVisibility.js" defer></script>
 <script src="/scripts/submit-auth.js"></script>
 <script src="/scripts/core/frontValidation.js" defer></script>

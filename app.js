@@ -51,15 +51,15 @@ mongoose.connect(
 // Express
 const app = express();
 
-app.use(express.static(__dirname + "/public")); // (if re-enabled, change all routes in ejs to remove /public)
+//app.use(express.static(__dirname + "/public")); // (if re-enabled, change all routes in ejs to remove /public)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
 
-/*app.use(function (req, res, next) {
+app.use(function (req, res, next) {
 	if (req.protocol == "http") return res.redirect("https://" + req.headers.host + req.url);
 	else return next();
-});*/
+});
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
@@ -282,4 +282,4 @@ app.get("*", setUser, (req, res) => {
 });
 
 const port = process.env.PORT;
-app.listen(port, () => fullLog.trace(`Listening on port ${port}...`)); //"/tmp/nginx.socket"
+app.listen("/tmp/nginx.socket", () => fullLog.trace(`Listening on port ${port}...`)); //

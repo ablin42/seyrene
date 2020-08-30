@@ -44,19 +44,19 @@
 					<form id="passwordform" class="w-100" method="POST" action="/api/user/patch/password">
 						<div class="row">
 							<div class="col-md-6">
-								<label class="control-label">Password <i>(current)</i></label>
+								<label class="control-label">Password <i>(current)</i> <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="cpassword" aria-hidden="true"></i></label>
 								<input type="password" name="cpassword" id="cpassword" placeholder="*********" required />
 								<span data-placeholder="Current Password"></span>
 							</div>
 
 							<div class="col-md-6">
-								<label class="control-label">Password <i>(new)</i></label>
+								<label class="control-label">Password <i>(new)</i> <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="password" aria-hidden="true"></i></label>
 								<input type="password" id="password" name="password" placeholder="*********" data-vpw="true" required />
 								<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
 							</div>
 						</div>
 						<div class="col-md-12 p-0">
-							<label class="control-label">Password <i>(confirm)</i></label>
+							<label class="control-label">Password <i>(confirm)</i> <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="password2" aria-hidden="true"></i></label>
 						</div>
 
 						<div class="row">
@@ -225,6 +225,7 @@
 </div>
 
 <script src="/scripts/user.js" defer></script>
+<script src="/scripts/core/togglePwVisibility.js" defer></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEBWHg2gKU3uMKQWSvn4yXWV5RavPm1PU&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="/scripts/core/auto-complete.js"></script>
 <script src="/scripts/core/frontValidation.js" defer></script>

@@ -7,12 +7,12 @@
 
 			<div class="row">
 				<div class="col-md-6 offset-md-3">
-					<label class="control-label">Password</label>
+					<label class="control-label">Password <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="password" aria-hidden="true"></i></label>
 					<input placeholder="**********" type="password" id="password" name="password" data-vpw="true" required />
 					<span id="i_password" class="form-info"><b>Password</b> must contain between <b>8 and 256 characters</b> and has to be atleast <b>alphanumeric</b></span>
 				</div>
 				<div class="col-md-6 offset-md-3">
-					<label class="control-label">Password <i>(confirm)</i></label>
+					<label class="control-label">Password <i>(confirm)</i> <i class="fa fa-eye ml-2" data-type="showpw" data-showpw="password2" aria-hidden="true"></i></label>
 					<input placeholder="**********" type="password" id="password2" data-vpw2="true" name="password2" required />
 					<span id="i_password2" class="form-info"><b>Password Confirmation</b> doesn't match <b>password</b></span>
 				</div>
@@ -28,4 +28,5 @@
 	<% include partials/footer %>
 </div>
 
+<script src="/scripts/core/togglePwVisibility.js" defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>
