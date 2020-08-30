@@ -15,6 +15,15 @@ if (callToPapers)
 		window.location.href = "#framed-papers";
 	});
 
+let callToStretched = document.querySelector("#stretched-btn-call");
+let stretchBtn = document.querySelector("#stretched-btn");
+
+if (callToStretched) {
+	callToStretched.addEventListener("click", function () {
+		openSubCategory(stretchBtn, "stretched", "canvas");
+	});
+}
+
 main.forEach(btn => {
 	let target = btn.id.slice(0, -4);
 	btn.addEventListener("click", function () {

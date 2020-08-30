@@ -1,7 +1,7 @@
 <% include partials/head %>
 
 <div class="full-container" id="container-landing">
-	<h1 class="square-title text-center">Catalog</h1>
+	<h1 class="square-title text-center">Replicas</h1>
 	<h2 class="secondary-title text-center">Check the different categories and their particularity!</h2>
 
 	<div class="optional-title-wrapper">
@@ -443,8 +443,9 @@
 					<h4>Specialist art papers</h4>
 					<p>
 						Printing is at the heart of everything we do and every product we create.<br />Each fine art print substrate is <b>individually profiled</b> for our printers, ensuring fantastically
-						<b>accurate</b> and
-						<b>consistent replicas.</b>
+						<b>accurate</b> and <b>consistent replicas.</b><br />
+						In addition to our advanced in-house technology, we only partner with the world’s best fine art print labs; ensuring your art and photographs are always printed with the detail and
+						vibrancy they deserve.
 					</p>
 				</div>
 			</div>
@@ -475,9 +476,18 @@
 					</div>
 				</div>
 
-				<h4 class="mt-3">Example</h4>
+				<h4 class="mt-3">Examples</h4>
 				<img alt="Catalog Example - Fine Art Print" class="w-100" src="/img/fine-art-8.jpg" />
 				<div class="text-center w-100"><b>Fine Art Print</b></div>
+
+				<img alt="Catalog Example - Fine Art Print" class="w-100" src="/img/smooth-art-paper.jpg" />
+				<div class="text-center w-100"><b>Fine Art Print</b></div>
+
+				<img alt="Catalog Example - Budget Art Paper" class="w-100" src="/img/budget-detail.jpg" />
+				<div class="text-center w-100"><b>Budget Art Paper</b></div>
+
+				<img alt="Catalog Example - Museum Fine Art" class="w-100" src="/img/museum-fine-art.jpg" />
+				<div class="text-center w-100"><b>Museum Fine Art</b></div>
 			</div>
 		</div>
 
@@ -495,18 +505,18 @@
 				<div class="col-md-6 mt-2 cat-btn-wrap">
 					<h4 class="text-center mb-2">Subcategories</h4>
 					<div class="text-center m-0">
-						<button id="framed-canvas-btn" data-category="canvas" class="canvas cat-btn tab-btn active">Framed</button>
-						<button id="stretched-btn" data-category="canvas" class="canvas cat-btn tab-btn">Stretched</button>
+						<button id="stretched-btn" data-category="canvas" class="canvas cat-btn tab-btn active">Stretched</button>
+						<button id="framed-canvas-btn" data-category="canvas" class="canvas cat-btn tab-btn">Framed</button>
 					</div>
 				</div>
 			</div>
 
 			<div class="row m-0">
-				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2" id="framed-canvas">
+				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2 nodisplay" id="framed-canvas">
 					<h1 class="catalog-title-category">Framed Canvas</h1>
 					<h4>Transform a standard canvas into a special work of art</h4>
 					<p class="col-md-8 pl-0">
-						A <b>stretched canvas</b> comes with an <b>internal frame</b> created using specialist canvas <b>stretcher bars.</b> <br />
+						A <b><i>stretched canvas</i></b> comes with an <b>internal frame</b> created using specialist canvas <b>stretcher bars.</b> <br />
 						In addition, a framed canvas has a <b>traditional picture frame</b> added around the outside edge of the canvas. <br />
 						The simple addition of a <b>wooden picture frame</b> creates a completely new form of wall art; quite distinct to a standard stretched canvas.
 					</p>
@@ -521,20 +531,11 @@
 								Adding a <b>solid wooden float frame</b> to our standard <b>38mm</b> canvas creates a unique and original work of art. The <b>thin</b> frame sits approximately <b>5mm</b> from the edge
 								of the canvas helping create a floating border. Highly recommended for images that make a real statement. The canvas float frame is available in <b>black</b> only for now.
 							</p>
+
+							<h4 class="mt-3 text-center">Basically a stretched canvas put into a frame...</h4>
+							<button id="stretched-btn-call" data-category="canvas" class="canvas tab-btn w-100">See stretched canvas details</button>
 						</div>
 					</div>
-
-					<h4 class="mt-3">Canvas Material</h4>
-					<p class="col-md-8 pl-0">
-						Our canvas is a <b>finely textured</b> artist-grade <b>cotton substrate</b> which consistently reproduces image details with outstanding <b>clarity and detail.</b> <br />Our most popular
-						canvas and superior to many more expensive branded alternatives.
-					</p>
-
-					<h4>Framing glaze</h4>
-					<p class="no-indent catalog-glass ml-2">
-						Only one choice available for this item: <b>Clear acrylic plexiglass.</b><br />
-						Plexiglass provides increased UV protection, is <b>extremely robust</b> and offers <b>less glare</b> than float glass.
-					</p>
 
 					<h4 class="mt-3">Examples</h4>
 					<img alt="Catalog Example - Framed Canvas" class="w-100" src="/img/canvas-framed-7.jpg" />
@@ -544,9 +545,9 @@
 					<div class="text-center w-100"><b>The "floating border" created by the frame sits approximately 5mm from the canvas edge</b></div>
 				</div>
 
-				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2 nodisplay" id="stretched">
+				<div class="catalog-subcategory canvas sub-toggle p-0 mt-2" id="stretched">
 					<h1 class="catalog-title-category">Stretched Canvas</h1>
-					<h4>Superior canvas prints designed for trade and retail</h4>
+					<h4>Superior canvas prints</h4>
 					<p>
 						Each stretched canvas begins with a <b>12-colour giclée print</b> produced from one of three individually <b>curated substrates.</b> <br />
 						We then make a <b>custom wooden frame</b> and <b>stretch</b> the rolled canvas print over it.<br />
@@ -554,33 +555,33 @@
 						fixing staples are covered with special protective tape.
 					</p>
 
-					<h4>Highlights</h4>
-					<ul>
-						<li>Pro-lab print process with 100+ year colour guarantee</li>
-						<li>Choice of four different canvas print media</li>
-						<li>Four canvas edge finishing options (black, white, image wrap, mirror wrap)</li>
-						<li>Professional artist stretcher bars milled from the finest quality European kiln-dried knotless pine</li>
-						<li>Tensioning 'wedges' and finger joints</li>
-						<li>Handmade by some of the UK’s most experienced canvas framers</li>
-					</ul>
-
 					<h4 class="mb-1">Canvas Stretcher Bars</h4>
 					<div class="w-100"><b>European knotless pine canvas frames</b></div>
 					<p class="no-indent ml-2">The thickness of your canvas stretcher bar determines how far the canvas print will stand off the wall.</p>
 					<div class="row">
 						<div class="col-md-6">
 							<img alt="Catalog Image - Stretched Canvas" class="w-100" src="/img/canvas-stretched-2.jpg" />
-							<b>38mm</b>
 						</div>
 
-						<p class="col-md-6 mt-5">
-							Each canvas frame is milled with a <b>curved profile</b>; minimising contact with the face of the canvas; preventing unsightly impression marks and surface cracking. <br />
-							We use <b>finger-jointed</b> canvas frames which create corner tension helping <b>resist warping.</b> <br />
-							For larger sizes, we add wooden 'wedges' to each corner; <b>ensuring the canvas surface remains taut</b> and allowing easy re-stretching in future years.
-						</p>
+						<div class="col-md-6 mt-5">
+							<h3 class="text-center">38mm stretched canvas</h3>
+							<p>
+								Each canvas frame is milled with a <b>curved profile</b>; minimising contact with the face of the canvas; preventing unsightly impression marks and surface cracking. <br />
+								We use <b>finger-jointed</b> canvas frames which create corner tension helping <b>resist warping.</b> <br />
+								For larger sizes, we add wooden 'wedges' to each corner; <b>ensuring the canvas surface remains taut</b> and allowing easy re-stretching in future years.
+							</p>
+
+							<h4 class="text-center mt-2">Highlights</h4>
+							<ul>
+								<li>Pro-lab print process with 100+ year colour guarantee</li>
+								<li>Four canvas edge finishing options (black, white, image wrap, mirror wrap)</li>
+								<li>Professional artist stretcher bars milled from the finest quality European kiln-dried knotless pine</li>
+								<li>Tensioning 'wedges' and finger joints</li>
+							</ul>
+						</div>
 					</div>
 
-					<h4>Canvas Material</h4>
+					<h4 class="mt-5">Canvas Material</h4>
 					<p class="col-md-8 pl-0">
 						Our canvas is a <b>finely textured</b> artist-grade <b>cotton substrate</b> which consistently reproduces image details with outstanding <b>clarity and detail.</b> <br />Our most popular
 						canvas and superior to many more expensive branded alternatives.
