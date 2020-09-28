@@ -134,6 +134,10 @@ a {
 	height: 200px;
 }
 
+input, textarea, button, img, .mount-color, .single-wrapper, .container {
+border-radius: 2px;
+}
+
 #agree_tos {
 	width: unset;
 }
