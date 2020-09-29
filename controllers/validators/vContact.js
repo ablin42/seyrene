@@ -15,7 +15,7 @@ module.exports.vContact = [
 		.bail()
 		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
-		.withMessage(ERROR_MESSAGE.emailLenght),
+		.withMessage(ERROR_MESSAGE.emailLength),
 	body("title").trim().isLength({ min: 10, max: 256 }).withMessage(ERROR_MESSAGE.titleContact),
 	body("content").trim().isLength({ min: 64, max: 2048 }).withMessage(ERROR_MESSAGE.contentContact)
 ];

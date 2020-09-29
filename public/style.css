@@ -134,8 +134,14 @@ a {
 	height: 200px;
 }
 
-input, textarea, button, img, .mount-color, .single-wrapper, .container {
-border-radius: 2px;
+input,
+textarea,
+button,
+img,
+.mount-color,
+.single-wrapper,
+.container {
+	border-radius: 2px;
 }
 
 #agree_tos {
@@ -162,6 +168,7 @@ border-radius: 2px;
 	padding: 5px 10px;
 	border: none;
 	font-weight: bold;
+	color: var(--dark-shade-p1);
 }
 
 #cookies-eu-reject {

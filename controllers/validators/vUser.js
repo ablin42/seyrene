@@ -25,7 +25,7 @@ module.exports.vEmail = [
 		.bail()
 		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
-		.withMessage(ERROR_MESSAGE.emailLenght)
+		.withMessage(ERROR_MESSAGE.emailLength)
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
 				if (email) return Promise.reject(ERROR_MESSAGE.emailTaken);
@@ -53,7 +53,7 @@ module.exports.vLostPw = [
 		.bail()
 		.normalizeEmail()
 		.isLength({ min: 3, max: 256 })
-		.withMessage(ERROR_MESSAGE.emailLenght)
+		.withMessage(ERROR_MESSAGE.emailLength)
 		.custom(value => {
 			return utils.emailExist(value).then(email => {
 				if (!email) return Promise.reject(ERROR_MESSAGE.lostpwEmail);
