@@ -7,7 +7,7 @@ const sanitize = require("mongo-sanitize");
 
 const Gallery = require("../models/Gallery");
 const Image = require("../models/Image");
-const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setGallery } = require("./helpers/middlewares");
+const { ROLE, errorHandler, setUser, authUser, authRole, authToken, setGallery, handleS3 } = require("./helpers/middlewares");
 const gHelpers = require("./helpers/galleryHelpers");
 const utils = require("./helpers/utils");
 const upload = require("./helpers/multerHelpers");
@@ -93,11 +93,39 @@ router.get("/single/:id", authToken, async (req, res) => {
 	}
 });
 
+router.post("/post", upload, handleS3, errorHandler, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+	try {
+		await utils.checkValidity(req);
+		console.log(req.body);
+
+		const obj = { title: req.body.title, content: req.body.content, tags: req.body.tags };
+		let imgUrl = await utils.parseImgUrl(req.body.imgUrl);
+
+		const gallery = new Gallery(obj);
+		let [err, result] = await utils.to(gallery.save());
+		if (err) throw new Error(ERROR_MESSAGE.saveError);
+
+		err = await utils.saveImages(imgUrl, result._id, "Gallery", "save");
+		if (err) throw new Error(err);
+
+		fullLog.info(`Gallery posted: ${gallery._id}`);
+		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
+		return res.status(200).json({ url: `/Galerie/${result._id}` });
+	} catch (err) {
+		threatLog.error("POST GALLERY ERROR", err, req.headers, req.ipAddress);
+		return res.status(400).json({ url: "/", message: err.message, err: true });
+	}
+});
+
+/*
 router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		await utils.checkValidity(req);
 		const obj = { title: req.body.title, content: req.body.content };
 		obj.tags = gHelpers.parseTags(req.body.tags);
+		obj.imgUrl = utils.parseImgUrl(req.body.imgUrl);
+		//utils parse img link
+		//replace upload img here
 
 		const gallery = new Gallery(obj);
 		let [err, result] = await utils.to(gallery.save());
@@ -113,7 +141,7 @@ router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole
 		threatLog.error("POST GALLERY ERROR", err, req.headers, req.ipAddress);
 		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
-});
+});*/
 
 router.post(
 	"/patch/:id",

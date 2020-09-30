@@ -8,6 +8,7 @@ const Gallery = require("../../models/Gallery");
 const Shop = require("../../models/Shop");
 const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
+const fs = require("fs");
 const { ERROR_MESSAGE } = require("./errorMessages");
 const { FRA_sizes, CAN_sizes, PRINT_sizes, FRA_SUR_sizes, attributesList } = require("./pwintyData");
 const { fullLog, threatLog } = require("./log4");
@@ -344,8 +345,66 @@ async function pwintyGetPrice(req, res, next) {
 function errorHandler(err, req, res, next) {
 	if (res.headersSent) return next(err);
 
-	threatLog.warn(err.message, req.ipAddress);
+	threatLog.warn(err.message, req.ipAddress, "an error occured with the file upload");
 	return res.status(500).json({ url: "/", message: err.message, err: true });
+}
+
+async function handleS3(req, res, next) {
+	const files = req.files;
+	let imgUrl = [];
+
+	for (i = 0; i < files.length; i++) {
+		if (files[i] == null) return res.status(500).json({ err: true, message: "An error occured with the file upload" });
+
+		result = await getSignedRequest(files[i]);
+		console.log("result:", result);
+		if (result && result.error === true)
+			return res.status(500).json({ err: true, message: "An error occured with the file upload" });
+		else imgUrl.push(result.url);
+	}
+
+	req.body.imgUrl = imgUrl;
+	next();
+}
+
+async function getSignedRequest(file) {
+	let options = {
+		uri: `${process.env.BASEURL}/api/image/sign-s3?file-name=${file.originalname}&file-type=${file.mimetype}`,
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			"Accept": "application/json"
+		},
+		credentials: "include",
+		mode: "same-origin",
+		json: true
+	};
+	let response = await rp(options);
+
+	if (response.error === true) return { error: true };
+	else return uploadFile(file, response.data.signedRequest, response.data.url);
+}
+
+async function uploadFile(file, signedRequest, url) {
+	//read file and send it to PUT
+	let fileData;
+
+	fs.readFile(file.path, (err, data) => {
+		if (err) throw new Error("An error occuring while reading your file");
+		fileData = data;
+	});
+
+	let options = {
+		uri: signedRequest,
+		method: "PUT",
+		body: fileData,
+		json: true
+	};
+	let response = await rp(options);
+	response = JSON.parse(response);
+
+	if (response.status != 200 || response.ok != true) return { error: true };
+	return { error: false, url: url };
 }
 
 module.exports = {
@@ -366,5 +425,6 @@ module.exports = {
 	setGallery,
 	setShop,
 	checkPwintyAttributes,
-	pwintyGetPrice
+	pwintyGetPrice,
+	handleS3
 };

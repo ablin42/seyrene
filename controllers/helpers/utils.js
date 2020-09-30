@@ -5,6 +5,7 @@ const User = require("../../models/User");
 const Image = require("../../models/Image");
 const ERROR_MESSAGE = require("./errorMessages");
 const { validationResult } = require("express-validator");
+const mime = require("mime-types");
 
 module.exports = {
 	emailExist: async function emailExist(email) {
@@ -68,6 +69,23 @@ module.exports = {
 			if (err || !savedImage) return ERROR_MESSAGE.saveError;
 		}
 	},
+	saveImages: async function (imgUrl, itemId, itemType, operation = "save") {
+		for (let i = 0; i < imgUrl.length; i++) {
+			let isMain = false;
+			if (i === 0 && operation === "save") isMain = true;
+
+			let image = new Image({
+				_itemId: itemId,
+				itemType: itemType,
+				isMain: isMain,
+				path: imgUrl[i],
+				mimetype: mime.lookup(imgUrl[i])
+			});
+
+			[err, savedImage] = await this.to(image.save());
+			if (err || !savedImage) return ERROR_MESSAGE.saveError;
+		}
+	},
 	checkValidity: async function (req) {
 		const vResult = validationResult(req);
 		if (!vResult.isEmpty()) {
@@ -77,5 +95,11 @@ module.exports = {
 		}
 
 		return;
+	},
+	parseImgUrl: async function (imgUrl) {
+		let arr = imgUrl.split(";");
+		arr.pop();
+
+		return arr;
 	}
 };

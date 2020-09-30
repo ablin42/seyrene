@@ -1,4 +1,4 @@
-require("newrelic");
+//require("newrelic");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -51,15 +51,16 @@ mongoose.connect(
 // Express
 const app = express();
 
-//app.use(express.static(__dirname + "/public")); // (if re-enabled, change all routes in ejs to remove /public)
+app.use(express.static(__dirname + "/public")); // (if re-enabled, change all routes in ejs to remove /public)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
 
+/*
 app.use(function (req, res, next) {
 	if (req.protocol == "http") return res.redirect("https://" + req.headers.host + req.url);
 	else return next();
-});
+});*/
 
 // For logging filenames
 const pad = num => (num > 9 ? "" : "0") + num;
@@ -81,13 +82,14 @@ app.use(morgan("combined", { stream: accessLogStream }));
 
 //Helmet
 app.use(helmet());
-app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.permittedCrossDomainPolicies({}));
 app.use(helmet.referrerPolicy({ policy: "same-origin" }));
 app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
 			reportUri: "/report-violation",
-			defaultSrc: ["'self'"],
+			defaultSrc: ["'self'", "maralbucket.s3.eu-west-3.amazonaws.com", "maralbucket.s3.amazonaws.com"],
+			connectSrc: ["'self'", "maralbucket.s3.eu-west-3.amazonaws.com"],
 			styleSrc: [
 				"'self'",
 				"stackpath.bootstrapcdn.com",
@@ -111,7 +113,7 @@ app.use(
 				"js.stripe.com"
 			],
 			frameSrc: ["https://www.google.com", "js.stripe.com"],
-			imgSrc: ["'self'", "data:", "maps.gstatic.com"]
+			imgSrc: ["'self'", "data:", "maps.gstatic.com", "maralbucket.s3.amazonaws.com"]
 		},
 		reportOnly: false
 	})
@@ -282,4 +284,4 @@ app.get("*", setUser, (req, res) => {
 });
 
 const port = process.env.PORT;
-app.listen("/tmp/nginx.socket", () => fullLog.trace(`Listening on port ${port}...`)); //
+app.listen(port, () => fullLog.trace(`Listening on port ${port}...`)); //"/tmp/nginx.socket"

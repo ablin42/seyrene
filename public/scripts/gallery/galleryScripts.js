@@ -56,9 +56,10 @@ selbtn.forEach(btn => {
 async function postGallery(e) {
 	e.preventDefault();
 	let tagInput = document.getElementsByClassName("label-info"),
-		title = $("#title").val(),
-		content = $("#content").val(),
+		title = document.querySelector("#title").value,
+		content = document.querySelector("#content").value,
 		img = document.querySelector("#img"),
+		imgUrl = document.querySelector("#imgUrl").value,
 		formData = new FormData(),
 		tags = [];
 
@@ -68,29 +69,33 @@ async function postGallery(e) {
 
 	formData.append("title", title);
 	formData.append("content", content);
-	formData.append("tags", JSON.stringify(tags));
+	formData.append("tags", tags);
+	//formData.append("imgUrl", imgUrl);
 
 	let data = await fetch("/api/gallery/post", {
 		method: "POST",
 		mode: "same-origin",
-		body: formData,
+		body: formData, //JSON.stringify({ title, content, tags, imgUrl }),
 		headers: {
+			//"Content-Type": "application/json",
+			//"Accept": "application/json",
 			"CSRF-Token": csrfToken
 		}
 	});
 	data = await data.json();
+	console.log(data);
 
-	if (data.err) {
+	if (data.err == true) {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
-	} else window.location.href = data.url;
+	} //else window.location.href = data.url;
 }
 
 async function patchGallery(e, galleryId) {
 	e.preventDefault();
 	let tagInput = document.getElementsByClassName("label-info"),
-		title = $("#title").val(),
-		content = $("#content").val(),
+		title = document.querySelector("#title").value,
+		content = document.querySelector("#content").value,
 		img = document.querySelector("#img"),
 		formData = new FormData(),
 		tags = [];

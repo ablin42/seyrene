@@ -6,7 +6,7 @@
 	<div class="container container-front">
 		<div class="col-md-10 offset-md-1">
 			<h1 class="square-title text-center">Ajouter à la galerie</h1>
-			<form id="gallery" method="POST" action="/api/gallery/post" data-postgal="true" data-tagform="true" enctype="multipart/form-data">
+			<form id="gallery" method="POST" action="/api/gallery/post" data-postgal="true" data-tagform="true">
 				<div class="form-group">
 					<label class="control-label">Titre</label>
 					<input type="text" name="title" id="title" placeholder="Titre" data-vstring="1;256" required />
@@ -28,6 +28,7 @@
 				<div class="form-group text-center">
 					<label for="img" id="imglabel" class="filebtn">Choisir des images</label>
 					<input class="inputfile" type="file" name="img" id="img" multiple required />
+					<input type="hidden" name="imgUrl" id="imgUrl" required />
 				</div>
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
@@ -38,6 +39,7 @@
 	<% include ../partials/footer %>
 </div>
 
+<script src="/scripts/core/awsConfig.js" defer></script>
 <script src="/scripts/gallery/tags.js" defer></script>
 <script src="/scripts/gallery/galleryScripts.js" defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>

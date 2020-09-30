@@ -8,6 +8,36 @@ const Image = require("../models/Image");
 const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
+const aws = require("aws-sdk");
+
+aws.config.region = "eu-west-3";
+router.get("/sign-s3", (req, res) => {
+	try {
+		const s3 = new aws.S3();
+		const fileName = req.query["file-name"];
+		const fileType = req.query["file-type"];
+		const s3Params = {
+			Bucket: process.env.S3_BUCKET,
+			Key: fileName,
+			Expires: 60,
+			ContentType: fileType,
+			ACL: "public-read"
+		};
+
+		s3.getSignedUrl("putObject", s3Params, (err, data) => {
+			if (err) throw new Error("An error occured while signing the file!");
+			const returnData = {
+				signedRequest: data,
+				url: `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${fileName}`
+			};
+
+			return res.status(200).json({ error: false, data: returnData });
+		});
+	} catch (err) {
+		threatLog.error("SIGN S3 ERROR:", err, req.headers, req.ipAddress);
+		return res.status(200).json({ error: true, message: err.message });
+	}
+});
 
 router.get("/:id", async (req, res) => {
 	try {
