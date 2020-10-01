@@ -96,9 +96,12 @@ module.exports = {
 
 		return;
 	},
-	parseImgUrl: async function (imgUrl) {
-		let arr = imgUrl.split(";");
-		arr.pop();
+	parseImgUrl: async function (files) {
+		let arr = [];
+		files.forEach(file => {
+			arr.push(file.location);
+		});
+		if (arr.length <= 0) throw new Error("An error occured while parsing file URL");
 
 		return arr;
 	}

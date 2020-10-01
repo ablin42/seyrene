@@ -9,8 +9,8 @@ const utils = require("./helpers/utils");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
 const aws = require("aws-sdk");
-
 aws.config.region = "eu-west-3";
+/*
 router.get("/sign-s3", (req, res) => {
 	try {
 		const s3 = new aws.S3();
@@ -37,7 +37,7 @@ router.get("/sign-s3", (req, res) => {
 		threatLog.error("SIGN S3 ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
 	}
-});
+});*/
 
 router.get("/:id", async (req, res) => {
 	try {

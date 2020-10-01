@@ -28,7 +28,6 @@
 				<div class="form-group text-center">
 					<label for="img" id="imglabel" class="filebtn">Choisir des images</label>
 					<input class="inputfile" type="file" name="img" id="img" multiple required />
-					<input type="hidden" name="imgUrl" id="imgUrl" required />
 				</div>
 
 				<input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
@@ -39,7 +38,6 @@
 	<% include ../partials/footer %>
 </div>
 
-<script src="/scripts/core/awsConfig.js" defer></script>
 <script src="/scripts/gallery/tags.js" defer></script>
 <script src="/scripts/gallery/galleryScripts.js" defer></script>
 <script src="/scripts/core/frontValidation.js" defer></script>

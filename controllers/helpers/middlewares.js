@@ -351,6 +351,10 @@ function errorHandler(err, req, res, next) {
 
 async function handleS3(req, res, next) {
 	const files = req.files;
+
+	console.log(files, req.body);
+	return res.status(500).json({ err: true, message: "An bide occured with the file upload" });
+
 	let imgUrl = [];
 
 	for (i = 0; i < files.length; i++) {
@@ -391,6 +395,7 @@ async function uploadFile(file, signedRequest, url) {
 
 	fs.readFile(file.path, (err, data) => {
 		if (err) throw new Error("An error occuring while reading your file");
+		console.log(data, "ggg");
 		fileData = data;
 	});
 

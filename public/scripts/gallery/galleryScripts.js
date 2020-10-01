@@ -59,36 +59,30 @@ async function postGallery(e) {
 		title = document.querySelector("#title").value,
 		content = document.querySelector("#content").value,
 		img = document.querySelector("#img"),
-		imgUrl = document.querySelector("#imgUrl").value,
 		formData = new FormData(),
 		tags = [];
 
 	for (let i = 0; i < tagInput.length; i++) tags.push(tagInput[parseInt(i)].textContent);
-
 	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[parseInt(i)]);
 
 	formData.append("title", title);
 	formData.append("content", content);
 	formData.append("tags", tags);
-	//formData.append("imgUrl", imgUrl);
 
 	let data = await fetch("/api/gallery/post", {
 		method: "POST",
 		mode: "same-origin",
-		body: formData, //JSON.stringify({ title, content, tags, imgUrl }),
+		body: formData,
 		headers: {
-			//"Content-Type": "application/json",
-			//"Accept": "application/json",
 			"CSRF-Token": csrfToken
 		}
 	});
 	data = await data.json();
-	console.log(data);
 
 	if (data.err == true) {
 		let alert = createAlertNode(data.message, "warning");
 		addAlert(alert, "#header");
-	} //else window.location.href = data.url;
+	} else window.location.href = data.url;
 }
 
 async function patchGallery(e, galleryId) {
@@ -101,7 +95,6 @@ async function patchGallery(e, galleryId) {
 		tags = [];
 
 	for (let i = 0; i < tagInput.length; i++) tags.push(tagInput[parseInt(i)].textContent);
-
 	for (let i = 0; i < img.files.length; i++) formData.append("img", img.files[parseInt(i)]);
 
 	formData.append("title", title);

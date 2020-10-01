@@ -93,13 +93,12 @@ router.get("/single/:id", authToken, async (req, res) => {
 	}
 });
 
-router.post("/post", upload, handleS3, errorHandler, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
+router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		await utils.checkValidity(req);
-		console.log(req.body);
 
 		const obj = { title: req.body.title, content: req.body.content, tags: req.body.tags };
-		let imgUrl = await utils.parseImgUrl(req.body.imgUrl);
+		let imgUrl = await utils.parseImgUrl(req.files);
 
 		const gallery = new Gallery(obj);
 		let [err, result] = await utils.to(gallery.save());
