@@ -113,12 +113,9 @@ async function setMain(e, item) {
 
 		document.querySelector(`#actDiv${item.id.substr(3)}`).classList.add("nodisplay");
 	}
-	let alertErr = `
-            <div id="alert" class="alert alert-${type}" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                ${data.message}
-            </div>`;
-	addAlert(alertErr, "#header");
+
+	let alert = createAlertNode(data.message, type);
+	addAlert(alert, "#header");
 }
 
 async function deleteImage(e, item) {
@@ -141,10 +138,6 @@ async function deleteImage(e, item) {
 		item.remove();
 	}
 
-	let alertSuccess = `
-				<div id="alert" class="alert alert-${type}" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-					${data.message}
-				</div>`;
-	addAlert(alertSuccess, "#header");
+	let alert = createAlertNode(data.message, type);
+	addAlert(alert, "#header");
 }

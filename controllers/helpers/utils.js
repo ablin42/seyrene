@@ -69,8 +69,8 @@ module.exports = {
 			if (err || !savedImage) return ERROR_MESSAGE.saveError;
 		}
 	},
-	saveImages: async function (imgUrl, itemId, itemType, operation = "save") {
-		for (let i = 0; i < imgUrl.length; i++) {
+	saveImages: async function (imgData, itemId, itemType, operation = "save") {
+		for (let i = 0; i < imgData.length; i++) {
 			let isMain = false;
 			if (i === 0 && operation === "save") isMain = true;
 
@@ -78,8 +78,9 @@ module.exports = {
 				_itemId: itemId,
 				itemType: itemType,
 				isMain: isMain,
-				path: imgUrl[i],
-				mimetype: mime.lookup(imgUrl[i])
+				path: imgData[i].path,
+				mimetype: mime.lookup(imgData[i].path),
+				key: imgData[i].key
 			});
 
 			[err, savedImage] = await this.to(image.save());
@@ -96,10 +97,11 @@ module.exports = {
 
 		return;
 	},
-	parseImgUrl: async function (files) {
+	parseImgData: async function (files) {
 		let arr = [];
 		files.forEach(file => {
-			arr.push(file.location);
+			let obj = { key: file.key, path: file.location };
+			arr.push(obj);
 		});
 		if (arr.length <= 0) throw new Error("An error occured while parsing file URL");
 

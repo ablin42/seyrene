@@ -2,6 +2,7 @@ const multer = require("multer");
 const utils = require("./utils");
 const path = require("path");
 const multerS3 = require("multer-s3");
+const shortid = require("shortid");
 const aws = require("aws-sdk");
 aws.config.region = "eu-west-3";
 
@@ -24,7 +25,8 @@ const storage = multerS3({
 	bucket: process.env.S3_BUCKET,
 	contentType: multerS3.AUTO_CONTENT_TYPE,
 	key: function (req, file, cb) {
-		cb(null, file.originalname); // Date.now().toString()
+		let ext = "." + file.mimetype.slice(6);
+		cb(null, Date.now().toString() + "-" + shortid.generate() + ext);
 	}
 });
 

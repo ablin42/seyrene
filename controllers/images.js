@@ -117,7 +117,10 @@ router.post("/delete/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 
 		[err, result] = await utils.to(Image.deleteOne({ _id: id }));
 		if (err || !result) throw new Error(ERROR_MESSAGE.delImg);
-		fs.unlink(find.path, err => {
+
+		let s3 = new aws.S3();
+		let params = { Bucket: process.env.S3_BUCKET, Key: find.key };
+		s3.deleteObject(params, function (err, data) {
 			if (err) throw new Error(ERROR_MESSAGE.delImg);
 		});
 

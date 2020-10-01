@@ -99,7 +99,7 @@ async function patchGallery(e, galleryId) {
 
 	formData.append("title", title);
 	formData.append("content", content);
-	formData.append("tags", JSON.stringify(tags));
+	formData.append("tags", tags);
 
 	let data = await fetch(`/api/gallery/patch/${galleryId}`, {
 		method: "POST",
@@ -137,12 +137,9 @@ async function setMain(e, item) {
 
 		document.querySelector(`#actDiv${item.id.substr(3)}`).classList.add("nodisplay");
 	}
-	let alertErr = `
-				<div id="alert" class="alert alert-${type}" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-					${data.message}
-				</div>`;
-	addAlert(alertErr, "#header");
+
+	let alert = createAlertNode(data.message, type);
+	addAlert(alert, "#header");
 }
 
 async function deleteImage(e, item) {
@@ -164,11 +161,8 @@ async function deleteImage(e, item) {
 		$(`#sel${item.id.substr(3)}`).remove();
 		item.remove();
 	}
-	let alert = `
-			<div id="alert" class="alert alert-${type}" role="alert">
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-				${data.message}
-			</div>`;
+
+	let alert = createAlertNode(data.message, type);
 	addAlert(alert, "#header");
 }
 

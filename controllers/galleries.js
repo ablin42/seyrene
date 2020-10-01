@@ -13,6 +13,8 @@ const utils = require("./helpers/utils");
 const upload = require("./helpers/multerHelpers");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
+const aws = require("aws-sdk");
+aws.config.region = "eu-west-3";
 require("dotenv").config();
 
 const memjs = require("memjs");
@@ -98,13 +100,13 @@ router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole
 		await utils.checkValidity(req);
 
 		const obj = { title: req.body.title, content: req.body.content, tags: req.body.tags };
-		let imgUrl = await utils.parseImgUrl(req.files);
+		let imgData = await utils.parseImgData(req.files);
 
 		const gallery = new Gallery(obj);
 		let [err, result] = await utils.to(gallery.save());
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
-		err = await utils.saveImages(imgUrl, result._id, "Gallery", "save");
+		err = await utils.saveImages(imgData, result._id, "Gallery", "save");
 		if (err) throw new Error(err);
 
 		fullLog.info(`Gallery posted: ${gallery._id}`);
@@ -115,32 +117,6 @@ router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole
 		return res.status(400).json({ url: "/", message: err.message, err: true });
 	}
 });
-
-/*
-router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
-	try {
-		await utils.checkValidity(req);
-		const obj = { title: req.body.title, content: req.body.content };
-		obj.tags = gHelpers.parseTags(req.body.tags);
-		obj.imgUrl = utils.parseImgUrl(req.body.imgUrl);
-		//utils parse img link
-		//replace upload img here
-
-		const gallery = new Gallery(obj);
-		let [err, result] = await utils.to(gallery.save());
-		if (err) throw new Error(ERROR_MESSAGE.saveError);
-
-		err = await utils.uploadImages(req.files, result._id, "Gallery", "save");
-		if (err) throw new Error(err);
-
-		fullLog.info(`Gallery posted: ${gallery._id}`);
-		req.flash("success", ERROR_MESSAGE.itemUploadedSelectMain);
-		return res.status(200).json({ url: `/Galerie/${result._id}` });
-	} catch (err) {
-		threatLog.error("POST GALLERY ERROR", err, req.headers, req.ipAddress);
-		return res.status(400).json({ url: "/", message: err.message, err: true });
-	}
-});*/
 
 router.post(
 	"/patch/:id",
@@ -155,14 +131,14 @@ router.post(
 		try {
 			await utils.checkValidity(req);
 			let id = sanitize(req.params.id);
-			const obj = { title: req.body.title, content: req.body.content };
-			obj.tags = gHelpers.parseTags(req.body.tags);
+			const obj = { title: req.body.title, content: req.body.content, tags: req.body.tags };
+			let imgData = await utils.parseImgData(req.files);
 
 			let [err, result] = await utils.to(Gallery.updateOne({ _id: id }, { $set: obj }));
 			if (err) throw new Error(ERROR_MESSAGE.updateError);
 			if (!result) throw new Error(ERROR_MESSAGE.noResult);
 
-			err = await utils.uploadImages(req.files, id, "Gallery", "patch");
+			err = await utils.saveImages(imgData, id, "Gallery", "patch");
 			if (err) throw new Error(err);
 
 			fullLog.info(`Gallery patched: ${id}`);
@@ -194,8 +170,10 @@ router.post("/delete/:id", setGallery, setUser, authUser, authRole(ROLE.ADMIN), 
 		if (response.error === true) throw new Error(ERROR_MESSAGE.fetchImg);
 
 		for (let i = 0; i < response.images.length; i++) {
-			fs.unlink(response.images[parseInt(i)].path, err => {
-				if (err) throw new Error(ERROR_MESSAGE.deleteImg);
+			let s3 = new aws.S3();
+			let params = { Bucket: process.env.S3_BUCKET, Key: response.images[i].key };
+			s3.deleteObject(params, function (err, data) {
+				if (err) throw new Error(ERROR_MESSAGE.delImg);
 			});
 			await Image.deleteOne({ _id: response.images[parseInt(i)]._id });
 		}

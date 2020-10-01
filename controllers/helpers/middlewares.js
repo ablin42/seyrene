@@ -349,6 +349,8 @@ function errorHandler(err, req, res, next) {
 	return res.status(500).json({ url: "/", message: err.message, err: true });
 }
 
+/*
+
 async function handleS3(req, res, next) {
 	const files = req.files;
 
@@ -411,7 +413,7 @@ async function uploadFile(file, signedRequest, url) {
 	if (response.status != 200 || response.ok != true) return { error: true };
 	return { error: false, url: url };
 }
-
+*/
 module.exports = {
 	ROLE,
 	errorHandler,
@@ -430,6 +432,6 @@ module.exports = {
 	setGallery,
 	setShop,
 	checkPwintyAttributes,
-	pwintyGetPrice,
-	handleS3
+	pwintyGetPrice
+	//	handleS3
 };

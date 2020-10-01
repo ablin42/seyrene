@@ -14,6 +14,10 @@ const ImageSchema = mongoose.Schema(
 			type: Boolean,
 			required: true
 		},
+		key: {
+			type: String,
+			required: true
+		},
 		path: {
 			type: String,
 			required: true
