@@ -655,14 +655,14 @@ router.get("/Admin/Bio", setUser, authUser, authRole(ROLE.ADMIN), async (req, re
 
 		[err, biopic] = await utils.to(Image.findOne({ itemType: "biopic", _itemId: "biopic", isMain: true }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
-		if (!biopic) throw new Error(ERROR_MESSAGE.noResult);
+		if (!biopic) biopic = { path: "" };
 		obj.biopic = biopic.path;
 
 		return res.status(200).render("restricted/Bio", obj);
 	} catch (err) {
 		threatLog.error("BIO EDIT ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/Admin/Bio");
+		return res.status(400).redirect("/Admin");
 	}
 });
 
