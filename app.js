@@ -283,6 +283,6 @@ app.get("*", setUser, (req, res) => {
 	}
 });
 
-const port = process.env.PORT;
+let port = process.env.PORT;
 if (process.env.ENVIRONMENT === "prod") port = "/tmp/nginx.socket";
 app.listen(port, () => fullLog.trace(`Listening on port ${port}...`)); //"/tmp/nginx.socket"
