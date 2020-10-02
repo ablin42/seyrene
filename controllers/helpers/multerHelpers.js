@@ -1,20 +1,9 @@
 const multer = require("multer");
 const utils = require("./utils");
-const path = require("path");
 const multerS3 = require("multer-s3");
 const shortid = require("shortid");
 const aws = require("aws-sdk");
 aws.config.region = process.env.AWS_REGION;
-
-/*
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "./public/img/upload/");
-	},
-	filename: function (req, file, cb) {
-		cb(null, Date.now() + path.extname(file.originalname));
-	}
-});*/
 
 const storage = multerS3({
 	s3: new aws.S3({

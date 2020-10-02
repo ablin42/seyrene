@@ -195,7 +195,8 @@ module.exports = {
 					price: formatter.format(item.unitPrice * element.qty).substr(2),
 					shortcontent: item.attributes.content.substr(0, 128),
 					shorttitle: item.attributes.title.substr(0, 64),
-					details: ""
+					details: "",
+					mainImg: item.attributes.mainImg
 				};
 				itemObj.details = this.formatAttributes(element);
 

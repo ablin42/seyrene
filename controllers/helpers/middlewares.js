@@ -8,6 +8,7 @@ const Gallery = require("../../models/Gallery");
 const Shop = require("../../models/Shop");
 const User = require("../../models/User");
 const DeliveryInfo = require("../../models/DeliveryInfo");
+const Image = require("../../models/Image");
 const fs = require("fs");
 const { ERROR_MESSAGE } = require("./errorMessages");
 const { FRA_sizes, CAN_sizes, PRINT_sizes, FRA_SUR_sizes, attributesList } = require("./pwintyData");
@@ -189,7 +190,12 @@ async function setGallery(req, res, next) {
 		}
 		return res.status(200).json({ url: "/Galerie", message: ERROR_MESSAGE.noResult, err: true });
 	}
-	req.product = gallery;
+	req.product = JSON.parse(JSON.stringify(gallery));
+
+	[err, img] = await utils.to(Image.findOne({ itemType: "Gallery", _itemId: gallery._id, isMain: true }));
+	if (err) throw new Error(ERROR_MESSAGE.fetchImg);
+	if (!img) throw new Error(ERROR_MESSAGE.noResult);
+	req.product.mainImg = img.path;
 
 	next();
 }
@@ -205,7 +211,12 @@ async function setShop(req, res, next) {
 		}
 		return res.status(200).json({ url: "/Shop", message: ERROR_MESSAGE.noResult, err: true });
 	}
-	req.product = shop;
+	req.product = JSON.parse(JSON.stringify(shop));
+
+	[err, img] = await utils.to(Image.findOne({ itemType: "Shop", _itemId: shop._id, isMain: true }));
+	if (err) throw new Error(ERROR_MESSAGE.fetchImg);
+	if (!img) throw new Error(ERROR_MESSAGE.noResult);
+	req.product.mainImg = img.path;
 
 	next();
 }

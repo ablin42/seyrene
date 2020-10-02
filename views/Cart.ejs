@@ -57,9 +57,9 @@
 			<div class="cart-row cart-row-item" id="<%= locals.products[index].item._id %><% if (!locals.products[index].isUnique) { %>-<%= index %><% } %>">
 				<div class="cart-item cart-column">
 					<% if (locals.products[index].isUnique === true) { %>
-					<img class="cart-img" src="/api/image/main/Shop/<%= locals.products[index].item._id %>" alt="Cart Image = <%= locals.products[index].item.title %>" />
+					<img class="cart-img" src="<%= locals.products[index].mainImg %>" alt="Cart Image = <%= locals.products[index].item.title %>" />
 					<% } else { %>
-					<img class="cart-img" src="/api/image/main/Gallery/<%= locals.products[index].item._id %>" alt="Cart Image = <%= locals.products[index].item.title %>" />
+					<img class="cart-img" src="<%= locals.products[index].mainImg %>" alt="Cart Image = <%= locals.products[index].item.title %>" />
 					<% } %>
 					<div class="cart-title-description">
 						<h4 class="cart-item-title"><%= locals.products[index].shorttitle %>...</h4>

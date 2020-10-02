@@ -65,7 +65,7 @@ module.exports = {
 				item.elements.forEach(product => {
 					let obj = {
 						sku: product.attributes.SKU,
-						url: `${process.env.BASEURL}/api/image/main/Shop/${item.attributes._id}`,
+						url: item.attributes.path, //make sure this works
 						sizing: "crop",
 						copies: product.qty,
 						attributes: ""

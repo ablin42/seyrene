@@ -11,51 +11,6 @@ const { fullLog, threatLog } = require("./helpers/log4");
 const aws = require("aws-sdk");
 aws.config.region = process.env.AWS_REGION;
 
-//useless now ?
-router.get("/:id", async (req, res) => {
-	try {
-		let id = sanitize(req.params.id);
-
-		let [err, result] = await utils.to(Image.findById(id));
-		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
-		if (!result) throw new Error(ERROR_MESSAGE.noResult);
-
-		fs.readFile(result.path, function (err, data) {
-			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.readFile });
-			let contentType = { "Content-Type": result.mimetype };
-
-			res.writeHead(200, contentType);
-			return res.status(200).end(data);
-		});
-	} catch (err) {
-		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ipAddress);
-		return res.status(400).json({ error: true, message: err.message });
-	}
-});
-
-// useless now ??
-router.get("/main/:itemType/:itemId", async (req, res) => {
-	try {
-		let id = sanitize(req.params.itemId),
-			itemType = sanitize(req.params.itemType);
-
-		let [err, result] = await utils.to(Image.findOne({ itemType: itemType, _itemId: id, isMain: true }));
-		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
-		if (!result) throw new Error(ERROR_MESSAGE.noResult);
-
-		fs.readFile(result.path, function (err, data) {
-			if (err) return res.status(400).json({ error: true, message: ERROR_MESSAGE.readFile });
-			let contentType = { "Content-Type": result.mimetype };
-
-			res.writeHead(200, contentType);
-			return res.status(200).end(data);
-		});
-	} catch (err) {
-		threatLog.error("IMAGE FETCH ERROR", err, req.headers, req.ipAddress);
-		return res.status(400).json(err.message);
-	}
-});
-
 router.post("/select/:itemType/:itemId/:id", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
