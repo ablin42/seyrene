@@ -20,6 +20,7 @@ const utils = require("./helpers/utils");
 const pHelpers = require("./helpers/pwintyHelpers");
 const Blog = require("../models/Blog");
 const Shop = require("../models/Shop");
+const Image = require("../models/Image");
 const Order = require("../models/Order");
 const Gallery = require("../models/Gallery");
 const DeliveryInfo = require("../models/DeliveryInfo");
@@ -80,9 +81,13 @@ router.get("/", setUser, async (req, res) => {
 			json: true
 		};
 		let front = await rp(options);
-
 		if (front.error === false) obj.front = front.data;
 		else throw new Error(front.message);
+
+		[err, biopic] = await utils.to(Image.findOne({ itemType: "biopic", _itemId: "biopic", isMain: true }));
+		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
+		if (!biopic) throw new Error(ERROR_MESSAGE.noResult);
+		obj.biopic = biopic;
 
 		return res.status(200).render("home", obj);
 	} catch (err) {
@@ -645,6 +650,11 @@ router.get("/Admin/Bio", setUser, authUser, authRole(ROLE.ADMIN), async (req, re
 			user: req.user,
 			csrfToken: req.csrfToken()
 		};
+
+		[err, biopic] = await utils.to(Image.findOne({ itemType: "biopic", _itemId: "biopic", isMain: true }));
+		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
+		if (!biopic) throw new Error(ERROR_MESSAGE.noResult);
+		obj.biopic = biopic;
 
 		return res.status(200).render("restricted/Bio", obj);
 	} catch (err) {

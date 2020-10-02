@@ -9,7 +9,7 @@
 					<div class="carousel-inner" role="listbox">
 						<% if (locals.img) { %> <% locals.img.forEach(function (item, index) { %>
 						<div class="carousel-item <% if(index == 0) { %>active<% } %>">
-							<a href="#expand"><img class="expandable" src="/api/image/<%= item._id %>" alt="<%= index %>slide" /></a>
+							<a href="#expand"><img class="expandable" src="<%= item.path %>" alt="<%= index %>slide" /></a>
 							<div class="carousel-caption d-none d-md-block"></div>
 						</div>
 						<% }) %> <% } %>
@@ -58,7 +58,7 @@
 
 <a class="lightbox-close" href="#close">
 	<div class="lightbox-target" id="expand">
-		<img alt="Expanded Image" id="expandImg" src="/api/image/<%= locals.img[0]._id %>" />
+		<img alt="Expanded Image" id="expandImg" src="" />
 	</div>
 </a>
 

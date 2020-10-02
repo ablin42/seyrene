@@ -14,7 +14,7 @@ const upload = require("./helpers/multerHelpers");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
 const aws = require("aws-sdk");
-aws.config.region = "eu-west-3";
+aws.config.region = process.env.AWS_REGION;
 require("dotenv").config();
 
 const memjs = require("memjs");
@@ -98,8 +98,11 @@ router.get("/single/:id", authToken, async (req, res) => {
 router.post("/post", upload, errorHandler, vGallery, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		await utils.checkValidity(req);
-
-		const obj = { title: req.body.title, content: req.body.content, tags: req.body.tags };
+		const obj = {
+			title: req.body.title,
+			content: req.body.content,
+			tags: req.body.tags
+		};
 		let imgData = await utils.parseImgData(req.files);
 
 		const gallery = new Gallery(obj);

@@ -13,6 +13,8 @@ const sHelpers = require("./helpers/shopHelpers");
 const upload = require("./helpers/multerHelpers");
 const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const { fullLog, threatLog } = require("./helpers/log4");
+const aws = require("aws-sdk");
+aws.config.region = process.env.AWS_REGION;
 require("dotenv").config();
 
 const memjs = require("memjs");
@@ -78,12 +80,13 @@ router.post("/post", upload, errorHandler, vShop, setUser, authUser, authRole(RO
 			content: req.body.content,
 			price: req.body.price
 		};
+		let imgData = await utils.parseImgData(req.files);
 
 		const shop = new Shop(obj);
 		let [err, result] = await utils.to(shop.save());
 		if (err) throw new Error(ERROR_MESSAGE.saveError);
 
-		err = await utils.uploadImages(req.files, result._id, "Shop", "save");
+		err = await utils.saveImages(imgData, result._id, "Shop", "save");
 		if (err) throw new Error(err);
 
 		fullLog.info(`Shop posted: ${shop._id}`);
@@ -99,17 +102,17 @@ router.post("/patch/:id", upload, errorHandler, vShop, setShop, setUser, authUse
 	try {
 		await utils.checkValidity(req);
 		let id = sanitize(req.params.id);
-
 		const obj = {
 			title: req.body.title,
 			content: req.body.content,
 			price: req.body.price
 		};
+		let imgData = await utils.parseImgData(req.files);
 
 		let [err, result] = await utils.to(Shop.updateOne({ _id: id }, { $set: obj }));
 		if (err) throw new Error(ERROR_MESSAGE.updateError);
 
-		err = await utils.uploadImages(req.files, id, "Shop", "patch");
+		err = await utils.saveImages(imgData, id, "Shop", "patch");
 		if (err) throw new Error(err);
 
 		fullLog.info(`Shop patched: ${id}`);
@@ -141,8 +144,10 @@ router.post("/delete/:id", setShop, setUser, authUser, authRole(ROLE.ADMIN), asy
 		if (response.error === true) throw new Error(ERROR_MESSAGE.fetchImg);
 
 		for (let i = 0; i < response.images.length; i++) {
-			fs.unlink(response.images[parseInt(i)].path, err => {
-				if (err) throw new Error(ERROR_MESSAGE.deleteImg);
+			let s3 = new aws.S3();
+			let params = { Bucket: process.env.S3_BUCKET, Key: response.images[i].key };
+			s3.deleteObject(params, function (err, data) {
+				if (err) throw new Error(ERROR_MESSAGE.delImg);
 			});
 			await Image.deleteOne({ _id: response.images[parseInt(i)]._id });
 		}

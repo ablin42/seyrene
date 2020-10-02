@@ -11,7 +11,7 @@
 					<label for="upload<%= index %>" class="filebtn">Choisir une image</label>
 					<input type="file" name="img" id="upload<%= index %>" class="inputfile" />
 				</div>
-				<img class="w-100" id="image<%= index %>" src="/api/front/image/<%= locals.front[index]._id %>" alt="uploadedImg" data-uploaded="true" />
+				<img class="w-100" id="image<%= index %>" src="<%= locals.front[index].path %>" alt="uploadedImg" data-uploaded="true" />
 				<div class="form-group text-center">
 					<button id="delete<%= index %>" class="delbtn">SUPPRIMER</button>
 				</div>

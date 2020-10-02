@@ -4,7 +4,7 @@ const path = require("path");
 const multerS3 = require("multer-s3");
 const shortid = require("shortid");
 const aws = require("aws-sdk");
-aws.config.region = "eu-west-3";
+aws.config.region = process.env.AWS_REGION;
 
 /*
 const storage = multer.diskStorage({

@@ -18,7 +18,7 @@
 			<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
 				<div class="face face1 blog-overlay-wrapper mt-0">
 					<a href="#expand">
-						<img src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100 expandable" alt="Tag Searched Painting - <%= locals.galleries[index].title %>" />
+						<img src="<%= locals.galleries[index].mainImgPath %>" class="w-100 expandable" alt="Tag Searched Painting - <%= locals.galleries[index].title %>" />
 					</a>
 
 					<div class="blog-overlay expandable" data-id="<%= locals.galleries[index]._id %>" data-isGallery="true">
@@ -49,7 +49,7 @@
 <a class="lightbox-close" href="#close">
 	<div class="lightbox-target" id="expand">
 		<% if(locals.galleries){ %>
-		<img alt="Expanded Image" id="expandImg" src="/api/image/<%= locals.galleries[0].mainImgId %>" />
+		<img alt="Expanded Image" id="expandImg" src="" />
 		<% } %>
 	</div>
 </a>

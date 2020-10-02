@@ -30,13 +30,13 @@ module.exports = {
 				createdAt: galleries[parseInt(i)].createdAt,
 				updatedAt: galleries[parseInt(i)].updatedAt,
 				tags: galleries[parseInt(i)].tags,
-				mainImgId: "",
 				__v: galleries[parseInt(i)].__v
 			};
+
 			let [err, img] = await utils.to(Image.findOne({ _itemId: galleries[parseInt(i)]._id, itemType: "Gallery", isMain: true }));
-			console.log(err, img, "x");
 			if (err || !img) throw new Error(ERROR_MESSAGE.fetchImg);
 			obj.mainImgId = img._id;
+			obj.mainImgPath = img.path;
 			arr.push(obj);
 		}
 

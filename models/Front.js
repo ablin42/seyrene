@@ -10,6 +10,10 @@ const FrontSchema = mongoose.Schema(
 			type: Number,
 			required: true
 		},
+		key: {
+			type: String,
+			required: true
+		},
 		path: {
 			type: String,
 			required: true

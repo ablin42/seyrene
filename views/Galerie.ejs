@@ -14,7 +14,7 @@
 			<div class="expandable-card" id="<%= locals.galleries[index]._id %>">
 				<div class="face face1 blog-overlay-wrapper mt-0">
 					<a href="#expand">
-						<img src="/api/image/<%= locals.galleries[index].mainImgId %>" class="w-100 expandable" alt="Gallery Image - <%= locals.galleries[index].title %>" />
+						<img src="<%= locals.galleries[index].mainImgPath %>" class="w-100 expandable" alt="Gallery Image - <%= locals.galleries[index].title %>" />
 					</a>
 
 					<div class="blog-overlay expandable" data-id="<%= locals.galleries[index]._id %>" data-isGallery="true">

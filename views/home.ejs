@@ -19,7 +19,7 @@
 				<div class="carousel-inner" role="listbox">
 					<% if (locals.front) { %> <% i = 0; %> <% for (let index = 0; index < 5; index++) { %> <% if (locals.front[index] && locals.front[index].null != true) { %>
 					<div class="carousel-item <% if(index == 0) { %>active<% } %>">
-						<a class="href="#expand"><img class="w-100 expandable" src="/api/front/image/<%= locals.front[index]._id %>" alt="<%= i %>slide" /></a>
+						<a class="href="#expand"><img class="w-100 expandable" src="<%= locals.front[index].path %>" alt="<%= i %>slide" /></a>
 					</div>
 					<% i = i + 1; %> <% } %> <% } %> <% } else { %>
 					<div class="text-center m-5 p-5 bwhite">
@@ -53,7 +53,7 @@
 
 				<div class="bio-img-wrapper col-lg-4 z-0">
 					<div class="sub-img-wrapper mt-5">
-						<img alt="Biography Picture - Portrait Image" class="bio-img w-100" src="/img/upload/biopic.png" />
+						<img alt="Biography Picture - Portrait Image" class="bio-img w-100" src="<%= locals.biopic.path %>" />
 					</div>
 				</div>
 			
@@ -74,7 +74,7 @@
 
 			<!--<div class="bio-img-wrapper col-md-4 z-0">
 				<div class="sub-img-wrapper mt-5">
-					<img alt="Biography Picture - Portrait Image" class="bio-img w-100" src="/img/upload/biopic.png" />
+					<img alt="Biography Picture - Portrait Image" class="bio-img w-100" src="<%= locals.biopic.path %>" />
 				</div>
 			</div>
 			<div class="first-bio col-md-8">

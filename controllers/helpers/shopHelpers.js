@@ -20,14 +20,12 @@ module.exports = {
 				date: shopItems[parseInt(i)].date,
 				createdAt: shopItems[parseInt(i)].createdAt,
 				updatedAt: shopItems[parseInt(i)].updatedAt,
-				mainImgId: "",
 				__v: shopItems[parseInt(i)].__v
 			};
 
 			let [err, img] = await utils.to(Image.findOne({ _itemId: shopItems[parseInt(i)]._id, itemType: "Shop", isMain: true }));
 			if (err || !img) throw new Error(ERROR_MESSAGE.fetchImg);
-
-			obj.mainImgId = img._id;
+			obj.mainImgPath = img.path;
 			arr.push(obj);
 		}
 		return arr;

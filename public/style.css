@@ -1049,7 +1049,6 @@ button:focus {
 	box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
 	-webkit-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
 	-moz-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
-	padding: 2px;
 	background: var(--brand-blue-m1);
 	margin: 20px;
 }

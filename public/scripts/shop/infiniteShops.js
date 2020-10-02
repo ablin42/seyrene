@@ -30,7 +30,7 @@ async function infiniteShopItems(tb) {
 					div.setAttribute("id", id);
 
 					let toAppend = `
-									<a class="card-img-expand" href="/Shop/${id}"><img src="/api/image/${shop.mainImgId}" class="card-img-top" alt="Gallery Paiting - ${shop.title}"></a>
+									<a class="card-img-expand" href="/Shop/${id}"><img src="${shop.mainImgPath}" class="card-img-top" alt="Gallery Paiting - ${shop.title}"></a>
 									<div class="card-body">
 										<h5 class="card-title"><i><a href="/Shop/${id}">${shop.shorttitle}</a></i></h5>
 										<p class="card-text gallery-description mb-5">${shop.shortcontent}</p>

@@ -45,30 +45,6 @@ module.exports = {
 
 		return parsed.join(" ");
 	},
-	uploadImages: async function (files, itemId, itemType, operation = "save") {
-		for (let i = 0; i < files.length; i++) {
-			let isMain = false;
-			if (i === 0 && operation === "save") isMain = true;
-
-			let image = new Image({
-				_itemId: itemId,
-				itemType: itemType,
-				isMain: isMain,
-				mimetype: files[parseInt(i)].mimetype
-			});
-
-			let oldpath = files[parseInt(i)].destination + files[parseInt(i)].filename;
-			let newpath = files[parseInt(i)].destination + image._id + path.extname(files[parseInt(i)].originalname);
-			image.path = newpath;
-
-			fs.rename(oldpath, newpath, err => {
-				if (err) return err;
-			});
-
-			[err, savedImage] = await this.to(image.save());
-			if (err || !savedImage) return ERROR_MESSAGE.saveError;
-		}
-	},
 	saveImages: async function (imgData, itemId, itemType, operation = "save") {
 		for (let i = 0; i < imgData.length; i++) {
 			let isMain = false;
