@@ -87,7 +87,7 @@ router.get("/", setUser, async (req, res) => {
 		[err, biopic] = await utils.to(Image.findOne({ itemType: "biopic", _itemId: "biopic", isMain: true }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
 		if (!biopic) throw new Error(ERROR_MESSAGE.noResult);
-		obj.biopic = biopic;
+		obj.biopic = biopic.path;
 
 		return res.status(200).render("home", obj);
 	} catch (err) {
@@ -656,7 +656,7 @@ router.get("/Admin/Bio", setUser, authUser, authRole(ROLE.ADMIN), async (req, re
 		[err, biopic] = await utils.to(Image.findOne({ itemType: "biopic", _itemId: "biopic", isMain: true }));
 		if (err) throw new Error(ERROR_MESSAGE.fetchImg);
 		if (!biopic) throw new Error(ERROR_MESSAGE.noResult);
-		obj.biopic = biopic;
+		obj.biopic = biopic.path;
 
 		return res.status(200).render("restricted/Bio", obj);
 	} catch (err) {

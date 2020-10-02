@@ -5,7 +5,7 @@
 		<div class="col-md-10 offset-md-1">
 			<h1 class="square-title text-center">Changer l'image de la biographie</h1>
 			<form id="bio" method="POST" action="/api/front/bio" enctype="multipart/form-data">
-				<img alt="Biographie picture" class="col-md-6 offset-md-3 mt-3 mb-3" src="<%= locals.biopic.path %>" />
+				<img alt="Biographie picture" class="col-md-6 offset-md-3 mt-3 mb-3" src="<%= locals.biopic %>" />
 				<div class="form-group text-center">
 					<label for="img" id="imglabel" class="filebtn">Choisir une image</label>
 					<input class="inputfile" type="file" name="img" id="img" required />
