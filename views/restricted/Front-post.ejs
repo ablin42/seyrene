@@ -5,8 +5,8 @@
 		<div class="col-md-12">
 			<h1 class="square-title text-center">Modifier les images de l'accueil</h1>
 			<div class="alert alert-info alert-static" role="alert">Pensez à utiliser des images au format paysage...</div>
-			<% if (locals.front) { %><% for (let index = 0; index < 5; index++) { %> <% if (locals.front[index] && locals.front[index].null != true) { %>
-				<h1>BIDE</h1>
+			<% if (locals.front) { %><% for (let index = 0; index < 5; index++) { %> 
+				<% if (locals.front[index] && locals.front[index].null != true) { %>
 			<form class="text-center front-form mt-3 <% if (index % 2 === 0) { %>even<% } %>" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data">
 				<div class="form-group" id="uploadGroup<%= index %>">
 					<label for="upload<%= index %>" class="filebtn">Choisir une image</label>
@@ -23,7 +23,6 @@
 				</div>
 			</form>
 			<% } else { %>
-					<h1>ISSOU</h1>
 			<form class="text-center front-form <% if (index % 2 === 0) { %>even<% } %>" name="upload<%= index %>" action="/api/front/post" method="POST" enctype="multipart/form-data">
 				<div class="form-group" id="uploadGroup<%= index %>">
 					<label for="upload<%= index %>" class="filebtn">Choisir une image</label>
@@ -39,8 +38,8 @@
 					<button type="submit" name="submit" class="submit-btn">Valider</button>
 				</div>
 			</form>
-			<% } } %> else {%>
-					<h1>REEEEEEEEE</h1>
+			<% } } %> 
+			 <% } else { %>
 			<form class="text-center front-form even" name="upload0" action="/api/front/post" method="POST" enctype="multipart/form-data">
 				<div class="form-group" id="uploadGroup0">
 					<label for="upload0" class="filebtn">Choisir une image</label>
