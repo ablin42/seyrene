@@ -635,6 +635,7 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		else throw new Error(response.message);
 		if (response.data.length <= 0) obj.front = undefined;
 
+
 		return res.status(200).render("restricted/Front-post", obj);
 	} catch (err) {
 		threatLog.error("ADMIN FRONT ERROR", err, req.headers, req.ipAddress);
