@@ -662,7 +662,7 @@ router.get("/Admin/Bio", setUser, authUser, authRole(ROLE.ADMIN), async (req, re
 	} catch (err) {
 		threatLog.error("BIO EDIT ROUTE ERROR", err, req.headers, req.ipAddress);
 		req.flash("warning", err.message);
-		return res.status(400).redirect("/Shop");
+		return res.status(400).redirect("/Admin/Bio");
 	}
 });
 
