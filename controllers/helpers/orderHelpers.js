@@ -65,7 +65,7 @@ module.exports = {
 				item.elements.forEach(product => {
 					let obj = {
 						sku: product.attributes.SKU,
-						url: item.attributes.path, //make sure this works
+						url: item.attributes.mainImg,
 						sizing: "crop",
 						copies: product.qty,
 						attributes: ""
