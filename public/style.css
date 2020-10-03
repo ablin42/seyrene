@@ -1307,7 +1307,7 @@ div.carousel-item.active {
 	left: -15px;
 	right: -15px;
 	bottom: -15px;
-	background: linear-gradient(
+	/*background: linear-gradient(
 			135deg,
 			rgba(19, 176, 223, 0.26) 0%,
 			rgba(19, 176, 223, 0.26) 23%,
@@ -1355,7 +1355,24 @@ div.carousel-item.active {
 			rgb(97, 77, 194) 96%,
 			rgb(109, 57, 185) 96%,
 			rgb(109, 57, 185) 100%
-		);
+		);*/
+		/*background: linear-gradient(126deg, rgba(5,84,185,1) 0%, rgba(2,62,138,1) 50%, rgba(3,50,109,1) 100%);*/
+		background: var(--brand-blue-m2);
+	transform: skew(1deg, 1deg);
+	z-index: -1;
+}
+
+.container .sub-img-wrapper:before {
+	box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
+	-webkit-box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
+	-moz-box-shadow: 0px 0px 2px 0px rgba(165, 165, 165, 0.75);
+	content: "";
+	position: absolute;
+	top: -15px;
+	left: -15px;
+	right: -15px;
+	bottom: -15px;
+	background: white;
 	transform: skew(1deg, 1deg);
 	z-index: -1;
 }
@@ -1471,9 +1488,9 @@ div.carousel-item.active {
 .bio-img {
 	max-width: 400px;
 	max-height: 400px;
-	box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
-	-webkit-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
-	-moz-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.85) !important;
+	-webkit-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.15) !important;
+	box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.15) !important;
+	-moz-box-shadow: 0px 0px 20px 0 rgba(0, 0, 0, 0.15) !important;
 }
 
 .secondary-title {

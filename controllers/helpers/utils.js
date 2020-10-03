@@ -30,8 +30,9 @@ module.exports = {
 		let isAllowedExt = fileExts.includes(file.originalname.split(".")[1].toLowerCase());
 		let isAllowedMimeType = file.mimetype.startsWith("image/");
 
-		if (isAllowedExt && isAllowedMimeType) return cb(null, true);
-		else cb("File type not allowed");
+		if (isAllowedExt && isAllowedMimeType) 
+			return cb(null, true);
+		else cb(new Error("File type not allowed"));
 	},
 	toTitleCase: function (phrase) {
 		let arr = phrase.toLowerCase().split(" ");
