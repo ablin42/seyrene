@@ -10,6 +10,7 @@ module.exports = {
 	parse: async function (shopItems) {
 		let arr = [];
 		for (let i = 0; i < shopItems.length; i++) {
+			console.log(ormatter.format(shopItems[parseInt(i)].price).substr(2), shopItems[parseInt(i)].price, "ISSOUFLE");
 			let obj = {
 				_id: shopItems[parseInt(i)]._id,
 				title: shopItems[parseInt(i)].title,
