@@ -28,12 +28,9 @@ async function setUser(req, res, next) {
 			req.flash("warning", ERROR_MESSAGE.userNotFound);
 			return res.status(401).redirect("/Login");
 		}
-		//user.password = undefined; fails bcrypt if enabled
+		user.password = undefined;
 		req.user = user;
 	}
-
-	//let [err, user] = await utils.to(User.findById(process.env.USERKEY));
-	//req.user = user;
 
 	next();
 }

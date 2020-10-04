@@ -165,9 +165,12 @@ router.post("/patch/email", limiter, vEmail, setUser, authUser, async (req, res)
 router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req, res) => {
 	try {
 		await utils.checkValidity(req);
-		const user = req.user;
 		const cpassword = req.body.cpassword;
 		const password = req.body.password;
+
+		[err, user] = await utils.to(User.findOne({ email: req.user.email }));
+		if (err) throw new Error(ERROR_MESSAGE.serverError);
+		if (!user) throw new Error(ERROR_MESSAGE.invalidCredentials);
 
 		const validPw = await bcrypt.compare(cpassword, user.password);
 		if (!validPw) throw new Error(ERROR_MESSAGE.invalidCredentials);
@@ -175,7 +178,7 @@ router.post("/patch/password", limiter, vPassword, setUser, authUser, async (req
 		const hashPw = await bcrypt.hash(password, 10);
 		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
 
-		let [err, result] = await utils.to(User.updateOne({ _id: user._id }, { $set: { password: hashPw } }));
+		[err, result] = await utils.to(User.updateOne({ _id: user._id }, { $set: { password: hashPw } }));
 		if (err || !result) throw new Error(ERROR_MESSAGE.userUpdate);
 
 		fullLog.info(`Password patched: ${user._id}`);
