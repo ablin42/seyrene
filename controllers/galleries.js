@@ -35,25 +35,22 @@ router.get("/", async (req, res) => {
 		let gallery_key = "gallery." + JSON.stringify(options);
 
 		if (process.env.ENVIRONMENT === "prod") {
-			console.log("in prod");
 			mc.get(gallery_key, async function (err, val) {
 				try {
-					console.log("in mc get and success retrieve");
 					if (err == null && val != null) galleries = JSON.parse(val.toString());
 					else {
-						console.log("in mc get and failure retrieve");
 						let [err, result] = await utils.to(Gallery.paginate({}, options));
 						if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
 						galleries = result.docs;
 						if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
 						galleries = await gHelpers.fetchMainImg(galleries);
-						console.log("agliglou", galleries);
 
 						mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
-							console.log("in mc set");
 							if (err) throw new Error(ERROR_MESSAGE.serverError);
 						});
+
+						return res.status(200).json({ error: false, galleries: galleries });
 					}
 				} catch (err) {
 					console.log(err, "XXX");
@@ -67,10 +64,9 @@ router.get("/", async (req, res) => {
 			galleries = result.docs;
 			if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
 			galleries = await gHelpers.fetchMainImg(galleries);
-		}
 
-		console.log("trouba", galleries);
-		return res.status(200).json({ error: false, galleries: galleries });
+			return res.status(200).json({ error: false, galleries: galleries });
+		}
 	} catch (err) {
 		threatLog.error("FETCHING GALLERIES ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
