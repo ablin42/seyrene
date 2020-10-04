@@ -181,7 +181,7 @@ router.post("/cancel/:id", setUser, authUser, setOrder, authGetOrder, async (req
 			let refund = await oHelpers.refundStripe(req, order.chargeId, order._id);
 			if (refund.error === true) throw new Error(refund.message);
 		} else {
-			await oHelpers.cancelPwintyOrder(order.pwintyOrderId);
+			await oHelpers.cancelPwintyOrder(order.pwintyOrderId, req);
 
 			let refund = await oHelpers.refundStripe(req, order.chargeId, order._id);
 			if (refund.error === true) throw new Error(refund.message);

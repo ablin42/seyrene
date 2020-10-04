@@ -61,9 +61,7 @@ function authRole(role) {
 		if (req.user.role !== role) {
 			req.flash("warning", ERROR_MESSAGE.unauthorized);
 			return res.status(401).redirect("back");
-		}
-
-		next();
+		} else next();
 	};
 }
 

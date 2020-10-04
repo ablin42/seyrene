@@ -44,6 +44,8 @@ router.post("/orders/create", authToken, setUser, authUser, authRole(ROLE.ADMIN)
 	}
 });
 
+//authUser,
+//	authRole(ROLE.ADMIN),
 router.get("/orders/:id", authToken, setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 	try {
 		let id = sanitize(req.params.id);
@@ -303,8 +305,9 @@ router.post("/callback/status", async (req, res) => {
 			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
 			if (err || !order) throw new Error(ERROR_MESSAGE.noResult);
 
+			console.log(req.body, "AZAAAAAAAAAAAAAA", req.body.status);
 			[err, order] = await utils.to(
-				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.eventId } })
+				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.status } })
 			);
 			if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
 

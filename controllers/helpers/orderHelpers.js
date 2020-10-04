@@ -11,14 +11,16 @@ const DeliveryInfo = require("../../models/DeliveryInfo");
 const mailer = require("./mailer");
 
 module.exports = {
-	cancelPwintyOrder: async function (pwintyOrderId) {
+	cancelPwintyOrder: async function (pwintyOrderId, req) {
 		let options = {
 			method: "GET",
 			uri: `${process.env.BASEURL}/api/pwinty/orders/${pwintyOrderId}`,
 			body: {},
 			json: true,
 			headers: {
-				ACCESS_TOKEN: process.env.ACCESS_TOKEN
+				"ACCESS_TOKEN": process.env.ACCESS_TOKEN,
+				"cookie": req.headers.cookie,
+				"CSRF-Token": req.csrfToken()
 			}
 		};
 		let response = await rp(options);
