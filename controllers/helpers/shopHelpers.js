@@ -10,19 +10,13 @@ module.exports = {
 	parse: async function (shopItems) {
 		let arr = [];
 		for (let i = 0; i < shopItems.length; i++) {
-			console.log(
-				shopItems[parseInt(i)].price,
-				formatter.format(shopItems[parseInt(i)].price),
-				formatter.format(shopItems[parseInt(i)].price).substr(2),
-				"ISSOUFLE"
-			);
 			let obj = {
 				_id: shopItems[parseInt(i)]._id,
 				title: shopItems[parseInt(i)].title,
 				content: shopItems[parseInt(i)].content,
 				shortcontent: shopItems[parseInt(i)].content.substr(0, 256),
 				shorttitle: shopItems[parseInt(i)].title.substr(0, 100),
-				price: formatter.format(shopItems[parseInt(i)].price).substr(2),
+				price: formatter.format(shopItems[parseInt(i)].price).replace(/ /g, "").substr(1),
 				date: shopItems[parseInt(i)].date,
 				createdAt: shopItems[parseInt(i)].createdAt,
 				updatedAt: shopItems[parseInt(i)].updatedAt,
