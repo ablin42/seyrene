@@ -119,10 +119,10 @@ module.exports = {
 	},
 	convertPrice: function (price) {
 		/*return formatter
-			.format(fx.convert(price / 100, "GBP", "EUR"))
+			.format()
 			.substr(2)
 			.replace(",", "");*/
-		return utils.parsePrice(price);
+		return utils.parsePrice(fx.convert(price / 100, "GBP", "EUR"));
 	},
 	treatShipment: function (shipmentOptions) {
 		let formatted = [];
