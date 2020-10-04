@@ -118,10 +118,6 @@ module.exports = {
 		return appliedMargin;
 	},
 	convertPrice: function (price) {
-		/*return formatter
-			.format()
-			.substr(2)
-			.replace(",", "");*/
 		return utils.parsePrice(fx.convert(price / 100, "GBP", "EUR"));
 	},
 	treatShipment: function (shipmentOptions) {

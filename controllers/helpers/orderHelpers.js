@@ -7,6 +7,7 @@ const { fullLog, threatLog } = require("./log4");
 const Order = require("../../models/Order");
 const Purchase = require("../../models/PurchaseData");
 const User = require("../../models/User");
+const DeliveryInfo = require("../../models/DeliveryInfo");
 const mailer = require("./mailer");
 
 module.exports = {
