@@ -267,7 +267,7 @@ router.post("/confirm", async (req, res) => {
 			if (await mailer(user.email, subject, content, `${process.env.BASEURL}/Order/${order._id}`))
 				throw new Error(ERROR_MESSAGE.sendMail);
 
-			fullLog.info(`Order confirmed: Order: ${order._id} - User: ${req.user._id}`);
+			fullLog.info(`Order confirmed: Order: ${order._id} - User: ${user._id}`);
 			return res.status(200).send("OK");
 		}
 

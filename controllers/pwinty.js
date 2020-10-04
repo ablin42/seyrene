@@ -305,9 +305,8 @@ router.post("/callback/status", async (req, res) => {
 			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
 			if (err || !order) throw new Error(ERROR_MESSAGE.noResult);
 
-			console.log(req.body, "AZAAAAAAAAAAAAAA", req.body.status);
 			[err, order] = await utils.to(
-				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.status } })
+				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.eventData } })
 			);
 			if (err || !order) throw new Error(ERROR_MESSAGE.updateError);
 
