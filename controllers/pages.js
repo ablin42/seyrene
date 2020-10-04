@@ -124,7 +124,7 @@ router.get("/Galerie", setUser, cacheView, async (req, res) => {
 		let response = await rp(options);
 		if (response.error === false) obj.galleries = response.galleries;
 		else throw new Error(response.message);
-		console.log(obj.galleries);
+		console.log(obj.galleries, "isssou gligli");
 
 		return res.status(200).render("Galerie", obj);
 	} catch (err) {

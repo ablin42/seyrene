@@ -48,6 +48,7 @@ router.get("/", async (req, res) => {
 						galleries = result.docs;
 						if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
 						galleries = await gHelpers.fetchMainImg(galleries);
+						console.log("agliglou", galleries);
 
 						mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
 							console.log("in mc set");
@@ -68,6 +69,7 @@ router.get("/", async (req, res) => {
 			galleries = await gHelpers.fetchMainImg(galleries);
 		}
 
+		console.log("trouba", galleries);
 		return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {
 		threatLog.error("FETCHING GALLERIES ERROR:", err, req.headers, req.ipAddress);
