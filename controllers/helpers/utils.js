@@ -87,7 +87,7 @@ module.exports = {
 
 		return arr;
 	},
-	parsePrice: async function (price) {
+	parsePrice: function (price) {
 		return formatter.format(price).replace(/ /g, "").substr(1);
 	}
 };

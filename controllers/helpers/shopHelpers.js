@@ -22,6 +22,7 @@ module.exports = {
 				updatedAt: shopItems[parseInt(i)].updatedAt,
 				__v: shopItems[parseInt(i)].__v
 			};
+			console.log(obj.price);
 
 			let [err, img] = await utils.to(Image.findOne({ _itemId: shopItems[parseInt(i)]._id, itemType: "Shop", isMain: true }));
 			if (err || !img) throw new Error(ERROR_MESSAGE.fetchImg);
