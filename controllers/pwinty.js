@@ -305,6 +305,9 @@ router.post("/callback/status", async (req, res) => {
 			[err, order] = await utils.to(Order.findOne({ pwintyOrderId: req.body.orderId }));
 			if (err || !order) throw new Error(ERROR_MESSAGE.noResult);
 
+			if (order.status === "Completed" || order.status === "Cancelled")
+				throw new Error("Order status does not allow pwinty callback to change status");
+
 			[err, order] = await utils.to(
 				Order.findOneAndUpdate({ pwintyOrderId: req.body.orderId }, { $set: { status: req.body.eventData } })
 			);
