@@ -34,24 +34,33 @@ router.get("/", async (req, res) => {
 		let galleries;
 		let gallery_key = "gallery." + JSON.stringify(options);
 
-		/*mc.get(gallery_key, async function (err, val) {
-			if (err == null && val != null) {
-				galleries = JSON.parse(val.toString());
-			} else {*/
+		if (process.env.ENVIRONMENT === "prod") {
+			mc.get(gallery_key, async function (err, val) {
+				if (err == null && val != null)
+					galleries = JSON.parse(val.toString());
+				else {
+					let [err, result] = await utils.to(Gallery.paginate({}, options));
+					if (err) throw new Error(ERROR_MESSAGE.fetchError);
+
+					galleries = result.docs;
+					if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
+					galleries = await gHelpers.fetchMainImg(galleries);
+
+					mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
+						if (err) throw new Error(ERROR_MESSAGE.serverError);
+					});
+				}
+			});
+	} else {
 		let [err, result] = await utils.to(Gallery.paginate({}, options));
 		if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
 		galleries = result.docs;
 		if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
 		galleries = await gHelpers.fetchMainImg(galleries);
+	}
 
-		/*	mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
-					if (err) throw new Error(ERROR_MESSAGE.serverError);
-				});
-			}
-		});*/
-
-		return res.status(200).json({ error: false, galleries: galleries });
+	return res.status(200).json({ error: false, galleries: galleries });
 	} catch (err) {
 		threatLog.error("FETCHING GALLERIES ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });

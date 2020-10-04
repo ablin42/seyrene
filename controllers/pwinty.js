@@ -212,34 +212,52 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		let pricing_key = "pricing." + countryCode + "." + JSON.stringify(req.body.items);
 		let result;
 
-		/*mc.get(pricing_key, async function (err, val) {
-			if (err == null && val != null) {
-				result = JSON.parse(val.toString());
-			} else {*/
-		items = pHelpers.genPricingObj(req.body.items);
-		let options = {
-			method: "GET",
-			uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
-			headers: {
-				"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
-				"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
-				"ACCESS_TOKEN": process.env.ACCESS_TOKEN
-			},
-			body: { items: items },
-			json: true
-		};
-		let response = await rp(options);
-		if (response.error === true) throw new Error(response.message);
+		if (process.env.ENVIRONMENT === "prod") {
+			mc.get(pricing_key, async function (err, val) {
+				if (err == null && val != null) 
+					result = JSON.parse(val.toString());
+				else {
+					items = pHelpers.genPricingObj(req.body.items);
+					let options = {
+						method: "GET",
+						uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
+						headers: {
+							"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+							"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
+							"ACCESS_TOKEN": process.env.ACCESS_TOKEN
+						},
+						body: { items: items },
+						json: true
+					};
+					let response = await rp(options);
+					if (response.error === true) throw new Error(response.message);
 
-		result = { error: response.error, response: response.formatted };
+					result = { error: response.error, response: response.formatted };
 
-		/*mc.set(pricing_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
-					if (err) throw new Error(ERROR_MESSAGE.serverError);
-				});
-			}*/
+					mc.set(pricing_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
+						if (err) throw new Error(ERROR_MESSAGE.serverError);
+					});
+				}
+				return res.status(200).json({ error: result.error, response: result.response });
+			}); 
+		} else {
+			items = pHelpers.genPricingObj(req.body.items);
+			let options = {
+				method: "GET",
+				uri: `${process.env.BASEURL}/api/pwinty/pricing/fetch/${countryCode}`,
+				headers: {
+					"X-Pwinty-MerchantId": process.env.PWINTY_MERCHANTID,
+					"X-Pwinty-REST-API-Key": process.env.PWINTY_APIKEY,
+					"ACCESS_TOKEN": process.env.ACCESS_TOKEN
+				},
+				body: { items: items },
+				json: true
+			};
+			let response = await rp(options);
+			if (response.error === true) throw new Error(response.message);
 
-		return res.status(200).json({ error: result.error, response: result.response });
-		//});
+			result = { error: response.error, response: response.formatted };
+		}
 	} catch (err) {
 		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });

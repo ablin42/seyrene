@@ -51,7 +51,7 @@ mongoose.connect(
 // Express
 const app = express();
 
-if (process.env.ENVIRONMENT === "local") app.use(express.static(__dirname + "/public")); // (if re-enabled, change all routes in ejs to remove /public)
+if (process.env.ENVIRONMENT === "local") app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
@@ -285,4 +285,4 @@ app.get("*", setUser, (req, res) => {
 
 let port = process.env.PORT;
 if (process.env.ENVIRONMENT === "prod") port = "/tmp/nginx.socket";
-app.listen(port, () => fullLog.trace(`Listening on port ${port}...`)); //"/tmp/nginx.socket"
+app.listen(port, () => fullLog.trace(`Listening on port ${port}...`));
