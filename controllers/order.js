@@ -37,7 +37,7 @@ router.get("/", setUser, authUser, authRole(ROLE.ADMIN), async (req, res) => {
 			let orderObj = {
 				_id: order._id,
 				status: order.status,
-				price: utils.formatPrice(order.price),
+				price: utils.parsePrice(order.price),
 				date_f: format.asString("dd/MM/yyyy", new Date(order.date)),
 				lastname: order.lastname,
 				firstname: order.firstname
@@ -57,9 +57,9 @@ router.get("/:id", setUser, authUser, setOrder, authGetOrder, async (req, res) =
 		let id = sanitize(req.params.id);
 		let order = req.order;
 
-		order.price = utils.formatPrice(order.price);
+		order.price = utils.parsePrice(order.price);
 		order.items.forEach((item, index) => {
-			order.items[parseInt(index)].price = utils.formatPrice(item.price);
+			order.items[parseInt(index)].price = utils.parsePrice(item.price);
 			order.items[parseInt(index)].attributes.content = item.attributes.content.substr(0, 128);
 			order.items[parseInt(index)].attributes.title = item.attributes.title.substr(0, 64);
 		});
