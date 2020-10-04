@@ -36,7 +36,8 @@ router.get("/", async (req, res) => {
 
 		if (process.env.ENVIRONMENT === "prod") {
 			mc.get(gallery_key, async function (err, val) {
-				if (err == null && val != null)
+				try {
+					if (err == null && val != null)
 					galleries = JSON.parse(val.toString());
 				else {
 					let [err, result] = await utils.to(Gallery.paginate({}, options));
@@ -50,6 +51,11 @@ router.get("/", async (req, res) => {
 						if (err) throw new Error(ERROR_MESSAGE.serverError);
 					});
 				}
+				} catch (err) {
+					console.log(err, "XX");
+					return res.status(200).json({ error: false, galleries: galleries });
+				}
+			
 			});
 	} else {
 		let [err, result] = await utils.to(Gallery.paginate({}, options));
