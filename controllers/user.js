@@ -252,7 +252,7 @@ router.get("/countryCode", setUser, async (req, res) => {
 		let err, result, data;
 		let country_key = "country." + ip;
 
-		if (process.env.ENVIRONMENT === "prod") {
+		if (process.env.MEMJS === "true") {
 			mc.get(country_key, async function (err, val) {
 				if (err == null && val != null) countryCode = val.toString();
 				else {

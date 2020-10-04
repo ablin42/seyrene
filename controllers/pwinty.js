@@ -212,7 +212,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 		let pricing_key = "pricing." + countryCode + "." + JSON.stringify(req.body.items);
 		let result;
 
-		if (process.env.ENVIRONMENT === "prod") {
+		if (process.env.MEMJS === "true") {
 			mc.get(pricing_key, async function (err, val) {
 				if (err == null && val != null) result = JSON.parse(val.toString());
 				else {

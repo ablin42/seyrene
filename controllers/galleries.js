@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
 		let galleries;
 		let gallery_key = "gallery." + JSON.stringify(options);
 
-		if (process.env.ENVIRONMENT === "prod") {
+		if (process.env.MEMJS === "true") {
 			mc.get(gallery_key, async function (err, val) {
 				if (err == null && val != null) galleries = JSON.parse(val.toString());
 				else {

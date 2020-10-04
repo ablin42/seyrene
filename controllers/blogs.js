@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
 		let result;
 		let blog_key = "blog." + JSON.stringify(options);
 
-		if (process.env.ENVIRONMENT === "prod") {
+		if (process.env.MEMJS === "true") {
 			mc.get(blog_key, async function (err, val) {
 				if (err == null && val != null) result = JSON.parse(val.toString());
 				else {

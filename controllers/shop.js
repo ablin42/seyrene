@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
 		let shop;
 		let shop_key = "shop." + JSON.stringify(options);
 
-		if (process.env.ENVIRONMENT === "prod") {
+		if (process.env.MEMJS === "true") {
 			mc.get(shop_key, async function (err, val) {
 				if (err == null && val != null) shop = JSON.parse(val.toString());
 				else {
