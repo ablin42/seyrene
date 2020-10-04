@@ -36,26 +36,20 @@ router.get("/", async (req, res) => {
 
 		if (process.env.ENVIRONMENT === "prod") {
 			mc.get(gallery_key, async function (err, val) {
-				try {
-					if (err == null && val != null) galleries = JSON.parse(val.toString());
-					else {
-						let [err, result] = await utils.to(Gallery.paginate({}, options));
-						if (err) throw new Error(ERROR_MESSAGE.fetchError);
+				if (err == null && val != null) galleries = JSON.parse(val.toString());
+				else {
+					let [err, result] = await utils.to(Gallery.paginate({}, options));
+					if (err) throw new Error(ERROR_MESSAGE.fetchError);
 
-						galleries = result.docs;
-						if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
-						galleries = await gHelpers.fetchMainImg(galleries);
+					galleries = result.docs;
+					if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
+					galleries = await gHelpers.fetchMainImg(galleries);
 
-						mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
-							if (err) throw new Error(ERROR_MESSAGE.serverError);
-						});
-
-						return res.status(200).json({ error: false, galleries: galleries });
-					}
-				} catch (err) {
-					console.log(err, "XXX");
-					return res.status(200).json({ error: false, galleries: galleries });
+					mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
+						if (err) throw new Error(ERROR_MESSAGE.serverError);
+					});
 				}
+				return res.status(200).json({ error: false, galleries: galleries });
 			});
 		} else {
 			let [err, result] = await utils.to(Gallery.paginate({}, options));
