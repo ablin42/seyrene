@@ -4,8 +4,9 @@
 	<div class="container">
 		<div class="col-md-10 offset-md-1 p-0">
 			<div class="text-center">
-				<%= locals.totalPrice %>
-				<b class="square-title text-center <% if (!locals.totalPrice || (locals.totalPrice !== '0' && locals.totalPrice != '0.00')) { %>nodisplay<% } %>" id="alertEmpty">Your cart is empty!</b>
+				<b class="square-title text-center <% if (!locals.totalPrice || (locals.totalPrice !== '0' && locals.totalPrice != '0.00' && locals.totalPrice !== '.00')) { %>nodisplay<% } %>" id="alertEmpty"
+					>Your cart is empty!</b
+				>
 			</div>
 		</div>
 		<% if(locals.products && locals.totalPrice != 0 && locals.totalQty != 0){ %>
