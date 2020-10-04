@@ -46,7 +46,6 @@ async function postShop(e) {
 	formData.append("title", title);
 	formData.append("content", content);
 	formData.append("price", price);
-	console.log(price);
 
 	let data = await fetch("/api/shop/post", {
 		method: "POST",
