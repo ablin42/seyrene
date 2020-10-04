@@ -44,7 +44,7 @@ router.get("/", async (req, res) => {
 					let shopItems = result.docs;
 					shop = await sHelpers.parse(shopItems);
 
-					mc.set(shop_key, "" + JSON.stringify(shop), { expires: 86400 }, function (err, val) {
+					mc.set(shop_key, "" + JSON.stringify(shop), { expires: 21600 }, function (err, val) {
 						if (err) throw new Error(ERROR_MESSAGE.serverError);
 					});
 				}
@@ -88,6 +88,7 @@ router.post("/post", upload, errorHandler, vShop, setUser, authUser, authRole(RO
 			content: req.body.content,
 			price: req.body.price
 		};
+		console.log(req.body.price, "PRICE");
 		let imgData = await utils.parseImgData(req.files);
 
 		const shop = new Shop(obj);

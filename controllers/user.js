@@ -270,7 +270,7 @@ router.get("/countryCode", setUser, async (req, res) => {
 						else throw new Error(ERROR_MESSAGE.countryCode);
 					}
 
-					mc.set(country_key, "" + countryCode, { expires: 86400 }, function (err, val) {
+					mc.set(country_key, "" + countryCode, { expires: 21600 }, function (err, val) {
 						if (err) throw new Error(ERROR_MESSAGE.serverError);
 					});
 				}

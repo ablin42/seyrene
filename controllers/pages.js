@@ -51,7 +51,7 @@ const cacheView = function (req, res, next) {
 		}
 		res.sendRes = res.send;
 		res.send = function (body) {
-			mc.set(view_key, body, { expires: 43200 }, function (err, val) {
+			mc.set(view_key, body, { expires: 21600 }, function (err, val) {
 				if (err) throw new Error(ERROR_MESSAGE.serverError);
 			});
 			res.sendRes(body);

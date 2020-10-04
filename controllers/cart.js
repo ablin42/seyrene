@@ -36,11 +36,12 @@ router.post("/add/:id", limiter, setUser, setShop, async (req, res) => {
 			if (arr[i].attributes._id == product._id) throw new Error(ERROR_MESSAGE.addTwiceUnique);
 		}
 
-		cart.add(product, product.id);
+		cart.add(product, product._id);
 		req.session.cart = cart;
 
 		let formatted = JSON.parse(JSON.stringify(cart));
 		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
+		console.log(cart.items, formatted.items);
 		formatted.items[product._id].price = formatter.format(cart.items[product._id].price).substr(2);
 
 		fullLog.info(`Added to cart(unique): ${product._id}`);

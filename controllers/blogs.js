@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
 					result = await bHelpers.getBlogs(options);
 					result = await bHelpers.formatBlogData(result);
 
-					mc.set(blog_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
+					mc.set(blog_key, "" + JSON.stringify(result), { expires: 21600 }, function (err, val) {
 						if (err) throw new Error(ERROR_MESSAGE.serverError);
 					});
 				}

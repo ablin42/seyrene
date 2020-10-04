@@ -45,7 +45,7 @@ router.get("/", async (req, res) => {
 					if (galleries.length == 0) throw new Error(ERROR_MESSAGE.noResult);
 					galleries = await gHelpers.fetchMainImg(galleries);
 
-					mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 86400 }, function (err, val) {
+					mc.set(gallery_key, "" + JSON.stringify(galleries), { expires: 21600 }, function (err, val) {
 						if (err) throw new Error(ERROR_MESSAGE.serverError);
 					});
 				}

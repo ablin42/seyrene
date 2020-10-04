@@ -233,7 +233,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 
 					result = { error: response.error, response: response.formatted };
 
-					mc.set(pricing_key, "" + JSON.stringify(result), { expires: 86400 }, function (err, val) {
+					mc.set(pricing_key, "" + JSON.stringify(result), { expires: 21600 }, function (err, val) {
 						if (err) throw new Error(ERROR_MESSAGE.serverError);
 					});
 				}
