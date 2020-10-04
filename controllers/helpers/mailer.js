@@ -14,7 +14,7 @@ module.exports = async function sendValidationMail(email, subject, text, url = `
 
 	let mailOptions = {
 		from: process.env.SERVER_EMAIL,
-		to: "ablin42@byom.de",
+		to: email,
 		subject: subject,
 		text: text
 	};
@@ -67,9 +67,9 @@ module.exports = async function sendValidationMail(email, subject, text, url = `
 
 	transporter.sendMail(mailOptions, err => {
 		if (err) {
-			fullLog.info("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
+			console.log("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
 			return true;
-		} else fullLog.info("MAIL SENT SUCCESSFULLY");
+		} else console.log("MAIL SENT SUCCESSFULLY");
 	});
 
 	return false;
