@@ -6,6 +6,10 @@ const Image = require("../../models/Image");
 const ERROR_MESSAGE = require("./errorMessages");
 const { validationResult } = require("express-validator");
 const mime = require("mime-types");
+const formatter = new Intl.NumberFormat("de-DE", {
+	style: "currency",
+	currency: "EUR"
+});
 
 module.exports = {
 	emailExist: async function emailExist(email) {
@@ -30,8 +34,7 @@ module.exports = {
 		let isAllowedExt = fileExts.includes(file.originalname.split(".")[1].toLowerCase());
 		let isAllowedMimeType = file.mimetype.startsWith("image/");
 
-		if (isAllowedExt && isAllowedMimeType) 
-			return cb(null, true);
+		if (isAllowedExt && isAllowedMimeType) return cb(null, true);
 		else cb(new Error("File type not allowed"));
 	},
 	toTitleCase: function (phrase) {
@@ -83,5 +86,8 @@ module.exports = {
 		if (arr.length <= 0) throw new Error("An error occured while parsing file URL");
 
 		return arr;
+	},
+	parsePrice: async function (price) {
+		return formatter.format(price).replace(/ /g, "").substr(1);
 	}
 };

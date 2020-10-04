@@ -180,7 +180,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 			headtitle: "Maral Abkarian Paintings | Cart",
 			description: "Maral Akbarian Art and Paintings. Verify your cart and proceed to checkout to buy beautiful paintings",
 			products: [],
-			totalPrice: formatter.format(cart.price.totalIncludingTax).substr(2),
+			totalPrice: utils.formatPrice(cart.price.totalIncludingTax),
 			totalQty: cart.totalQty,
 			user: req.user,
 			delivery: req.delivery,
@@ -196,7 +196,7 @@ router.get("/shopping-cart", setUser, authUser, setDelivery, isDelivery, async (
 					isUnique: true,
 					item: item.attributes,
 					qty: item.qty,
-					price: formatter.format(item.price).substr(2),
+					price: utils.formatPrice(item.price),
 					shortcontent: item.attributes.content.substr(0, 128),
 					shorttitle: item.attributes.title.substr(0, 64),
 					details: "Unique Painting",
@@ -254,7 +254,7 @@ router.get("/Payment", setUser, authUser, setDelivery, isDelivery, checkBilling,
 		if (!req.session.cart || req.session.cart.totalPrice === 0) return res.status(400).redirect("/shopping-cart");
 		let cart = new Cart(req.session.cart);
 
-		obj.totalPrice = formatter.format(cart.price.totalIncludingTax).substr(2);
+		obj.totalPrice = utils.formatPrice(cart.price.totalIncludingTax);
 
 		return res.status(200).render("Payment", obj);
 	} catch (err) {
@@ -287,7 +287,7 @@ router.get("/User", setUser, authUser, async (req, res) => {
 
 		if (orders) {
 			orders.forEach((order, index) => {
-				orders[parseInt(index)].price = formatter.format(order.price).substr(2);
+				orders[parseInt(index)].price = utils.formatPrice(order.price);
 				orders[parseInt(index)].date_f = format.asString("dd/MM/yyyy", new Date(order.date));
 			});
 			obj.orders = orders;
@@ -418,7 +418,7 @@ router.get("/Order/:id", setUser, authUser, setOrder, authGetOrder, async (req, 
 			products: [],
 			user: req.user,
 			order: req.order,
-			deliveryPriceFormatted: formatter.format(req.order.deliveryPrice).substr(2)
+			deliveryPriceFormatted: utils.formatPrice(req.order.deliveryPrice)
 		};
 
 		obj.order.items.forEach(item => {
@@ -544,7 +544,7 @@ router.get("/Shop/:id", setUser, async (req, res) => {
 
 		if (response.error === false) obj.shop = response.shop;
 		else throw new Error(response.message);
-		obj.shop.price = formatter.format(obj.shop.price).substr(2);
+		obj.shop.price = utils.formatPrice(obj.shop.price);
 
 		options.uri = `${process.env.BASEURL}/api/image/Shop/${id}`;
 		response = await rp(options);
@@ -712,7 +712,7 @@ router.get("/Admin/Order/:id", setUser, authUser, authRole(ROLE.ADMIN), setOrder
 			user: req.user,
 			order: req.order,
 			csrfToken: req.csrfToken(),
-			deliveryPriceFormatted: formatter.format(req.order.deliveryPrice).substr(2)
+			deliveryPriceFormatted: utils.formatPrice(req.order.deliveryPrice)
 		};
 
 		obj.order.items.forEach(item => {

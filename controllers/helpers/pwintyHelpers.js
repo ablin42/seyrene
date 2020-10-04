@@ -192,7 +192,7 @@ module.exports = {
 					stringifiedAttributes: JSON.stringify(element.attributes),
 					qty: element.qty,
 					unitPrice: item.unitPrice,
-					price: formatter.format(item.unitPrice * element.qty).substr(2),
+					price: utils.formatPrice(item.unitPrice * element.qty),
 					shortcontent: item.attributes.content.substr(0, 128),
 					shorttitle: item.attributes.title.substr(0, 64),
 					details: "",

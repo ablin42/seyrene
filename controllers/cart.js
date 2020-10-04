@@ -11,7 +11,6 @@ const { ERROR_MESSAGE } = require("./helpers/errorMessages");
 const utils = require("./helpers/utils");
 require("dotenv/config");
 const { fullLog, threatLog } = require("./helpers/log4");
-const formatter = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 
 const limiter = rateLimit({
 	store: new MongoStore({
@@ -40,8 +39,8 @@ router.post("/add/:id", limiter, setUser, setShop, async (req, res) => {
 		req.session.cart = cart;
 
 		let formatted = JSON.parse(JSON.stringify(cart));
-		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
-		formatted.items[product._id].price = formatter.format(cart.items[product._id].price).substr(2);
+		formatted.totalPrice = utils.formatPrice(cart.totalPrice);
+		formatted.items[product._id].price = utils.formatPrice(cart.items[product._id].price);
 
 		fullLog.info(`Added to cart(unique): ${product._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: formatted });
@@ -60,9 +59,8 @@ router.post("/del/:id", limiter, setUser, setShop, async (req, res) => {
 		req.session.cart = cart;
 
 		let formatted = JSON.parse(JSON.stringify(cart));
-		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
-		if (formatted.items[product._id])
-			formatted.items[product._id].price = formatter.format(cart.items[product._id].price).substr(2);
+		formatted.totalPrice = utils.formatPrice(cart.totalPrice);
+		if (formatted.items[product._id]) formatted.items[product._id].price = utils.formatPrice(cart.items[product._id].price);
 
 		fullLog.info(`Deleted from cart(unique): ${product._id}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: formatted });
@@ -86,8 +84,8 @@ router.post("/add/pwinty/:id", limiter, setUser, setGallery, pwintyGetPrice, che
 		req.session.cart = cart;
 
 		let formatted = JSON.parse(JSON.stringify(cart));
-		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
-		if (formatted.items[data.SKU]) formatted.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+		formatted.totalPrice = utils.formatPrice(cart.totalPrice);
+		if (formatted.items[data.SKU]) formatted.items[data.SKU].price = utils.formatPrice(cart.items[data.SKU].price);
 
 		fullLog.info(`Added to cart(pwinty): ${product._id}/${data.SKU}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.addedToCart, cart: formatted, item: item });
@@ -113,8 +111,8 @@ router.post("/update/pwinty/:id/:qty", limiter, setUser, setGallery, pwintyGetPr
 			req.session.cart = cart;
 
 			let formatted = JSON.parse(JSON.stringify(cart));
-			formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
-			if (formatted.items[data.SKU]) formatted.items[data.SKU].price = formatter.format(cart.items[data.SKU].price).substr(2);
+			formatted.totalPrice = utils.formatPrice(cart.totalPrice);
+			if (formatted.items[data.SKU]) formatted.items[data.SKU].price = utils.formatPrice(cart.items[data.SKU].price);
 
 			let message = ERROR_MESSAGE.qtyUpdated;
 			if (newQty == 0) message = ERROR_MESSAGE.removedFromCart;
@@ -142,8 +140,8 @@ router.post("/del/pwinty/:id", limiter, setUser, setGallery, pwintyGetPrice, che
 		req.session.cart = cart;
 
 		let formatted = JSON.parse(JSON.stringify(cart));
-		formatted.totalPrice = formatter.format(cart.totalPrice).substr(2);
-		if (formatted.items[data.SKU]) formatted.items[data.SKU].price = formatter.format(formatted.items[data.SKU].price).substr(2);
+		formatted.totalPrice = utils.formatPrice(cart.totalPrice);
+		if (formatted.items[data.SKU]) formatted.items[data.SKU].price = utils.formatPrice(formatted.items[data.SKU].price);
 
 		fullLog.info(`Deleted from cart(pwinty): ${product._id}/${data.SKU}`);
 		return res.status(200).json({ error: false, message: ERROR_MESSAGE.removedFromCart, cart: formatted, item: item });

@@ -16,7 +16,7 @@ module.exports = {
 				content: shopItems[parseInt(i)].content,
 				shortcontent: shopItems[parseInt(i)].content.substr(0, 256),
 				shorttitle: shopItems[parseInt(i)].title.substr(0, 100),
-				price: formatter.format(shopItems[parseInt(i)].price).replace(/ /g, "").substr(1),
+				price: utils.parsePrice(shopItems[parseInt(i)].price),
 				date: shopItems[parseInt(i)].date,
 				createdAt: shopItems[parseInt(i)].createdAt,
 				updatedAt: shopItems[parseInt(i)].updatedAt,
