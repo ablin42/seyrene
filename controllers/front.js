@@ -15,13 +15,6 @@ const upload = require("./helpers/multerHelpers");
 const { fullLog, threatLog } = require("./helpers/log4");
 require("dotenv").config();
 
-const memjs = require("memjs");
-let mc = memjs.Client.create(process.env.MEMCACHIER_SERVERS, {
-	failover: true,
-	timeout: 1,
-	keepAlive: true
-});
-
 router.get("/", authToken, async (req, res) => {
 	try {
 		let [err, result] = await utils.to(Front.find());

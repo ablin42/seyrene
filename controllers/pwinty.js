@@ -214,8 +214,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 
 		if (process.env.ENVIRONMENT === "prod") {
 			mc.get(pricing_key, async function (err, val) {
-				if (err == null && val != null) 
-					result = JSON.parse(val.toString());
+				if (err == null && val != null) result = JSON.parse(val.toString());
 				else {
 					items = pHelpers.genPricingObj(req.body.items);
 					let options = {
@@ -239,7 +238,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 					});
 				}
 				return res.status(200).json({ error: result.error, response: result.response });
-			}); 
+			});
 		} else {
 			items = pHelpers.genPricingObj(req.body.items);
 			let options = {
@@ -257,6 +256,7 @@ router.post("/pricing/:countryCode", setUser, async (req, res) => {
 			if (response.error === true) throw new Error(response.message);
 
 			result = { error: response.error, response: response.formatted };
+			return res.status(200).json({ error: result.error, response: result.response });
 		}
 	} catch (err) {
 		threatLog.error("PWINTY PRICING ERROR:", err, req.headers, req.ipAddress);

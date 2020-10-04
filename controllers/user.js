@@ -254,8 +254,7 @@ router.get("/countryCode", setUser, async (req, res) => {
 
 		if (process.env.ENVIRONMENT === "prod") {
 			mc.get(country_key, async function (err, val) {
-				if (err == null && val != null) 
-					countryCode = val.toString();
+				if (err == null && val != null) countryCode = val.toString();
 				else {
 					if (req.user) {
 						[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
@@ -276,7 +275,7 @@ router.get("/countryCode", setUser, async (req, res) => {
 					});
 				}
 				return res.status(200).json({ error: false, countryCode: countryCode });
-		});
+			});
 		} else {
 			if (req.user) {
 				[err, result] = await utils.to(DeliveryInfo.findOne({ _userId: req.user._id }));
@@ -291,6 +290,8 @@ router.get("/countryCode", setUser, async (req, res) => {
 				if (countryCode) countryCode = countryCode.code.iso2;
 				else throw new Error(ERROR_MESSAGE.countryCode);
 			}
+
+			return res.status(200).json({ error: false, countryCode: countryCode });
 		}
 	} catch (err) {
 		threatLog.error("USER COUNTRY CODE ERROR", err, req.headers, req.ipAddress);

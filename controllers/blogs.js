@@ -30,8 +30,7 @@ router.get("/", async (req, res) => {
 
 		if (process.env.ENVIRONMENT === "prod") {
 			mc.get(blog_key, async function (err, val) {
-				if (err == null && val != null) 
-					result = JSON.parse(val.toString());
+				if (err == null && val != null) result = JSON.parse(val.toString());
 				else {
 					result = await bHelpers.getBlogs(options);
 					result = await bHelpers.formatBlogData(result);
@@ -40,13 +39,14 @@ router.get("/", async (req, res) => {
 						if (err) throw new Error(ERROR_MESSAGE.serverError);
 					});
 				}
+				return res.status(200).json({ error: false, blogs: result });
 			});
 		} else {
 			result = await bHelpers.getBlogs(options);
 			result = await bHelpers.formatBlogData(result);
-		}
 
-		return res.status(200).json({ error: false, blogs: result });
+			return res.status(200).json({ error: false, blogs: result });
+		}
 	} catch (err) {
 		threatLog.error("BLOG FETCH ERROR", err, req.headers, req.ipAddress);
 		return res.status(200).json({ error: true, message: err.message });
