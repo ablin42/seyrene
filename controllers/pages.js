@@ -124,6 +124,7 @@ router.get("/Galerie", setUser, cacheView, async (req, res) => {
 		let response = await rp(options);
 		if (response.error === false) obj.galleries = response.galleries;
 		else throw new Error(response.message);
+		console.log(obj.galleries);
 
 		return res.status(200).render("Galerie", obj);
 	} catch (err) {
@@ -634,7 +635,6 @@ router.get("/Admin/Front", setUser, authUser, authRole(ROLE.ADMIN), async (req, 
 		if (response.error === false) obj.front = response.data;
 		else throw new Error(response.message);
 		if (response.data.length <= 0) obj.front = undefined;
-
 
 		return res.status(200).render("restricted/Front-post", obj);
 	} catch (err) {
