@@ -88,7 +88,6 @@ router.post("/post", upload, errorHandler, vShop, setUser, authUser, authRole(RO
 			content: req.body.content,
 			price: req.body.price
 		};
-		console.log(req.body.price, "PRICE");
 		let imgData = await utils.parseImgData(req.files);
 
 		const shop = new Shop(obj);

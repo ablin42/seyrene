@@ -19,7 +19,9 @@ module.exports = function Cart(oldCart) {
 		storedItem.price = this.items[id].unitPrice.toFixed(2);
 		this.totalQty++;
 		this.uniquePriceTotal = parseFloat((Math.round((this.uniquePriceTotal + this.items[id].unitPrice) * 100) / 100).toFixed(2));
-		this.price.totalIncludingTax += this.uniquePriceTotal;
+		this.price.totalIncludingTax = parseFloat(
+			(Math.round((this.price.totalIncludingTax + this.items[id].unitPrice) * 100) / 100).toFixed(2)
+		);
 		this.totalPrice = parseFloat((Math.round((this.totalPrice + this.items[id].unitPrice) * 100) / 100).toFixed(2));
 	};
 

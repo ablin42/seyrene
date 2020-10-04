@@ -9,6 +9,7 @@ const formatter = new Intl.NumberFormat("de-DE", {
 });
 const { ERROR_MESSAGE } = require("./errorMessages");
 const { attributesList } = require("./pwintyData");
+const utils = require("./utils");
 
 module.exports = {
 	genPricingObj: function (items) {
