@@ -67,9 +67,9 @@ module.exports = async function sendValidationMail(email, subject, text, url = `
 
 	transporter.sendMail(mailOptions, err => {
 		if (err) {
-			console.log("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
+			threatLog.log("MAILING ERROR:", err, mailOptions.to, mailOptions.subject);
 			return true;
-		} else console.log("MAIL SENT SUCCESSFULLY");
+		} else fullLog.log("MAIL SENT SUCCESSFULLY");
 	});
 
 	return false;

@@ -2,6 +2,7 @@ const stripePublicKey = document.getElementById("stripePublicKey").value;
 const stripe = Stripe(stripePublicKey);
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 let billing = JSON.parse(document.getElementById("billingInfo").value);
+let loader = document.querySelector("#loader");
 
 let orderId;
 let clientSecret;
@@ -64,6 +65,7 @@ async function initialize() {
 initialize();
 
 let payWithCard = async function (stripe, card, clientSecret) {
+	if (loader) loader.classList.add("block");
 	let result = await stripe.confirmCardPayment(clientSecret, {
 		receipt_email: document.getElementById("email").value,
 		payment_method: {
@@ -108,4 +110,5 @@ let payWithCard = async function (stripe, card, clientSecret) {
 			window.location.href = `/api/cart/clear/${orderId}`;
 		}, 2000);
 	}
+	if (loader) loader.classList.remove("block");
 };

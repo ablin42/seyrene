@@ -313,6 +313,8 @@ class PwintyObject {
 	}
 
 	async generatePricing() {
+		document.querySelector("#loader").classList.add("block");
+
 		let response = await this.fetchCountryCode();
 		let countryCode;
 		if (response.error === true) {
@@ -341,6 +343,7 @@ class PwintyObject {
 			this.price = data.response.unitPriceIncludingTax;
 			this.displayPricing();
 		}
+		document.querySelector("#loader").classList.remove("block");
 	}
 
 	displayPricing() {
@@ -365,6 +368,8 @@ class PwintyObject {
 	}
 
 	async cartAdd(itemId, caller) {
+		document.querySelector("#loader").classList.add("block");
+
 		let SKU = this.SKU;
 		let attributes = this.attributes;
 		attributes.category = this.category;
@@ -425,6 +430,7 @@ class PwintyObject {
 			let alert = createAlertNode(response.message, alertType);
 			addAlert(alert, "#header");
 		}
+		document.querySelector("#loader").classList.remove("block");
 		return;
 	}
 

@@ -130,7 +130,7 @@ a {
 
 .pbox-wrapper {
 	display: flex;
-	align-items: flex-end;
+	align-items: flex-start;
 	height: 200px;
 }
 
@@ -1356,8 +1356,8 @@ div.carousel-item.active {
 			rgb(109, 57, 185) 96%,
 			rgb(109, 57, 185) 100%
 		);*/
-		/*background: linear-gradient(126deg, rgba(5,84,185,1) 0%, rgba(2,62,138,1) 50%, rgba(3,50,109,1) 100%);*/
-		background: var(--brand-blue-m2);
+	/*background: linear-gradient(126deg, rgba(5,84,185,1) 0%, rgba(2,62,138,1) 50%, rgba(3,50,109,1) 100%);*/
+	background: var(--brand-blue-m2);
 	transform: skew(1deg, 1deg);
 	z-index: -1;
 }

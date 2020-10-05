@@ -15,6 +15,7 @@ let totalQtyDOM = document.querySelectorAll("[data-totalqty]");
 let deliveryPriceDOM = document.querySelectorAll("[data-deliveryprice]");
 let cartQtyBadge = document.getElementById("cartQty");
 let recaps = document.querySelectorAll("[data-cartrecap]");
+let loader = document.querySelector("#loader");
 
 delUnique.forEach(item => {
 	item.addEventListener("click", function () {
@@ -136,6 +137,7 @@ async function cartDel(itemId, caller) {
 }
 
 async function pwintyCartAdd(itemId, referenceId, caller) {
+	if (loader) loader.classList.add("block");
 	cooldownBtn(caller, 1500);
 	let alertType = "success";
 
@@ -179,9 +181,11 @@ async function pwintyCartAdd(itemId, referenceId, caller) {
 
 	let alert = createAlertNode(response.message, alertType);
 	addAlert(alert, "#header");
+	if (loader) loader.classList.remove("block");
 }
 
 async function pwintyCartDel(itemId, referenceId, caller) {
+	if (loader) loader.classList.add("block");
 	cooldownBtn(caller, 1500);
 	let alertType = "warning";
 
@@ -239,12 +243,14 @@ async function pwintyCartDel(itemId, referenceId, caller) {
 
 	let alert = createAlertNode(response.message, alertType);
 	addAlert(alert, "#header");
+	if (loader) loader.classList.remove("block");
 }
 
 async function pwintyUpdateValue(e, item, itemId, referenceId) {
 	if (PWINTY_DATA.length <= 0) throw new Error(ERROR_MESSAGE.itemNotFound);
 	if (!item.value) throw new Error(ERROR_MESSAGE.updateQty);
 
+	if (loader) loader.classList.add("block");
 	let qty = parseInt(item.value);
 	let SKU = PWINTY_DATA[parseInt(referenceId)].SKU;
 	let attributes = PWINTY_DATA[parseInt(referenceId)].attributes;
@@ -300,4 +306,5 @@ async function pwintyUpdateValue(e, item, itemId, referenceId) {
 
 	let alert = createAlertNode(response.message, alertType);
 	addAlert(alert, "#header");
+	if (loader) loader.classList.remove("block");
 }
