@@ -58,6 +58,12 @@ app.set("trust proxy", 1);
 
 if (process.env.ENVIRONMENT === "prod")
 	app.use(function (req, res, next) {
+		if (req.headers.host === "maral.herokuapp.com") return res.status(301).redirect("https://www." + process.env.HOST + req.url);
+		else return next();
+	});
+
+if (process.env.ENVIRONMENT === "prod")
+	app.use(function (req, res, next) {
 		if (req.protocol == "http") return res.redirect("https://" + req.headers.host + req.url);
 		else return next();
 	});
