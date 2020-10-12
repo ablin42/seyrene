@@ -98,7 +98,7 @@ router.post("/resetpw", vPassword, setUser, notLoggedUser, async (req, res) => {
 		if (!hashPw) throw new Error(ERROR_MESSAGE.serverError);
 
 		[err, pwToken] = await utils.to(PwToken.findOne({ _id: req.body.tokenId, token: req.body.token }));
-		if (err || !token) throw new Error(ERROR_MESSAGE.tokenNotFound);
+		if (err || !pwToken) throw new Error(ERROR_MESSAGE.tokenNotFound);
 
 		[err, user] = await utils.to(User.updateOne({ _id: pwToken._userId }, { $set: { password: hashPw } }));
 		if (err) throw new Error(ERROR_MESSAGE.userUpdate);
