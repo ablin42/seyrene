@@ -94,23 +94,24 @@ app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
 			reportUri: "/report-violation",
-			defaultSrc: ["'self'", "maralbucket.s3.eu-west-3.amazonaws.com", "maralbucket.s3.amazonaws.com"],
-			connectSrc: ["'self'", "maralbucket.s3.eu-west-3.amazonaws.com"],
+			defaultSrc: ["'self'", "maralbucket.s3.eu-west-3.amazonaws.com", "maralbucket.s3.amazonaws.com", "*.fontawesome.com"],
 			styleSrc: [
 				"'self'",
 				"stackpath.bootstrapcdn.com",
-				"kit-free.fontawesome.com",
+				"*.fontawesome.com",
 				"fonts.googleapis.com",
 				"cdnjs.cloudflare.com",
 				"'sha256-ajZEDDdILRcc4lWO9JfCUcWV8WPtU5+drQz8E5IfQ0w='",
-				"'sha256-zwHi7E6JKCpD7iSjei/XVSaXpNq1WUE8eBFAiJJV/lA='"
+				"'sha256-zwHi7E6JKCpD7iSjei/XVSaXpNq1WUE8eBFAiJJV/lA='",
+				"'sha256-AQe0kMnttwVvXWV4LutnFsTIDltiV/z7MUyXkuK3q8s='",
+				"'sha256-z/+epQIZWnuW/jjeypGIpZt1je7sws1OeK6n2RHmOMY='"
 			],
-			fontSrc: ["'self'", "fonts.googleapis.com", "kit-free.fontawesome.com", "fonts.gstatic.com"],
+			fontSrc: ["'self'", "fonts.googleapis.com", "*.fontawesome.com", "fonts.gstatic.com"],
 			scriptSrc: [
 				"'self'",
 				"cdnjs.cloudflare.com",
 				"www.googletagmanager.com",
-				"kit.fontawesome.com",
+				"*.fontawesome.com",
 				"stackpath.bootstrapcdn.com",
 				"https://www.google.com/recaptcha/",
 				"www.gstatic.com",
