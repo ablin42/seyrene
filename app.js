@@ -120,7 +120,14 @@ app.use(
 				"js.stripe.com"
 			],
 			frameSrc: ["https://www.google.com", "js.stripe.com"],
-			imgSrc: ["'self'", "data:", "maps.gstatic.com", "maralbucket.s3.amazonaws.com", "maralbucket.s3.eu-west-3.amazonaws.com"]
+			imgSrc: [
+				"'self'",
+				"data:",
+				"maps.gstatic.com",
+				"maralbucket.s3.amazonaws.com",
+				"maralbucket.s3.eu-west-3.amazonaws.com",
+				"i.imgur.com"
+			]
 		},
 		reportOnly: false
 	})
