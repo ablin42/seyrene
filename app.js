@@ -94,7 +94,13 @@ app.use(
 	helmet.contentSecurityPolicy({
 		directives: {
 			reportUri: "/report-violation",
-			defaultSrc: ["'self'", "maralbucket.s3.eu-west-3.amazonaws.com", "maralbucket.s3.amazonaws.com", "*.fontawesome.com"],
+			defaultSrc: [
+				"'self'",
+				"www.google-analytics.com",
+				"maralbucket.s3.eu-west-3.amazonaws.com",
+				"maralbucket.s3.amazonaws.com",
+				"*.fontawesome.com"
+			],
 			styleSrc: [
 				"'self'",
 				"stackpath.bootstrapcdn.com",
@@ -117,6 +123,7 @@ app.use(
 				"www.gstatic.com",
 				"maps.googleapis.com",
 				"maps.gstatic.com",
+				"www.google-analytics.com",
 				"js.stripe.com"
 			],
 			frameSrc: ["https://www.google.com", "js.stripe.com"],
@@ -126,6 +133,7 @@ app.use(
 				"maps.gstatic.com",
 				"maralbucket.s3.amazonaws.com",
 				"maralbucket.s3.eu-west-3.amazonaws.com",
+				"www.google-analytics.com",
 				"i.imgur.com"
 			]
 		},
@@ -257,7 +265,7 @@ app.use((req, res, next) => {
 		return next();
 	} else {
 		if (req.path === "/plsauth") return next();
-		return res.status(200).redirect("plsauth");
+		return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
 	}
 });
 

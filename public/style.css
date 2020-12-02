@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap"); /* main */
 @import url("https://fonts.googleapis.com/css?family=Anton&display=swap"); /* used for 404 */
 
+.maintenance {
+	background: transparent !important;
+}
+
 /* GLOBAL */
 :root {
 	--brand-blue-m2: #0060d2;
