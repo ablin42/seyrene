@@ -265,13 +265,21 @@ app.use((req, res, next) => {
 		return next();
 	} else {
 		if (req.path === "/plsauth") return next();
-		return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
+		return res.status(200).render("plsauth", {
+			csrfToken: req.csrfToken(),
+			headtitle: "Maral Abkarian Paintings",
+			description: "Oops! Looks like the client hasn't finished setting up his shop, blog and gallery. Come back later !"
+		});
 	}
 });
 
 app.get("/plsauth", (req, res) => {
 	//DELPROD//
-	return res.status(200).render("plsauth", { csrfToken: req.csrfToken() });
+	return res.status(200).render("plsauth", {
+		csrfToken: req.csrfToken(),
+		headtitle: "Maral Abkarian Paintings",
+		description: "Oops! Looks like the client hasn't finished setting up his shop, blog and gallery. Come back later !"
+	});
 });
 
 //DELPROD// del plsauth.ejs
