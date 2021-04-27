@@ -1,8 +1,8 @@
-const Money = require("money-exchange");
+//const Money = require("money-exchange");
 const rp = require("request-promise");
 require("dotenv").config();
-const fx = new Money();
-fx.init();
+//const fx = new Money();
+//fx.init();
 const formatter = new Intl.NumberFormat("de-DE", {
 	style: "currency",
 	currency: "EUR"
@@ -118,7 +118,10 @@ module.exports = {
 		return appliedMargin;
 	},
 	convertPrice: function (price) {
-		return utils.parsePrice(fx.convert(price / 100, "GBP", "EUR"));
+		return utils.parsePrice(
+			price / 100
+			//fx.convert(price / 100, "GBP", "EUR")
+		);
 	},
 	treatShipment: function (shipmentOptions) {
 		let formatted = [];
